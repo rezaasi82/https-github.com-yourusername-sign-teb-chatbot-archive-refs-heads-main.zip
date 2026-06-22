@@ -1,0 +1,4 @@
+/nobatyar-booking/vendor/
+/nobatyar-booking/node_modules/
+.DS_Store
+*.log
