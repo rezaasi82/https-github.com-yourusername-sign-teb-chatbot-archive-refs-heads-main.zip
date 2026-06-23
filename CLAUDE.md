@@ -90,7 +90,7 @@ Cron: `nobatyar_license_check` (daily), `nobatyar_send_reminders` (hourly).
 
 ## License Model (بدون سرویس‌های تحریم‌شده)
 
-سرور مستقل خارجی: `license.nobatyar.ir` — اعتبارسنجی روزانه (cron) با HMAC-signed response، کش محلی برای جلوگیری از قفل فوری در صورت قطعی سرور.
+سرور مستقل خارجی: `license.mynobatyar.ir` — اعتبارسنجی روزانه (cron) با HMAC-signed response، کش محلی برای جلوگیری از قفل فوری در صورت قطعی سرور.
 
 **فلوی Enforcement:**
 ```

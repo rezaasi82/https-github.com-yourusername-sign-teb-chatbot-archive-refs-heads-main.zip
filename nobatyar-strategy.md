@@ -10,7 +10,7 @@
 
 | نام پیشنهادی | منطق نام‌گذاری | یادداشت دامنه |
 |---|---|---|
-| **نوبتیار (Nobatyar)** ✅ انتخاب نهایی | "نوبت" + "یار" — کاملاً فارسی، معنای روشن (دستیار نوبت‌دهی) | `nobatyar.ir` / `nobatyar.com` |
+| **نوبتیار (Nobatyar)** ✅ انتخاب نهایی | "نوبت" + "یار" — کاملاً فارسی، معنای روشن (دستیار نوبت‌دهی) | `mynobatyar.ir` / `nobatyar.com` |
 | وقتینو (Vaghtino) | "وقت" + پسوند مدرن "ino" — حس استارتاپی | `vaghtino.com` بررسی شود |
 | رزرویار (Rezervyar) | از "رزرو" گرفته شده، برای سالن/رستوران | `rezervyar.ir` |
 | نوبتچی (Nobatchi) | پسوند "-چی" محاوره‌ای و صمیمی | `nobatchi.com` / `nobatchi.ir` |
@@ -20,7 +20,7 @@
 | پیمانک (Peymanak) | "پیمان" + پسوند کوچک‌ساز — منحصربه‌فرد | `peymanak.ir` |
 
 ### اقدامات فوری پس از انتخاب نام
-- ثبت دامنه `nobatyar.ir` و `nobatyar.com`
+- ثبت دامنه `mynobatyar.ir` و `nobatyar.com`
 - چک نام در سامانه ثبت برند (مرکز مالکیت صنعتی)
 - Namespace پایه کد: `Nobatyar\`
 - شورت‌کد نهایی: `[nobatyar_booking]`
@@ -104,7 +104,7 @@ Doctor Schedule           →  Provider Availability
 
 ### 3.2 رویکرد اعتبارسنجی لایسنس (بدون سرویس‌های تحریم‌شده)
 
-**معماری: Self-hosted License Server** (`license.nobatyar.ir`)
+**معماری: Self-hosted License Server** (`license.mynobatyar.ir`)
 
 ```
 1. کاربر license_key را در تنظیمات افزونه وارد می‌کند
@@ -441,7 +441,7 @@ Milestone: بوکینگ end-to-end بدون SMS/پرداخت/جلالی.
 
 **فاز ۵ (روز ۴۶-۵۸):** `PaymentGatewayInterface` + `ZarinpalGateway` کامل، `nby_transactions`، منطق deposit/full، تست sandbox.
 
-**فاز ۶ (روز ۵۹-۷۰):** راه‌اندازی `license.nobatyar.ir`، `LicenseManager`/`GracePeriodHandler`، cron اعتبارسنجی، تست سناریوهای کامل.
+**فاز ۶ (روز ۵۹-۷۰):** راه‌اندازی `license.mynobatyar.ir`، `LicenseManager`/`GracePeriodHandler`، cron اعتبارسنجی، تست سناریوهای کامل.
 
 **فاز ۷ (روز ۷۱-۸۲):** `CalendarView`/`ListView`، `SettingsPage`، `ReportGenerator`، polish بصری (راست‌چین، فونت وزیرمتن).
 

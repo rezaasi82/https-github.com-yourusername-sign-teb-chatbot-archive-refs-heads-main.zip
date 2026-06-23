@@ -7,7 +7,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Talks to the self-hosted license.nobatyar.ir server and keeps a single
+ * Talks to the self-hosted license.mynobatyar.ir server and keeps a single
  * cached nby_license row up to date. There is deliberately no domain-lock-in
  * logic here - "transferring" a license to a new domain is just calling
  * activate() again, satisfying the self-service transfer requirement
@@ -16,12 +16,12 @@ if (! defined('ABSPATH')) {
  */
 class LicenseManager
 {
-    private const SERVER_VALIDATE_URL = 'https://license.nobatyar.ir/api/v1/license/validate';
+    private const SERVER_VALIDATE_URL = 'https://license.mynobatyar.ir/api/v1/license/validate';
 
     /**
      * Placeholder shared secret for verifying the server's HMAC signature.
      * Must be overridden via the nobatyar_license_hmac_secret filter to
-     * match whatever license.nobatyar.ir actually signs responses with
+     * match whatever license.mynobatyar.ir actually signs responses with
      * once that server exists.
      */
     private const DEFAULT_HMAC_SECRET = 'nobatyar-license-hmac-placeholder';
@@ -127,11 +127,22 @@ class LicenseManager
     }
 
     /**
+     * Allows overriding the validation endpoint via the
+     * nobatyar_license_server_url filter, mirroring the
+     * nobatyar_license_hmac_secret filter below - lets a site owner repoint
+     * the client without a code edit if the server URL ever changes again.
+     */
+    private function server_url(): string
+    {
+        return (string) apply_filters('nobatyar_license_server_url', self::SERVER_VALIDATE_URL);
+    }
+
+    /**
      * @return array{tier:string,expires_at:?string}|\WP_Error
      */
     private function request_validation(string $license_key)
     {
-        $response = wp_remote_post(self::SERVER_VALIDATE_URL, [
+        $response = wp_remote_post($this->server_url(), [
             'body' => [
                 'license_key'    => $license_key,
                 'domain_hash'    => $this->domain_hash(),

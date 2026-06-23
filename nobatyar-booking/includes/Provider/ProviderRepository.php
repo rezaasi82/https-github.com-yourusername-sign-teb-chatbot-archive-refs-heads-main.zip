@@ -77,4 +77,75 @@ class ProviderRepository
 
         return $count > 0;
     }
+
+    public function create(array $data): int
+    {
+        global $wpdb;
+
+        $now = current_time('mysql');
+
+        $wpdb->insert($this->table(), [
+            'user_id'        => $data['user_id'] ?: null,
+            'name'           => $data['name'],
+            'label_override' => $data['label_override'] ?: null,
+            'license_field'  => $data['license_field'] ?: null,
+            'is_active'      => $data['is_active'] ? 1 : 0,
+            'sort_order'     => $data['sort_order'],
+            'created_at'     => $now,
+            'updated_at'     => $now,
+        ], ['%d', '%s', '%s', '%s', '%d', '%d', '%s', '%s']);
+
+        return (int) $wpdb->insert_id;
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        global $wpdb;
+
+        $updated = $wpdb->update(
+            $this->table(),
+            [
+                'user_id'        => $data['user_id'] ?: null,
+                'name'           => $data['name'],
+                'label_override' => $data['label_override'] ?: null,
+                'license_field'  => $data['license_field'] ?: null,
+                'is_active'      => $data['is_active'] ? 1 : 0,
+                'sort_order'     => $data['sort_order'],
+                'updated_at'     => current_time('mysql'),
+            ],
+            ['id' => $id],
+            ['%d', '%s', '%s', '%s', '%d', '%d', '%s'],
+            ['%d']
+        );
+
+        return false !== $updated;
+    }
+
+    public function delete(int $id): bool
+    {
+        global $wpdb;
+
+        $wpdb->delete($this->pivot_table(), ['provider_id' => $id], ['%d']);
+
+        return false !== $wpdb->delete($this->table(), ['id' => $id], ['%d']);
+    }
+
+    /**
+     * Replaces the provider's full set of offered services in one go, since
+     * the admin form submits the complete checked-service list each time
+     * rather than incremental add/remove calls.
+     */
+    public function sync_services(int $provider_id, array $service_ids): void
+    {
+        global $wpdb;
+
+        $wpdb->delete($this->pivot_table(), ['provider_id' => $provider_id], ['%d']);
+
+        foreach (array_unique(array_map('intval', $service_ids)) as $service_id) {
+            $wpdb->insert($this->pivot_table(), [
+                'provider_id' => $provider_id,
+                'service_id'  => $service_id,
+            ], ['%d', '%d']);
+        }
+    }
 }
