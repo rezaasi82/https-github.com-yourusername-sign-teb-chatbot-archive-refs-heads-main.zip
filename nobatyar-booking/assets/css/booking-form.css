@@ -1,0 +1,31 @@
+.nobatyar-booking-form-wrap {
+    direction: rtl;
+    text-align: right;
+    max-width: 480px;
+}
+
+.nobatyar-booking-form .nobatyar-field {
+    margin-bottom: 1em;
+}
+
+.nobatyar-booking-form label {
+    display: block;
+    margin-bottom: 0.25em;
+    font-weight: 600;
+}
+
+.nobatyar-booking-form select,
+.nobatyar-booking-form input {
+    width: 100%;
+    padding: 0.5em;
+    box-sizing: border-box;
+}
+
+.nobatyar-booking-message {
+    margin-top: 1em;
+    font-weight: 600;
+}
+
+.nobatyar-booking-message.is-error {
+    color: #c0392b;
+}
