@@ -3,6 +3,8 @@
 namespace Nobatyar\Core;
 
 use Nobatyar\Admin\AdminMenu;
+use Nobatyar\Admin\Catalog\ProvidersPage;
+use Nobatyar\Admin\Catalog\ServicesPage;
 use Nobatyar\Admin\Dashboard\CalendarView;
 use Nobatyar\Admin\Dashboard\ListView;
 use Nobatyar\Admin\Reports\ReportGenerator;
@@ -120,6 +122,8 @@ class Plugin
         return new AdminMenu(
             $list_view,
             new CalendarView($booking_repository),
+            new ServicesPage($service_repository),
+            new ProvidersPage($provider_repository, $service_repository),
             new ReportGenerator($booking_repository, new TransactionRepository()),
             new SettingsPage($this->license_manager())
         );
