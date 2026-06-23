@@ -24,4 +24,9 @@ class TerminologyMap
 
         return apply_filters('nobatyar_terminology_label', $default, $key, $context);
     }
+
+    public static function defaults(): array
+    {
+        return self::DEFAULTS;
+    }
 }

@@ -2,6 +2,11 @@
 
 namespace Nobatyar\Core;
 
+use Nobatyar\Admin\AdminMenu;
+use Nobatyar\Admin\Dashboard\CalendarView;
+use Nobatyar\Admin\Dashboard\ListView;
+use Nobatyar\Admin\Reports\ReportGenerator;
+use Nobatyar\Admin\Settings\SettingsPage;
 use Nobatyar\Booking\BookingEngine;
 use Nobatyar\Booking\BookingRepository;
 use Nobatyar\Booking\SlotCalculator;
@@ -50,6 +55,7 @@ class Plugin
         $this->booking_shortcode()->register();
         $this->notification_dispatcher()->register();
         $this->license_manager()->register();
+        $this->admin_menu()->register();
     }
 
     public function load_textdomain(): void
@@ -96,5 +102,26 @@ class Plugin
     private function license_manager(): LicenseManager
     {
         return new LicenseManager(new GracePeriodHandler());
+    }
+
+    private function admin_menu(): AdminMenu
+    {
+        $booking_repository  = new BookingRepository();
+        $provider_repository = new ProviderRepository();
+        $service_repository  = new ServiceRepository();
+
+        $list_view = new ListView(
+            $booking_repository,
+            $provider_repository,
+            $service_repository,
+            new BookingEngine($booking_repository, $provider_repository, $service_repository)
+        );
+
+        return new AdminMenu(
+            $list_view,
+            new CalendarView($booking_repository),
+            new ReportGenerator($booking_repository, new TransactionRepository()),
+            new SettingsPage($this->license_manager())
+        );
     }
 }

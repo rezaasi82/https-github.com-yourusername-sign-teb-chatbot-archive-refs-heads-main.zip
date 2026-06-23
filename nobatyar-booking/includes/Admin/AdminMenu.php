@@ -1,0 +1,122 @@
+<?php
+
+namespace Nobatyar\Admin;
+
+use Nobatyar\Admin\Dashboard\CalendarView;
+use Nobatyar\Admin\Dashboard\ListView;
+use Nobatyar\Admin\Reports\ReportGenerator;
+use Nobatyar\Admin\Settings\SettingsPage;
+
+if (! defined('ABSPATH')) {
+    exit;
+}
+
+class AdminMenu
+{
+    public const MENU_SLUG          = 'nobatyar-booking';
+    public const CALENDAR_SLUG      = 'nobatyar-booking-calendar';
+    public const REPORTS_SLUG       = 'nobatyar-booking-reports';
+    public const SETTINGS_SLUG      = 'nobatyar-booking-settings';
+
+    private ListView $list_view;
+    private CalendarView $calendar_view;
+    private ReportGenerator $report_generator;
+    private SettingsPage $settings_page;
+
+    public function __construct(
+        ListView $list_view,
+        CalendarView $calendar_view,
+        ReportGenerator $report_generator,
+        SettingsPage $settings_page
+    ) {
+        $this->list_view        = $list_view;
+        $this->calendar_view    = $calendar_view;
+        $this->report_generator = $report_generator;
+        $this->settings_page    = $settings_page;
+    }
+
+    public function register(): void
+    {
+        add_action('admin_menu', [$this, 'register_menu']);
+        add_action('admin_enqueue_scripts', [$this, 'maybe_enqueue_assets']);
+        add_action('admin_init', [$this->list_view, 'handle_actions']);
+        add_action('admin_init', [$this->settings_page, 'handle_submission']);
+    }
+
+    public function register_menu(): void
+    {
+        add_menu_page(
+            __('نوبتیار', 'nobatyar-booking'),
+            __('نوبتیار', 'nobatyar-booking'),
+            'manage_options',
+            self::MENU_SLUG,
+            [$this, 'render_list'],
+            'dashicons-calendar-alt',
+            26
+        );
+
+        add_submenu_page(self::MENU_SLUG, __('نوبت‌ها', 'nobatyar-booking'), __('نوبت‌ها', 'nobatyar-booking'), 'manage_options', self::MENU_SLUG, [$this, 'render_list']);
+        add_submenu_page(self::MENU_SLUG, __('تقویم', 'nobatyar-booking'), __('تقویم', 'nobatyar-booking'), 'manage_options', self::CALENDAR_SLUG, [$this, 'render_calendar']);
+        add_submenu_page(self::MENU_SLUG, __('گزارش‌ها', 'nobatyar-booking'), __('گزارش‌ها', 'nobatyar-booking'), 'manage_options', self::REPORTS_SLUG, [$this, 'render_reports']);
+        add_submenu_page(self::MENU_SLUG, __('تنظیمات', 'nobatyar-booking'), __('تنظیمات', 'nobatyar-booking'), 'manage_options', self::SETTINGS_SLUG, [$this, 'render_settings']);
+    }
+
+    public function render_list(): void
+    {
+        echo $this->list_view->render($this->filters_from_request());
+    }
+
+    public function render_calendar(): void
+    {
+        $year  = isset($_GET['nby_year']) ? absint($_GET['nby_year']) : null;
+        $month = isset($_GET['nby_month']) ? absint($_GET['nby_month']) : null;
+
+        echo $this->calendar_view->render($year ?: null, $month ?: null);
+    }
+
+    public function render_reports(): void
+    {
+        $date_from = isset($_GET['date_from']) ? sanitize_text_field($_GET['date_from']) : current_time('Y-m-d') . ' 00:00:00';
+        $date_to   = isset($_GET['date_to']) ? sanitize_text_field($_GET['date_to']) : current_time('Y-m-d') . ' 23:59:59';
+
+        echo $this->report_generator->render($date_from, $date_to);
+    }
+
+    public function render_settings(): void
+    {
+        $step = isset($_GET['step']) ? sanitize_key($_GET['step']) : 'terminology';
+
+        echo $this->settings_page->render($step);
+    }
+
+    /**
+     * Loads admin CSS only on the plugin's own pages - mirrors
+     * BookingShortcode's conditional front-end loading so installing
+     * Nobatyar never slows down unrelated admin screens.
+     */
+    public function maybe_enqueue_assets(string $hook): void
+    {
+        if (false === strpos($hook, self::MENU_SLUG)) {
+            return;
+        }
+
+        wp_enqueue_style('nobatyar-admin', NOBATYAR_PLUGIN_URL . 'assets/css/admin.css', [], NOBATYAR_VERSION);
+    }
+
+    private function filters_from_request(): array
+    {
+        $filters = [];
+
+        foreach (['status', 'date_from', 'date_to'] as $key) {
+            if (! empty($_GET[$key])) {
+                $filters[$key] = sanitize_text_field($_GET[$key]);
+            }
+        }
+
+        if (! empty($_GET['provider_id'])) {
+            $filters['provider_id'] = absint($_GET['provider_id']);
+        }
+
+        return $filters;
+    }
+}

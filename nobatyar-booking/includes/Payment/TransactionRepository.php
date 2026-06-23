@@ -90,4 +90,18 @@ class TransactionRepository
             ['%d']
         );
     }
+
+    public function sum_successful_amount_between(string $date_from, string $date_to): float
+    {
+        global $wpdb;
+
+        $value = $wpdb->get_var($wpdb->prepare(
+            "SELECT SUM(amount) FROM {$this->table()} WHERE status = %s AND created_at BETWEEN %s AND %s",
+            TransactionStatus::SUCCESS,
+            $date_from,
+            $date_to
+        ));
+
+        return (float) ($value ?? 0);
+    }
 }
