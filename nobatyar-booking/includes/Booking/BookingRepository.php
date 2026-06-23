@@ -164,4 +164,40 @@ class BookingRepository
 
         return $wpdb->get_results($sql, ARRAY_A);
     }
+
+    /**
+     * Active bookings starting within the next $hours_before hours that
+     * haven't had a reminder sent yet - used by the hourly reminder cron.
+     */
+    public function get_due_reminders(int $hours_before): array
+    {
+        global $wpdb;
+
+        $now    = current_time('mysql');
+        $cutoff = (new \DateTimeImmutable($now))->modify("+{$hours_before} hours")->format('Y-m-d H:i:s');
+
+        $sql = $wpdb->prepare(
+            "SELECT * FROM {$this->table()}
+            WHERE status IN ('" . implode("','", BookingStatus::ACTIVE) . "')
+            AND reminder_sent_at IS NULL
+            AND booking_datetime BETWEEN %s AND %s",
+            $now,
+            $cutoff
+        );
+
+        return $wpdb->get_results($sql, ARRAY_A);
+    }
+
+    public function mark_reminder_sent(int $id): void
+    {
+        global $wpdb;
+
+        $wpdb->update(
+            $this->table(),
+            ['reminder_sent_at' => current_time('mysql')],
+            ['id' => $id],
+            ['%s'],
+            ['%d']
+        );
+    }
 }
