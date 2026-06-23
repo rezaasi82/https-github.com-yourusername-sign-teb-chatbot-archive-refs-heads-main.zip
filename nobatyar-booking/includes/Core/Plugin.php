@@ -9,10 +9,13 @@ use Nobatyar\Frontend\Shortcode\BookingShortcode;
 use Nobatyar\Notifications\EmailNotifier;
 use Nobatyar\Notifications\NotificationDispatcher;
 use Nobatyar\Notifications\SmsLogRepository;
+use Nobatyar\Payment\PaymentEngine;
+use Nobatyar\Payment\TransactionRepository;
 use Nobatyar\Provider\AvailabilityManager;
 use Nobatyar\Provider\ProviderRepository;
 use Nobatyar\Rest\Controllers\AvailabilityController;
 use Nobatyar\Rest\Controllers\BookingController;
+use Nobatyar\Rest\Controllers\PaymentController;
 use Nobatyar\Service\ServiceRepository;
 
 if (! defined('ABSPATH')) {
@@ -62,9 +65,11 @@ class Plugin
 
         $booking_engine = new BookingEngine($booking_repository, $provider_repository, $service_repository);
         $slot_calculator = new SlotCalculator(new AvailabilityManager(), $booking_repository);
+        $payment_engine = new PaymentEngine(new TransactionRepository(), $booking_repository, $service_repository);
 
         (new BookingController($booking_engine, $booking_repository))->register_routes();
         (new AvailabilityController($slot_calculator, $service_repository))->register_routes();
+        (new PaymentController($payment_engine))->register_routes();
     }
 
     private function booking_shortcode(): BookingShortcode
