@@ -127,11 +127,22 @@ class LicenseManager
     }
 
     /**
+     * Allows overriding the validation endpoint via the
+     * nobatyar_license_server_url filter, mirroring the
+     * nobatyar_license_hmac_secret filter below - lets a site owner repoint
+     * the client without a code edit if the server URL ever changes again.
+     */
+    private function server_url(): string
+    {
+        return (string) apply_filters('nobatyar_license_server_url', self::SERVER_VALIDATE_URL);
+    }
+
+    /**
      * @return array{tier:string,expires_at:?string}|\WP_Error
      */
     private function request_validation(string $license_key)
     {
-        $response = wp_remote_post(self::SERVER_VALIDATE_URL, [
+        $response = wp_remote_post($this->server_url(), [
             'body' => [
                 'license_key'    => $license_key,
                 'domain_hash'    => $this->domain_hash(),
