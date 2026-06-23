@@ -32,9 +32,17 @@ if (! defined('ABSPATH')) {
             </select>
         </p>
 
-        <p class="nobatyar-field">
-            <label for="nobatyar-date"><?php esc_html_e('تاریخ', 'nobatyar-booking'); ?></label>
-            <input type="date" id="nobatyar-date" name="date" required />
+        <p class="nobatyar-field nobatyar-jalali-field">
+            <label for="nobatyar-date-display"><?php esc_html_e('تاریخ', 'nobatyar-booking'); ?></label>
+            <input
+                type="text"
+                id="nobatyar-date-display"
+                class="nobatyar-jalali-display"
+                readonly="readonly"
+                autocomplete="off"
+                placeholder="<?php esc_attr_e('انتخاب تاریخ', 'nobatyar-booking'); ?>"
+            />
+            <input type="hidden" id="nobatyar-date" name="date" />
         </p>
 
         <p class="nobatyar-field">
