@@ -29,3 +29,86 @@
 .nobatyar-booking-message.is-error {
     color: #c0392b;
 }
+
+.nobatyar-jalali-field {
+    position: relative;
+}
+
+.nobatyar-jalali-display {
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.nobatyar-jalali-calendar {
+    position: absolute;
+    z-index: 10;
+    top: 100%;
+    right: 0;
+    left: 0;
+    margin-top: 0.25em;
+    padding: 0.5em;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+}
+
+.nobatyar-jalali-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
+.nobatyar-jalali-nav {
+    background: none;
+    border: none;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 0.25em 0.5em;
+    width: auto;
+}
+
+.nobatyar-jalali-weekdays,
+.nobatyar-jalali-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+}
+
+.nobatyar-jalali-weekdays span {
+    font-size: 0.8em;
+    color: #666;
+    padding: 0.25em 0;
+}
+
+.nobatyar-jalali-day {
+    padding: 0.4em 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 4px;
+    width: auto;
+}
+
+.nobatyar-jalali-day:hover:not(:disabled) {
+    background-color: #eee;
+}
+
+.nobatyar-jalali-day.is-today {
+    font-weight: 700;
+    color: #2980b9;
+}
+
+.nobatyar-jalali-day.is-selected {
+    background-color: #2980b9;
+    color: #fff;
+}
+
+.nobatyar-jalali-day.is-past {
+    color: #ccc;
+    cursor: not-allowed;
+}

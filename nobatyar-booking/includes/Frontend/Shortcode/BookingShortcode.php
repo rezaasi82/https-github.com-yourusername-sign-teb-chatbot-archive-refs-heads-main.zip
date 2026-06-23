@@ -47,6 +47,14 @@ class BookingShortcode
         );
 
         wp_enqueue_script(
+            'nobatyar-jalali-datepicker',
+            NOBATYAR_PLUGIN_URL . 'assets/js/jalali-datepicker.js',
+            [],
+            NOBATYAR_VERSION,
+            true
+        );
+
+        wp_enqueue_script(
             'nobatyar-booking-form',
             NOBATYAR_PLUGIN_URL . 'assets/js/booking-form.js',
             [],
