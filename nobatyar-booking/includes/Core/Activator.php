@@ -100,6 +100,7 @@ class Activator
             booking_datetime DATETIME NOT NULL,
             status ENUM('pending','confirmed','done','cancelled','no_show') DEFAULT 'pending',
             notes TEXT NULL,
+            reminder_sent_at DATETIME NULL,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
             INDEX idx_provider_datetime (provider_id, booking_datetime),

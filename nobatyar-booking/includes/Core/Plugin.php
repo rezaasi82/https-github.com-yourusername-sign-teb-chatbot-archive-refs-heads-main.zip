@@ -6,6 +6,9 @@ use Nobatyar\Booking\BookingEngine;
 use Nobatyar\Booking\BookingRepository;
 use Nobatyar\Booking\SlotCalculator;
 use Nobatyar\Frontend\Shortcode\BookingShortcode;
+use Nobatyar\Notifications\EmailNotifier;
+use Nobatyar\Notifications\NotificationDispatcher;
+use Nobatyar\Notifications\SmsLogRepository;
 use Nobatyar\Provider\AvailabilityManager;
 use Nobatyar\Provider\ProviderRepository;
 use Nobatyar\Rest\Controllers\AvailabilityController;
@@ -39,6 +42,7 @@ class Plugin
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         $this->booking_shortcode()->register();
+        $this->notification_dispatcher()->register();
     }
 
     public function load_textdomain(): void
@@ -66,5 +70,16 @@ class Plugin
     private function booking_shortcode(): BookingShortcode
     {
         return new BookingShortcode(new ProviderRepository(), new ServiceRepository());
+    }
+
+    private function notification_dispatcher(): NotificationDispatcher
+    {
+        return new NotificationDispatcher(
+            new BookingRepository(),
+            new ProviderRepository(),
+            new ServiceRepository(),
+            new SmsLogRepository(),
+            new EmailNotifier()
+        );
     }
 }
