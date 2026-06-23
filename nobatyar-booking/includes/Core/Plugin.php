@@ -6,6 +6,8 @@ use Nobatyar\Booking\BookingEngine;
 use Nobatyar\Booking\BookingRepository;
 use Nobatyar\Booking\SlotCalculator;
 use Nobatyar\Frontend\Shortcode\BookingShortcode;
+use Nobatyar\License\GracePeriodHandler;
+use Nobatyar\License\LicenseManager;
 use Nobatyar\Notifications\EmailNotifier;
 use Nobatyar\Notifications\NotificationDispatcher;
 use Nobatyar\Notifications\SmsLogRepository;
@@ -15,6 +17,7 @@ use Nobatyar\Provider\AvailabilityManager;
 use Nobatyar\Provider\ProviderRepository;
 use Nobatyar\Rest\Controllers\AvailabilityController;
 use Nobatyar\Rest\Controllers\BookingController;
+use Nobatyar\Rest\Controllers\LicenseController;
 use Nobatyar\Rest\Controllers\PaymentController;
 use Nobatyar\Service\ServiceRepository;
 
@@ -46,6 +49,7 @@ class Plugin
 
         $this->booking_shortcode()->register();
         $this->notification_dispatcher()->register();
+        $this->license_manager()->register();
     }
 
     public function load_textdomain(): void
@@ -70,6 +74,7 @@ class Plugin
         (new BookingController($booking_engine, $booking_repository))->register_routes();
         (new AvailabilityController($slot_calculator, $service_repository))->register_routes();
         (new PaymentController($payment_engine))->register_routes();
+        (new LicenseController($this->license_manager()))->register_routes();
     }
 
     private function booking_shortcode(): BookingShortcode
@@ -86,5 +91,10 @@ class Plugin
             new SmsLogRepository(),
             new EmailNotifier()
         );
+    }
+
+    private function license_manager(): LicenseManager
+    {
+        return new LicenseManager(new GracePeriodHandler());
     }
 }
