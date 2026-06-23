@@ -7,7 +7,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Talks to the self-hosted license.nobatyar.ir server and keeps a single
+ * Talks to the self-hosted license.mynobatyar.ir server and keeps a single
  * cached nby_license row up to date. There is deliberately no domain-lock-in
  * logic here - "transferring" a license to a new domain is just calling
  * activate() again, satisfying the self-service transfer requirement
@@ -16,12 +16,12 @@ if (! defined('ABSPATH')) {
  */
 class LicenseManager
 {
-    private const SERVER_VALIDATE_URL = 'https://license.nobatyar.ir/api/v1/license/validate';
+    private const SERVER_VALIDATE_URL = 'https://license.mynobatyar.ir/api/v1/license/validate';
 
     /**
      * Placeholder shared secret for verifying the server's HMAC signature.
      * Must be overridden via the nobatyar_license_hmac_secret filter to
-     * match whatever license.nobatyar.ir actually signs responses with
+     * match whatever license.mynobatyar.ir actually signs responses with
      * once that server exists.
      */
     private const DEFAULT_HMAC_SECRET = 'nobatyar-license-hmac-placeholder';
