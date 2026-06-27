@@ -13,6 +13,17 @@
     var slotField      = form.querySelector('#nobatyar-slot');
     var messageBox     = form.querySelector('#nobatyar-booking-message');
 
+    var recurrenceEnableField = form.querySelector('#nobatyar-recurrence-enable');
+    var recurrenceFields      = form.querySelector('#nobatyar-recurrence-fields');
+    var recurrenceFrequencyField   = form.querySelector('#nobatyar-recurrence-frequency');
+    var recurrenceOccurrencesField = form.querySelector('#nobatyar-recurrence-occurrences');
+
+    if (recurrenceEnableField && recurrenceFields) {
+        recurrenceEnableField.addEventListener('change', function () {
+            recurrenceFields.hidden = !recurrenceEnableField.checked;
+        });
+    }
+
     function setMessage(text, isError) {
         messageBox.textContent = text;
         messageBox.classList.toggle('is-error', !!isError);
@@ -83,7 +94,16 @@
             customer_email:    form.querySelector('#nobatyar-customer-email').value,
         };
 
-        fetch(nobatyarBooking.restUrl + 'bookings', {
+        var isRecurring = !!(recurrenceEnableField && recurrenceEnableField.checked);
+        var endpoint     = 'bookings';
+
+        if (isRecurring) {
+            endpoint = 'bookings/recurring';
+            payload.recurrence_frequency   = recurrenceFrequencyField.value;
+            payload.recurrence_occurrences = recurrenceOccurrencesField.value;
+        }
+
+        fetch(nobatyarBooking.restUrl + endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -102,9 +122,18 @@
                     return;
                 }
 
-                setMessage('نوبت شما با موفقیت ثبت شد.', false);
+                if (isRecurring && result.data.ids) {
+                    setMessage('سری نوبت‌های تکرارشونده (' + result.data.ids.length + ' نوبت) با موفقیت ثبت شد.', false);
+                } else {
+                    setMessage('نوبت شما با موفقیت ثبت شد.', false);
+                }
+
                 form.reset();
                 resetSlots('ابتدا سرویس‌دهنده، خدمت و تاریخ را انتخاب کنید');
+
+                if (recurrenceFields) {
+                    recurrenceFields.hidden = true;
+                }
             })
             .catch(function () {
                 setMessage('ثبت نوبت با خطا مواجه شد.', true);

@@ -2,6 +2,9 @@
 
 namespace Nobatyar\Frontend\Shortcode;
 
+use Nobatyar\Booking\RecurrenceFrequency;
+use Nobatyar\License\LicenseManager;
+use Nobatyar\License\LicenseTier;
 use Nobatyar\Provider\ProviderRepository;
 use Nobatyar\Service\ServiceRepository;
 
@@ -15,11 +18,13 @@ class BookingShortcode
 
     private ProviderRepository $provider_repository;
     private ServiceRepository $service_repository;
+    private LicenseManager $license_manager;
 
-    public function __construct(ProviderRepository $provider_repository, ServiceRepository $service_repository)
+    public function __construct(ProviderRepository $provider_repository, ServiceRepository $service_repository, LicenseManager $license_manager)
     {
         $this->provider_repository = $provider_repository;
         $this->service_repository  = $service_repository;
+        $this->license_manager     = $license_manager;
     }
 
     public function register(): void
@@ -63,9 +68,15 @@ class BookingShortcode
         );
 
         wp_localize_script('nobatyar-booking-form', 'nobatyarBooking', [
-            'restUrl' => esc_url_raw(rest_url('nobatyar/v1/')),
-            'nonce'   => wp_create_nonce('wp_rest'),
+            'restUrl'         => esc_url_raw(rest_url('nobatyar/v1/')),
+            'nonce'           => wp_create_nonce('wp_rest'),
+            'recurringEnabled' => $this->is_recurring_enabled(),
         ]);
+    }
+
+    private function is_recurring_enabled(): bool
+    {
+        return $this->license_manager->is_tier_available(LicenseTier::BUSINESS);
     }
 
     private function current_page_has_shortcode(): bool
@@ -77,8 +88,10 @@ class BookingShortcode
 
     public function render(): string
     {
-        $providers = $this->provider_repository->all();
-        $services  = $this->service_repository->all();
+        $providers         = $this->provider_repository->all();
+        $services          = $this->service_repository->all();
+        $recurring_enabled = $this->is_recurring_enabled();
+        $recurrence_frequencies = RecurrenceFrequency::all();
 
         ob_start();
         include NOBATYAR_PLUGIN_DIR . 'templates/booking-form.php';

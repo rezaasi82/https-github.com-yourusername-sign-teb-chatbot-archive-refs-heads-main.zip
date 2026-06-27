@@ -2,13 +2,22 @@
 /**
  * @var array $providers
  * @var array $services
+ * @var bool $recurring_enabled
+ * @var array $recurrence_frequencies
  */
 
+use Nobatyar\Booking\RecurrenceFrequency;
 use Nobatyar\Labels\TerminologyMap;
 
 if (! defined('ABSPATH')) {
     exit;
 }
+
+$recurrence_frequency_labels = [
+    RecurrenceFrequency::WEEKLY   => __('هفتگی', 'nobatyar-booking'),
+    RecurrenceFrequency::BIWEEKLY => __('دو هفته یک‌بار', 'nobatyar-booking'),
+    RecurrenceFrequency::MONTHLY  => __('ماهانه', 'nobatyar-booking'),
+];
 ?>
 <div class="nobatyar-booking-form-wrap">
     <form id="nobatyar-booking-form" class="nobatyar-booking-form">
@@ -66,6 +75,31 @@ if (! defined('ABSPATH')) {
             <label for="nobatyar-customer-email"><?php esc_html_e('ایمیل (اختیاری)', 'nobatyar-booking'); ?></label>
             <input type="email" id="nobatyar-customer-email" name="customer_email" />
         </p>
+
+        <?php if (! empty($recurring_enabled)) : ?>
+            <p class="nobatyar-field nobatyar-recurrence-toggle">
+                <label>
+                    <input type="checkbox" id="nobatyar-recurrence-enable" name="recurrence_enable" />
+                    <?php esc_html_e('این نوبت به‌صورت تکرارشونده ثبت شود', 'nobatyar-booking'); ?>
+                </label>
+            </p>
+
+            <div id="nobatyar-recurrence-fields" class="nobatyar-recurrence-fields" hidden>
+                <p class="nobatyar-field">
+                    <label for="nobatyar-recurrence-frequency"><?php esc_html_e('الگوی تکرار', 'nobatyar-booking'); ?></label>
+                    <select id="nobatyar-recurrence-frequency" name="recurrence_frequency">
+                        <?php foreach ($recurrence_frequencies as $frequency) : ?>
+                            <option value="<?php echo esc_attr($frequency); ?>"><?php echo esc_html($recurrence_frequency_labels[$frequency] ?? $frequency); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </p>
+
+                <p class="nobatyar-field">
+                    <label for="nobatyar-recurrence-occurrences"><?php esc_html_e('تعداد نوبت‌ها', 'nobatyar-booking'); ?></label>
+                    <input type="number" id="nobatyar-recurrence-occurrences" name="recurrence_occurrences" min="2" max="52" value="4" />
+                </p>
+            </div>
+        <?php endif; ?>
 
         <p class="nobatyar-field">
             <button type="submit"><?php esc_html_e('ثبت نوبت', 'nobatyar-booking'); ?></button>

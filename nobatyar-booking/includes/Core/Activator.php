@@ -109,10 +109,14 @@ class Activator
             status ENUM('pending','confirmed','done','cancelled','no_show') DEFAULT 'pending',
             notes TEXT NULL,
             reminder_sent_at DATETIME NULL,
+            recurrence_group_id BIGINT UNSIGNED NULL,
+            recurrence_index INT UNSIGNED NULL,
+            recurrence_total INT UNSIGNED NULL,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
             INDEX idx_provider_datetime (provider_id, booking_datetime),
-            INDEX idx_status (status)
+            INDEX idx_status (status),
+            INDEX idx_recurrence_group (recurrence_group_id)
         ) {$charset_collate};";
 
         $tables[] = "CREATE TABLE {$prefix}sms_logs (
