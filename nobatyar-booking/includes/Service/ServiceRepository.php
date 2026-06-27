@@ -54,10 +54,12 @@ class ServiceRepository
             'buffer_minutes'   => $data['buffer_minutes'],
             'price'            => $data['price'],
             'deposit_amount'   => $data['deposit_amount'],
+            'capacity_min'     => max(1, (int) ($data['capacity_min'] ?? 1)),
+            'capacity_max'     => max(1, (int) ($data['capacity_max'] ?? 1)),
             'is_active'        => $data['is_active'] ? 1 : 0,
             'created_at'       => $now,
             'updated_at'       => $now,
-        ], ['%s', '%d', '%d', '%f', '%f', '%d', '%s', '%s']);
+        ], ['%s', '%d', '%d', '%f', '%f', '%d', '%d', '%d', '%s', '%s']);
 
         return (int) $wpdb->insert_id;
     }
@@ -74,11 +76,13 @@ class ServiceRepository
                 'buffer_minutes'   => $data['buffer_minutes'],
                 'price'            => $data['price'],
                 'deposit_amount'   => $data['deposit_amount'],
+                'capacity_min'     => max(1, (int) ($data['capacity_min'] ?? 1)),
+                'capacity_max'     => max(1, (int) ($data['capacity_max'] ?? 1)),
                 'is_active'        => $data['is_active'] ? 1 : 0,
                 'updated_at'       => current_time('mysql'),
             ],
             ['id' => $id],
-            ['%s', '%d', '%d', '%f', '%f', '%d', '%s'],
+            ['%s', '%d', '%d', '%f', '%f', '%d', '%d', '%d', '%s'],
             ['%d']
         );
 

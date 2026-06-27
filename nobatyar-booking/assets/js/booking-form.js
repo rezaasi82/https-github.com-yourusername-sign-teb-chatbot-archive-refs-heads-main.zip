@@ -49,6 +49,11 @@
                     var option = document.createElement('option');
                     option.value = slot.start;
                     option.textContent = slot.start.substring(11, 16);
+
+                    if (typeof slot.capacity_remaining !== 'undefined') {
+                        option.textContent += ' (' + slot.capacity_remaining + ' جای خالی)';
+                    }
+
                     slotField.appendChild(option);
                 });
 

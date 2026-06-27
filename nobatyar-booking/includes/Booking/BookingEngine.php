@@ -2,6 +2,8 @@
 
 namespace Nobatyar\Booking;
 
+use Nobatyar\License\LicenseManager;
+use Nobatyar\License\LicenseTier;
 use Nobatyar\Provider\ProviderRepository;
 use Nobatyar\Service\ServiceRepository;
 
@@ -14,15 +16,35 @@ class BookingEngine
     private BookingRepository $booking_repository;
     private ProviderRepository $provider_repository;
     private ServiceRepository $service_repository;
+    private LicenseManager $license_manager;
 
     public function __construct(
         BookingRepository $booking_repository,
         ProviderRepository $provider_repository,
-        ServiceRepository $service_repository
+        ServiceRepository $service_repository,
+        LicenseManager $license_manager
     ) {
         $this->booking_repository  = $booking_repository;
         $this->provider_repository = $provider_repository;
         $this->service_repository  = $service_repository;
+        $this->license_manager     = $license_manager;
+    }
+
+    /**
+     * capacity_max > 1 (Group Booking) is Business-tier — a site that set it
+     * while on Business and then downgraded/lapsed must not keep accepting
+     * extra attendees at write time, even though the stored column still
+     * says otherwise.
+     */
+    private function effective_capacity_max(array $service): int
+    {
+        $capacity_max = max(1, (int) ($service['capacity_max'] ?? 1));
+
+        if ($capacity_max > 1 && ! $this->license_manager->is_tier_available(LicenseTier::BUSINESS)) {
+            return 1;
+        }
+
+        return $capacity_max;
     }
 
     /**
@@ -65,7 +87,9 @@ class BookingEngine
         $slot_minutes = (int) $service['duration_minutes'] + (int) $service['buffer_minutes'];
         $end          = $start->modify("+{$slot_minutes} minutes");
 
-        if ($this->booking_repository->has_conflict($provider_id, $start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s'))) {
+        $capacity_max = $this->effective_capacity_max($service);
+
+        if ($this->booking_repository->has_conflict($provider_id, $service_id, $start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s'), $capacity_max)) {
             return new \WP_Error('nobatyar_booking_conflict', __('این بازه زمانی برای سرویس‌دهنده انتخاب‌شده قبلاً رزرو شده است.', 'nobatyar-booking'), ['status' => 409]);
         }
 

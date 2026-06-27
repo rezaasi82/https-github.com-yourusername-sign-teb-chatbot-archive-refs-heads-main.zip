@@ -75,7 +75,7 @@ class Plugin
         $provider_repository = new ProviderRepository();
         $service_repository  = new ServiceRepository();
 
-        $booking_engine = new BookingEngine($booking_repository, $provider_repository, $service_repository);
+        $booking_engine = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager());
         $slot_calculator = new SlotCalculator(new AvailabilityManager(), $booking_repository);
         $payment_engine = new PaymentEngine(new TransactionRepository(), $booking_repository, $service_repository);
 
@@ -116,13 +116,13 @@ class Plugin
             $booking_repository,
             $provider_repository,
             $service_repository,
-            new BookingEngine($booking_repository, $provider_repository, $service_repository)
+            new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager())
         );
 
         return new AdminMenu(
             $list_view,
             new CalendarView($booking_repository),
-            new ServicesPage($service_repository),
+            new ServicesPage($service_repository, $this->license_manager()),
             new ProvidersPage($provider_repository, $service_repository),
             new ReportGenerator($booking_repository, new TransactionRepository()),
             new SettingsPage($this->license_manager())

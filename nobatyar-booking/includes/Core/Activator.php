@@ -30,7 +30,13 @@ class Activator
         }
     }
 
-    private static function create_tables(): void
+    /**
+     * Public so Migrator can re-run the (now-extended) table definitions on
+     * upgrade — dbDelta() only adds missing columns/tables, it never drops
+     * or truncates existing data, so this is safe to call on a site that
+     * already has live bookings.
+     */
+    public static function create_tables(): void
     {
         global $wpdb;
 
@@ -61,6 +67,8 @@ class Activator
             buffer_minutes INT NOT NULL DEFAULT 0,
             price DECIMAL(12,2) NULL,
             deposit_amount DECIMAL(12,2) NULL,
+            capacity_min INT UNSIGNED NOT NULL DEFAULT 1,
+            capacity_max INT UNSIGNED NOT NULL DEFAULT 1,
             is_active TINYINT(1) DEFAULT 1,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL
