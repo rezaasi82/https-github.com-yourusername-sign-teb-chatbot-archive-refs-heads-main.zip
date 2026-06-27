@@ -105,6 +105,31 @@ class LicenseManager
         return $row['status'] ?? LicenseStatus::INACTIVE;
     }
 
+    public function current_tier(): string
+    {
+        $row = $this->current_row();
+
+        return $row['tier'] ?? LicenseTier::FREE;
+    }
+
+    /**
+     * Gates premium features (Group Booking, Packages, Recurring, Coupons,
+     * Gift Cards) by tier. Mirrors GracePeriodHandler's soft-lock semantics
+     * for SMS/payment: once a license is in GRACE or LOCKED, premium-tier
+     * features go dark right alongside them rather than staying on with a
+     * stale cached tier. A site with no license at all (INACTIVE, no row)
+     * naturally resolves to LicenseTier::FREE below and so never meets a
+     * Pro/Business minimum.
+     */
+    public function is_tier_available(string $minimum_tier): bool
+    {
+        if ($this->grace_period_handler->is_feature_locked($this->current_status())) {
+            return false;
+        }
+
+        return LicenseTier::meets($this->current_tier(), $minimum_tier);
+    }
+
     public function current_row(): ?array
     {
         global $wpdb;

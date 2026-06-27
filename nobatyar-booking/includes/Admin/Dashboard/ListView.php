@@ -58,6 +58,15 @@ class ListView
         $providers = $this->index_by_id($this->provider_repository->all(false));
         $services  = $this->index_by_id($this->service_repository->all(false));
 
+        $group_totals = [];
+
+        foreach ($bookings as $booking) {
+            $key                 = $this->group_key($booking);
+            $group_totals[$key] = ($group_totals[$key] ?? 0) + 1;
+        }
+
+        $group_seen = [];
+
         ob_start();
         ?>
         <div class="wrap nobatyar-admin-list">
@@ -76,8 +85,20 @@ class ListView
                 </thead>
                 <tbody>
                     <?php foreach ($bookings as $booking) : ?>
-                        <tr>
-                            <td><?php echo esc_html($booking['customer_name']); ?></td>
+                        <?php
+                        $service_row = $services[(int) $booking['service_id']] ?? null;
+                        $is_group    = $service_row && (int) $service_row['capacity_max'] > 1;
+                        $group_key   = $this->group_key($booking);
+
+                        $group_seen[$group_key] = ($group_seen[$group_key] ?? 0) + 1;
+                        ?>
+                        <tr class="<?php echo $is_group ? 'nby-group-row' : ''; ?>">
+                            <td>
+                                <?php echo esc_html($booking['customer_name']); ?>
+                                <?php if ($is_group) : ?>
+                                    <br><span class="description"><?php echo esc_html(sprintf(__('شرکت‌کننده %1$d از %2$d', 'nobatyar-booking'), $group_seen[$group_key], $group_totals[$group_key])); ?></span>
+                                <?php endif; ?>
+                            </td>
                             <td><?php echo esc_html($providers[(int) $booking['provider_id']]['name'] ?? ''); ?></td>
                             <td><?php echo esc_html($services[(int) $booking['service_id']]['name'] ?? ''); ?></td>
                             <td><?php echo esc_html(JalaliConverter::gregorian_to_jalali_string(substr($booking['booking_datetime'], 0, 10))); ?></td>
@@ -102,6 +123,16 @@ class ListView
         <?php
 
         return ob_get_clean();
+    }
+
+    /**
+     * Identifies attendees of the same group-booking slot — same provider,
+     * service, and start time — so they can be displayed as one block
+     * ("attendee 2 of 5") while each keeps its own status-change form.
+     */
+    private function group_key(array $booking): string
+    {
+        return $booking['provider_id'] . '|' . $booking['service_id'] . '|' . $booking['booking_datetime'];
     }
 
     private function index_by_id(array $rows): array

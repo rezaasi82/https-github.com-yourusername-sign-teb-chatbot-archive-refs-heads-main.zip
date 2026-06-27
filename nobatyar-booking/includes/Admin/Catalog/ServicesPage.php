@@ -3,6 +3,8 @@
 namespace Nobatyar\Admin\Catalog;
 
 use Nobatyar\Labels\TerminologyMap;
+use Nobatyar\License\LicenseManager;
+use Nobatyar\License\LicenseTier;
 use Nobatyar\Service\ServiceRepository;
 
 if (! defined('ABSPATH')) {
@@ -12,16 +14,20 @@ if (! defined('ABSPATH')) {
 /**
  * Free-tier Service CRUD. Creating/editing/deleting services must never be
  * gated by license status (CLAUDE.md non-negotiable #4) - only SMS and
- * online payment are Pro/Business features, so this page never touches
- * GracePeriodHandler/LicenseManager.
+ * online payment are Pro/Business features. The one exception is the
+ * Group Booking capacity_max field: a capacity above 1 is a Business-tier
+ * feature, so it alone is clamped via LicenseManager while every other
+ * field on this page (name, duration, price, active flag) stays ungated.
  */
 class ServicesPage
 {
     private ServiceRepository $service_repository;
+    private LicenseManager $license_manager;
 
-    public function __construct(ServiceRepository $service_repository)
+    public function __construct(ServiceRepository $service_repository, LicenseManager $license_manager)
     {
         $this->service_repository = $service_repository;
+        $this->license_manager    = $license_manager;
     }
 
     public function handle_submission(): void
@@ -59,12 +65,22 @@ class ServicesPage
         $price          = '' === ($_POST['price'] ?? '') ? null : (float) $_POST['price'];
         $deposit_amount = '' === ($_POST['deposit_amount'] ?? '') ? null : (float) $_POST['deposit_amount'];
 
+        $capacity_min = max(1, absint($_POST['capacity_min'] ?? 1));
+        $capacity_max = max($capacity_min, absint($_POST['capacity_max'] ?? 1));
+
+        if ($capacity_max > 1 && ! $this->license_manager->is_tier_available(LicenseTier::BUSINESS)) {
+            $capacity_min = 1;
+            $capacity_max = 1;
+        }
+
         $data = [
             'name'             => $name,
             'duration_minutes' => max(1, absint($_POST['duration_minutes'] ?? 30)),
             'buffer_minutes'   => absint($_POST['buffer_minutes'] ?? 0),
             'price'            => $price,
             'deposit_amount'   => $deposit_amount,
+            'capacity_min'     => $capacity_min,
+            'capacity_max'     => $capacity_max,
             'is_active'        => ! empty($_POST['is_active']),
         ];
 
@@ -103,6 +119,7 @@ class ServicesPage
                         <th><?php esc_html_e('نام', 'nobatyar-booking'); ?></th>
                         <th><?php esc_html_e('مدت (دقیقه)', 'nobatyar-booking'); ?></th>
                         <th><?php esc_html_e('قیمت', 'nobatyar-booking'); ?></th>
+                        <th><?php esc_html_e('ظرفیت گروهی', 'nobatyar-booking'); ?></th>
                         <th><?php esc_html_e('وضعیت', 'nobatyar-booking'); ?></th>
                         <th><?php esc_html_e('عملیات', 'nobatyar-booking'); ?></th>
                     </tr>
@@ -113,6 +130,7 @@ class ServicesPage
                             <td><?php echo esc_html($service['name']); ?></td>
                             <td><?php echo esc_html($service['duration_minutes']); ?></td>
                             <td><?php echo esc_html($service['price'] ?? '-'); ?></td>
+                            <td><?php echo (int) $service['capacity_max'] > 1 ? esc_html($service['capacity_max']) : '-'; ?></td>
                             <td><?php echo $service['is_active'] ? esc_html__('فعال', 'nobatyar-booking') : esc_html__('غیرفعال', 'nobatyar-booking'); ?></td>
                             <td>
                                 <a href="<?php echo esc_url(add_query_arg(['edit' => $service['id']])); ?>"><?php esc_html_e('ویرایش', 'nobatyar-booking'); ?></a>
@@ -127,7 +145,7 @@ class ServicesPage
                         </tr>
                     <?php endforeach; ?>
                     <?php if (! $services) : ?>
-                        <tr><td colspan="5"><?php echo esc_html(sprintf(__('هنوز %s ثبت نشده است.', 'nobatyar-booking'), $label)); ?></td></tr>
+                        <tr><td colspan="6"><?php echo esc_html(sprintf(__('هنوز %s ثبت نشده است.', 'nobatyar-booking'), $label)); ?></td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -139,7 +157,8 @@ class ServicesPage
 
     private function render_form(?array $editing): string
     {
-        $is_active_checked = null === $editing || ! empty($editing['is_active']);
+        $is_active_checked  = null === $editing || ! empty($editing['is_active']);
+        $group_booking_available = $this->license_manager->is_tier_available(LicenseTier::BUSINESS);
 
         ob_start();
         ?>
@@ -167,6 +186,17 @@ class ServicesPage
             <p>
                 <label><?php esc_html_e('مبلغ بیعانه', 'nobatyar-booking'); ?></label>
                 <input type="number" step="0.01" name="deposit_amount" value="<?php echo esc_attr($editing['deposit_amount'] ?? ''); ?>">
+            </p>
+            <p>
+                <label><?php esc_html_e('حداقل ظرفیت (نوبت گروهی)', 'nobatyar-booking'); ?></label>
+                <input type="number" name="capacity_min" min="1" value="<?php echo esc_attr($editing['capacity_min'] ?? 1); ?>" <?php disabled(! $group_booking_available); ?>>
+            </p>
+            <p>
+                <label><?php esc_html_e('حداکثر ظرفیت (نوبت گروهی)', 'nobatyar-booking'); ?></label>
+                <input type="number" name="capacity_max" min="1" value="<?php echo esc_attr($editing['capacity_max'] ?? 1); ?>" <?php disabled(! $group_booking_available); ?>>
+                <?php if (! $group_booking_available) : ?>
+                    <br><span class="description"><?php esc_html_e('نوبت گروهی ویژگی پلن Business است.', 'nobatyar-booking'); ?></span>
+                <?php endif; ?>
             </p>
             <p>
                 <label>

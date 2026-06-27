@@ -55,11 +55,22 @@ class SlotCalculator
                     break;
                 }
 
-                if ($cursor >= $now && ! $this->overlaps($cursor, $slot_end, $occupied)) {
-                    $slots[] = [
-                        'start' => $cursor->format('Y-m-d H:i:s'),
-                        'end'   => $slot_end->format('Y-m-d H:i:s'),
-                    ];
+                if ($cursor >= $now) {
+                    $remaining = $this->remaining_capacity($cursor, $slot_end, $occupied, $service);
+
+                    if ($remaining > 0) {
+                        $slot = [
+                            'start' => $cursor->format('Y-m-d H:i:s'),
+                            'end'   => $slot_end->format('Y-m-d H:i:s'),
+                        ];
+
+                        if ($service->is_group_bookable()) {
+                            $slot['capacity_remaining'] = $remaining;
+                            $slot['capacity_max']       = $service->capacity_max;
+                        }
+
+                        $slots[] = $slot;
+                    }
                 }
 
                 $cursor = $cursor->modify("+{$granularity} minutes");
@@ -78,20 +89,41 @@ class SlotCalculator
             $start = new \DateTimeImmutable($row['booking_datetime'], $timezone);
             $end   = $start->modify('+' . (int) $row['occupied_minutes'] . ' minutes');
 
-            $intervals[] = [$start, $end];
+            $intervals[] = [
+                'start'      => $start,
+                'end'        => $end,
+                'service_id' => (int) $row['service_id'],
+            ];
         }
 
         return $intervals;
     }
 
-    private function overlaps(\DateTimeImmutable $start, \DateTimeImmutable $end, array $intervals): bool
+    /**
+     * How many more attendees a candidate [start, end) slot can take for
+     * $service. Any overlapping interval that ISN'T the exact same
+     * (service_id, start) as the candidate fully blocks the slot (returns
+     * 0) — only bookings at the identical group slot count against
+     * capacity instead of blocking outright.
+     */
+    private function remaining_capacity(\DateTimeImmutable $start, \DateTimeImmutable $end, array $intervals, Service $service): int
     {
-        foreach ($intervals as [$occupied_start, $occupied_end]) {
-            if ($start < $occupied_end && $end > $occupied_start) {
-                return true;
+        $identical_count = 0;
+
+        foreach ($intervals as $interval) {
+            if ($start >= $interval['end'] || $end <= $interval['start']) {
+                continue;
             }
+
+            $is_identical_slot = $interval['service_id'] === $service->id && $interval['start']->format('Y-m-d H:i:s') === $start->format('Y-m-d H:i:s');
+
+            if (! $is_identical_slot) {
+                return 0;
+            }
+
+            $identical_count++;
         }
 
-        return false;
+        return max(0, $service->capacity_max - $identical_count);
     }
 }

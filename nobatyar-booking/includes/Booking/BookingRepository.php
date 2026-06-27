@@ -119,8 +119,16 @@ class BookingRepository
      * requested window when its [start, end) interval overlaps [start, end).
      * Booking end times aren't stored, so they're derived from the service's
      * duration + buffer at query time.
+     *
+     * Group Booking exception: bookings at the exact identical
+     * (service_id, booking_datetime) as the requested slot don't block on
+     * their own — they only count against $capacity_max, since they
+     * represent other attendees of the same group slot, not a different
+     * occupant of the provider's time. Any other overlapping booking (a
+     * different service, or a partially-overlapping time) still fully
+     * blocks regardless of capacity.
      */
-    public function has_conflict(int $provider_id, string $start, string $end, ?int $exclude_booking_id = null): bool
+    public function has_conflict(int $provider_id, int $service_id, string $start, string $end, int $capacity_max = 1, ?int $exclude_booking_id = null): bool
     {
         global $wpdb;
 
@@ -129,18 +137,47 @@ class BookingRepository
                 WHERE b.provider_id = %d
                 AND b.status IN ('" . implode("','", BookingStatus::ACTIVE) . "')
                 AND b.booking_datetime < %s
-                AND DATE_ADD(b.booking_datetime, INTERVAL (s.duration_minutes + s.buffer_minutes) MINUTE) > %s";
+                AND DATE_ADD(b.booking_datetime, INTERVAL (s.duration_minutes + s.buffer_minutes) MINUTE) > %s
+                AND NOT (b.service_id = %d AND b.booking_datetime = %s)";
 
-        $params = [$provider_id, $end, $start];
+        $params = [$provider_id, $end, $start, $service_id, $start];
 
         if ($exclude_booking_id !== null) {
             $sql      .= ' AND b.id != %d';
             $params[] = $exclude_booking_id;
         }
 
-        $count = (int) $wpdb->get_var($wpdb->prepare($sql, $params));
+        $blocking_count = (int) $wpdb->get_var($wpdb->prepare($sql, $params));
 
-        return $count > 0;
+        if ($blocking_count > 0) {
+            return true;
+        }
+
+        return $this->count_active_at_exact_slot($provider_id, $service_id, $start, $exclude_booking_id) >= max(1, $capacity_max);
+    }
+
+    /**
+     * Active bookings already occupying the exact same (provider, service,
+     * start time) — i.e. other attendees of the same group slot.
+     */
+    private function count_active_at_exact_slot(int $provider_id, int $service_id, string $start, ?int $exclude_booking_id = null): int
+    {
+        global $wpdb;
+
+        $sql = "SELECT COUNT(*) FROM {$this->table()}
+                WHERE provider_id = %d
+                AND service_id = %d
+                AND booking_datetime = %s
+                AND status IN ('" . implode("','", BookingStatus::ACTIVE) . "')";
+
+        $params = [$provider_id, $service_id, $start];
+
+        if ($exclude_booking_id !== null) {
+            $sql      .= ' AND id != %d';
+            $params[] = $exclude_booking_id;
+        }
+
+        return (int) $wpdb->get_var($wpdb->prepare($sql, $params));
     }
 
     /**
@@ -152,7 +189,7 @@ class BookingRepository
         global $wpdb;
 
         $sql = $wpdb->prepare(
-            "SELECT b.booking_datetime, (s.duration_minutes + s.buffer_minutes) AS occupied_minutes
+            "SELECT b.service_id, b.booking_datetime, (s.duration_minutes + s.buffer_minutes) AS occupied_minutes
             FROM {$this->table()} b
             INNER JOIN {$this->services_table()} s ON b.service_id = s.id
             WHERE b.provider_id = %d
