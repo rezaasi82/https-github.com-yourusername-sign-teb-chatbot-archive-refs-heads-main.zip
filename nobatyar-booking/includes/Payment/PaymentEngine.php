@@ -3,6 +3,8 @@
 namespace Nobatyar\Payment;
 
 use Nobatyar\Booking\BookingRepository;
+use Nobatyar\Coupons\Coupon;
+use Nobatyar\Coupons\CouponRepository;
 use Nobatyar\Service\ServiceRepository;
 
 if (! defined('ABSPATH')) {
@@ -20,15 +22,18 @@ class PaymentEngine
     private TransactionRepository $transaction_repository;
     private BookingRepository $booking_repository;
     private ServiceRepository $service_repository;
+    private CouponRepository $coupon_repository;
 
     public function __construct(
         TransactionRepository $transaction_repository,
         BookingRepository $booking_repository,
-        ServiceRepository $service_repository
+        ServiceRepository $service_repository,
+        CouponRepository $coupon_repository
     ) {
         $this->transaction_repository = $transaction_repository;
         $this->booking_repository     = $booking_repository;
         $this->service_repository     = $service_repository;
+        $this->coupon_repository      = $coupon_repository;
     }
 
     /**
@@ -48,7 +53,7 @@ class PaymentEngine
             return new \WP_Error('nobatyar_invalid_service', __('خدمت مرتبط با این نوبت معتبر نیست.', 'nobatyar-booking'), ['status' => 422]);
         }
 
-        $amount = $this->resolve_amount($service);
+        $amount = $this->resolve_amount($service, $booking);
 
         if (null === $amount) {
             return new \WP_Error('nobatyar_no_payment_required', __('برای این نوبت پرداختی تعریف نشده است.', 'nobatyar-booking'), ['status' => 422]);
@@ -142,19 +147,40 @@ class PaymentEngine
         return new \WP_Error('nobatyar_payment_failed', $result->error_message() ?? __('پرداخت ناموفق بود.', 'nobatyar-booking'), ['status' => 402]);
     }
 
-    private function resolve_amount(array $service): ?float
+    /**
+     * The base amount comes from the service's deposit/price as before; if the
+     * booking carries a coupon_id (already validated and counted as used at
+     * booking-creation time by BookingEngine::book()), the discount is applied
+     * on top via the same Coupon::calculate_discount() math CouponEngine::validate()
+     * uses for its preview, so the two never disagree on the final amount.
+     */
+    private function resolve_amount(array $service, array $booking): ?float
     {
         $deposit = null !== $service['deposit_amount'] ? (float) $service['deposit_amount'] : null;
         $price   = null !== $service['price'] ? (float) $service['price'] : null;
 
+        $base = null;
+
         if (null !== $deposit && $deposit > 0) {
-            return $deposit;
+            $base = $deposit;
+        } elseif (null !== $price && $price > 0) {
+            $base = $price;
         }
 
-        if (null !== $price && $price > 0) {
-            return $price;
+        if (null === $base) {
+            return null;
         }
 
-        return null;
+        if (empty($booking['coupon_id'])) {
+            return $base;
+        }
+
+        $coupon = $this->coupon_repository->find((int) $booking['coupon_id']);
+
+        if (! $coupon) {
+            return $base;
+        }
+
+        return max(0.0, $base - Coupon::calculate_discount($coupon, $base));
     }
 }

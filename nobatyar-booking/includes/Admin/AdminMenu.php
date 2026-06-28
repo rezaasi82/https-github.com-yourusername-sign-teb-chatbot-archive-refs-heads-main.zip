@@ -4,6 +4,7 @@ namespace Nobatyar\Admin;
 
 use Nobatyar\Admin\Catalog\ProvidersPage;
 use Nobatyar\Admin\Catalog\ServicesPage;
+use Nobatyar\Admin\Coupons\CouponsPage;
 use Nobatyar\Admin\Dashboard\CalendarView;
 use Nobatyar\Admin\Dashboard\ListView;
 use Nobatyar\Admin\Packages\PackagesPage;
@@ -24,6 +25,7 @@ class AdminMenu
     public const REPORTS_SLUG       = 'nobatyar-booking-reports';
     public const SETTINGS_SLUG      = 'nobatyar-booking-settings';
     public const PACKAGES_SLUG      = 'nobatyar-booking-packages';
+    public const COUPONS_SLUG       = 'nobatyar-booking-coupons';
 
     private ListView $list_view;
     private CalendarView $calendar_view;
@@ -32,6 +34,7 @@ class AdminMenu
     private ReportGenerator $report_generator;
     private SettingsPage $settings_page;
     private PackagesPage $packages_page;
+    private CouponsPage $coupons_page;
 
     public function __construct(
         ListView $list_view,
@@ -40,7 +43,8 @@ class AdminMenu
         ProvidersPage $providers_page,
         ReportGenerator $report_generator,
         SettingsPage $settings_page,
-        PackagesPage $packages_page
+        PackagesPage $packages_page,
+        CouponsPage $coupons_page
     ) {
         $this->list_view        = $list_view;
         $this->calendar_view    = $calendar_view;
@@ -49,6 +53,7 @@ class AdminMenu
         $this->report_generator = $report_generator;
         $this->settings_page    = $settings_page;
         $this->packages_page    = $packages_page;
+        $this->coupons_page     = $coupons_page;
     }
 
     public function register(): void
@@ -60,6 +65,7 @@ class AdminMenu
         add_action('admin_init', [$this->providers_page, 'handle_submission']);
         add_action('admin_init', [$this->settings_page, 'handle_submission']);
         add_action('admin_init', [$this->packages_page, 'handle_submission']);
+        add_action('admin_init', [$this->coupons_page, 'handle_submission']);
     }
 
     public function register_menu(): void
@@ -80,6 +86,7 @@ class AdminMenu
         add_submenu_page(self::MENU_SLUG, TerminologyMap::get('provider'), TerminologyMap::get('provider'), 'manage_options', self::PROVIDERS_SLUG, [$this, 'render_providers']);
         add_submenu_page(self::MENU_SLUG, __('گزارش‌ها', 'nobatyar-booking'), __('گزارش‌ها', 'nobatyar-booking'), 'manage_options', self::REPORTS_SLUG, [$this, 'render_reports']);
         add_submenu_page(self::MENU_SLUG, __('پکیج‌ها', 'nobatyar-booking'), __('پکیج‌ها', 'nobatyar-booking'), 'manage_options', self::PACKAGES_SLUG, [$this, 'render_packages']);
+        add_submenu_page(self::MENU_SLUG, __('کدهای تخفیف', 'nobatyar-booking'), __('کدهای تخفیف', 'nobatyar-booking'), 'manage_options', self::COUPONS_SLUG, [$this, 'render_coupons']);
         add_submenu_page(self::MENU_SLUG, __('تنظیمات', 'nobatyar-booking'), __('تنظیمات', 'nobatyar-booking'), 'manage_options', self::SETTINGS_SLUG, [$this, 'render_settings']);
     }
 
@@ -130,6 +137,13 @@ class AdminMenu
         $editing_id = isset($_GET['edit']) ? absint($_GET['edit']) : null;
 
         echo $this->packages_page->render($editing_id ?: null);
+    }
+
+    public function render_coupons(): void
+    {
+        $editing_id = isset($_GET['edit']) ? absint($_GET['edit']) : null;
+
+        echo $this->coupons_page->render($editing_id ?: null);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Nobatyar\Booking;
 
+use Nobatyar\Coupons\CouponEngine;
 use Nobatyar\License\LicenseManager;
 use Nobatyar\License\LicenseTier;
 use Nobatyar\Provider\ProviderRepository;
@@ -20,17 +21,20 @@ class BookingEngine
     private ProviderRepository $provider_repository;
     private ServiceRepository $service_repository;
     private LicenseManager $license_manager;
+    private CouponEngine $coupon_engine;
 
     public function __construct(
         BookingRepository $booking_repository,
         ProviderRepository $provider_repository,
         ServiceRepository $service_repository,
-        LicenseManager $license_manager
+        LicenseManager $license_manager,
+        CouponEngine $coupon_engine
     ) {
         $this->booking_repository  = $booking_repository;
         $this->provider_repository = $provider_repository;
         $this->service_repository  = $service_repository;
         $this->license_manager     = $license_manager;
+        $this->coupon_engine       = $coupon_engine;
     }
 
     /**
@@ -95,7 +99,8 @@ class BookingEngine
 
     /**
      * @param array $args provider_id, service_id, booking_datetime ('Y-m-d H:i:s'),
-     *                     customer_name, customer_phone, customer_email?, notes?
+     *                     customer_name, customer_phone, customer_email?, notes?,
+     *                     coupon_code?
      * @return int|\WP_Error booking id on success
      */
     public function book(array $args)
@@ -126,6 +131,23 @@ class BookingEngine
             return new \WP_Error('nobatyar_booking_conflict', __('این بازه زمانی برای سرویس‌دهنده انتخاب‌شده قبلاً رزرو شده است.', 'nobatyar-booking'), ['status' => 409]);
         }
 
+        $coupon_id   = null;
+        $coupon_code = trim((string) ($args['coupon_code'] ?? ''));
+
+        if ('' !== $coupon_code) {
+            $amount = null !== $service['deposit_amount'] && (float) $service['deposit_amount'] > 0
+                ? (float) $service['deposit_amount']
+                : (null !== $service['price'] ? (float) $service['price'] : null);
+
+            $coupon = $this->coupon_engine->validate($coupon_code, $service_id, $amount);
+
+            if (is_wp_error($coupon)) {
+                return $coupon;
+            }
+
+            $coupon_id = (int) $coupon['id'];
+        }
+
         $booking_id = $this->booking_repository->create([
             'provider_id'      => $provider_id,
             'service_id'       => $service_id,
@@ -135,6 +157,11 @@ class BookingEngine
             'booking_datetime' => $start->format('Y-m-d H:i:s'),
             'notes'            => $args['notes'] ?? null,
         ]);
+
+        if (null !== $coupon_id) {
+            $this->booking_repository->set_coupon_id($booking_id, $coupon_id);
+            $this->coupon_engine->mark_used($coupon_id);
+        }
 
         do_action('nobatyar_booking_created', $booking_id);
 

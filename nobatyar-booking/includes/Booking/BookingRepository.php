@@ -90,10 +90,11 @@ class BookingRepository
                 'recurrence_group_id' => $data['recurrence_group_id'] ?? null,
                 'recurrence_index'    => $data['recurrence_index'] ?? null,
                 'recurrence_total'    => $data['recurrence_total'] ?? null,
+                'coupon_id'           => $data['coupon_id'] ?? null,
                 'created_at'          => $now,
                 'updated_at'          => $now,
             ],
-            ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s']
+            ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s', '%s']
         );
 
         return (int) $wpdb->insert_id;
@@ -121,6 +122,18 @@ class BookingRepository
         global $wpdb;
 
         $wpdb->update($this->table(), ['package_purchase_id' => $purchase_id], ['id' => $booking_id], ['%d'], ['%d']);
+    }
+
+    /**
+     * Threaded through as a follow-up update (mirrors set_recurrence_group_id
+     * and set_package_purchase_id) since the coupon, once validated, is
+     * attached after the booking row already exists.
+     */
+    public function set_coupon_id(int $booking_id, int $coupon_id): void
+    {
+        global $wpdb;
+
+        $wpdb->update($this->table(), ['coupon_id' => $coupon_id], ['id' => $booking_id], ['%d'], ['%d']);
     }
 
     public function find_by_recurrence_group(int $group_id): array

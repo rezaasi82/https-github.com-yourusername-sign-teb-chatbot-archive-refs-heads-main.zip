@@ -113,12 +113,14 @@ class Activator
             recurrence_index INT UNSIGNED NULL,
             recurrence_total INT UNSIGNED NULL,
             package_purchase_id BIGINT UNSIGNED NULL,
+            coupon_id BIGINT UNSIGNED NULL,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
             INDEX idx_provider_datetime (provider_id, booking_datetime),
             INDEX idx_status (status),
             INDEX idx_recurrence_group (recurrence_group_id),
-            INDEX idx_package_purchase (package_purchase_id)
+            INDEX idx_package_purchase (package_purchase_id),
+            INDEX idx_coupon (coupon_id)
         ) {$charset_collate};";
 
         $tables[] = "CREATE TABLE {$prefix}packages (
@@ -148,6 +150,24 @@ class Activator
             updated_at DATETIME NOT NULL,
             INDEX idx_package (package_id),
             INDEX idx_customer_phone (customer_phone)
+        ) {$charset_collate};";
+
+        $tables[] = "CREATE TABLE {$prefix}coupons (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            code VARCHAR(50) NOT NULL,
+            discount_type ENUM('percent','fixed') NOT NULL DEFAULT 'percent',
+            discount_value DECIMAL(12,2) NOT NULL,
+            service_id BIGINT UNSIGNED NULL,
+            max_uses INT UNSIGNED NULL,
+            used_count INT UNSIGNED NOT NULL DEFAULT 0,
+            valid_from DATETIME NULL,
+            valid_until DATETIME NULL,
+            min_amount DECIMAL(12,2) NULL,
+            is_active TINYINT(1) DEFAULT 1,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            UNIQUE KEY uniq_code (code),
+            INDEX idx_service (service_id)
         ) {$charset_collate};";
 
         $tables[] = "CREATE TABLE {$prefix}sms_logs (

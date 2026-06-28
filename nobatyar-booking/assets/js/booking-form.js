@@ -24,6 +24,68 @@
         });
     }
 
+    var couponCodeField   = form.querySelector('#nobatyar-coupon-code');
+    var couponApplyBtn    = form.querySelector('#nobatyar-coupon-apply-btn');
+    var couponResultField = form.querySelector('#nobatyar-coupon-result');
+    var appliedCouponCode = '';
+
+    function resetCouponResult(text, isError) {
+        if (!couponResultField) {
+            return;
+        }
+
+        couponResultField.textContent = text || '';
+        couponResultField.classList.toggle('is-error', !!isError);
+    }
+
+    if (couponApplyBtn && couponCodeField) {
+        couponApplyBtn.addEventListener('click', function () {
+            var code      = couponCodeField.value.trim();
+            var serviceId = serviceField.value;
+
+            appliedCouponCode = '';
+
+            if (!code) {
+                resetCouponResult('کد تخفیف را وارد کنید.', true);
+                return;
+            }
+
+            if (!serviceId) {
+                resetCouponResult('ابتدا خدمت را انتخاب کنید.', true);
+                return;
+            }
+
+            resetCouponResult('در حال بررسی...', false);
+
+            var url = nobatyarBooking.restUrl + 'coupons/validate?code=' + encodeURIComponent(code) +
+                '&service_id=' + encodeURIComponent(serviceId);
+
+            fetch(url, { headers: { 'X-WP-Nonce': nobatyarBooking.nonce } })
+                .then(function (response) {
+                    return response.json().then(function (data) {
+                        return { ok: response.ok, data: data };
+                    });
+                })
+                .then(function (result) {
+                    if (!result.ok) {
+                        resetCouponResult(result.data.message || 'کد تخفیف معتبر نیست.', true);
+                        return;
+                    }
+
+                    appliedCouponCode = code;
+
+                    var discountLabel = result.data.discount_type === 'percent'
+                        ? (result.data.discount_value + '%')
+                        : result.data.discount_value;
+
+                    resetCouponResult('کد تخفیف اعمال شد (' + discountLabel + ').', false);
+                })
+                .catch(function () {
+                    resetCouponResult('خطا در بررسی کد تخفیف.', true);
+                });
+        });
+    }
+
     var usePackageField     = form.querySelector('#nobatyar-use-package');
     var packageFields        = form.querySelector('#nobatyar-package-fields');
     var packageLookupBtn     = form.querySelector('#nobatyar-package-lookup-btn');
@@ -195,6 +257,10 @@
                 customer_email:    form.querySelector('#nobatyar-customer-email').value,
             };
 
+            if (appliedCouponCode) {
+                payload.coupon_code = appliedCouponCode;
+            }
+
             if (isRecurring) {
                 endpoint = 'bookings/recurring';
                 payload.recurrence_frequency   = recurrenceFrequencyField.value;
@@ -230,6 +296,8 @@
                 form.reset();
                 resetSlots('ابتدا سرویس‌دهنده، خدمت و تاریخ را انتخاب کنید');
                 serviceField.disabled = false;
+                appliedCouponCode = '';
+                resetCouponResult('', false);
 
                 if (recurrenceFields) {
                     recurrenceFields.hidden = true;

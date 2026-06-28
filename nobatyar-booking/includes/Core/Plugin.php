@@ -10,9 +10,12 @@ use Nobatyar\Admin\Dashboard\ListView;
 use Nobatyar\Admin\Packages\PackagesPage;
 use Nobatyar\Admin\Reports\ReportGenerator;
 use Nobatyar\Admin\Settings\SettingsPage;
+use Nobatyar\Admin\Coupons\CouponsPage;
 use Nobatyar\Booking\BookingEngine;
 use Nobatyar\Booking\BookingRepository;
 use Nobatyar\Booking\SlotCalculator;
+use Nobatyar\Coupons\CouponEngine;
+use Nobatyar\Coupons\CouponRepository;
 use Nobatyar\Frontend\Shortcode\BookingShortcode;
 use Nobatyar\Frontend\Shortcode\PackagesShortcode;
 use Nobatyar\License\GracePeriodHandler;
@@ -28,6 +31,7 @@ use Nobatyar\Provider\AvailabilityManager;
 use Nobatyar\Provider\ProviderRepository;
 use Nobatyar\Rest\Controllers\AvailabilityController;
 use Nobatyar\Rest\Controllers\BookingController;
+use Nobatyar\Rest\Controllers\CouponController;
 use Nobatyar\Rest\Controllers\LicenseController;
 use Nobatyar\Rest\Controllers\PackageController;
 use Nobatyar\Rest\Controllers\PaymentController;
@@ -81,17 +85,20 @@ class Plugin
         $provider_repository = new ProviderRepository();
         $service_repository  = new ServiceRepository();
         $package_repository  = new PackageRepository();
+        $coupon_repository   = new CouponRepository();
 
-        $booking_engine = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager());
+        $coupon_engine   = new CouponEngine($coupon_repository, $this->license_manager());
+        $booking_engine  = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager(), $coupon_engine);
         $slot_calculator = new SlotCalculator(new AvailabilityManager(), $booking_repository);
-        $payment_engine = new PaymentEngine(new TransactionRepository(), $booking_repository, $service_repository);
-        $package_engine = new PackageEngine($package_repository, $booking_engine, $booking_repository, $service_repository, $this->license_manager());
+        $payment_engine  = new PaymentEngine(new TransactionRepository(), $booking_repository, $service_repository, $coupon_repository);
+        $package_engine  = new PackageEngine($package_repository, $booking_engine, $booking_repository, $service_repository, $this->license_manager());
 
         (new BookingController($booking_engine, $booking_repository))->register_routes();
         (new AvailabilityController($slot_calculator, $service_repository))->register_routes();
         (new PaymentController($payment_engine))->register_routes();
         (new LicenseController($this->license_manager()))->register_routes();
         (new PackageController($package_engine, $package_repository))->register_routes();
+        (new CouponController($coupon_engine))->register_routes();
     }
 
     private function booking_shortcode(): BookingShortcode
@@ -126,8 +133,10 @@ class Plugin
         $provider_repository = new ProviderRepository();
         $service_repository  = new ServiceRepository();
         $package_repository  = new PackageRepository();
+        $coupon_repository   = new CouponRepository();
 
-        $booking_engine = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager());
+        $coupon_engine  = new CouponEngine($coupon_repository, $this->license_manager());
+        $booking_engine = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager(), $coupon_engine);
 
         $list_view = new ListView(
             $booking_repository,
@@ -145,7 +154,8 @@ class Plugin
             new ProvidersPage($provider_repository, $service_repository),
             new ReportGenerator($booking_repository, new TransactionRepository()),
             new SettingsPage($this->license_manager()),
-            new PackagesPage($package_engine, $package_repository, $service_repository, $this->license_manager())
+            new PackagesPage($package_engine, $package_repository, $service_repository, $this->license_manager()),
+            new CouponsPage($coupon_engine, $coupon_repository, $service_repository, $this->license_manager())
         );
     }
 }
