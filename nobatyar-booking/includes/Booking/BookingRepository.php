@@ -79,21 +79,72 @@ class BookingRepository
         $wpdb->insert(
             $this->table(),
             [
-                'provider_id'      => $data['provider_id'],
-                'service_id'       => $data['service_id'],
-                'customer_name'    => $data['customer_name'],
-                'customer_phone'   => $data['customer_phone'],
-                'customer_email'   => $data['customer_email'] ?? null,
-                'booking_datetime' => $data['booking_datetime'],
-                'status'           => $data['status'] ?? BookingStatus::PENDING,
-                'notes'            => $data['notes'] ?? null,
-                'created_at'       => $now,
-                'updated_at'       => $now,
+                'provider_id'         => $data['provider_id'],
+                'service_id'          => $data['service_id'],
+                'customer_name'       => $data['customer_name'],
+                'customer_phone'      => $data['customer_phone'],
+                'customer_email'      => $data['customer_email'] ?? null,
+                'booking_datetime'    => $data['booking_datetime'],
+                'status'              => $data['status'] ?? BookingStatus::PENDING,
+                'notes'               => $data['notes'] ?? null,
+                'recurrence_group_id' => $data['recurrence_group_id'] ?? null,
+                'recurrence_index'    => $data['recurrence_index'] ?? null,
+                'recurrence_total'    => $data['recurrence_total'] ?? null,
+                'created_at'          => $now,
+                'updated_at'          => $now,
             ],
-            ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
+            ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s']
         );
 
         return (int) $wpdb->insert_id;
+    }
+
+    /**
+     * The first occurrence of a recurring series doesn't know its own id
+     * until after insert, so its recurrence_group_id (= its own id) is set
+     * via a follow-up update rather than threaded through create().
+     */
+    public function set_recurrence_group_id(int $id, int $group_id): void
+    {
+        global $wpdb;
+
+        $wpdb->update($this->table(), ['recurrence_group_id' => $group_id], ['id' => $id], ['%d'], ['%d']);
+    }
+
+    public function find_by_recurrence_group(int $group_id): array
+    {
+        global $wpdb;
+
+        return $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM {$this->table()} WHERE recurrence_group_id = %d ORDER BY recurrence_index ASC", $group_id),
+            ARRAY_A
+        );
+    }
+
+    /**
+     * Cancels every still-active occurrence of a recurring series from
+     * $from_index onward (inclusive) — used by the admin "cancel this and
+     * future occurrences" action. Past/already-resolved occurrences before
+     * $from_index are left untouched.
+     */
+    public function cancel_future_occurrences(int $group_id, int $from_index): int
+    {
+        global $wpdb;
+
+        $ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT id FROM {$this->table()}
+            WHERE recurrence_group_id = %d
+            AND recurrence_index >= %d
+            AND status IN ('" . implode("','", BookingStatus::ACTIVE) . "')",
+            $group_id,
+            $from_index
+        ));
+
+        foreach ($ids as $id) {
+            $this->update_status((int) $id, BookingStatus::CANCELLED);
+        }
+
+        return count($ids);
     }
 
     public function update_status(int $id, string $status): bool

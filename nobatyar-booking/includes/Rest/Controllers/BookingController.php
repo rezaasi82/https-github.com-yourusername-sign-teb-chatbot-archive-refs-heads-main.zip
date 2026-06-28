@@ -47,6 +47,23 @@ class BookingController
             ],
         ]);
 
+        register_rest_route('nobatyar/v1', '/bookings/recurring', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [$this, 'create_recurring_booking'],
+            'permission_callback' => [$this, 'check_public_create_permission'],
+            'args'                => [
+                'provider_id'             => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
+                'service_id'              => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
+                'booking_datetime'        => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'customer_name'           => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'customer_phone'          => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'customer_email'          => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
+                'notes'                   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_textarea_field'],
+                'recurrence_frequency'    => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_key'],
+                'recurrence_occurrences'  => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
+            ],
+        ]);
+
         register_rest_route('nobatyar/v1', '/bookings/(?P<id>\d+)', [
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [$this, 'get_booking'],
@@ -134,6 +151,36 @@ class BookingController
         }
 
         return new \WP_REST_Response(['id' => $result, 'status' => 'pending'], 201);
+    }
+
+    /**
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function create_recurring_booking(\WP_REST_Request $request)
+    {
+        $rate_limit_error = $this->check_rate_limit();
+
+        if (is_wp_error($rate_limit_error)) {
+            return $rate_limit_error;
+        }
+
+        $result = $this->booking_engine->book_recurring([
+            'provider_id'             => $request->get_param('provider_id'),
+            'service_id'              => $request->get_param('service_id'),
+            'booking_datetime'        => $request->get_param('booking_datetime'),
+            'customer_name'           => $request->get_param('customer_name'),
+            'customer_phone'          => $request->get_param('customer_phone'),
+            'customer_email'          => $request->get_param('customer_email'),
+            'notes'                   => $request->get_param('notes'),
+            'recurrence_frequency'    => $request->get_param('recurrence_frequency'),
+            'recurrence_occurrences'  => $request->get_param('recurrence_occurrences'),
+        ]);
+
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        return new \WP_REST_Response(['ids' => $result, 'status' => 'pending'], 201);
     }
 
     /**

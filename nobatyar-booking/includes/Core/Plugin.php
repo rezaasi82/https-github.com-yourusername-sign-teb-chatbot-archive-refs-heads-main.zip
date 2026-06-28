@@ -87,7 +87,7 @@ class Plugin
 
     private function booking_shortcode(): BookingShortcode
     {
-        return new BookingShortcode(new ProviderRepository(), new ServiceRepository());
+        return new BookingShortcode(new ProviderRepository(), new ServiceRepository(), $this->license_manager());
     }
 
     private function notification_dispatcher(): NotificationDispatcher

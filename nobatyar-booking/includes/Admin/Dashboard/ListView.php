@@ -38,10 +38,17 @@ class ListView
      */
     public function handle_actions(): void
     {
-        if (! isset($_POST['nobatyar_change_status'])) {
-            return;
+        if (isset($_POST['nobatyar_change_status'])) {
+            $this->handle_change_status();
         }
 
+        if (isset($_POST['nobatyar_cancel_recurrence_series'])) {
+            $this->handle_cancel_recurrence_series();
+        }
+    }
+
+    private function handle_change_status(): void
+    {
         if (! current_user_can('manage_options') || ! check_admin_referer('nobatyar_change_status', 'nobatyar_change_status_nonce')) {
             return;
         }
@@ -50,6 +57,22 @@ class ListView
         $new_status = sanitize_key($_POST['new_status'] ?? '');
 
         $this->booking_engine->change_status($booking_id, $new_status);
+    }
+
+    /**
+     * "Cancel this and future occurrences" — leaves past/already-resolved
+     * occurrences of the series untouched, mirroring the availability
+     * single-date-exception pattern of not disturbing what's already settled.
+     */
+    private function handle_cancel_recurrence_series(): void
+    {
+        if (! current_user_can('manage_options') || ! check_admin_referer('nobatyar_cancel_recurrence_series', 'nobatyar_cancel_recurrence_series_nonce')) {
+            return;
+        }
+
+        $booking_id = absint($_POST['booking_id'] ?? 0);
+
+        $this->booking_engine->cancel_series_from($booking_id);
     }
 
     public function render(array $filters = []): string
@@ -89,6 +112,7 @@ class ListView
                         $service_row = $services[(int) $booking['service_id']] ?? null;
                         $is_group    = $service_row && (int) $service_row['capacity_max'] > 1;
                         $group_key   = $this->group_key($booking);
+                        $is_recurring = ! empty($booking['recurrence_total']) && (int) $booking['recurrence_total'] > 1;
 
                         $group_seen[$group_key] = ($group_seen[$group_key] ?? 0) + 1;
                         ?>
@@ -97,6 +121,9 @@ class ListView
                                 <?php echo esc_html($booking['customer_name']); ?>
                                 <?php if ($is_group) : ?>
                                     <br><span class="description"><?php echo esc_html(sprintf(__('شرکت‌کننده %1$d از %2$d', 'nobatyar-booking'), $group_seen[$group_key], $group_totals[$group_key])); ?></span>
+                                <?php endif; ?>
+                                <?php if ($is_recurring) : ?>
+                                    <br><span class="description"><?php echo esc_html(sprintf(__('نوبت %1$d از %2$d (سری تکرارشونده)', 'nobatyar-booking'), (int) $booking['recurrence_index'], (int) $booking['recurrence_total'])); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td><?php echo esc_html($providers[(int) $booking['provider_id']]['name'] ?? ''); ?></td>
@@ -114,6 +141,13 @@ class ListView
                                     </select>
                                     <button type="submit" name="nobatyar_change_status" value="1" class="button"><?php echo esc_html__('ثبت', 'nobatyar-booking'); ?></button>
                                 </form>
+                                <?php if ($is_recurring && in_array($booking['status'], BookingStatus::ACTIVE, true)) : ?>
+                                    <form method="post" onsubmit="return confirm('<?php echo esc_js(__('این نوبت و تمام نوبت‌های بعدی این سری لغو شوند؟', 'nobatyar-booking')); ?>');">
+                                        <input type="hidden" name="booking_id" value="<?php echo (int) $booking['id']; ?>">
+                                        <?php wp_nonce_field('nobatyar_cancel_recurrence_series', 'nobatyar_cancel_recurrence_series_nonce'); ?>
+                                        <button type="submit" name="nobatyar_cancel_recurrence_series" value="1" class="button"><?php echo esc_html__('لغو این و نوبت‌های بعدی', 'nobatyar-booking'); ?></button>
+                                    </form>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
