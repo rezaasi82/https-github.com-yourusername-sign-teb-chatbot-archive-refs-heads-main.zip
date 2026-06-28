@@ -72,6 +72,7 @@ class BookingShortcode
             'nonce'           => wp_create_nonce('wp_rest'),
             'recurringEnabled' => $this->is_recurring_enabled(),
             'couponsEnabled'   => $this->is_coupons_enabled(),
+            'giftCardsEnabled' => $this->is_gift_cards_enabled(),
         ]);
     }
 
@@ -99,6 +100,15 @@ class BookingShortcode
         return $this->license_manager->is_tier_available(LicenseTier::PRO);
     }
 
+    /**
+     * Gift cards are Business-only (no Pro fallback, unlike coupons) per
+     * LicenseTier's own docblock — mirrors is_packages_redeem_enabled().
+     */
+    private function is_gift_cards_enabled(): bool
+    {
+        return $this->license_manager->is_tier_available(LicenseTier::BUSINESS);
+    }
+
     private function current_page_has_shortcode(): bool
     {
         global $post;
@@ -114,6 +124,7 @@ class BookingShortcode
         $recurrence_frequencies = RecurrenceFrequency::all();
         $packages_redeem_enabled = $this->is_packages_redeem_enabled();
         $coupons_enabled = $this->is_coupons_enabled();
+        $gift_cards_enabled = $this->is_gift_cards_enabled();
 
         ob_start();
         include NOBATYAR_PLUGIN_DIR . 'templates/booking-form.php';

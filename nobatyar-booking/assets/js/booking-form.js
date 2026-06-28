@@ -86,6 +86,57 @@
         });
     }
 
+    var giftCardCodeField   = form.querySelector('#nobatyar-gift-card-code');
+    var giftCardApplyBtn    = form.querySelector('#nobatyar-gift-card-apply-btn');
+    var giftCardResultField = form.querySelector('#nobatyar-gift-card-result');
+    var appliedGiftCardCode = '';
+
+    function resetGiftCardResult(text, isError) {
+        if (!giftCardResultField) {
+            return;
+        }
+
+        giftCardResultField.textContent = text || '';
+        giftCardResultField.classList.toggle('is-error', !!isError);
+    }
+
+    if (giftCardApplyBtn && giftCardCodeField) {
+        giftCardApplyBtn.addEventListener('click', function () {
+            var code = giftCardCodeField.value.trim();
+
+            appliedGiftCardCode = '';
+
+            if (!code) {
+                resetGiftCardResult('کد کارت هدیه را وارد کنید.', true);
+                return;
+            }
+
+            resetGiftCardResult('در حال بررسی...', false);
+
+            var url = nobatyarBooking.restUrl + 'gift-cards/validate?code=' + encodeURIComponent(code);
+
+            fetch(url, { headers: { 'X-WP-Nonce': nobatyarBooking.nonce } })
+                .then(function (response) {
+                    return response.json().then(function (data) {
+                        return { ok: response.ok, data: data };
+                    });
+                })
+                .then(function (result) {
+                    if (!result.ok) {
+                        resetGiftCardResult(result.data.message || 'کد کارت هدیه معتبر نیست.', true);
+                        return;
+                    }
+
+                    appliedGiftCardCode = code;
+
+                    resetGiftCardResult('کارت هدیه اعمال شد (موجودی: ' + result.data.remaining_balance + ').', false);
+                })
+                .catch(function () {
+                    resetGiftCardResult('خطا در بررسی کارت هدیه.', true);
+                });
+        });
+    }
+
     var usePackageField     = form.querySelector('#nobatyar-use-package');
     var packageFields        = form.querySelector('#nobatyar-package-fields');
     var packageLookupBtn     = form.querySelector('#nobatyar-package-lookup-btn');
@@ -261,6 +312,10 @@
                 payload.coupon_code = appliedCouponCode;
             }
 
+            if (appliedGiftCardCode) {
+                payload.gift_card_code = appliedGiftCardCode;
+            }
+
             if (isRecurring) {
                 endpoint = 'bookings/recurring';
                 payload.recurrence_frequency   = recurrenceFrequencyField.value;
@@ -298,6 +353,8 @@
                 serviceField.disabled = false;
                 appliedCouponCode = '';
                 resetCouponResult('', false);
+                appliedGiftCardCode = '';
+                resetGiftCardResult('', false);
 
                 if (recurrenceFields) {
                     recurrenceFields.hidden = true;

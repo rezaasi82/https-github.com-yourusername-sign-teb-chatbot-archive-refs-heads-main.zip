@@ -2,7 +2,10 @@
 
 namespace Nobatyar\Booking;
 
+use Nobatyar\Coupons\Coupon;
 use Nobatyar\Coupons\CouponEngine;
+use Nobatyar\GiftCards\GiftCard;
+use Nobatyar\GiftCards\GiftCardEngine;
 use Nobatyar\License\LicenseManager;
 use Nobatyar\License\LicenseTier;
 use Nobatyar\Provider\ProviderRepository;
@@ -22,19 +25,22 @@ class BookingEngine
     private ServiceRepository $service_repository;
     private LicenseManager $license_manager;
     private CouponEngine $coupon_engine;
+    private GiftCardEngine $gift_card_engine;
 
     public function __construct(
         BookingRepository $booking_repository,
         ProviderRepository $provider_repository,
         ServiceRepository $service_repository,
         LicenseManager $license_manager,
-        CouponEngine $coupon_engine
+        CouponEngine $coupon_engine,
+        GiftCardEngine $gift_card_engine
     ) {
         $this->booking_repository  = $booking_repository;
         $this->provider_repository = $provider_repository;
         $this->service_repository  = $service_repository;
         $this->license_manager     = $license_manager;
         $this->coupon_engine       = $coupon_engine;
+        $this->gift_card_engine    = $gift_card_engine;
     }
 
     /**
@@ -100,7 +106,7 @@ class BookingEngine
     /**
      * @param array $args provider_id, service_id, booking_datetime ('Y-m-d H:i:s'),
      *                     customer_name, customer_phone, customer_email?, notes?,
-     *                     coupon_code?
+     *                     coupon_code?, gift_card_code?
      * @return int|\WP_Error booking id on success
      */
     public function book(array $args)
@@ -131,21 +137,42 @@ class BookingEngine
             return new \WP_Error('nobatyar_booking_conflict', __('این بازه زمانی برای سرویس‌دهنده انتخاب‌شده قبلاً رزرو شده است.', 'nobatyar-booking'), ['status' => 409]);
         }
 
-        $coupon_id   = null;
-        $coupon_code = trim((string) ($args['coupon_code'] ?? ''));
+        $base_amount = null !== $service['deposit_amount'] && (float) $service['deposit_amount'] > 0
+            ? (float) $service['deposit_amount']
+            : (null !== $service['price'] ? (float) $service['price'] : null);
+
+        $coupon_id            = null;
+        $amount_after_coupon  = $base_amount;
+        $coupon_code          = trim((string) ($args['coupon_code'] ?? ''));
 
         if ('' !== $coupon_code) {
-            $amount = null !== $service['deposit_amount'] && (float) $service['deposit_amount'] > 0
-                ? (float) $service['deposit_amount']
-                : (null !== $service['price'] ? (float) $service['price'] : null);
-
-            $coupon = $this->coupon_engine->validate($coupon_code, $service_id, $amount);
+            $coupon = $this->coupon_engine->validate($coupon_code, $service_id, $base_amount);
 
             if (is_wp_error($coupon)) {
                 return $coupon;
             }
 
             $coupon_id = (int) $coupon['id'];
+
+            if (null !== $base_amount) {
+                $amount_after_coupon = max(0.0, $base_amount - Coupon::calculate_discount($coupon, $base_amount));
+            }
+        }
+
+        $gift_card                = null;
+        $gift_card_code           = trim((string) ($args['gift_card_code'] ?? ''));
+        $gift_card_amount_applied = 0.0;
+
+        if ('' !== $gift_card_code) {
+            $gift_card = $this->gift_card_engine->validate($gift_card_code);
+
+            if (is_wp_error($gift_card)) {
+                return $gift_card;
+            }
+
+            if (null !== $amount_after_coupon) {
+                $gift_card_amount_applied = GiftCard::calculate_redemption($gift_card, $amount_after_coupon);
+            }
         }
 
         $booking_id = $this->booking_repository->create([
@@ -161,6 +188,11 @@ class BookingEngine
         if (null !== $coupon_id) {
             $this->booking_repository->set_coupon_id($booking_id, $coupon_id);
             $this->coupon_engine->mark_used($coupon_id);
+        }
+
+        if (null !== $gift_card) {
+            $this->booking_repository->set_gift_card_id($booking_id, (int) $gift_card['id'], $gift_card_amount_applied);
+            $this->gift_card_engine->redeem((int) $gift_card['id'], $gift_card_amount_applied);
         }
 
         do_action('nobatyar_booking_created', $booking_id);

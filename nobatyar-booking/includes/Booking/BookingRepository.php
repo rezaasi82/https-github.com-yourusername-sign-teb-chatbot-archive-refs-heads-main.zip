@@ -91,10 +91,11 @@ class BookingRepository
                 'recurrence_index'    => $data['recurrence_index'] ?? null,
                 'recurrence_total'    => $data['recurrence_total'] ?? null,
                 'coupon_id'           => $data['coupon_id'] ?? null,
+                'gift_card_id'        => $data['gift_card_id'] ?? null,
                 'created_at'          => $now,
                 'updated_at'          => $now,
             ],
-            ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s', '%s']
+            ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%s']
         );
 
         return (int) $wpdb->insert_id;
@@ -134,6 +135,26 @@ class BookingRepository
         global $wpdb;
 
         $wpdb->update($this->table(), ['coupon_id' => $coupon_id], ['id' => $booking_id], ['%d'], ['%d']);
+    }
+
+    /**
+     * Threaded through as a follow-up update (mirrors set_coupon_id) since
+     * the gift card's redemption amount is only known after validation, and
+     * locked in here alongside the FK rather than left for PaymentEngine to
+     * recompute (a gift card's balance mutates per redemption, unlike a
+     * coupon's statically re-derivable discount).
+     */
+    public function set_gift_card_id(int $booking_id, int $gift_card_id, float $amount_applied): void
+    {
+        global $wpdb;
+
+        $wpdb->update(
+            $this->table(),
+            ['gift_card_id' => $gift_card_id, 'gift_card_amount_applied' => $amount_applied],
+            ['id' => $booking_id],
+            ['%d', '%f'],
+            ['%d']
+        );
     }
 
     public function find_by_recurrence_group(int $group_id): array

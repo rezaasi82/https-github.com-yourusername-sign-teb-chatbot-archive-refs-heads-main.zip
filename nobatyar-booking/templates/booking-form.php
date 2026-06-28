@@ -6,6 +6,7 @@
  * @var array $recurrence_frequencies
  * @var bool $packages_redeem_enabled
  * @var bool $coupons_enabled
+ * @var bool $gift_cards_enabled
  */
 
 use Nobatyar\Booking\RecurrenceFrequency;
@@ -84,6 +85,15 @@ $recurrence_frequency_labels = [
                 <input type="text" id="nobatyar-coupon-code" name="coupon_code" autocomplete="off" />
                 <button type="button" id="nobatyar-coupon-apply-btn"><?php esc_html_e('اعمال کد', 'nobatyar-booking'); ?></button>
                 <span id="nobatyar-coupon-result" class="nobatyar-coupon-result"></span>
+            </p>
+        <?php endif; ?>
+
+        <?php if (! empty($gift_cards_enabled)) : ?>
+            <p class="nobatyar-field nobatyar-gift-card-field">
+                <label for="nobatyar-gift-card-code"><?php esc_html_e('کد کارت هدیه (اختیاری)', 'nobatyar-booking'); ?></label>
+                <input type="text" id="nobatyar-gift-card-code" name="gift_card_code" autocomplete="off" />
+                <button type="button" id="nobatyar-gift-card-apply-btn"><?php esc_html_e('اعمال کد', 'nobatyar-booking'); ?></button>
+                <span id="nobatyar-gift-card-result" class="nobatyar-gift-card-result"></span>
             </p>
         <?php endif; ?>
 
