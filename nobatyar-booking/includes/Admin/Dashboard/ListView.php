@@ -113,6 +113,7 @@ class ListView
                         $is_group    = $service_row && (int) $service_row['capacity_max'] > 1;
                         $group_key   = $this->group_key($booking);
                         $is_recurring = ! empty($booking['recurrence_total']) && (int) $booking['recurrence_total'] > 1;
+                        $is_package   = ! empty($booking['package_purchase_id']);
 
                         $group_seen[$group_key] = ($group_seen[$group_key] ?? 0) + 1;
                         ?>
@@ -124,6 +125,9 @@ class ListView
                                 <?php endif; ?>
                                 <?php if ($is_recurring) : ?>
                                     <br><span class="description"><?php echo esc_html(sprintf(__('نوبت %1$d از %2$d (سری تکرارشونده)', 'nobatyar-booking'), (int) $booking['recurrence_index'], (int) $booking['recurrence_total'])); ?></span>
+                                <?php endif; ?>
+                                <?php if ($is_package) : ?>
+                                    <br><span class="description"><?php echo esc_html__('پرداخت‌شده از طریق پکیج', 'nobatyar-booking'); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td><?php echo esc_html($providers[(int) $booking['provider_id']]['name'] ?? ''); ?></td>

@@ -79,6 +79,16 @@ class BookingShortcode
         return $this->license_manager->is_tier_available(LicenseTier::BUSINESS);
     }
 
+    /**
+     * Same Business-tier gate as recurring, kept as its own method (mirrors
+     * PackageEngine/PackagesShortcode each defining their own check) since
+     * the two features are independent and could diverge later.
+     */
+    private function is_packages_redeem_enabled(): bool
+    {
+        return $this->license_manager->is_tier_available(LicenseTier::BUSINESS);
+    }
+
     private function current_page_has_shortcode(): bool
     {
         global $post;
@@ -92,6 +102,7 @@ class BookingShortcode
         $services          = $this->service_repository->all();
         $recurring_enabled = $this->is_recurring_enabled();
         $recurrence_frequencies = RecurrenceFrequency::all();
+        $packages_redeem_enabled = $this->is_packages_redeem_enabled();
 
         ob_start();
         include NOBATYAR_PLUGIN_DIR . 'templates/booking-form.php';

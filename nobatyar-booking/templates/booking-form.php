@@ -4,6 +4,7 @@
  * @var array $services
  * @var bool $recurring_enabled
  * @var array $recurrence_frequencies
+ * @var bool $packages_redeem_enabled
  */
 
 use Nobatyar\Booking\RecurrenceFrequency;
@@ -75,6 +76,28 @@ $recurrence_frequency_labels = [
             <label for="nobatyar-customer-email"><?php esc_html_e('ایمیل (اختیاری)', 'nobatyar-booking'); ?></label>
             <input type="email" id="nobatyar-customer-email" name="customer_email" />
         </p>
+
+        <?php if (! empty($packages_redeem_enabled)) : ?>
+            <p class="nobatyar-field nobatyar-package-toggle">
+                <label>
+                    <input type="checkbox" id="nobatyar-use-package" name="use_package" />
+                    <?php esc_html_e('این نوبت با اعتبار پکیج رزرو شود', 'nobatyar-booking'); ?>
+                </label>
+            </p>
+
+            <div id="nobatyar-package-fields" class="nobatyar-package-fields" hidden>
+                <p class="nobatyar-field">
+                    <button type="button" id="nobatyar-package-lookup-btn"><?php esc_html_e('بررسی اعتبار پکیج با شماره موبایل', 'nobatyar-booking'); ?></button>
+                </p>
+
+                <p class="nobatyar-field">
+                    <label for="nobatyar-package-purchase"><?php esc_html_e('پکیج خریداری‌شده', 'nobatyar-booking'); ?></label>
+                    <select id="nobatyar-package-purchase" name="package_purchase_id">
+                        <option value=""><?php esc_html_e('ابتدا شماره موبایل را بررسی کنید', 'nobatyar-booking'); ?></option>
+                    </select>
+                </p>
+            </div>
+        <?php endif; ?>
 
         <?php if (! empty($recurring_enabled)) : ?>
             <p class="nobatyar-field nobatyar-recurrence-toggle">
