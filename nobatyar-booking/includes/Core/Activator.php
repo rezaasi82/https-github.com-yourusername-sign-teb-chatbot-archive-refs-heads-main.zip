@@ -114,13 +114,16 @@ class Activator
             recurrence_total INT UNSIGNED NULL,
             package_purchase_id BIGINT UNSIGNED NULL,
             coupon_id BIGINT UNSIGNED NULL,
+            gift_card_id BIGINT UNSIGNED NULL,
+            gift_card_amount_applied DECIMAL(12,2) NULL,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
             INDEX idx_provider_datetime (provider_id, booking_datetime),
             INDEX idx_status (status),
             INDEX idx_recurrence_group (recurrence_group_id),
             INDEX idx_package_purchase (package_purchase_id),
-            INDEX idx_coupon (coupon_id)
+            INDEX idx_coupon (coupon_id),
+            INDEX idx_gift_card (gift_card_id)
         ) {$charset_collate};";
 
         $tables[] = "CREATE TABLE {$prefix}packages (
@@ -168,6 +171,21 @@ class Activator
             updated_at DATETIME NOT NULL,
             UNIQUE KEY uniq_code (code),
             INDEX idx_service (service_id)
+        ) {$charset_collate};";
+
+        $tables[] = "CREATE TABLE {$prefix}gift_cards (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            code VARCHAR(50) NOT NULL,
+            initial_balance DECIMAL(12,2) NOT NULL,
+            remaining_balance DECIMAL(12,2) NOT NULL,
+            expires_at DATETIME NULL,
+            is_active TINYINT(1) DEFAULT 1,
+            recipient_name VARCHAR(191) NULL,
+            recipient_email VARCHAR(191) NULL,
+            note TEXT NULL,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            UNIQUE KEY uniq_code (code)
         ) {$charset_collate};";
 
         $tables[] = "CREATE TABLE {$prefix}sms_logs (

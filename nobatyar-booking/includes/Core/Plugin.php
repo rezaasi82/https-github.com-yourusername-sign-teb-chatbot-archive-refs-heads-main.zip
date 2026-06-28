@@ -11,6 +11,7 @@ use Nobatyar\Admin\Packages\PackagesPage;
 use Nobatyar\Admin\Reports\ReportGenerator;
 use Nobatyar\Admin\Settings\SettingsPage;
 use Nobatyar\Admin\Coupons\CouponsPage;
+use Nobatyar\Admin\GiftCards\GiftCardsPage;
 use Nobatyar\Booking\BookingEngine;
 use Nobatyar\Booking\BookingRepository;
 use Nobatyar\Booking\SlotCalculator;
@@ -18,6 +19,8 @@ use Nobatyar\Coupons\CouponEngine;
 use Nobatyar\Coupons\CouponRepository;
 use Nobatyar\Frontend\Shortcode\BookingShortcode;
 use Nobatyar\Frontend\Shortcode\PackagesShortcode;
+use Nobatyar\GiftCards\GiftCardEngine;
+use Nobatyar\GiftCards\GiftCardRepository;
 use Nobatyar\License\GracePeriodHandler;
 use Nobatyar\License\LicenseManager;
 use Nobatyar\Notifications\EmailNotifier;
@@ -32,6 +35,7 @@ use Nobatyar\Provider\ProviderRepository;
 use Nobatyar\Rest\Controllers\AvailabilityController;
 use Nobatyar\Rest\Controllers\BookingController;
 use Nobatyar\Rest\Controllers\CouponController;
+use Nobatyar\Rest\Controllers\GiftCardController;
 use Nobatyar\Rest\Controllers\LicenseController;
 use Nobatyar\Rest\Controllers\PackageController;
 use Nobatyar\Rest\Controllers\PaymentController;
@@ -86,12 +90,14 @@ class Plugin
         $service_repository  = new ServiceRepository();
         $package_repository  = new PackageRepository();
         $coupon_repository   = new CouponRepository();
+        $gift_card_repository = new GiftCardRepository();
 
-        $coupon_engine   = new CouponEngine($coupon_repository, $this->license_manager());
-        $booking_engine  = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager(), $coupon_engine);
-        $slot_calculator = new SlotCalculator(new AvailabilityManager(), $booking_repository);
-        $payment_engine  = new PaymentEngine(new TransactionRepository(), $booking_repository, $service_repository, $coupon_repository);
-        $package_engine  = new PackageEngine($package_repository, $booking_engine, $booking_repository, $service_repository, $this->license_manager());
+        $coupon_engine     = new CouponEngine($coupon_repository, $this->license_manager());
+        $gift_card_engine  = new GiftCardEngine($gift_card_repository, $this->license_manager());
+        $booking_engine    = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager(), $coupon_engine, $gift_card_engine);
+        $slot_calculator   = new SlotCalculator(new AvailabilityManager(), $booking_repository);
+        $payment_engine    = new PaymentEngine(new TransactionRepository(), $booking_repository, $service_repository, $coupon_repository);
+        $package_engine    = new PackageEngine($package_repository, $booking_engine, $booking_repository, $service_repository, $this->license_manager());
 
         (new BookingController($booking_engine, $booking_repository))->register_routes();
         (new AvailabilityController($slot_calculator, $service_repository))->register_routes();
@@ -99,6 +105,7 @@ class Plugin
         (new LicenseController($this->license_manager()))->register_routes();
         (new PackageController($package_engine, $package_repository))->register_routes();
         (new CouponController($coupon_engine))->register_routes();
+        (new GiftCardController($gift_card_engine))->register_routes();
     }
 
     private function booking_shortcode(): BookingShortcode
@@ -134,9 +141,11 @@ class Plugin
         $service_repository  = new ServiceRepository();
         $package_repository  = new PackageRepository();
         $coupon_repository   = new CouponRepository();
+        $gift_card_repository = new GiftCardRepository();
 
-        $coupon_engine  = new CouponEngine($coupon_repository, $this->license_manager());
-        $booking_engine = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager(), $coupon_engine);
+        $coupon_engine    = new CouponEngine($coupon_repository, $this->license_manager());
+        $gift_card_engine = new GiftCardEngine($gift_card_repository, $this->license_manager());
+        $booking_engine   = new BookingEngine($booking_repository, $provider_repository, $service_repository, $this->license_manager(), $coupon_engine, $gift_card_engine);
 
         $list_view = new ListView(
             $booking_repository,
@@ -155,7 +164,8 @@ class Plugin
             new ReportGenerator($booking_repository, new TransactionRepository()),
             new SettingsPage($this->license_manager()),
             new PackagesPage($package_engine, $package_repository, $service_repository, $this->license_manager()),
-            new CouponsPage($coupon_engine, $coupon_repository, $service_repository, $this->license_manager())
+            new CouponsPage($coupon_engine, $coupon_repository, $service_repository, $this->license_manager()),
+            new GiftCardsPage($gift_card_engine, $gift_card_repository, $this->license_manager())
         );
     }
 }

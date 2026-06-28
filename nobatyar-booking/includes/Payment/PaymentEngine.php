@@ -153,6 +153,13 @@ class PaymentEngine
      * booking-creation time by BookingEngine::book()), the discount is applied
      * on top via the same Coupon::calculate_discount() math CouponEngine::validate()
      * uses for its preview, so the two never disagree on the final amount.
+     *
+     * A gift card redemption is handled differently: unlike the coupon
+     * discount (statically re-derivable from the coupon row at any time), the
+     * gift card amount was already locked in and stored on the booking row
+     * itself (gift_card_amount_applied) at booking-creation time, since the
+     * card's balance mutates per redemption. So it's read directly here rather
+     * than recomputed via a repository lookup.
      */
     private function resolve_amount(array $service, array $booking): ?float
     {
@@ -171,16 +178,16 @@ class PaymentEngine
             return null;
         }
 
-        if (empty($booking['coupon_id'])) {
-            return $base;
+        if (! empty($booking['coupon_id'])) {
+            $coupon = $this->coupon_repository->find((int) $booking['coupon_id']);
+
+            if ($coupon) {
+                $base = max(0.0, $base - Coupon::calculate_discount($coupon, $base));
+            }
         }
 
-        $coupon = $this->coupon_repository->find((int) $booking['coupon_id']);
+        $base = max(0.0, $base - (float) ($booking['gift_card_amount_applied'] ?? 0));
 
-        if (! $coupon) {
-            return $base;
-        }
-
-        return max(0.0, $base - Coupon::calculate_discount($coupon, $base));
+        return $base;
     }
 }

@@ -44,6 +44,7 @@ class BookingController
                     'customer_email'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
                     'notes'            => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_textarea_field'],
                     'coupon_code'      => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'gift_card_code'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
             ],
         ]);
@@ -146,6 +147,7 @@ class BookingController
             'customer_email'   => $request->get_param('customer_email'),
             'notes'            => $request->get_param('notes'),
             'coupon_code'      => $request->get_param('coupon_code'),
+            'gift_card_code'   => $request->get_param('gift_card_code'),
         ]);
 
         if (is_wp_error($result)) {
