@@ -3,7 +3,7 @@
  * Plugin Name:       نوبتیار (Nobatyar)
  * Plugin URI:        https://mynobatyar.ir
  * Description:       پلاگین مستقل رزرو نوبت برای سالن، باشگاه، مشاوره و هر کسب‌وکار محلی نوبت‌محور.
- * Version:           1.0.0
+ * Version:           1.4.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Nobatyar
