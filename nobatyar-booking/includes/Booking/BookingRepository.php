@@ -111,6 +111,18 @@ class BookingRepository
         $wpdb->update($this->table(), ['recurrence_group_id' => $group_id], ['id' => $id], ['%d'], ['%d']);
     }
 
+    /**
+     * Threaded through as a follow-up update (mirrors set_recurrence_group_id)
+     * since PackageEngine::redeem() only learns the purchase id after
+     * BookingEngine::book() has already created the row.
+     */
+    public function set_package_purchase_id(int $booking_id, int $purchase_id): void
+    {
+        global $wpdb;
+
+        $wpdb->update($this->table(), ['package_purchase_id' => $purchase_id], ['id' => $booking_id], ['%d'], ['%d']);
+    }
+
     public function find_by_recurrence_group(int $group_id): array
     {
         global $wpdb;

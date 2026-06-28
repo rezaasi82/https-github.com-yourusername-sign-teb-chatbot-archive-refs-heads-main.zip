@@ -24,6 +24,91 @@
         });
     }
 
+    var usePackageField     = form.querySelector('#nobatyar-use-package');
+    var packageFields        = form.querySelector('#nobatyar-package-fields');
+    var packageLookupBtn     = form.querySelector('#nobatyar-package-lookup-btn');
+    var packagePurchaseField = form.querySelector('#nobatyar-package-purchase');
+    var packagePurchases     = [];
+
+    if (usePackageField && packageFields) {
+        usePackageField.addEventListener('change', function () {
+            packageFields.hidden = !usePackageField.checked;
+            serviceField.disabled = usePackageField.checked;
+
+            if (recurrenceEnableField) {
+                recurrenceEnableField.disabled = usePackageField.checked;
+
+                if (usePackageField.checked) {
+                    recurrenceEnableField.checked = false;
+
+                    if (recurrenceFields) {
+                        recurrenceFields.hidden = true;
+                    }
+                }
+            }
+        });
+    }
+
+    function resetPackagePurchaseOptions(placeholder) {
+        packagePurchaseField.innerHTML = '';
+        var option = document.createElement('option');
+        option.value = '';
+        option.textContent = placeholder;
+        packagePurchaseField.appendChild(option);
+    }
+
+    if (packageLookupBtn && packagePurchaseField) {
+        packageLookupBtn.addEventListener('click', function () {
+            var phone = form.querySelector('#nobatyar-customer-phone').value;
+
+            if (!phone) {
+                setMessage('برای بررسی اعتبار پکیج ابتدا شماره موبایل را وارد کنید.', true);
+                return;
+            }
+
+            setMessage('', false);
+            resetPackagePurchaseOptions('در حال بررسی...');
+
+            var url = nobatyarBooking.restUrl + 'packages/purchases/lookup?phone=' + encodeURIComponent(phone);
+
+            fetch(url, { headers: { 'X-WP-Nonce': nobatyarBooking.nonce } })
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                    packagePurchases = data.purchases || [];
+
+                    if (!packagePurchases.length) {
+                        resetPackagePurchaseOptions('پکیج فعالی برای این شماره یافت نشد');
+                        return;
+                    }
+
+                    resetPackagePurchaseOptions('انتخاب کنید');
+
+                    packagePurchases.forEach(function (purchase) {
+                        var option = document.createElement('option');
+                        option.value = purchase.id;
+                        option.textContent = purchase.package_name + ' (' + purchase.sessions_remaining + ' از ' + purchase.sessions_total + ' باقی‌مانده)';
+                        packagePurchaseField.appendChild(option);
+                    });
+                })
+                .catch(function () {
+                    resetPackagePurchaseOptions('خطا در بررسی اعتبار پکیج');
+                });
+        });
+    }
+
+    if (packagePurchaseField) {
+        packagePurchaseField.addEventListener('change', function () {
+            var selected = packagePurchases.filter(function (purchase) {
+                return String(purchase.id) === packagePurchaseField.value;
+            })[0];
+
+            if (selected) {
+                serviceField.value = selected.service_id;
+                loadAvailableSlots();
+            }
+        });
+    }
+
     function setMessage(text, isError) {
         messageBox.textContent = text;
         messageBox.classList.toggle('is-error', !!isError);
@@ -85,22 +170,36 @@
         event.preventDefault();
         setMessage('', false);
 
-        var payload = {
-            provider_id:       providerField.value,
-            service_id:        serviceField.value,
-            booking_datetime:  slotField.value,
-            customer_name:     form.querySelector('#nobatyar-customer-name').value,
-            customer_phone:    form.querySelector('#nobatyar-customer-phone').value,
-            customer_email:    form.querySelector('#nobatyar-customer-email').value,
-        };
+        var isUsingPackage = !!(usePackageField && usePackageField.checked);
+        var isRecurring     = !isUsingPackage && !!(recurrenceEnableField && recurrenceEnableField.checked);
+        var endpoint        = 'bookings';
+        var payload;
 
-        var isRecurring = !!(recurrenceEnableField && recurrenceEnableField.checked);
-        var endpoint     = 'bookings';
+        if (isUsingPackage) {
+            endpoint = 'bookings/package-redeem';
+            payload = {
+                package_purchase_id: packagePurchaseField.value,
+                provider_id:         providerField.value,
+                booking_datetime:    slotField.value,
+                customer_name:       form.querySelector('#nobatyar-customer-name').value,
+                customer_phone:      form.querySelector('#nobatyar-customer-phone').value,
+                customer_email:      form.querySelector('#nobatyar-customer-email').value,
+            };
+        } else {
+            payload = {
+                provider_id:       providerField.value,
+                service_id:        serviceField.value,
+                booking_datetime:  slotField.value,
+                customer_name:     form.querySelector('#nobatyar-customer-name').value,
+                customer_phone:    form.querySelector('#nobatyar-customer-phone').value,
+                customer_email:    form.querySelector('#nobatyar-customer-email').value,
+            };
 
-        if (isRecurring) {
-            endpoint = 'bookings/recurring';
-            payload.recurrence_frequency   = recurrenceFrequencyField.value;
-            payload.recurrence_occurrences = recurrenceOccurrencesField.value;
+            if (isRecurring) {
+                endpoint = 'bookings/recurring';
+                payload.recurrence_frequency   = recurrenceFrequencyField.value;
+                payload.recurrence_occurrences = recurrenceOccurrencesField.value;
+            }
         }
 
         fetch(nobatyarBooking.restUrl + endpoint, {
@@ -130,9 +229,19 @@
 
                 form.reset();
                 resetSlots('ابتدا سرویس‌دهنده، خدمت و تاریخ را انتخاب کنید');
+                serviceField.disabled = false;
 
                 if (recurrenceFields) {
                     recurrenceFields.hidden = true;
+                }
+
+                if (packageFields) {
+                    packageFields.hidden = true;
+                    resetPackagePurchaseOptions('ابتدا شماره موبایل را بررسی کنید');
+                }
+
+                if (recurrenceEnableField) {
+                    recurrenceEnableField.disabled = false;
                 }
             })
             .catch(function () {

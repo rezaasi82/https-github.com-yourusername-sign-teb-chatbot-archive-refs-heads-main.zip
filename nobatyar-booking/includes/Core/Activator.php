@@ -112,11 +112,42 @@ class Activator
             recurrence_group_id BIGINT UNSIGNED NULL,
             recurrence_index INT UNSIGNED NULL,
             recurrence_total INT UNSIGNED NULL,
+            package_purchase_id BIGINT UNSIGNED NULL,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
             INDEX idx_provider_datetime (provider_id, booking_datetime),
             INDEX idx_status (status),
-            INDEX idx_recurrence_group (recurrence_group_id)
+            INDEX idx_recurrence_group (recurrence_group_id),
+            INDEX idx_package_purchase (package_purchase_id)
+        ) {$charset_collate};";
+
+        $tables[] = "CREATE TABLE {$prefix}packages (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            service_id BIGINT UNSIGNED NOT NULL,
+            name VARCHAR(191) NOT NULL,
+            session_count INT UNSIGNED NOT NULL DEFAULT 1,
+            price DECIMAL(12,2) NOT NULL,
+            validity_days INT UNSIGNED NULL,
+            is_active TINYINT(1) DEFAULT 1,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            INDEX idx_service (service_id)
+        ) {$charset_collate};";
+
+        $tables[] = "CREATE TABLE {$prefix}package_purchases (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            package_id BIGINT UNSIGNED NOT NULL,
+            customer_name VARCHAR(191) NOT NULL,
+            customer_phone VARCHAR(20) NOT NULL,
+            customer_email VARCHAR(191) NULL,
+            sessions_total INT UNSIGNED NOT NULL,
+            sessions_remaining INT UNSIGNED NOT NULL,
+            purchased_at DATETIME NOT NULL,
+            expires_at DATETIME NULL,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            INDEX idx_package (package_id),
+            INDEX idx_customer_phone (customer_phone)
         ) {$charset_collate};";
 
         $tables[] = "CREATE TABLE {$prefix}sms_logs (
