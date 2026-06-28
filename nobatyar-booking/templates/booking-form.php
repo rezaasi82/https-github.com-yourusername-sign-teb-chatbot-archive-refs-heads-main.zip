@@ -5,6 +5,7 @@
  * @var bool $recurring_enabled
  * @var array $recurrence_frequencies
  * @var bool $packages_redeem_enabled
+ * @var bool $coupons_enabled
  */
 
 use Nobatyar\Booking\RecurrenceFrequency;
@@ -76,6 +77,15 @@ $recurrence_frequency_labels = [
             <label for="nobatyar-customer-email"><?php esc_html_e('ایمیل (اختیاری)', 'nobatyar-booking'); ?></label>
             <input type="email" id="nobatyar-customer-email" name="customer_email" />
         </p>
+
+        <?php if (! empty($coupons_enabled)) : ?>
+            <p class="nobatyar-field nobatyar-coupon-field">
+                <label for="nobatyar-coupon-code"><?php esc_html_e('کد تخفیف (اختیاری)', 'nobatyar-booking'); ?></label>
+                <input type="text" id="nobatyar-coupon-code" name="coupon_code" autocomplete="off" />
+                <button type="button" id="nobatyar-coupon-apply-btn"><?php esc_html_e('اعمال کد', 'nobatyar-booking'); ?></button>
+                <span id="nobatyar-coupon-result" class="nobatyar-coupon-result"></span>
+            </p>
+        <?php endif; ?>
 
         <?php if (! empty($packages_redeem_enabled)) : ?>
             <p class="nobatyar-field nobatyar-package-toggle">

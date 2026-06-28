@@ -71,6 +71,7 @@ class BookingShortcode
             'restUrl'         => esc_url_raw(rest_url('nobatyar/v1/')),
             'nonce'           => wp_create_nonce('wp_rest'),
             'recurringEnabled' => $this->is_recurring_enabled(),
+            'couponsEnabled'   => $this->is_coupons_enabled(),
         ]);
     }
 
@@ -89,6 +90,15 @@ class BookingShortcode
         return $this->license_manager->is_tier_available(LicenseTier::BUSINESS);
     }
 
+    /**
+     * Coupons gate at Pro (not Business-only like recurring/packages) per
+     * LicenseTier's own docblock: "Coupons: Pro+Business".
+     */
+    private function is_coupons_enabled(): bool
+    {
+        return $this->license_manager->is_tier_available(LicenseTier::PRO);
+    }
+
     private function current_page_has_shortcode(): bool
     {
         global $post;
@@ -103,6 +113,7 @@ class BookingShortcode
         $recurring_enabled = $this->is_recurring_enabled();
         $recurrence_frequencies = RecurrenceFrequency::all();
         $packages_redeem_enabled = $this->is_packages_redeem_enabled();
+        $coupons_enabled = $this->is_coupons_enabled();
 
         ob_start();
         include NOBATYAR_PLUGIN_DIR . 'templates/booking-form.php';
