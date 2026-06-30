@@ -1,0 +1,79 @@
+/* SignTeb AI Web Chat — admin styling. */
+
+.swc-admin .swc-cards {
+	display: flex;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin: 20px 0 28px;
+}
+.swc-admin .swc-card {
+	flex: 1 1 160px;
+	background: #fff;
+	border: 1px solid #dcdfe5;
+	border-radius: 12px;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 2px 8px rgba(15, 31, 61, 0.05);
+}
+.swc-admin .swc-card-accent {
+	background: linear-gradient(135deg, #0f1f3d, #1c3a6e);
+	color: #fff;
+	border-color: #0f1f3d;
+}
+.swc-admin .swc-card-num {
+	display: block;
+	font-size: 32px;
+	font-weight: 800;
+	line-height: 1.1;
+}
+.swc-admin .swc-card-label {
+	display: block;
+	margin-top: 6px;
+	font-size: 13px;
+	opacity: 0.8;
+}
+
+.swc-transcript {
+	max-width: 760px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 16px;
+}
+.swc-bubble {
+	padding: 12px 14px;
+	border-radius: 12px;
+	max-width: 80%;
+}
+.swc-bubble-user {
+	align-self: flex-end;
+	background: #0f1f3d;
+	color: #fff;
+}
+.swc-bubble-assistant {
+	align-self: flex-start;
+	background: #fff;
+	border: 1px solid #dcdfe5;
+}
+.swc-bubble-system {
+	align-self: center;
+	background: #fff7e6;
+	border: 1px dashed #c8a04e;
+	font-size: 12px;
+}
+.swc-bubble.swc-flagged {
+	border: 2px solid #d63638;
+}
+.swc-bubble-role {
+	display: block;
+	font-size: 11px;
+	opacity: 0.6;
+	margin-bottom: 4px;
+}
+.swc-flag-badge {
+	display: inline-block;
+	margin-top: 6px;
+	font-size: 11px;
+	color: #d63638;
+	font-weight: 700;
+}

@@ -1,0 +1,144 @@
+# Copyright (C) 2026 SignTeb
+# This file is distributed under the GPL-2.0-or-later license.
+msgid ""
+msgstr ""
+"Project-Id-Version: SignTeb AI Web Chat 1.0.0\n"
+"Report-Msgid-Bugs-To: https://signteb.com\n"
+"POT-Creation-Date: 2026-06-30T00:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: SignTeb\n"
+"X-Domain: signteb-web-chat\n"
+
+#. Plugin Name
+msgid "SignTeb AI Web Chat"
+msgstr ""
+
+#: includes/admin/class-admin-menu.php
+msgid "SignTeb Chat"
+msgstr ""
+
+#: includes/admin/class-settings-page.php
+msgid "هوش مصنوعی"
+msgstr ""
+
+#: includes/admin/class-settings-page.php
+msgid "اطلاعات کلینیک"
+msgstr ""
+
+#: includes/admin/class-settings-page.php
+msgid "ظاهر ویجت"
+msgstr ""
+
+#: includes/admin/class-settings-page.php
+msgid "تاریخچه مکالمات"
+msgstr ""
+
+#: includes/admin/class-settings-page.php
+msgid "آمار"
+msgstr ""
+
+#: includes/admin/class-settings-page.php
+msgid "لایسنس"
+msgstr ""
+
+#: includes/admin/class-settings-page.php
+msgid "تنظیمات ذخیره شد."
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "فعال‌سازی چت‌بات"
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "سرویس‌دهنده AI"
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "لحن"
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "زبان پاسخ"
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "خدمات و قیمت‌ها"
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "رنگ اصلی / ثانویه"
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "کلید لایسنس"
+msgstr ""
+
+#: includes/admin/views/settings.php
+msgid "ذخیره"
+msgstr ""
+
+#: includes/admin/views/dashboard.php
+msgid "مکالمه"
+msgstr ""
+
+#: includes/admin/views/dashboard.php
+msgid "لید / CTA"
+msgstr ""
+
+#: includes/admin/views/dashboard.php
+msgid "نرخ تبدیل"
+msgstr ""
+
+#: includes/admin/views/dashboard.php
+msgid "پرتکرارترین پرسش‌ها"
+msgstr ""
+
+#: includes/frontend/class-widget.php templates/widget.php
+msgid "دستیار هوشمند"
+msgstr ""
+
+#: includes/frontend/class-widget.php
+msgid "پیام خود را بنویسید…"
+msgstr ""
+
+#: includes/frontend/class-widget.php
+msgid "ارسال"
+msgstr ""
+
+#: includes/frontend/class-widget.php
+msgid "رزرو نوبت"
+msgstr ""
+
+#: includes/frontend/class-widget.php
+msgid "واتس‌اپ"
+msgstr ""
+
+#: includes/frontend/class-widget.php
+msgid "تماس تلفنی"
+msgstr ""
+
+#: includes/frontend/class-widget.php
+msgid "خطا در ارتباط. دوباره تلاش کنید."
+msgstr ""
+
+#: includes/ai/class-ai-manager.php
+msgid "چت‌بات غیرفعال است."
+msgstr ""
+
+#: includes/ai/class-ai-manager.php
+msgid "نسخه آزمایشی به پایان رسیده است. برای ادامه، لطفاً لایسنس را فعال کنید."
+msgstr ""
+
+#: includes/ai/class-ai-manager.php
+msgid "لطفاً کمی صبر کنید و دوباره تلاش کنید."
+msgstr ""
+
+#: templates/widget.php
+msgid "باز کردن گفتگو"
+msgstr ""
+
+#: templates/widget.php
+msgid "بستن"
+msgstr ""
