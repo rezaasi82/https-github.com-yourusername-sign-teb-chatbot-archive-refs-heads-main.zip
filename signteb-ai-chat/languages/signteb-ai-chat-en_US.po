@@ -1,0 +1,82 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SignTeb AI Chat 1.0.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
+"X-Domain: signteb-ai-chat\n"
+
+# --- Widget ---
+msgid "پیام خود را بنویسید…"
+msgstr "Type your message…"
+
+msgid "ارسال"
+msgstr "Send"
+
+msgid "دستیار هوشمند"
+msgstr "AI Assistant"
+
+msgid "در حال نوشتن…"
+msgstr "Typing…"
+
+msgid "رزرو نوبت"
+msgstr "Book appointment"
+
+msgid "واتس‌اپ"
+msgstr "WhatsApp"
+
+msgid "تماس تلفنی"
+msgstr "Call"
+
+msgid "خطا در ارتباط. دوباره تلاش کنید."
+msgstr "Connection error. Please try again."
+
+msgid "باز کردن گفتگو"
+msgstr "Open chat"
+
+msgid "بستن"
+msgstr "Close"
+
+msgid "متن پیام"
+msgstr "Message text"
+
+# --- Admin ---
+msgid "داشبورد"
+msgstr "Dashboard"
+
+msgid "تنظیمات"
+msgstr "Settings"
+
+msgid "مکالمات"
+msgstr "Conversations"
+
+msgid "ذخیره تنظیمات"
+msgstr "Save settings"
+
+msgid "برندینگ (White-Label)"
+msgstr "Branding (White-Label)"
+
+msgid "نام دستیار"
+msgstr "Assistant name"
+
+msgid "آواتار (URL تصویر)"
+msgstr "Avatar (image URL)"
+
+msgid "لایسنس و نسخه آزمایشی"
+msgstr "License & trial"
+
+msgid "کلید فعال‌سازی"
+msgstr "Activation key"
+
+msgid "لحن"
+msgstr "Tone"
+
+msgid "دوستانه"
+msgstr "Friendly"
+
+msgid "رسمی"
+msgstr "Formal"
+
+msgid "زبان پاسخ"
+msgstr "Reply language"

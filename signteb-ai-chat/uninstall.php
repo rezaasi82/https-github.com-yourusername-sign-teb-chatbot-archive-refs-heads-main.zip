@@ -24,4 +24,5 @@ delete_option('stmc_chat_api_key_enc');
 delete_option('stmc_chat_fallback_key_enc');
 delete_option('stmc_chat_fallback_salt');
 delete_option('stmc_chat_license');
+delete_option('stmc_chat_trial_count');
 delete_option('stmc_chat_db_version');

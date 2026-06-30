@@ -26,9 +26,12 @@ $nap     = $config['nap'];
         </svg>
     </button>
 
-    <div class="stmc-chat-panel" role="dialog" aria-modal="false" aria-label="<?php esc_attr_e('دستیار هوشمند', 'signteb-ai-chat'); ?>" hidden>
+    <div class="stmc-chat-panel" role="dialog" aria-modal="false" aria-label="<?php echo esc_attr($config['bot_name']); ?>" hidden>
         <div class="stmc-chat-header">
-            <span class="stmc-chat-title"><?php echo esc_html($nap['clinic_name'] ?: __('دستیار هوشمند', 'signteb-ai-chat')); ?></span>
+            <?php if (! empty($config['avatar_url'])) : ?>
+                <img class="stmc-chat-avatar" src="<?php echo esc_url($config['avatar_url']); ?>" alt="" width="32" height="32">
+            <?php endif; ?>
+            <span class="stmc-chat-title"><?php echo esc_html($config['bot_name']); ?></span>
             <button type="button" class="stmc-chat-close" aria-label="<?php esc_attr_e('بستن', 'signteb-ai-chat'); ?>">&times;</button>
         </div>
 
@@ -55,8 +58,14 @@ $nap     = $config['nap'];
             </button>
         </form>
 
-        <div class="stmc-chat-footer">
-            <?php esc_html_e('قدرت‌گرفته از SignTeb AI', 'signteb-ai-chat'); ?>
-        </div>
+        <?php if ($config['show_branding'] && $config['powered_by_text'] !== '') : ?>
+            <div class="stmc-chat-footer">
+                <?php if ($config['powered_by_url'] !== '') : ?>
+                    <a href="<?php echo esc_url($config['powered_by_url']); ?>" target="_blank" rel="noopener"><?php echo esc_html($config['powered_by_text']); ?></a>
+                <?php else : ?>
+                    <?php echo esc_html($config['powered_by_text']); ?>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

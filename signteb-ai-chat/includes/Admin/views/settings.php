@@ -117,6 +117,33 @@ $has_key = $s->has_api_key();
             </tr>
         </table>
 
+        <h2 class="title"><?php esc_html_e('برندینگ (White-Label)', 'signteb-ai-chat'); ?></h2>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th><?php esc_html_e('نام دستیار', 'signteb-ai-chat'); ?></th>
+                <td>
+                    <input type="text" name="bot_name" value="<?php echo esc_attr($s->get('bot_name')); ?>" class="regular-text" placeholder="<?php esc_attr_e('خالی = نام کلینیک', 'signteb-ai-chat'); ?>">
+                    <p class="description"><?php esc_html_e('نامی که در سربرگ ویجت نمایش داده می‌شود.', 'signteb-ai-chat'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('آواتار (URL تصویر)', 'signteb-ai-chat'); ?></th>
+                <td><input type="url" name="avatar_url" value="<?php echo esc_attr($s->get('avatar_url')); ?>" class="large-text" placeholder="https://"></td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('نمایش امضای پایین ویجت', 'signteb-ai-chat'); ?></th>
+                <td><label><input type="checkbox" name="show_branding" value="1" <?php checked($s->get('show_branding', 1), 1); ?>> <?php esc_html_e('نمایش متن امضا', 'signteb-ai-chat'); ?></label></td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('متن امضا', 'signteb-ai-chat'); ?></th>
+                <td>
+                    <input type="text" name="powered_by_text" value="<?php echo esc_attr($s->get('powered_by_text')); ?>" class="regular-text">
+                    <input type="url" name="powered_by_url" value="<?php echo esc_attr($s->get('powered_by_url')); ?>" class="regular-text" placeholder="https:// (اختیاری)">
+                    <p class="description"><?php esc_html_e('برای حذف کامل برندینگ، تیک بالا را بردارید یا این فیلد را خالی کنید.', 'signteb-ai-chat'); ?></p>
+                </td>
+            </tr>
+        </table>
+
         <h2 class="title"><?php esc_html_e('پروفایل کسب‌وکار (Fallback)', 'signteb-ai-chat'); ?></h2>
         <table class="form-table" role="presentation">
             <tr><th><?php esc_html_e('نام کلینیک', 'signteb-ai-chat'); ?></th><td><input type="text" name="clinic_name" value="<?php echo esc_attr($s->get('clinic_name')); ?>" class="regular-text"></td></tr>
@@ -131,6 +158,31 @@ $has_key = $s->has_api_key();
                 <td>
                     <textarea name="manual_services" rows="4" class="large-text" placeholder="ویزیت عمومی | ۲۵۰ هزار تومان&#10;لیزر | ۵۰۰ هزار تومان"><?php echo esc_textarea($s->get('manual_services')); ?></textarea>
                     <p class="description"><?php esc_html_e('هر خط: «نام خدمت | قیمت». فقط وقتی Medical Core غیرفعال است استفاده می‌شود.', 'signteb-ai-chat'); ?></p>
+                </td>
+            </tr>
+        </table>
+
+        <h2 class="title"><?php esc_html_e('لایسنس و نسخه آزمایشی', 'signteb-ai-chat'); ?></h2>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th><?php esc_html_e('کلید فعال‌سازی', 'signteb-ai-chat'); ?></th>
+                <td>
+                    <input type="text" name="license_key" value="<?php echo esc_attr($license['key']); ?>" class="regular-text" placeholder="XXXX-XXXX-XXXX-XXXX">
+                    <p class="description">
+                        <?php
+                        if (($license['status'] ?? '') === 'active' && $license['key'] !== '') {
+                            echo '<strong style="color:#1a7f37">' . esc_html__('وضعیت: فعال ✅ (بدون محدودیت پیام)', 'signteb-ai-chat') . '</strong>';
+                        } else {
+                            printf(
+                                /* translators: %1$d used, %2$d total */
+                                esc_html__('نسخه آزمایشی — %1$d از %2$d پیام رایگان مصرف شده است.', 'signteb-ai-chat'),
+                                (int) $trial->used(),
+                                (int) $trial->limit()
+                            );
+                        }
+                        ?>
+                    </p>
+                    <p class="description"><?php esc_html_e('کلید مستقل برای همین دامنه است و به هیچ اکانت بیرونی وابسته نیست.', 'signteb-ai-chat'); ?></p>
                 </td>
             </tr>
         </table>

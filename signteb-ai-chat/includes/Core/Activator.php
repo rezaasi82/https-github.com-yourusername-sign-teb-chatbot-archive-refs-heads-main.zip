@@ -43,6 +43,12 @@ class Activator
             'accent_color'       => '#c8a04e',  // gold
             'welcome_message'    => 'سلام! 👋 من دستیار هوشمند کلینیک هستم. چطور می‌تونم کمکتون کنم؟',
             'quick_replies'      => "رزرو نوبت\nهزینه ویزیت\nآدرس کلینیک",
+            // White-label: every visitor-facing label below is editable, none hardcoded.
+            'bot_name'           => '',           // empty = fall back to clinic name
+            'avatar_url'         => '',           // custom widget avatar
+            'show_branding'      => 1,            // toggle the footer credit line off
+            'powered_by_text'    => 'قدرت‌گرفته از SignTeb AI',
+            'powered_by_url'     => '',           // optional link on the footer credit
             'business_hours'     => '',
             'offhours_message'   => 'در حال حاضر خارج از ساعت کاری هستیم، اما می‌تونم به سوالاتتون پاسخ بدم و برای شما نوبت ثبت کنم.',
             'rate_limit_per_min' => 8,

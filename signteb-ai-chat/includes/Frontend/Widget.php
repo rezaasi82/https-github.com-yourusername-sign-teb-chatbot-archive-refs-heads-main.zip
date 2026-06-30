@@ -89,6 +89,11 @@ class Widget
         $nap    = $bridge->nap();
         $s      = $this->settings;
 
+        $bot_name = trim((string) $s->get('bot_name', ''));
+        if ($bot_name === '') {
+            $bot_name = (string) ($nap['clinic_name'] ?: __('دستیار هوشمند', 'signteb-ai-chat'));
+        }
+
         $config = [
             'widget_color'    => (string) $s->get('widget_color', '#0f1f3d'),
             'accent_color'    => (string) $s->get('accent_color', '#c8a04e'),
@@ -97,6 +102,12 @@ class Widget
             'quick_replies'   => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $s->get('quick_replies', ''))))),
             'within_hours'    => $this->within_business_hours(),
             'nap'             => $nap,
+            // White-label fields.
+            'bot_name'        => $bot_name,
+            'avatar_url'      => esc_url((string) $s->get('avatar_url', '')),
+            'show_branding'   => (bool) $s->get('show_branding', 1),
+            'powered_by_text' => (string) $s->get('powered_by_text', ''),
+            'powered_by_url'  => (string) $s->get('powered_by_url', ''),
         ];
 
         // Template handles all escaping.

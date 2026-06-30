@@ -9,6 +9,7 @@ use STMC_Chat\Database\ConversationRepository;
 use STMC_Chat\Database\MessageRepository;
 use STMC_Chat\Integration\MedicalCoreBridge;
 use STMC_Chat\License\LicenseManager;
+use STMC_Chat\License\TrialManager;
 use STMC_Chat\RateLimit\RateLimiter;
 use STMC_Chat\Safety\MedicalSafetyFilter;
 
@@ -76,6 +77,16 @@ class AIManager
             return ['ok' => false, 'code' => 'rate_limited', 'error' => 'لطفاً کمی صبر کنید و دوباره تلاش کنید.'];
         }
 
+        // --- Demo / trial cap (lifted once a license is active) ---
+        $trial = new TrialManager();
+        if ($trial->exceeded()) {
+            return [
+                'ok'    => false,
+                'code'  => 'trial_ended',
+                'error' => 'نسخه آزمایشی به پایان رسید. برای ادامه‌ی گفتگوی هوشمند، لطفاً لایسنس را فعال کنید.',
+            ];
+        }
+
         $lang = $this->language->resolve((string) $this->settings->get('language', 'auto'), $message);
 
         $conversation_id = $this->conversations->find_or_create($req['session_id'], [
@@ -134,6 +145,9 @@ class AIManager
         }
 
         $this->messages->add($conversation_id, 'assistant', $reply, false, $result['tokens'] ?? null);
+
+        // Count this AI message against the trial allowance (no-op once licensed).
+        $trial->increment();
 
         return [
             'ok'       => true,

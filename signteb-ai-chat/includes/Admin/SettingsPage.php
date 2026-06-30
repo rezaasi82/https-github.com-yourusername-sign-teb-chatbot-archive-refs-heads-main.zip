@@ -39,6 +39,11 @@ class SettingsPage
             'accent_color'       => sanitize_hex_color($in['accent_color'] ?? '#c8a04e') ?: '#c8a04e',
             'welcome_message'    => sanitize_textarea_field($in['welcome_message'] ?? ''),
             'quick_replies'      => sanitize_textarea_field($in['quick_replies'] ?? ''),
+            'bot_name'           => sanitize_text_field($in['bot_name'] ?? ''),
+            'avatar_url'         => esc_url_raw($in['avatar_url'] ?? ''),
+            'show_branding'      => isset($in['show_branding']) ? 1 : 0,
+            'powered_by_text'    => sanitize_text_field($in['powered_by_text'] ?? ''),
+            'powered_by_url'     => esc_url_raw($in['powered_by_url'] ?? ''),
             'business_hours'     => sanitize_text_field($in['business_hours'] ?? ''),
             'offhours_message'   => sanitize_textarea_field($in['offhours_message'] ?? ''),
             'rate_limit_per_min' => max(1, (int) ($in['rate_limit_per_min'] ?? 8)),
@@ -63,6 +68,11 @@ class SettingsPage
             update_option('stmc_chat_fallback_key_enc', \STMC_Chat\Core\Encryption::encrypt((string) $in['fallback_key']), false);
         }
 
+        // Annual-license activation key (per-install, independent of any vendor account).
+        if (isset($in['license_key'])) {
+            (new \STMC_Chat\License\LicenseManager())->activate((string) $in['license_key']);
+        }
+
         add_settings_error('stmc_chat', 'saved', __('تنظیمات ذخیره شد.', 'signteb-ai-chat'), 'updated');
         set_transient('stmc_chat_admin_notice', get_settings_errors('stmc_chat'), 30);
 
@@ -75,9 +85,11 @@ class SettingsPage
         if (! current_user_can('manage_options')) {
             return;
         }
-        $s      = new Settings();
-        $bridge = new MedicalCoreBridge($s);
-        $core   = $bridge->is_active();
+        $s        = new Settings();
+        $bridge   = new MedicalCoreBridge($s);
+        $core     = $bridge->is_active();
+        $license  = (new \STMC_Chat\License\LicenseManager())->info();
+        $trial    = new \STMC_Chat\License\TrialManager();
 
         include STMC_CHAT_DIR . 'includes/Admin/views/settings.php';
     }

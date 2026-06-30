@@ -74,9 +74,18 @@
 	color: #fff;
 	background: linear-gradient(135deg, var(--stmc-bg), #1c3a6e);
 }
+.stmc-chat-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-inline-end: 10px;
+	border: 2px solid var(--stmc-accent);
+}
 .stmc-chat-title {
 	font-weight: 700;
 	font-size: 15px;
+	flex: 1;
 }
 .stmc-chat-close {
 	background: none;
