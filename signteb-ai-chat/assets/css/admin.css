@@ -1,0 +1,85 @@
+/* SignTeb AI Chat — admin styling. */
+
+.stmc-admin .stmc-cards {
+	display: flex;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin: 20px 0 28px;
+}
+.stmc-admin .stmc-card {
+	flex: 1 1 160px;
+	background: #fff;
+	border: 1px solid #dcdfe5;
+	border-radius: 12px;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 2px 8px rgba(15, 31, 61, 0.05);
+}
+.stmc-admin .stmc-card-accent {
+	background: linear-gradient(135deg, #0f1f3d, #1c3a6e);
+	color: #fff;
+	border-color: #0f1f3d;
+}
+.stmc-admin .stmc-card-num {
+	display: block;
+	font-size: 32px;
+	font-weight: 800;
+	line-height: 1.1;
+}
+.stmc-admin .stmc-card-label {
+	display: block;
+	margin-top: 6px;
+	font-size: 13px;
+	opacity: 0.8;
+}
+
+.stmc-admin h2.title {
+	margin-top: 30px;
+	padding-top: 14px;
+	border-top: 1px solid #e3e6eb;
+}
+
+.stmc-transcript {
+	max-width: 760px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 16px;
+}
+.stmc-bubble {
+	padding: 12px 14px;
+	border-radius: 12px;
+	max-width: 80%;
+}
+.stmc-bubble-user {
+	align-self: flex-end;
+	background: #0f1f3d;
+	color: #fff;
+}
+.stmc-bubble-assistant {
+	align-self: flex-start;
+	background: #fff;
+	border: 1px solid #dcdfe5;
+}
+.stmc-bubble-system {
+	align-self: center;
+	background: #fff7e6;
+	border: 1px dashed #c8a04e;
+	font-size: 12px;
+}
+.stmc-bubble.stmc-flagged {
+	border: 2px solid #d63638;
+}
+.stmc-bubble-role {
+	display: block;
+	font-size: 11px;
+	opacity: 0.6;
+	margin-bottom: 4px;
+}
+.stmc-flag-badge {
+	display: inline-block;
+	margin-top: 6px;
+	font-size: 11px;
+	color: #d63638;
+	font-weight: 700;
+}
