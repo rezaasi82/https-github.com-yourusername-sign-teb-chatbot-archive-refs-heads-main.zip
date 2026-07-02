@@ -1,0 +1,45 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","attributes":{"id":"main-content"},"layout":{"type":"default"}} -->
+<main class="wp-block-group" id="main-content">
+
+  <!-- Service hero -->
+  <!-- wp:group {"className":"stmb-hero-service","style":{"color":{"background":"var:preset|color|clinical-white"}},"layout":{"type":"constrained"}} -->
+  <div class="wp-block-group" style="padding:5rem 0 3rem;background:linear-gradient(135deg,#f8fafc,#e8f0fe)">
+    <!-- wp:shortcode -->[stmc_breadcrumbs]<!-- /wp:shortcode -->
+    <!-- wp:post-title {"level":1,"style":{"typography":{"fontWeight":"800","fontSize":"clamp(2rem,4vw,3rem)","letterSpacing":"-0.025em"}}} /-->
+    <!-- wp:post-excerpt {"moreText":""} /-->
+  </div>
+  <!-- /wp:group -->
+
+  <!-- wp:group {"className":"stmc-container stmc-section","layout":{"type":"constrained"}} -->
+  <div class="wp-block-group stmc-container stmc-section">
+
+    <!-- wp:columns -->
+    <div class="wp-block-columns">
+      <div class="wp-block-column" style="flex-basis:65%">
+        <!-- wp:post-content /-->
+        <!-- wp:signteb/before-after-slider /-->
+        <!-- wp:signteb/faq-accordion {"title":"سؤالات درباره این خدمت"} /-->
+      </div>
+      <div class="wp-block-column" style="flex-basis:35%">
+        <!-- wp:group {"className":"stmc-glass-card","style":{"position":{"type":"sticky","top":"var:preset|spacing|8"}}} -->
+        <div class="wp-block-group stmc-glass-card">
+          <!-- wp:signteb/appointment-cta {"title":"رزرو مشاوره","theme":"light"} /-->
+        </div>
+        <!-- /wp:group -->
+      </div>
+    </div>
+    <!-- /wp:columns -->
+
+  </div>
+  <!-- /wp:group -->
+
+  <!-- Related doctors -->
+  <!-- wp:signteb/doctor-card-grid {"columns":3,"title":"متخصصان این خدمت"} /-->
+  <!-- wp:signteb/contact-cta {"theme":"dark"} /-->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

@@ -1,0 +1,28 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+
+<main class="wp-block-group" id="main-content">
+
+<!-- Specialty archive header -->
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"4rem","bottom":"3rem"}},"color":{"background":"var:preset|color|trust-blue-light"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-trust-blue-light-background-color has-background" style="padding:4rem 0 3rem">
+  <!-- wp:query-title {"type":"archive","textAlign":"center","level":1} /-->
+  <!-- wp:term-description {"textAlign":"center","style":{"color":{"text":"var:preset|color|soft-slate"}}} /-->
+</div>
+<!-- /wp:group -->
+
+<!-- Doctors in this specialty -->
+<!-- wp:group {"className":"stmc-container stmc-section","layout":{"type":"constrained"}} -->
+<div class="wp-block-group stmc-container stmc-section">
+  <!-- wp:signteb/doctor-card-grid {"columns":3,"perPage":12} /-->
+</div>
+<!-- /wp:group -->
+
+<!-- Services in this specialty -->
+<!-- wp:signteb/service-grid {"columns":3,"title":"خدمات این تخصص"} /-->
+
+<!-- CTA -->
+<!-- wp:signteb/appointment-cta {"theme":"dark"} /-->
+
+</main>
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

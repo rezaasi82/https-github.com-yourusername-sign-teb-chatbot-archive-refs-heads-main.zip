@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/appointment-cta",
+  "version": "1.0.0",
+  "title": "Appointment CTA",
+  "category": "signteb-medical",
+  "icon": "calendar-alt",
+  "description": "فرم رزرو نوبت با طراحی Glass — AJAX ارسال، اعتبارسنجی، تأییدیه",
+  "keywords": ["appointment", "booking", "form", "نوبت", "رزرو"],
+  "textdomain": "signteb-blocks",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "spacing": { "margin": true, "padding": false }
+  },
+  "attributes": {
+    "doctorId":    { "type": "number",  "default": 0 },
+    "title":       { "type": "string",  "default": "رزرو نوبت آنلاین" },
+    "subtitle":    { "type": "string",  "default": "فرم زیر را پر کنید تا در اسرع وقت با شما تماس بگیریم" },
+    "theme":       { "type": "string",  "default": "dark" },
+    "showMap":     { "type": "boolean", "default": false },
+    "showPhone":   { "type": "boolean", "default": true },
+    "successMsg":  { "type": "string",  "default": "✅ نوبت شما ثبت شد. به زودی با شما تماس می‌گیریم." }
+  },
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "render": "file:./render.php",
+  "viewScript": "file:./view.js"
+}

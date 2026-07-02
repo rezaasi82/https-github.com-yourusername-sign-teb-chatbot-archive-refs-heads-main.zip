@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/medical-video",
+  "version": "1.0.0",
+  "title": "Medical Video",
+  "category": "signteb-medical",
+  "icon": "video-alt3",
+  "description": "بلوک ویدیوی پزشکی — YouTube/Vimeo — VideoObject Schema — Lazy Load",
+  "textdomain": "signteb-blocks",
+  "supports": { "html": false, "align": ["wide"] },
+  "attributes": {
+    "videoUrl":   { "type":"string","default":"" },
+    "title":      { "type":"string","default":"" },
+    "description":{ "type":"string","default":"" },
+    "thumbUrl":   { "type":"string","default":"" },
+    "autoSchema": { "type":"boolean","default":true }
+  },
+  "style":      "file:./style.css",
+  "render":     "file:./render.php",
+  "viewScript": "file:./view.js"
+}

@@ -1,0 +1,28 @@
+/**
+ * SignTeb Blocks — Stats Counter Styles
+ */
+
+.stmb-stats { padding: 5rem 0; }
+.stmb-stats--dark     { background: #070D1A; }
+.stmb-stats--light    { background: #f8fafc; }
+.stmb-stats--gradient { background: linear-gradient(135deg,#070D1A,#111D35); }
+
+.stmb-stats__inner { display: grid; gap: 1px; max-width: 1240px; margin: 0 auto; padding: 0 1.5rem; background: rgba(255,255,255,0.06); border-radius: 20px; overflow: hidden; }
+.stmb-stats--2col { grid-template-columns: repeat(2,1fr); }
+.stmb-stats--3col { grid-template-columns: repeat(3,1fr); }
+.stmb-stats--4col { grid-template-columns: repeat(4,1fr); }
+.stmb-stats--5col { grid-template-columns: repeat(5,1fr); }
+
+.stmb-stat-card { padding: 3rem 2rem; text-align: center; background: rgba(255,255,255,0.02); transition: background 0.25s; }
+.stmb-stats--light .stmb-stat-card { background: #fff; }
+.stmb-stat-card:hover { background: rgba(255,255,255,0.05); }
+.stmb-stats--light .stmb-stat-card:hover { background: #f1f5f9; }
+
+.stmb-stat-card__value { font-size: clamp(2.5rem,5vw,3.75rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: #E8C97A; margin-bottom: 0.5rem; }
+.stmb-stats--light .stmb-stat-card__value { color: #1a56db; }
+
+.stmb-stat-card__label { font-size: 0.875rem; color: rgba(255,255,255,0.5); font-weight: 500; }
+.stmb-stats--light .stmb-stat-card__label { color: #64748b; }
+
+@media (max-width:768px) { .stmb-stats__inner { grid-template-columns: repeat(2,1fr) !important; } }
+@media (max-width:480px) { .stmb-stats__inner { grid-template-columns: 1fr !important; } }

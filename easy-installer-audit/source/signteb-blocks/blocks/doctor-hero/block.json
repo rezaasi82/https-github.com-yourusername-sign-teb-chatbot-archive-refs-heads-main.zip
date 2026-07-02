@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/doctor-hero",
+  "version": "1.0.0",
+  "title": "Doctor Hero",
+  "category": "signteb-medical",
+  "icon": "admin-users",
+  "description": "بلوک Hero اختصاصی صفحه پروفایل پزشک — تصویر، نام، تخصص، آمار، CTA",
+  "keywords": ["doctor", "hero", "profile", "پزشک", "پروفایل"],
+  "textdomain": "signteb-blocks",
+  "usesContext": [],
+  "supports": {
+    "html": false,
+    "align": ["full"],
+    "spacing": { "margin": false, "padding": false },
+    "color": { "background": false, "text": false }
+  },
+  "attributes": {
+    "doctorId": {
+      "type": "number",
+      "default": 0
+    },
+    "theme": {
+      "type": "string",
+      "default": "dark",
+      "enum": ["dark", "light", "gradient"]
+    },
+    "showStats": {
+      "type": "boolean",
+      "default": true
+    },
+    "showWhatsapp": {
+      "type": "boolean",
+      "default": true
+    },
+    "showBooking": {
+      "type": "boolean",
+      "default": true
+    },
+    "ctaText": {
+      "type": "string",
+      "default": "رزرو نوبت"
+    },
+    "ctaWhatsappText": {
+      "type": "string",
+      "default": "مشاوره در WhatsApp"
+    },
+    "layoutStyle": {
+      "type": "string",
+      "default": "split",
+      "enum": ["split", "centered", "minimal"]
+    }
+  },
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "render": "file:./render.php",
+  "example": {
+    "attributes": {
+      "theme": "dark",
+      "showStats": true
+    }
+  }
+}

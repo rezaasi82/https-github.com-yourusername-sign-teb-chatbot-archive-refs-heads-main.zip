@@ -1,0 +1,28 @@
+/**
+ * Doctor Hero — Editor Preview Styles
+ */
+
+.stmb-doctor-hero--placeholder {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.03) 10px,
+    rgba(255,255,255,0.06) 10px,
+    rgba(255,255,255,0.06) 20px
+  );
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: 14px;
+  color: rgba(255,255,255,0.5);
+  font-size: 14px;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Editor compact mode */
+.editor-styles-wrapper .stmb-doctor-hero {
+  min-height: auto;
+}

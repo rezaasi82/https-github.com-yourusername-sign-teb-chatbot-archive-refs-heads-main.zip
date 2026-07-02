@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/faq-accordion",
+  "version": "1.0.0",
+  "title": "FAQ Accordion",
+  "category": "signteb-medical",
+  "icon": "editor-help",
+  "description": "آکاردیون سؤالات متداول — FAQ Schema — از CPT یا دستی",
+  "textdomain": "signteb-blocks",
+  "supports": { "html": false, "align": ["wide"] },
+  "attributes": {
+    "source":        { "type": "string",  "default": "cpt" },
+    "specialtySlug": { "type": "string",  "default": "" },
+    "postsPerPage":  { "type": "number",  "default": 8 },
+    "title":         { "type": "string",  "default": "سؤالات متداول" },
+    "allowMultiple": { "type": "boolean", "default": false },
+    "theme":         { "type": "string",  "default": "light" },
+    "generateSchema":{ "type": "boolean", "default": true }
+  },
+  "style":      "file:./style.css",
+  "render":     "file:./render.php",
+  "viewScript": "file:./view.js"
+}

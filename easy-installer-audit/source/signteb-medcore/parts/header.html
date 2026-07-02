@@ -1,0 +1,74 @@
+<!-- wp:group {"tagName":"header","className":"site-header","layout":{"type":"default"}} -->
+<header class="wp-block-group site-header">
+
+  <!-- wp:group {"className":"site-header__inner","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
+  <div class="wp-block-group site-header__inner">
+
+    <!-- Skip link -->
+    <!-- wp:html -->
+    <a href="#main-content" class="stmc-skip-link">رفتن به محتوا</a>
+    <!-- /wp:html -->
+
+    <!-- wp:group {"className":"site-header__brand","layout":{"type":"flex","verticalAlignment":"center"}} -->
+    <div class="wp-block-group site-header__brand">
+      <!-- wp:site-logo {"width":160,"shouldSyncIcon":false} /-->
+      <!-- wp:site-title {"level":0,"isLink":true,"className":"stmc-sr-only"} /-->
+    </div>
+    <!-- /wp:group -->
+
+    <!-- Desktop nav -->
+    <!-- wp:navigation {"ref":0,"className":"site-header__nav","overlayMenu":"never","layout":{"type":"flex","setCascadingProperties":true,"justifyContent":"center"},"style":{"spacing":{"blockGap":"0.25rem"}}} /-->
+
+    <!-- Header actions -->
+    <!-- wp:group {"className":"site-header__actions","layout":{"type":"flex","verticalAlignment":"center","flexWrap":"nowrap"}} -->
+    <div class="wp-block-group site-header__actions">
+
+      <!-- WhatsApp CTA button (pulls from theme mod) -->
+      <!-- wp:html -->
+      <a href="tel:" class="stmc-btn stmc-btn-primary stmc-btn-sm stmc-header-cta">
+        رزرو نوبت
+      </a>
+      <!-- /wp:html -->
+
+      <!-- Mobile toggle -->
+      <!-- wp:html -->
+      <button
+        type="button"
+        class="stmc-menu-toggle"
+        aria-controls="stmc-mobile-nav"
+        aria-expanded="false"
+        aria-label="باز کردن منو"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <!-- /wp:html -->
+
+    </div>
+    <!-- /wp:group -->
+
+  </div>
+  <!-- /wp:group -->
+
+</header>
+<!-- /wp:group -->
+
+<!-- Mobile nav overlay -->
+<!-- wp:html -->
+<div class="stmc-mobile-nav" id="stmc-mobile-nav" aria-hidden="true" aria-label="منوی موبایل">
+  <div class="stmc-mobile-nav__overlay" aria-hidden="true"></div>
+  <div class="stmc-mobile-nav__panel">
+    <div class="stmc-mobile-nav__header">
+      <a href="/" class="stmc-mobile-nav__logo">⚕️ SignTeb</a>
+      <button type="button" class="stmc-menu-toggle" aria-label="بستن منو" aria-expanded="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <!-- Mobile nav links injected by JS from desktop nav -->
+    <nav id="stmc-mobile-menu" aria-label="منوی موبایل"></nav>
+  </div>
+</div>
+<!-- /wp:html -->

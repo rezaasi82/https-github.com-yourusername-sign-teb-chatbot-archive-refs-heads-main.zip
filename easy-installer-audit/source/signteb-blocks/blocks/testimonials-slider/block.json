@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/testimonials-slider",
+  "version": "1.0.0",
+  "title": "Testimonials Slider",
+  "category": "signteb-medical",
+  "icon": "star-filled",
+  "description": "اسلایدر نظرات بیماران — Review Schema — رتبه‌بندی ستاره",
+  "textdomain": "signteb-blocks",
+  "supports": { "html": false, "align": ["wide","full"] },
+  "attributes": {
+    "columns":    { "type": "number",  "default": 3 },
+    "perPage":    { "type": "number",  "default": 6 },
+    "doctorId":   { "type": "number",  "default": 0 },
+    "title":      { "type": "string",  "default": "نظرات بیماران" },
+    "theme":      { "type": "string",  "default": "light" },
+    "showRating": { "type": "boolean", "default": true }
+  },
+  "style":  "file:./style.css",
+  "render": "file:./render.php"
+}

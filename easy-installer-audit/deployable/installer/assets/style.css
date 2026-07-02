@@ -1,0 +1,423 @@
+/**
+ * نصب‌کننده آسان — استایل
+ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: local('Vazirmatn'), local('Tahoma');
+}
+
+html, body.ezi-body {
+  height: 100%;
+  font-family: 'Vazirmatn', 'Tahoma', 'Segoe UI', sans-serif;
+  direction: rtl;
+  background: #070D1A;
+  color: #E8EDF5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ezi-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.ezi-wrap--center {
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* ── Ambient background ── */
+
+.ezi-wrap::before,
+.ezi-wrap::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ezi-wrap::before {
+  top: -15%; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(26,86,219,0.18) 0%, transparent 70%);
+}
+
+.ezi-wrap::after {
+  bottom: -15%; left: 10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+}
+
+/* ── Header ── */
+
+.ezi-header {
+  position: relative;
+  z-index: 1;
+  padding: 2rem 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.ezi-header__logo {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg,#1a3a6a,#0f172a);
+  border: 1px solid rgba(201,168,76,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+}
+
+.ezi-header__title { font-size: 1.0625rem; font-weight: 800; color: #fff; }
+.ezi-header__sub   { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+
+/* ── Progress steps ── */
+
+.ezi-steps {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 1.5rem 1rem;
+  flex-wrap: wrap;
+}
+
+.ezi-step-dot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+}
+
+.ezi-step-dot.is-active {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.3);
+  color: #E8C97A;
+}
+
+.ezi-step-dot.is-done {
+  background: rgba(16,185,129,0.08);
+  border-color: rgba(16,185,129,0.25);
+  color: #6ee7b7;
+}
+
+/* ── Main content ── */
+
+.ezi-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem 1.5rem 4rem;
+}
+
+.ezi-card {
+  width: 100%;
+  max-width: 620px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+}
+
+.ezi-card h1 {
+  font-size: 1.625rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.625rem;
+  color: #fff;
+}
+
+.ezi-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.ezi-muted {
+  font-size: 0.9375rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+
+.ezi-lock-icon, .ezi-hero-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Buttons ── */
+
+.ezi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  border-radius: 14px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  margin-bottom: 0.625rem;
+}
+
+.ezi-btn--primary {
+  background: linear-gradient(135deg,#C9A84C,#A07830);
+  color: #0f172a;
+  box-shadow: 0 8px 28px rgba(201,168,76,0.3);
+}
+
+.ezi-btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(201,168,76,0.4);
+}
+
+.ezi-btn--ghost {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.ezi-btn--ghost:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+.ezi-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ezi-btn-row { display: flex; gap: 0.625rem; }
+.ezi-btn-row .ezi-btn { margin-bottom: 0; }
+
+/* ── Forms ── */
+
+.ezi-field { margin-bottom: 1.125rem; }
+
+.ezi-field label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 0.4rem;
+}
+
+.ezi-field input,
+.ezi-field select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.ezi-field input::placeholder { color: rgba(255,255,255,0.25); }
+
+.ezi-field input:focus, .ezi-field select:focus {
+  border-color: rgba(201,168,76,0.5);
+  background: rgba(255,255,255,0.07);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+}
+
+.ezi-field small {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 0.3rem;
+}
+
+.ezi-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+
+.ezi-input-with-btn { display: flex; gap: 0.5rem; }
+.ezi-input-with-btn input { flex: 1; }
+.ezi-input-with-btn button {
+  padding: 0 1rem;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+/* ── Notices ── */
+
+.ezi-notice {
+  padding: 0.875rem 1.125rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+.ezi-notice--info    { background: rgba(26,86,219,0.1);  border: 1px solid rgba(26,86,219,0.25);  color: #93c5fd; }
+.ezi-notice--success { background: rgba(16,185,129,0.1);  border: 1px solid rgba(16,185,129,0.25);  color: #6ee7b7; }
+.ezi-notice--warning  { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);  color: #fcd34d; }
+.ezi-notice--error    { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.25);   color: #fca5a5; }
+
+.ezi-notice code {
+  background: rgba(255,255,255,0.08);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  font-family: 'Consolas', monospace;
+  font-size: 0.85em;
+}
+
+/* ── Requirement checklist ── */
+
+.ezi-checklist { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+
+.ezi-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.ezi-check-item.is-fail { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+
+.ezi-check-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+.ezi-check-text { flex: 1; }
+.ezi-check-label { font-size: 0.875rem; font-weight: 600; color: #fff; }
+.ezi-check-detail { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+.ezi-check-value { font-size: 0.75rem; color: rgba(255,255,255,0.5); white-space: nowrap; }
+
+/* ── Progress bar (live install) ── */
+
+.ezi-progress-wrap { margin: 1.5rem 0; }
+
+.ezi-progress-bar {
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.ezi-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #1a56db, #C9A84C);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.ezi-progress-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.ezi-log-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.5);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+}
+
+.ezi-log-item.is-done    { color: #6ee7b7; }
+.ezi-log-item.is-active  { color: #E8C97A; }
+.ezi-log-item.is-error   { color: #fca5a5; }
+
+.ezi-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: ezi-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ezi-spin { to { transform: rotate(360deg); } }
+
+/* ── Finish screen ── */
+
+.ezi-finish-grid { display: grid; gap: 0.625rem; margin: 1.5rem 0; }
+
+.ezi-finish-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.ezi-finish-item__icon { font-size: 1.25rem; }
+.ezi-finish-item__text strong { display: block; font-size: 0.875rem; color: #fff; }
+.ezi-finish-item__text span { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+
+.ezi-credentials-box {
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.ezi-credentials-box dl { display: grid; grid-template-columns: 110px 1fr; gap: 0.5rem 0.75rem; font-size: 0.875rem; }
+.ezi-credentials-box dt { color: rgba(255,255,255,0.45); }
+.ezi-credentials-box dd { color: #fff; font-weight: 600; font-family: 'Consolas', monospace; }
+
+/* ── Footer ── */
+
+.ezi-footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 640px) {
+  .ezi-card { padding: 1.75rem; border-radius: 18px; }
+  .ezi-field-row { grid-template-columns: 1fr; }
+  .ezi-btn-row { flex-direction: column; }
+  .ezi-steps { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ezi-spinner, .ezi-progress-fill { transition: none; animation: none; }
+}

@@ -1,0 +1,12 @@
+# جلوگیری از دسترسی مستقیم به فایل‌های داخلی نصب‌کننده
+# (این فایل‌ها فقط باید توسط install.php صدا زده شوند، نه مستقیماً در مرورگر)
+
+<FilesMatch "\.(php|json)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

@@ -1,0 +1,26 @@
+/**
+ * Contact CTA — Styles
+ */
+.stmb-contact-cta { padding:4rem 0; }
+.stmb-contact-cta--dark { background:linear-gradient(135deg,#070D1A,#111D35); }
+.stmb-contact-cta--light { background:#f8fafc; border-top:1px solid #e2e8f0; }
+
+.stmb-contact-cta__inner { max-width:1240px; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+
+.stmb-contact-cta__title { font-size:clamp(1.5rem,2.5vw+0.5rem,2rem); font-weight:800; margin:0; letter-spacing:-0.02em; }
+.stmb-contact-cta--dark .stmb-contact-cta__title { color:#fff; }
+.stmb-contact-cta__subtitle { font-size:0.9375rem; color:rgba(255,255,255,0.5); margin:0.375rem 0 0; }
+.stmb-contact-cta--light .stmb-contact-cta__subtitle { color:#64748b; }
+
+.stmb-contact-cta__btns { display:flex; gap:0.75rem; flex-wrap:wrap; flex-shrink:0; }
+
+.stmb-cta-btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.75rem 1.25rem; border-radius:12px; font-size:0.9375rem; font-weight:700; font-family:inherit; text-decoration:none; transition:all 0.25s ease; border:none; cursor:pointer; white-space:nowrap; }
+.stmb-cta-btn--phone { background:#1a56db; color:#fff; }
+.stmb-cta-btn--phone:hover { background:#0f3fa6; color:#fff; text-decoration:none; transform:translateY(-1px); }
+.stmb-cta-btn--wa { background:#25D366; color:#fff; }
+.stmb-cta-btn--wa:hover { background:#1da851; color:#fff; text-decoration:none; transform:translateY(-1px); }
+.stmb-cta-btn--email { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.75); border:1px solid rgba(255,255,255,0.12); }
+.stmb-cta-btn--email:hover { background:rgba(255,255,255,0.14); color:#fff; text-decoration:none; }
+.stmb-contact-cta--light .stmb-cta-btn--email { background:#fff; color:#334155; border-color:#e2e8f0; }
+
+@media (max-width:768px) { .stmb-contact-cta__inner { flex-direction:column; text-align:center; } .stmb-contact-cta__btns { justify-content:center; } }

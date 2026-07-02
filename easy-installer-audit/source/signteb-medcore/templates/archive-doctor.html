@@ -1,0 +1,27 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","attributes":{"id":"main-content"},"layout":{"type":"default"}} -->
+<main class="wp-block-group" id="main-content">
+
+  <!-- Archive header -->
+  <!-- wp:group {"className":"stmc-section","style":{"color":{"background":"var:preset|color|clinical-white"}},"layout":{"type":"constrained"}} -->
+  <div class="wp-block-group stmc-section has-clinical-white-background-color has-background">
+    <!-- wp:query-title {"type":"archive","textAlign":"center","level":1} /-->
+    <!-- wp:term-description {"textAlign":"center"} /-->
+  </div>
+  <!-- /wp:group -->
+
+  <!-- Doctor Card Grid -->
+  <!-- wp:group {"className":"stmc-container stmc-section","layout":{"type":"constrained"}} -->
+  <div class="wp-block-group stmc-container stmc-section">
+    <!-- wp:signteb/doctor-card-grid {"columns":3,"perPage":12,"showFilter":true} /-->
+  </div>
+  <!-- /wp:group -->
+
+  <!-- CTA -->
+  <!-- wp:signteb/appointment-cta {"title":"با هر متخصص نوبت بگیرید","theme":"dark"} /-->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

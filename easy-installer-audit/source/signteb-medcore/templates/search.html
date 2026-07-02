@@ -1,0 +1,31 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","attributes":{"id":"main-content"},"className":"stmc-container stmc-section","layout":{"type":"constrained"}} -->
+<main class="wp-block-group stmc-container stmc-section" id="main-content">
+  <!-- wp:query-title {"type":"search","textAlign":"right"} /-->
+  <!-- wp:search {"label":"جستجو","buttonText":"جستجو","buttonPosition":"button-inside","width":100,"widthUnit":"%"} /-->
+
+  <!-- wp:spacer {"height":"2rem"} /--><div style="height:2rem" aria-hidden="true" class="wp-block-spacer"></div>
+
+  <!-- wp:query {"queryId":1,"query":{"inherit":true}} -->
+  <div class="wp-block-query">
+    <!-- wp:post-template -->
+      <!-- wp:group {"className":"stmc-card","style":{"spacing":{"margin":{"bottom":"1rem"}}}} -->
+      <div class="wp-block-group stmc-card">
+        <!-- wp:post-title {"isLink":true,"level":3} /-->
+        <!-- wp:post-excerpt {"moreText":"ادامه مطلب"} /-->
+      </div>
+      <!-- /wp:group -->
+    <!-- /wp:post-template -->
+    <!-- wp:query-no-results -->
+      <!-- wp:paragraph --><p>نتیجه‌ای یافت نشد.</p><!-- /wp:paragraph -->
+    <!-- /wp:query-no-results -->
+    <!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
+      <!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /-->
+    <!-- /wp:query-pagination -->
+  </div>
+  <!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->
