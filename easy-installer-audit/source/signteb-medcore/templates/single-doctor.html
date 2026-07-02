@@ -1,0 +1,67 @@
+<!-- wp:template-part {"slug":"header-transparent","tagName":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","attributes":{"id":"main-content"},"layout":{"type":"default"}} -->
+<main class="wp-block-group" id="main-content">
+
+  <!-- Doctor Hero Block — pulls live meta from current doctor CPT -->
+  <!-- wp:signteb/doctor-hero {"theme":"dark","showStats":true,"showWhatsapp":true,"showBooking":true,"layoutStyle":"split"} /-->
+
+  <!-- wp:group {"className":"stmc-container stmc-section","layout":{"type":"constrained"}} -->
+  <div class="wp-block-group stmc-container stmc-section">
+
+    <!-- Breadcrumbs -->
+    <!-- wp:shortcode -->[stmc_breadcrumbs]<!-- /wp:shortcode -->
+
+    <!-- Two column layout: content + sidebar -->
+    <!-- wp:columns {"style":{"spacing":{"blockGap":{"left":"var:preset|spacing|16"}}}} -->
+    <div class="wp-block-columns">
+
+      <!-- Main content -->
+      <!-- wp:column {"width":"65%"} -->
+      <div class="wp-block-column" style="flex-basis:65%">
+
+        <!-- Doctor bio (post content) -->
+        <!-- wp:post-content {"layout":{"type":"constrained","contentSize":"100%"}} /-->
+
+        <!-- Before/After (if any) -->
+        <!-- wp:signteb/before-after-slider /-->
+
+        <!-- Testimonials for this doctor -->
+        <!-- wp:signteb/testimonials-slider {"columns":2,"title":"نظرات بیماران"} /-->
+
+        <!-- Public review submission form — doctor_id از پست جاری خوانده می‌شود -->
+        <!-- wp:shortcode -->[stmc_review_form]<!-- /wp:shortcode -->
+
+      </div>
+      <!-- /wp:column -->
+
+      <!-- Sidebar -->
+      <!-- wp:column {"width":"35%"} -->
+      <div class="wp-block-column" style="flex-basis:35%">
+
+        <!-- Sticky appointment card -->
+        <!-- wp:group {"className":"stmc-glass-card","style":{"position":{"type":"sticky","top":"var:preset|spacing|8"}}} -->
+        <div class="wp-block-group stmc-glass-card">
+          <!-- wp:signteb/appointment-cta {"theme":"light","showPhone":true} /-->
+        </div>
+        <!-- /wp:group -->
+
+      </div>
+      <!-- /wp:column -->
+
+    </div>
+    <!-- /wp:columns -->
+
+  </div>
+  <!-- /wp:group -->
+
+  <!-- FAQ Section -->
+  <!-- wp:signteb/faq-accordion {"title":"سؤالات متداول","theme":"light"} /-->
+
+  <!-- Contact CTA -->
+  <!-- wp:signteb/contact-cta {"theme":"dark"} /-->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

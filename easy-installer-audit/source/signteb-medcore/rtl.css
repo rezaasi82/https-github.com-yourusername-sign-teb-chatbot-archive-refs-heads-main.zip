@@ -1,0 +1,124 @@
+/**
+ * SignTeb MedCore — RTL Stylesheet
+ *
+ * اضافه‌بار برای زبان‌های راست‌به‌چپ (فارسی، عربی)
+ * این فایل فقط تفاوت‌های RTL را تعریف می‌کند.
+ *
+ * @package SignTeb_MedCore
+ */
+
+/* ── Base RTL ─────────────────────────────────────────────────────────────── */
+
+body {
+  direction: rtl;
+  text-align: right;
+}
+
+/* ── Typography overrides ──────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+  letter-spacing: 0; /* فارسی به kerning نیاز ندارد */
+}
+
+/* ── Navigation ─────────────────────────────────────────────────────────────── */
+
+.site-header__nav ul {
+  flex-direction: row;
+}
+
+.stmb-doctor-hero__inner {
+  grid-template-columns: 1fr 420px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────────── */
+
+.site-header__inner {
+  flex-direction: row-reverse;
+}
+
+/* ── Stmc Components ─────────────────────────────────────────────────────── */
+
+.stmc-breadcrumbs__list {
+  flex-direction: row;
+}
+
+.stmc-breadcrumbs__sep {
+  transform: scaleX(-1);
+}
+
+/* ── Form RTL ────────────────────────────────────────────────────────────────── */
+
+input, textarea, select {
+  text-align: right;
+}
+
+/* ── Doctor Hero RTL ─────────────────────────────────────────────────────── */
+
+.stmb-doctor-hero--split .stmb-doctor-hero__inner {
+  grid-template-columns: 1fr 420px;
+}
+
+/* ── Mobile nav RTL ──────────────────────────────────────────────────────── */
+
+.stmb-mobile-nav__panel {
+  right: 0;
+  left: auto;
+  transform: translateX(100%);
+}
+
+.stmb-mobile-nav[aria-hidden="false"] .stmb-mobile-nav__panel {
+  transform: translateX(0);
+}
+
+/* ── Before/After labels RTL ─────────────────────────────────────────────── */
+
+.stmb-ba__label--before {
+  right: 0.75rem;
+  left: auto;
+}
+
+.stmb-ba__label--after {
+  left: 0.75rem;
+  right: auto;
+}
+
+/* ── WhatsApp float ──────────────────────────────────────────────────────── */
+
+.stmc-whatsapp-float {
+  right: var(--stmc-space-6);
+  left: auto;
+}
+
+/* ── Arrows / Chevrons ───────────────────────────────────────────────────── */
+
+.stmb-service-card__link svg {
+  transform: scaleX(-1);
+}
+
+/* ── Stats separator bars ──────────────────────────────────────────────────── */
+
+.stmb-doctor-hero__stats {
+  border-right: none;
+  border-left: none;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+
+.site-footer {
+  text-align: right;
+}
+
+/* ── Admin meta tabs ──────────────────────────────────────────────────────── */
+
+.stmc-meta-tabs__nav {
+  flex-direction: row;
+}
+
+/* ── Block editor RTL overrides ──────────────────────────────────────────── */
+
+.editor-styles-wrapper {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+}

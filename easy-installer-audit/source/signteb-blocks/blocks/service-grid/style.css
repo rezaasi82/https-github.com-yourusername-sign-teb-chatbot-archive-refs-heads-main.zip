@@ -1,0 +1,85 @@
+/**
+ * SignTeb Blocks — Service Grid Styles
+ */
+
+.stmb-service-section { padding: 5rem 0; }
+
+.stmb-section-header { text-align:center; margin-bottom:3rem; }
+.stmb-section-title  { font-size:clamp(1.75rem,3vw+0.5rem,2.5rem); font-weight:800; letter-spacing:-0.025em; margin:0; }
+
+/* Grid */
+.stmb-service-grid {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.stmb-service-grid--2col { grid-template-columns: repeat(2,1fr); }
+.stmb-service-grid--3col { grid-template-columns: repeat(3,1fr); }
+.stmb-service-grid--4col { grid-template-columns: repeat(4,1fr); }
+
+/* Card base */
+.stmb-service-card {
+  border-radius: 18px;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.25,1,0.5,1);
+  display: flex;
+  flex-direction: column;
+}
+
+.stmb-service-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Glass variant */
+.stmb-service-card--glass {
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.stmb-service-card--glass:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+/* Solid variant */
+.stmb-service-card--solid {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+/* Card image */
+.stmb-service-card__img-wrap { display:block; overflow:hidden; aspect-ratio:16/9; }
+.stmb-service-card__img { width:100%; height:100%; object-fit:cover; border-radius:0; transition:transform 0.5s cubic-bezier(0.25,1,0.5,1); }
+.stmb-service-card:hover .stmb-service-card__img { transform:scale(1.04); }
+
+/* Icon (no image) */
+.stmb-service-card__icon-wrap { padding:1.5rem 1.5rem 0; }
+.stmb-service-card__icon { font-size:2.5rem; }
+
+/* Body */
+.stmb-service-card__body { padding:1.25rem 1.5rem 1.5rem; flex:1; display:flex; flex-direction:column; gap:0.5rem; }
+
+.stmb-service-card__title { font-size:1.0625rem; font-weight:700; margin:0; line-height:1.35; }
+.stmb-service-card__title a { color:#0f172a; text-decoration:none; }
+.stmb-service-card__title a:hover { color:#1a56db; }
+
+.stmb-service-card__excerpt { font-size:0.875rem; color:#64748b; margin:0; line-height:1.65; }
+
+.stmb-service-card__meta { display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:auto; padding-top:0.75rem; border-top:1px solid rgba(0,0,0,0.06); }
+
+.stmb-service-card__meta-item { display:flex; align-items:center; gap:0.3rem; font-size:0.75rem; color:#64748b; font-weight:500; }
+.stmb-service-card__price { color:#1a56db; font-weight:700; }
+
+.stmb-service-card__link { display:inline-flex; align-items:center; gap:0.25rem; font-size:0.8125rem; font-weight:700; color:#1a56db; text-decoration:none; margin-top:0.75rem; transition:gap 0.2s; }
+.stmb-service-card__link:hover { gap:0.5rem; text-decoration:none; }
+
+/* Responsive */
+@media (max-width:1024px) { .stmb-service-grid--4col { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:768px)  { .stmb-service-grid--3col,.stmb-service-grid--4col { grid-template-columns:1fr; } }
+@media (max-width:640px)  { .stmb-service-grid--2col { grid-template-columns:1fr; } }

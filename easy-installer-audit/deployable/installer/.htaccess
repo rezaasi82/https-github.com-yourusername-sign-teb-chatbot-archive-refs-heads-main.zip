@@ -1,0 +1,13 @@
+# جلوگیری از دسترسی مستقیم به فایل‌های داخلی نصب‌کننده
+# فقط از طریق install.php در روت دامنه قابل دسترسی است
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
+
+# جلوگیری از فهرست‌گیری از پوشه (در صورت غیرفعال بودن موارد بالا)
+Options -Indexes

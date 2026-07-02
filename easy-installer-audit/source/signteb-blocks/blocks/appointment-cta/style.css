@@ -1,0 +1,621 @@
+/**
+ * SignTeb Blocks — Appointment CTA Styles
+ */
+
+/* ── Section ────────────────────────────────────────────────────────────────── */
+
+.stmb-appointment-section {
+  position: relative;
+  padding: 6rem 0;
+  overflow: hidden;
+}
+
+.stmb-appointment-section--dark {
+  background: linear-gradient(160deg, #070D1A 0%, #0D1525 55%, #111D35 100%);
+  color: #e8edf5;
+}
+
+.stmb-appointment-section--light {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* Gradient accent bar */
+.stmb-appt-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1a56db 0%, #C9A84C 50%, #1a56db 100%);
+  background-size: 200% 100%;
+  animation: stmb-shimmer 3s linear infinite;
+}
+
+@keyframes stmb-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ── Inner ──────────────────────────────────────────────────────────────────── */
+
+.stmb-appt-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+
+.stmb-appt-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.stmb-appt-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(26,86,219,0.12);
+  border: 1px solid rgba(26,86,219,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #60a5fa;
+  flex-shrink: 0;
+}
+
+.stmb-appointment-section--light .stmb-appt-icon {
+  background: rgba(26,86,219,0.08);
+  color: #1a56db;
+}
+
+.stmb-appt-title {
+  font-size: clamp(1.625rem, 3vw + 0.5rem, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.375rem;
+  color: inherit;
+}
+
+.stmb-appt-subtitle {
+  font-size: 0.9375rem;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+.stmb-appointment-section--light .stmb-appt-subtitle {
+  color: #64748b;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────────── */
+
+.stmb-appt-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.stmb-appointment-section--light .stmb-appt-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+/* ── Form ───────────────────────────────────────────────────────────────────── */
+
+.stmb-appt-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stmb-appt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.stmb-appt-field--full {
+  grid-column: 1 / -1;
+}
+
+.stmb-appt-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stmb-appointment-section--light .stmb-appt-label {
+  color: #334155;
+}
+
+.stmb-appt-required {
+  color: #f87171;
+  font-size: 0.875em;
+}
+
+.stmb-appt-input {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: #e8edf5;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+}
+
+.stmb-appt-input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.stmb-appt-input:focus {
+  border-color: rgba(201,168,76,0.6);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+
+.stmb-appointment-section--light .stmb-appt-input {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.stmb-appointment-section--light .stmb-appt-input::placeholder {
+  color: #94a3b8;
+}
+
+.stmb-appointment-section--light .stmb-appt-input:focus {
+  border-color: #1a56db;
+  box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+  background: #fff;
+}
+
+.stmb-appt-select option {
+  background: #0f172a;
+  color: #e8edf5;
+}
+
+.stmb-appt-textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────────── */
+
+.stmb-appt-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.stmb-appt-submit {
+  flex-shrink: 0;
+}
+
+.stmb-appt-privacy {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  margin: 0;
+}
+
+.stmb-appointment-section--light .stmb-appt-privacy {
+  color: #94a3b8;
+}
+
+/* ── Loading spinner ─────────────────────────────────────────────────────────── */
+
+@keyframes stmb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.stmb-spinner {
+  animation: stmb-spin 0.8s linear infinite;
+}
+
+/* ── Success / Error ─────────────────────────────────────────────────────────── */
+
+.stmb-appt-success {
+  text-align: center;
+  padding: 2rem;
+}
+
+.stmb-appt-success__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.stmb-appt-success__msg {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.7;
+}
+
+.stmb-appt-error {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.25);
+  color: #fca5a5;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Contact strip ──────────────────────────────────────────────────────────── */
+
+.stmb-appt-contact-strip {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.stmb-appointment-section--light .stmb-appt-contact-strip {
+  color: #94a3b8;
+}
+
+.stmb-appt-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.stmb-appt-contact-link:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.stmb-appt-contact-link--wa:hover {
+  color: #25D366;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .stmb-appt-row {
+    grid-template-columns: 1fr;
+  }
+
+  .stmb-appt-card {
+    padding: 1.5rem;
+  }
+
+  .stmb-appt-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stmb-appt-submit {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATE / TIME PICKER — تقویم رزرو نوبت
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stmb-appt-step-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.stmb-appointment-section--light .stmb-appt-step-label {
+  color: #0f172a;
+}
+
+.stmb-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C9A84C, #A07830);
+  color: #0f172a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stmb-appt-step-2 {
+  margin-top: 1.75rem;
+}
+
+/* ── Calendar widget ──────────────────────────────────────────────────────── */
+
+.stmb-calendar {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.stmb-appointment-section--light .stmb-calendar {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.stmb-calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.stmb-cal-nav {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stmb-cal-nav:hover {
+  background: rgba(201,168,76,0.15);
+  border-color: rgba(201,168,76,0.3);
+  color: #E8C97A;
+}
+
+.stmb-cal-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stmb-appointment-section--light .stmb-cal-nav {
+  background: #fff;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.stmb-cal-month-label {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stmb-appointment-section--light .stmb-cal-month-label {
+  color: #0f172a;
+}
+
+.stmb-calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.5rem;
+}
+
+.stmb-calendar__weekdays span {
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  padding: 0.375rem 0;
+}
+
+.stmb-appointment-section--light .stmb-calendar__weekdays span {
+  color: #94a3b8;
+}
+
+.stmb-calendar__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.stmb-cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: rgba(255,255,255,0.03);
+  transition: all 0.2s;
+  position: relative;
+}
+
+.stmb-appointment-section--light .stmb-cal-day {
+  color: #334155;
+  background: #fff;
+  border-color: #f1f5f9;
+}
+
+.stmb-cal-day.empty {
+  visibility: hidden;
+  cursor: default;
+}
+
+.stmb-cal-day.has-slots:hover {
+  background: rgba(201,168,76,0.15);
+  border-color: rgba(201,168,76,0.4);
+  color: #E8C97A;
+  transform: translateY(-1px);
+}
+
+.stmb-cal-day.no-slots {
+  color: rgba(255,255,255,0.15);
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.stmb-appointment-section--light .stmb-cal-day.no-slots {
+  color: #cbd5e1;
+}
+
+.stmb-cal-day.is-today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #60a5fa;
+}
+
+.stmb-cal-day.is-selected {
+  background: linear-gradient(135deg, #C9A84C, #A07830);
+  color: #0f172a;
+  border-color: transparent;
+  font-weight: 800;
+}
+
+.stmb-calendar__loading {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ── Slots grid ───────────────────────────────────────────────────────────── */
+
+.stmb-slots-wrap {
+  margin-bottom: 1.25rem;
+}
+
+.stmb-slots-label {
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.75rem;
+}
+
+.stmb-appointment-section--light .stmb-slots-label {
+  color: #64748b;
+}
+
+.stmb-slots-label strong {
+  color: #E8C97A;
+}
+
+.stmb-appointment-section--light .stmb-slots-label strong {
+  color: #1a56db;
+}
+
+.stmb-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.stmb-slot-btn {
+  padding: 0.625rem 0.5rem;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.8);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stmb-appointment-section--light .stmb-slot-btn {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #334155;
+}
+
+.stmb-slot-btn:hover {
+  border-color: rgba(201,168,76,0.4);
+  background: rgba(201,168,76,0.1);
+  color: #E8C97A;
+}
+
+.stmb-slot-btn.is-selected {
+  background: linear-gradient(135deg, #C9A84C, #A07830);
+  border-color: transparent;
+  color: #0f172a;
+}
+
+.stmb-no-slots {
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* ── Selected summary ─────────────────────────────────────────────────────── */
+
+.stmb-selected-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.125rem;
+  border-radius: 12px;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.25);
+  color: #6ee7b7;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.stmb-appointment-section--light .stmb-selected-summary {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.stmb-summary-text {
+  color: inherit;
+}
+
+.stmb-change-time {
+  margin-right: auto;
+  background: transparent;
+  border: none;
+  color: inherit;
+  text-decoration: underline;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+@media (max-width: 480px) {
+  .stmb-slots-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

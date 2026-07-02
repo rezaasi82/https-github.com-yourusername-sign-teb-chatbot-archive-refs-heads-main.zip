@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/stats-counter",
+  "version": "1.0.0",
+  "title": "Stats Counter",
+  "category": "signteb-medical",
+  "icon": "chart-bar",
+  "description": "شمارنده آماری انیمیشنی — سال تجربه، تعداد بیماران، موفقیت",
+  "textdomain": "signteb-blocks",
+  "supports": { "html": false, "align": ["wide", "full"] },
+  "attributes": {
+    "theme":  { "type": "string", "default": "dark" },
+    "columns":{ "type": "number", "default": 4 },
+    "stats":  {
+      "type": "array",
+      "default": [
+        { "value": 15, "suffix": "+", "label": "سال تجربه" },
+        { "value": 5000, "suffix": "+", "label": "بیمار درمان شده" },
+        { "value": 98, "suffix": "%", "label": "رضایت بیماران" },
+        { "value": 12, "suffix": "+", "label": "تخصص پزشکی" }
+      ]
+    }
+  },
+  "style":      "file:./style.css",
+  "render":     "file:./render.php",
+  "viewScript": "file:./view.js"
+}

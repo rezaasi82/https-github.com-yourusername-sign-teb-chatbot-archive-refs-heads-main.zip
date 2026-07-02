@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/doctor-card-grid",
+  "version": "1.0.0",
+  "title": "Doctor Card Grid",
+  "category": "signteb-medical",
+  "icon": "admin-users",
+  "description": "گرید کارت‌های پزشک با فیلتر تخصص و مکان",
+  "textdomain": "signteb-blocks",
+  "supports": { "html": false, "align": ["wide","full"] },
+  "attributes": {
+    "columns":       { "type": "number", "default": 3 },
+    "perPage":       { "type": "number", "default": 6 },
+    "specialtySlug": { "type": "string", "default": "" },
+    "locationSlug":  { "type": "string", "default": "" },
+    "showFilter":    { "type": "boolean","default": false },
+    "title":         { "type": "string", "default": "" }
+  },
+  "style":  "file:./style.css",
+  "render": "file:./render.php"
+}

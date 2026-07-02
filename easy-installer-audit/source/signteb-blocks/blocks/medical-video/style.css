@@ -1,0 +1,13 @@
+/**
+ * Medical Video — Styles
+ */
+.stmb-video-wrap { margin:2rem auto; max-width:900px; }
+.stmb-video { position:relative; border-radius:20px; overflow:hidden; cursor:pointer; aspect-ratio:16/9; background:#070D1A; box-shadow:0 20px 60px rgba(0,0,0,0.25); }
+.stmb-video__thumb,.stmb-video__thumb-placeholder { width:100%; height:100%; object-fit:cover; border-radius:0; display:block; transition:transform 0.4s ease; }
+.stmb-video__thumb-placeholder { background:linear-gradient(135deg,#0D1525,#1a3a6a); }
+.stmb-video:hover .stmb-video__thumb { transform:scale(1.03); }
+.stmb-video__play { position:absolute; inset:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.25); border:none; cursor:pointer; color:#fff; }
+.stmb-video__play svg { width:64px; height:64px; background:rgba(26,86,219,0.9); border-radius:50%; padding:14px; box-shadow:0 8px 32px rgba(26,86,219,0.5); transition:transform 0.25s ease; }
+.stmb-video:hover .stmb-video__play svg { transform:scale(1.08); }
+.stmb-video iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
+.stmb-video__caption { text-align:center; font-size:0.875rem; color:#64748b; margin-top:0.75rem; }

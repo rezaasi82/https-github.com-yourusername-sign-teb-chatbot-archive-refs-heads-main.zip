@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/contact-cta",
+  "version": "1.0.0",
+  "title": "Contact CTA",
+  "category": "signteb-medical",
+  "icon": "phone",
+  "description": "بنر تماس با کلینیک — تلفن، WhatsApp، ایمیل — Glass dark",
+  "textdomain": "signteb-blocks",
+  "supports": { "html": false, "align": ["wide","full"] },
+  "attributes": {
+    "title":    { "type":"string","default":"آماده‌ایم پاسخگوی سؤالات شما باشیم" },
+    "subtitle": { "type":"string","default":"تیم پزشکی ما ۲۴ ساعته در دسترس است" },
+    "phone":    { "type":"string","default":"" },
+    "whatsapp": { "type":"string","default":"" },
+    "email":    { "type":"string","default":"" },
+    "theme":    { "type":"string","default":"dark" }
+  },
+  "style":  "file:./style.css",
+  "render": "file:./render.php"
+}

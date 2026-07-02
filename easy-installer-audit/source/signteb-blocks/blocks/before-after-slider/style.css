@@ -1,0 +1,130 @@
+/**
+ * SignTeb Blocks — Before/After Slider Styles
+ */
+
+.stmb-ba-wrap { margin: 2rem auto; max-width: 800px; }
+
+.stmb-ba {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  user-select: none;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+/* Images */
+.stmb-ba__after,
+.stmb-ba__before {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.stmb-ba__before {
+  right: auto;
+  width: 50%;
+  border-right: 2px solid #fff;
+}
+
+[dir="ltr"] .stmb-ba__before {
+  left: 0;
+  right: auto;
+  border-right: none;
+  border-left: 2px solid #fff;
+}
+
+.stmb-ba__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+/* After image is full-width background */
+.stmb-ba__after { width: 100%; }
+.stmb-ba__after .stmb-ba__img { width: 100%; }
+
+/* Labels */
+.stmb-ba__label {
+  position: absolute;
+  bottom: 1rem;
+  padding: 0.35em 0.85em;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.stmb-ba__label--before {
+  right: 0.75rem;
+  background: rgba(15,23,42,0.65);
+  color: #fff;
+}
+
+.stmb-ba__label--after {
+  left: 0.75rem;
+  background: rgba(26,86,219,0.75);
+  color: #fff;
+}
+
+[dir="ltr"] .stmb-ba__label--before { right: auto; left: 0.75rem; }
+[dir="ltr"] .stmb-ba__label--after  { left: auto;  right: 0.75rem; }
+
+/* Handle */
+.stmb-ba__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  transform: translateX(50%);
+  z-index: 10;
+  pointer-events: none;
+}
+
+[dir="ltr"] .stmb-ba__handle { transform: translateX(-50%); left: auto; }
+
+.stmb-ba__handle-line {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+}
+
+.stmb-ba__handle-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  z-index: 1;
+  transition: transform 0.2s ease;
+}
+
+.stmb-ba:active .stmb-ba__handle-btn {
+  transform: scale(0.92);
+}
+
+.stmb-ba__caption {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 0.75rem;
+}

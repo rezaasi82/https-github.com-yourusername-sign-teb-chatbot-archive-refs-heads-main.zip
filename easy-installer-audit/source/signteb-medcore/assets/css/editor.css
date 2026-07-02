@@ -1,0 +1,44 @@
+/**
+ * SignTeb MedCore — Block Editor Styles
+ * این فایل در محیط Gutenberg بارگذاری می‌شود.
+ */
+
+.editor-styles-wrapper {
+  font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+  direction: rtl;
+  color: #0f172a;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4,
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6 {
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.editor-styles-wrapper h1 { font-size: clamp(2.25rem, 4vw, 3.5rem); font-weight: 800; }
+.editor-styles-wrapper h2 { font-size: 2rem; }
+.editor-styles-wrapper h3 { font-size: 1.5rem; }
+
+.editor-styles-wrapper p { line-height: 1.8; margin-bottom: 1rem; }
+
+.editor-styles-wrapper a { color: #1a56db; }
+
+/* Max content width */
+.wp-block {
+  max-width: 760px;
+}
+
+.wp-block[data-align="wide"] {
+  max-width: 1240px;
+}
+
+.wp-block[data-align="full"] {
+  max-width: 100%;
+}

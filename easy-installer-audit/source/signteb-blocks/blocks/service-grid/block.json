@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "signteb/service-grid",
+  "version": "1.0.0",
+  "title": "Service Grid",
+  "category": "signteb-medical",
+  "icon": "grid-view",
+  "description": "گرید خدمات پزشکی — خودکار از CPT یا دستی — ۲، ۳ یا ۴ ستون",
+  "keywords": ["service", "grid", "خدمات", "گرید"],
+  "textdomain": "signteb-blocks",
+  "supports": { "html": false, "align": ["wide", "full"] },
+  "attributes": {
+    "columns":       { "type": "number",  "default": 3 },
+    "postsPerPage":  { "type": "number",  "default": 6 },
+    "specialtySlug": { "type": "string",  "default": "" },
+    "showExcerpt":   { "type": "boolean", "default": true },
+    "showDuration":  { "type": "boolean", "default": true },
+    "showPrice":     { "type": "boolean", "default": false },
+    "cardStyle":     { "type": "string",  "default": "glass" },
+    "title":         { "type": "string",  "default": "" }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

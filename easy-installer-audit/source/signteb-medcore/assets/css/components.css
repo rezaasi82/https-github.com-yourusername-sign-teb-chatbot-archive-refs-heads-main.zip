@@ -1,0 +1,447 @@
+/**
+ * SignTeb MedCore — Components CSS
+ * کامپوننت‌های تخصصی (deferred load)
+ */
+
+/* ── Accordion ────────────────────────────────────────────────────────────── */
+
+.stmc-accordion { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.stmc-accordion__item {
+  border: 1px solid var(--stmc-border);
+  border-radius: var(--stmc-radius-lg);
+  overflow: hidden;
+  transition: var(--stmc-transition-smooth);
+}
+
+.stmc-accordion__item.is-open {
+  border-color: rgba(26,86,219,0.25);
+  box-shadow: var(--stmc-shadow-blue);
+}
+
+.stmc-accordion__btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.125rem 1.25rem;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: var(--stmc-text-base);
+  font-weight: 600;
+  color: var(--stmc-navy);
+  cursor: pointer;
+  text-align: right;
+  transition: var(--stmc-transition-fast);
+}
+
+.stmc-accordion__btn:hover { background: rgba(26,86,219,0.03); }
+.stmc-accordion__btn svg { color: var(--stmc-blue); flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
+.stmc-accordion__item.is-open .stmc-accordion__btn svg { transform: rotate(180deg); }
+
+.stmc-accordion__panel {
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.25,1,0.5,1);
+}
+
+.stmc-accordion__panel-inner {
+  padding: 0 1.25rem 1.25rem;
+  font-size: var(--stmc-text-sm);
+  line-height: 1.8;
+  color: var(--stmc-slate);
+  border-top: 1px solid var(--stmc-border);
+}
+
+/* ── Breadcrumbs ──────────────────────────────────────────────────────────── */
+
+.stmc-breadcrumbs { padding: 0.875rem 0; }
+
+.stmc-breadcrumbs__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--stmc-text-sm);
+}
+
+.stmc-breadcrumbs__link {
+  color: var(--stmc-slate);
+  text-decoration: none;
+}
+
+.stmc-breadcrumbs__link:hover { color: var(--stmc-blue); }
+
+.stmc-breadcrumbs__current {
+  color: var(--stmc-navy);
+  font-weight: 600;
+}
+
+.stmc-breadcrumbs__sep {
+  color: var(--stmc-slate-lighter);
+  font-size: 0.75rem;
+  list-style: none;
+}
+
+/* ── Pagination ───────────────────────────────────────────────────────────── */
+
+.stmc-pagination__list {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  list-style: none;
+  margin: var(--stmc-space-12) 0;
+  padding: 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.stmc-pagination__item a,
+.stmc-pagination__item span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--stmc-radius-md);
+  font-size: var(--stmc-text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--stmc-transition-fast);
+  border: 1.5px solid var(--stmc-border);
+  color: var(--stmc-slate);
+  background: var(--stmc-pure-white);
+}
+
+.stmc-pagination__item a:hover {
+  background: var(--stmc-blue-light);
+  border-color: var(--stmc-blue);
+  color: var(--stmc-blue);
+}
+
+.stmc-pagination__item .current {
+  background: var(--stmc-blue);
+  border-color: var(--stmc-blue);
+  color: white;
+}
+
+/* ── Before/After Slider ─────────────────────────────────────────────────── */
+
+.stmc-before-after {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--stmc-radius-2xl);
+  box-shadow: var(--stmc-shadow-xl);
+  user-select: none;
+  touch-action: none;
+  cursor: col-resize;
+}
+
+.stmc-ba-after,
+.stmc-ba-before {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.stmc-ba-before { right: auto; border-left: 2px solid white; }
+.stmc-ba-after  { width: 100%; }
+
+.stmc-ba-after img,
+.stmc-ba-before img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+.stmc-ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: white;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.stmc-ba-handle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: var(--stmc-shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--stmc-navy);
+}
+
+/* ── Cluster Links ────────────────────────────────────────────────────────── */
+
+.stmc-cluster-links {
+  margin-top: var(--stmc-space-12);
+  padding: var(--stmc-space-8);
+  background: var(--stmc-blue-light);
+  border-radius: var(--stmc-radius-xl);
+  border: 1px solid rgba(26,86,219,0.1);
+}
+
+.stmc-cluster-links__title {
+  font-size: var(--stmc-text-lg);
+  font-weight: 700;
+  color: var(--stmc-blue-dark);
+  margin-bottom: var(--stmc-space-4);
+}
+
+.stmc-cluster-links__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--stmc-space-2);
+}
+
+.stmc-cluster-link {
+  font-size: var(--stmc-text-sm);
+  color: var(--stmc-blue);
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.stmc-cluster-link::before { content: '←'; font-size: 0.75em; }
+.stmc-cluster-link:hover { text-decoration: underline; }
+
+/* ── Auto-links (internal linking engine) ────────────────────────────────── */
+
+.stmc-auto-link {
+  color: var(--stmc-blue);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+.stmc-auto-link:hover {
+  text-decoration-style: solid;
+}
+
+/* ── Social Share ─────────────────────────────────────────────────────────── */
+
+.stmc-share-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--stmc-space-3);
+  flex-wrap: wrap;
+  margin: var(--stmc-space-8) 0;
+}
+
+.stmc-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--stmc-radius-full);
+  font-size: var(--stmc-text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--stmc-transition-smooth);
+  border: 1.5px solid transparent;
+}
+
+.stmc-share-btn--telegram { background: #E3F2FD; color: #0088cc; border-color: rgba(0,136,204,0.2); }
+.stmc-share-btn--whatsapp { background: #E8F5E9; color: #25D366; border-color: rgba(37,211,102,0.2); }
+.stmc-share-btn--linkedin { background: #E3F2FD; color: #0077b5; border-color: rgba(0,119,181,0.2); }
+.stmc-share-btn--copy     { background: var(--stmc-white); color: var(--stmc-slate); border-color: var(--stmc-border); }
+
+.stmc-share-btn:hover { transform: translateY(-2px); box-shadow: var(--stmc-shadow-sm); text-decoration: none; }
+
+/* ── Appointment form in card context ────────────────────────────────────── */
+
+.stmb-appointment-form {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.stmb-appointment-form--glass {
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: var(--stmc-radius-2xl);
+  padding: var(--stmc-space-10);
+  box-shadow: var(--stmc-shadow-glass);
+}
+
+.stmb-appointment-form__title {
+  font-size: var(--stmc-text-2xl);
+  font-weight: 800;
+  margin-bottom: var(--stmc-space-2);
+}
+
+.stmb-appointment-form__doctor {
+  font-size: var(--stmc-text-sm);
+  color: var(--stmc-slate);
+  margin-bottom: var(--stmc-space-6);
+}
+
+.stmc-appointment-form__notice {
+  font-size: var(--stmc-text-xs);
+  color: var(--stmc-blue-dark);
+  background: var(--stmc-blue-light);
+  border: 1px solid rgba(26,86,219,0.15);
+  border-radius: var(--stmc-radius-md);
+  padding: var(--stmc-space-3) var(--stmc-space-4);
+  margin-bottom: var(--stmc-space-5);
+  line-height: 1.7;
+}
+
+.stmb-appointment-form__messages {
+  padding: var(--stmc-space-3) var(--stmc-space-4);
+  border-radius: var(--stmc-radius-md);
+  font-size: var(--stmc-text-sm);
+  margin-bottom: var(--stmc-space-4);
+}
+
+.stmb-appointment-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stmc-space-4);
+}
+
+.stmc-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--stmc-space-4);
+}
+
+.stmc-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stmc-space-2);
+}
+
+.stmb-appointment-form .stmc-form-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stmc-space-3);
+  align-items: center;
+}
+
+.stmc-form-privacy {
+  font-size: var(--stmc-text-xs);
+  color: var(--stmc-slate-light);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stmb-appt-submit {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .stmc-form-row { grid-template-columns: 1fr; }
+}
+
+/* ── Review Form (فرم ثبت نظر بیماران) ───────────────────────────────────── */
+
+.stmc-review-form {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--stmc-pure-white);
+  border: 1px solid var(--stmc-border);
+  border-radius: var(--stmc-radius-xl);
+  padding: var(--stmc-space-8);
+  box-shadow: var(--stmc-shadow-sm);
+}
+
+.stmc-review-form__title {
+  font-size: var(--stmc-text-xl);
+  font-weight: 800;
+  margin-bottom: var(--stmc-space-2);
+}
+
+.stmc-review-form__doctor {
+  font-size: var(--stmc-text-sm);
+  color: var(--stmc-slate);
+  margin-bottom: var(--stmc-space-6);
+}
+
+.stmc-review-form__success {
+  text-align: center;
+  padding: var(--stmc-space-8) var(--stmc-space-4);
+}
+
+.stmc-review-form__success-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--stmc-space-3);
+}
+
+.stmc-review-form__error {
+  padding: var(--stmc-space-3) var(--stmc-space-4);
+  border-radius: var(--stmc-radius-md);
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: var(--stmc-text-sm);
+  margin-bottom: var(--stmc-space-4);
+}
+
+.stmc-review-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stmc-space-4);
+}
+
+/* Honeypot — کاملاً مخفی از کاربر واقعی، فقط بات‌ها پر می‌کنند */
+.stmc-review-form__honeypot {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Clickable star rating */
+.stmc-rating-input {
+  display: flex;
+  flex-direction: row-reverse; /* راست به چپ: ستاره ۵ سمت راست */
+  gap: 0.25rem;
+  font-size: 1.75rem;
+}
+
+.stmc-rating-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--stmc-slate-lighter);
+  padding: 0;
+  line-height: 1;
+  transition: var(--stmc-transition-fast);
+}
+
+.stmc-rating-star:hover,
+.stmc-rating-star.is-active {
+  color: var(--stmc-amber);
+  transform: scale(1.1);
+}
+
+.stmc-review-submit {
+  width: 100%;
+  justify-content: center;
+}
