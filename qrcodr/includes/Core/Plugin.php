@@ -4,6 +4,7 @@ namespace QRCODR\Core;
 
 use QRCODR\Redirect\RedirectController;
 use QRCODR\Admin\Menu;
+use QRCODR\Frontend\Shortcode;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -20,6 +21,8 @@ class Plugin
         add_filter('query_vars', array(RedirectController::class, 'register_query_var'));
         add_action('init', array(RedirectController::class, 'register_rewrite_rule'));
         add_action('template_redirect', array(RedirectController::class, 'handle_request'));
+
+        Shortcode::init();
 
         if (is_admin()) {
             Menu::init();

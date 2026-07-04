@@ -78,6 +78,13 @@ class EditPage
                         <th><?php esc_html_e('لینک کوتاه (ثابت)', 'qrcodr'); ?></th>
                         <td><code id="qrcodr-short-url" data-short-url="<?php echo esc_attr($short_url); ?>"><?php echo esc_html($short_url); ?></code></td>
                     </tr>
+                    <tr>
+                        <th><?php esc_html_e('شورت‌کد نمایش در سایت', 'qrcodr'); ?></th>
+                        <td>
+                            <code>[qrcodr id="<?php echo esc_html($code->id); ?>"]</code>
+                            <p class="description"><?php esc_html_e('این شورت‌کد را در هر صفحه یا نوشته قرار دهید تا همین QR Code (با لینک قابل‌تغییر) برای بازدیدکنندگان نمایش داده شود.', 'qrcodr'); ?></p>
+                        </td>
+                    </tr>
                     <?php endif; ?>
                 </table>
 

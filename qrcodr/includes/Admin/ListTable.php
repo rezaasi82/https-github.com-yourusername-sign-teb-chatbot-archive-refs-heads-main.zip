@@ -33,6 +33,7 @@ class ListTable
                     <tr>
                         <th><?php esc_html_e('عنوان', 'qrcodr'); ?></th>
                         <th><?php esc_html_e('لینک کوتاه', 'qrcodr'); ?></th>
+                        <th><?php esc_html_e('شورت‌کد نمایش در سایت', 'qrcodr'); ?></th>
                         <th><?php esc_html_e('مقصد فعلی', 'qrcodr'); ?></th>
                         <th><?php esc_html_e('وضعیت', 'qrcodr'); ?></th>
                         <th><?php esc_html_e('تعداد اسکن', 'qrcodr'); ?></th>
@@ -41,13 +42,14 @@ class ListTable
                 </thead>
                 <tbody>
                     <?php if (empty($codes)) : ?>
-                        <tr><td colspan="6"><?php esc_html_e('هنوز QR Code ای ساخته نشده است.', 'qrcodr'); ?></td></tr>
+                        <tr><td colspan="7"><?php esc_html_e('هنوز QR Code ای ساخته نشده است.', 'qrcodr'); ?></td></tr>
                     <?php else : ?>
                         <?php foreach ($codes as $code) : ?>
                             <?php $short_url = home_url('qr/' . $code->short_code); ?>
                             <tr>
                                 <td><strong><?php echo esc_html($code->title); ?></strong></td>
                                 <td><a href="<?php echo esc_url($short_url); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($short_url); ?></a></td>
+                                <td><code>[qrcodr id="<?php echo esc_html($code->id); ?>"]</code></td>
                                 <td><?php echo esc_html($code->destination_url); ?></td>
                                 <td><?php echo $code->status === 'active' ? esc_html__('فعال', 'qrcodr') : esc_html__('متوقف', 'qrcodr'); ?></td>
                                 <td><?php echo esc_html($code->scan_count); ?></td>
