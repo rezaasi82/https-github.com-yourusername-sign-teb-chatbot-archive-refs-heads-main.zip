@@ -1,0 +1,12 @@
+{
+    "name": "signteb/signteb-web-chat",
+    "description": "SignTeb AI Web Chat — standalone, white-label intelligent medical chat widget for any WordPress site.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.0"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

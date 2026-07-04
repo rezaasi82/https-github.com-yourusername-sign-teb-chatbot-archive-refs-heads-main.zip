@@ -1,0 +1,12 @@
+/* Self-hosted Vazirmatn. The widget only enqueues this file when
+   assets/fonts/vazirmatn.woff2 is actually bundled, so it never 404s on a
+   clean checkout. Drop the woff2 in this folder to enable the bundled font;
+   otherwise the widget falls back to the Vazirmatn/Tahoma system stack. */
+
+@font-face {
+	font-family: "Vazirmatn";
+	src: url("vazirmatn.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+}
