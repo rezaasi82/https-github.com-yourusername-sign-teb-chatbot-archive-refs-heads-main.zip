@@ -25,6 +25,7 @@ $options = [
     'swc_settings',
     'swc_api_key_anthropic_enc',
     'swc_api_key_openai_enc',
+    'swc_api_key_gapgpt_enc',
     'swc_fallback_salt',
     'swc_license',
     'swc_trial_used',

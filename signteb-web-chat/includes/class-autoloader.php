@@ -36,6 +36,7 @@ class SWC_Autoloader
         'SWC_AI_Provider_Interface'   => 'ai/interface-ai-provider.php',
         'SWC_Provider_Anthropic'      => 'ai/class-provider-anthropic.php',
         'SWC_Provider_OpenAI'         => 'ai/class-provider-openai.php',
+        'SWC_Provider_GapGPT'         => 'ai/class-provider-gapgpt.php',
         'SWC_AI_Manager'              => 'ai/class-ai-manager.php',
         'SWC_System_Prompt_Builder'   => 'ai/class-system-prompt-builder.php',
         'SWC_Language_Detector'       => 'ai/class-language-detector.php',

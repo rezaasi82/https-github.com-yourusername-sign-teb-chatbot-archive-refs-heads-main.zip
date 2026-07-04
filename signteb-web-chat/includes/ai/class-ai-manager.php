@@ -150,13 +150,31 @@ class SWC_AI_Manager
         if ($key === '') {
             return null;
         }
-        return $id === 'openai' ? new SWC_Provider_OpenAI($key) : new SWC_Provider_Anthropic($key);
+        switch ($id) {
+            case 'openai':
+                return new SWC_Provider_OpenAI($key);
+            case 'gapgpt':
+                return new SWC_Provider_GapGPT($key);
+            default:
+                return new SWC_Provider_Anthropic($key);
+        }
     }
 
+    /**
+     * First configured provider other than the one that just failed.
+     */
     private function make_fallback_provider(string $primary_id): ?SWC_AI_Provider_Interface
     {
-        $other = $primary_id === 'anthropic' ? 'openai' : 'anthropic';
-        return $this->make_provider($other);
+        foreach (['gapgpt', 'anthropic', 'openai'] as $id) {
+            if ($id === $primary_id) {
+                continue;
+            }
+            $provider = $this->make_provider($id);
+            if ($provider !== null) {
+                return $provider;
+            }
+        }
+        return null;
     }
 
     private function model_for(string $provider_id): string
@@ -165,7 +183,7 @@ class SWC_AI_Manager
         if ($model !== '') {
             return $model;
         }
-        return $provider_id === 'openai' ? 'gpt-4o-mini' : 'claude-haiku-4-5-20251001';
+        return $provider_id === 'anthropic' ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
     }
 
     private function graceful_fallback(int $conversation_id, string $reason): array

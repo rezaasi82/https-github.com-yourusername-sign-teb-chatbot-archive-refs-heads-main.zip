@@ -34,9 +34,10 @@ class SWC_Activator
             'enabled'            => 1,
 
             // --- AI provider ---
-            'provider'           => 'anthropic', // anthropic | openai
+            'provider'           => 'anthropic', // anthropic | openai | gapgpt
             'model_anthropic'    => 'claude-haiku-4-5-20251001',
             'model_openai'       => 'gpt-4o-mini',
+            'model_gapgpt'       => 'gpt-4o-mini',
 
             // --- Personality / language ---
             'tone'               => 'friendly', // friendly | formal

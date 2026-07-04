@@ -29,6 +29,7 @@ if (! defined('ABSPATH')) {
                     <select name="provider" id="swc-provider">
                         <option value="anthropic" <?php selected($s->active_provider(), 'anthropic'); ?>>Anthropic Claude</option>
                         <option value="openai" <?php selected($s->active_provider(), 'openai'); ?>>OpenAI</option>
+                        <option value="gapgpt" <?php selected($s->active_provider(), 'gapgpt'); ?>>GapGPT (گیت‌وی ایران‌پسند)</option>
                     </select>
                     <p class="description"><?php esc_html_e('فیلدهای کلید و مدلِ همان سرویس در پایین نمایش داده می‌شوند.', 'signteb-web-chat'); ?></p>
                 </td>
@@ -75,6 +76,31 @@ if (! defined('ABSPATH')) {
                         <option value="gpt-4.1-mini"></option>
                     </datalist>
                     <p class="description"><?php esc_html_e('پیش‌فرض: gpt-4o-mini. قابل تغییر دستی.', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
+            </tbody>
+
+            <tbody class="swc-provider-block" data-provider="gapgpt">
+            <tr>
+                <th><?php esc_html_e('کلید GapGPT', 'signteb-web-chat'); ?></th>
+                <td>
+                    <input type="password" name="api_key_gapgpt" value="" class="regular-text" autocomplete="new-password"
+                           placeholder="<?php echo $s->has_api_key('gapgpt') ? esc_attr__('•••••••• (ذخیره‌شده)', 'signteb-web-chat') : 'sk-…'; ?>">
+                    <p class="description"><?php esc_html_e('گیت‌وی سازگار با OpenAI و در دسترس از داخل ایران (api.gapgpt.app). از داشبورد GapGPT کلید بگیرید.', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('مدل GapGPT', 'signteb-web-chat'); ?></th>
+                <td>
+                    <input list="swc-models-gapgpt" name="model_gapgpt" value="<?php echo esc_attr($s->get('model_gapgpt', 'gpt-4o-mini')); ?>" class="regular-text">
+                    <datalist id="swc-models-gapgpt">
+                        <option value="gpt-4o-mini"></option>
+                        <option value="gpt-4o"></option>
+                        <option value="claude-haiku-4-5-20251001"></option>
+                        <option value="claude-sonnet-5"></option>
+                        <option value="gemini-2.0-flash"></option>
+                    </datalist>
+                    <p class="description"><?php esc_html_e('GapGPT هم مدل‌های GPT و هم Claude را ارائه می‌دهد. پیش‌فرض: gpt-4o-mini.', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
             </tbody>

@@ -68,6 +68,11 @@
 	box-shadow: 0 24px 60px rgba(15, 31, 61, 0.35);
 	animation: swc-pop 0.2s ease;
 }
+/* The `hidden` attribute must win over the display:flex above, otherwise the
+   panel can never close/minimize. Higher specificity than `.swc-panel`. */
+.swc-panel[hidden] {
+	display: none !important;
+}
 @keyframes swc-pop {
 	from { opacity: 0; transform: translateY(14px) scale(0.97); }
 	to   { opacity: 1; transform: translateY(0) scale(1); }

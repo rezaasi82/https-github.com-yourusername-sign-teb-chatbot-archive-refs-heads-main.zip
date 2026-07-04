@@ -47,9 +47,10 @@ class SWC_Settings_Page
 
         if ($tab === 'provider') {
             $update['enabled']            = isset($in['enabled']) ? 1 : 0;
-            $update['provider']           = in_array(($in['provider'] ?? 'anthropic'), ['anthropic', 'openai'], true) ? $in['provider'] : 'anthropic';
+            $update['provider']           = in_array(($in['provider'] ?? 'anthropic'), ['anthropic', 'openai', 'gapgpt'], true) ? $in['provider'] : 'anthropic';
             $update['model_anthropic']    = sanitize_text_field($in['model_anthropic'] ?? 'claude-haiku-4-5-20251001');
             $update['model_openai']       = sanitize_text_field($in['model_openai'] ?? 'gpt-4o-mini');
+            $update['model_gapgpt']       = sanitize_text_field($in['model_gapgpt'] ?? 'gpt-4o-mini');
             $update['tone']               = ($in['tone'] ?? 'friendly') === 'formal' ? 'formal' : 'friendly';
             $update['language']           = in_array(($in['language'] ?? 'auto'), ['auto', 'fa', 'ar', 'en'], true) ? $in['language'] : 'auto';
             $update['rate_limit_per_min'] = max(1, (int) ($in['rate_limit_per_min'] ?? 8));
@@ -59,6 +60,9 @@ class SWC_Settings_Page
             }
             if (isset($in['api_key_openai']) && trim((string) $in['api_key_openai']) !== '') {
                 SWC_Settings::save_api_key('openai', (string) $in['api_key_openai']);
+            }
+            if (isset($in['api_key_gapgpt']) && trim((string) $in['api_key_gapgpt']) !== '') {
+                SWC_Settings::save_api_key('gapgpt', (string) $in['api_key_gapgpt']);
             }
         } elseif ($tab === 'clinic') {
             $update['clinic_name']      = sanitize_text_field($in['clinic_name'] ?? '');

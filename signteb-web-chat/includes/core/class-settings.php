@@ -21,6 +21,7 @@ class SWC_Settings
     private const KEY_OPTIONS = [
         'anthropic' => 'swc_api_key_anthropic_enc',
         'openai'    => 'swc_api_key_openai_enc',
+        'gapgpt'    => 'swc_api_key_gapgpt_enc',
     ];
 
     private array $data;
@@ -63,7 +64,7 @@ class SWC_Settings
         if ($model !== '') {
             return $model;
         }
-        return $provider === 'openai' ? 'gpt-4o-mini' : 'claude-haiku-4-5-20251001';
+        return $provider === 'anthropic' ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
     }
 
     /**
