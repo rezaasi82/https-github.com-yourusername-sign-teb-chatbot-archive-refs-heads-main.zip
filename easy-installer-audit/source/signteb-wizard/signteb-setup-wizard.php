@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Setup Wizard
  * Plugin URI:        https://signteb.com/medcore
  * Description:       ویزارد راه‌اندازی ۶ مرحله‌ای SignTeb MedCore — برند، کلینیک، تماس، دمو، پلاگین‌ها، پایان
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            SignTeb
