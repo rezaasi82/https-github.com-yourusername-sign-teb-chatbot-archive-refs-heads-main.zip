@@ -115,6 +115,7 @@
 	flex: 1;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain;
 	scroll-behavior: smooth;
 	padding: 16px;
 	display: flex;
@@ -182,7 +183,8 @@
 	border: 1.5px solid rgba(15, 31, 61, 0.15);
 	border-radius: 12px;
 	padding: 0 14px;
-	font-size: 15px;
+	/* 16px prevents iOS Safari auto-zoom/shift on focus. */
+	font-size: 16px;
 	font-family: inherit;
 	background: #fff;
 	outline: none;
@@ -285,7 +287,8 @@
 	border: 1.5px solid rgba(15, 31, 61, 0.15);
 	border-radius: 14px;
 	padding: 0 14px;
-	font-size: 15px;
+	/* 16px prevents iOS Safari from auto-zooming (and shifting the page) on focus. */
+	font-size: 16px;
 	font-family: inherit;
 	outline: none;
 	background: #f6f8fc;
@@ -317,14 +320,21 @@
 @media (max-width: 480px) {
 	.swc-root { inset-inline-end: 14px; inset-block-end: 14px; }
 	.swc-panel {
+		/* Pinned to the TOP only (not bottom) so the JS can size the panel to
+		   the visual viewport when the keyboard opens — pinning bottom would
+		   override the height and hide the input behind the keyboard. */
 		position: fixed;
-		inset: 0;
+		top: 0;
+		inset-inline: 0;
+		bottom: auto;
 		width: 100vw;
 		height: 100vh;
 		height: 100dvh;
 		max-width: 100vw;
 		max-height: none;
 		border-radius: 0;
+		transform-origin: top center;
+		will-change: height, transform;
 		animation: swc-slide 0.22s ease;
 	}
 	@keyframes swc-slide {
@@ -332,4 +342,13 @@
 		to   { opacity: 1; transform: translateY(0); }
 	}
 	.swc-msg { max-width: 88%; font-size: 15px; }
+}
+
+/* Page lock behind the full-screen mobile panel: stops the underlying document
+   from scrolling or jumping when the message input receives focus (iOS Safari). */
+body.swc-body-lock {
+	position: fixed;
+	inset-inline: 0;
+	width: 100%;
+	overflow: hidden;
 }

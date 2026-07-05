@@ -60,37 +60,83 @@
 
 	/* ---------- open / close + mobile keyboard ---------- */
 
+	var savedScrollY = 0;
+	var lastVvHeight = 0;
+
+	function isMobile() { return window.innerWidth <= 480; }
+	function scrollToLatest() { messages.scrollTop = messages.scrollHeight; }
+
+	// Size + position the panel to the *visual* viewport so the input row sits
+	// just above the keyboard and nothing overlaps or jumps. On desktop the
+	// inline styles are cleared and CSS takes over.
+	function syncViewport() {
+		var vv = window.visualViewport;
+		if (!vv || !isMobile()) {
+			panel.style.height = '';
+			panel.style.transform = '';
+			return;
+		}
+		panel.style.height = vv.height + 'px';
+		// Only translate when the visual viewport is actually offset (e.g. the
+		// page scrolled under an iOS keyboard); keep '' otherwise so the CSS
+		// entrance animation is preserved.
+		panel.style.transform = vv.offsetTop ? 'translateY(' + vv.offsetTop + 'px)' : '';
+	}
+
+	function onViewportChange() {
+		if (panel.hidden) { return; }
+		syncViewport();
+		var vv = window.visualViewport;
+		if (vv) {
+			// Keyboard just opened -> bring the latest message back into view
+			// (once). Never on plain typing, where the height is stable.
+			if (vv.height < lastVvHeight - 80) { scrollToLatest(); }
+			lastVvHeight = vv.height;
+		}
+	}
+	if (window.visualViewport) {
+		window.visualViewport.addEventListener('resize', onViewportChange);
+		window.visualViewport.addEventListener('scroll', onViewportChange);
+	}
+
+	// Lock the page behind the full-screen mobile panel so focusing the input
+	// can never scroll or jump the underlying document (iOS Safari fix).
+	function lockBody() {
+		if (!isMobile() || document.body.classList.contains('swc-body-lock')) { return; }
+		savedScrollY = window.scrollY || window.pageYOffset || 0;
+		document.body.style.top = '-' + savedScrollY + 'px';
+		document.body.classList.add('swc-body-lock');
+	}
+	function unlockBody() {
+		if (!document.body.classList.contains('swc-body-lock')) { return; }
+		document.body.classList.remove('swc-body-lock');
+		document.body.style.top = '';
+		window.scrollTo(0, savedScrollY);
+	}
+
 	function openPanel() {
 		panel.hidden = false;
 		root.classList.add('swc-open');
-		applyViewport();
+		lockBody();
+		lastVvHeight = window.visualViewport ? window.visualViewport.height : 0;
+		syncViewport();
 		maybeShowLead();
 		setTimeout(function () {
 			if (started) { input.focus(); }
+			scrollToLatest();
 		}, 150);
 	}
 	function closePanel() {
 		root.classList.remove('swc-open');
 		panel.hidden = true;
+		panel.style.height = '';
+		panel.style.transform = '';
+		unlockBody();
 	}
 	launcher.addEventListener('click', function () {
 		if (panel.hidden) { openPanel(); } else { closePanel(); }
 	});
 	closeBtn.addEventListener('click', closePanel);
-
-	// Keep the panel glued to the visible viewport when the mobile keyboard opens.
-	function applyViewport() {
-		if (!window.visualViewport || window.innerWidth > 480) {
-			panel.style.height = '';
-			return;
-		}
-		panel.style.height = window.visualViewport.height + 'px';
-	}
-	if (window.visualViewport) {
-		window.visualViewport.addEventListener('resize', function () {
-			if (!panel.hidden) { applyViewport(); }
-		});
-	}
 
 	/* ---------- lead capture ---------- */
 
