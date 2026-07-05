@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       Medora AI
- * Plugin URI:        https://medora.ai
+ * Plugin URI:        https://signteb.com
  * Description:       Medora AI — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی.
  * Version:           2.0.0
  * Requires at least: 5.8
  * Requires PHP:      8.0
  * Author:            رضا آسیابی
- * Author URI:        https://medora.ai
+ * Author URI:        https://signteb.com
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       signteb-web-chat
