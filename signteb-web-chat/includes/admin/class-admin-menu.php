@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Admin_Menu — registers the "SignTeb Chat" menu and a single tabbed page.
+ * SWC_Admin_Menu — registers the "Medora AI" menu and a single tabbed page.
  *
  * Tabs: AI Provider | Clinic | Appearance | Conversations | Stats | License.
  *
@@ -30,8 +30,8 @@ class SWC_Admin_Menu
     public function menu(): void
     {
         add_menu_page(
-            __('SignTeb Chat', 'signteb-web-chat'),
-            __('SignTeb Chat', 'signteb-web-chat'),
+            __('Medora AI', 'signteb-web-chat'),
+            __('Medora AI', 'signteb-web-chat'),
             'manage_options',
             'swc-chat',
             [$this->page, 'render'],

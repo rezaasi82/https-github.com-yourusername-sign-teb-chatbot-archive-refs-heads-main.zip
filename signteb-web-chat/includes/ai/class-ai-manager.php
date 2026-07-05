@@ -22,6 +22,8 @@ class SWC_AI_Manager
     private SWC_System_Prompt_Builder $prompt;
     private SWC_Language_Detector $language;
     private SWC_Cta_Detector $cta;
+    private SWC_Lead_Scorer $scorer;
+    private SWC_Summary_Builder $summary;
     private SWC_Conversation_Repository $conversations;
     private SWC_Message_Repository $messages;
     private SWC_License_Manager $license;
@@ -33,6 +35,8 @@ class SWC_AI_Manager
         $this->prompt        = new SWC_System_Prompt_Builder($this->settings);
         $this->language      = new SWC_Language_Detector();
         $this->cta           = new SWC_Cta_Detector();
+        $this->scorer        = new SWC_Lead_Scorer();
+        $this->summary       = new SWC_Summary_Builder($this->settings);
         $this->conversations = new SWC_Conversation_Repository();
         $this->messages      = new SWC_Message_Repository();
         $this->license       = new SWC_License_Manager();
@@ -81,6 +85,13 @@ class SWC_AI_Manager
             'page_url' => $req['page_url'],
         ]);
 
+        // Lead capture: persist any patient identity sent with the request.
+        $patient_name  = trim((string) ($req['name'] ?? ''));
+        $patient_phone = trim((string) ($req['phone'] ?? ''));
+        if ($patient_name !== '' || $patient_phone !== '') {
+            $this->conversations->set_patient($conversation_id, $patient_name, $patient_phone);
+        }
+
         // Persist the user turn early so history stays complete even on failure.
         $this->messages->add($conversation_id, 'user', $message);
         $this->conversations->touch($conversation_id);
@@ -100,8 +111,11 @@ class SWC_AI_Manager
             return $this->graceful_fallback($conversation_id, 'no_provider');
         }
 
+        $conversation = $this->conversations->get($conversation_id);
+        $known_name   = $conversation ? (string) ($conversation->patient_name ?? '') : $patient_name;
+
         $context = [
-            'system'     => $this->prompt->build($lang),
+            'system'     => $this->prompt->build($lang, $known_name),
             'history'    => $this->messages->history($conversation_id, 12),
             'model'      => $this->settings->active_model(),
             'max_tokens' => 1024,
@@ -134,14 +148,50 @@ class SWC_AI_Manager
 
         $this->messages->add($conversation_id, 'assistant', $reply, false, $result['tokens'] ?? null);
         $this->license->record_usage();
-        do_action('swc_message_handled', $conversation_id, $cta);
+
+        // --- AI lead scoring + auto-summary (heuristic, no extra API call) ---
+        $score = $this->score_and_summarize($conversation_id, $cta, $known_name, (string) ($conversation->patient_phone ?? $patient_phone));
+        do_action('swc_message_handled', $conversation_id, $cta, $score['level']);
 
         return [
-            'ok'       => true,
-            'reply'    => $reply,
-            'cta'      => $cta,
-            'cta_card' => $cta !== '' ? $this->cta_card($cta) : null,
+            'ok'              => true,
+            'reply'           => $reply,
+            'cta'             => $cta,
+            'cta_card'        => $cta !== '' ? $this->cta_card($cta) : null,
+            'lead'            => ['level' => $score['level'], 'label' => $score['label'], 'emoji' => $score['emoji']],
+            'conversation_id' => $conversation_id,
         ];
+    }
+
+    /**
+     * Re-score the conversation and refresh its stored summary.
+     *
+     * @return array{level:string,label:string,emoji:string,probability:int}
+     */
+    private function score_and_summarize(int $conversation_id, string $cta, string $name, string $phone): array
+    {
+        $user_texts = $this->messages->user_texts($conversation_id);
+        $first      = $user_texts[0] ?? '';
+        $joined     = implode(' ', $user_texts);
+
+        $score = $this->scorer->score([
+            'text'          => $joined,
+            'cta'           => $cta,
+            'has_phone'     => $phone !== '',
+            'has_name'      => $name !== '',
+            'message_count' => count($user_texts),
+        ]);
+
+        $this->conversations->set_score($conversation_id, $score['level']);
+        $this->conversations->set_summary(
+            $conversation_id,
+            $this->summary->build(
+                ['name' => $name, 'phone' => $phone, 'user_text' => $joined, 'first_message' => $first],
+                $score
+            )
+        );
+
+        return $score;
     }
 
     private function make_provider(string $id): ?SWC_AI_Provider_Interface

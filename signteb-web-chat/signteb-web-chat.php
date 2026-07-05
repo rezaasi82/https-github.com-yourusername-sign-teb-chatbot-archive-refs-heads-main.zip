@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:       SignTeb AI Web Chat
- * Plugin URI:        https://signteb.com/web-chat
- * Description:       ویجت چت هوشمند پزشکی مستقل و سفید‌برچسب (white-label) که مستقیماً روی وب‌سایت اجرا می‌شود — تبدیل بازدیدکننده به بیمار رزرو‌شده. کاملاً مستقل، بدون هیچ وابستگی به افزونه دیگری، قابل نصب روی هر سایت وردپرسی.
- * Version:           1.0.0
+ * Plugin Name:       Medora AI
+ * Plugin URI:        https://medora.ai
+ * Description:       Medora AI — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی.
+ * Version:           2.0.0
  * Requires at least: 5.8
  * Requires PHP:      8.0
- * Author:            SignTeb
- * Author URI:        https://signteb.com
+ * Author:            رضا آسیابی
+ * Author URI:        https://medora.ai
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       signteb-web-chat
@@ -20,7 +20,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('SWC_VERSION', '1.0.0');
+define('SWC_VERSION', '2.0.0');
 define('SWC_FILE', __FILE__);
 define('SWC_DIR', plugin_dir_path(__FILE__));
 define('SWC_URL', plugin_dir_url(__FILE__));

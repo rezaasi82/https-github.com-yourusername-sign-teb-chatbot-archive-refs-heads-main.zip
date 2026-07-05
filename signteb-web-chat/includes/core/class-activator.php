@@ -53,6 +53,14 @@ class SWC_Activator
             'brand_footer'       => '',         // empty = no footer (white-label)
             'use_bundled_font'   => 1,
 
+            // --- Lead capture + communication channels ---
+            'lead_capture'       => 1,
+            'ch_booking'         => 1,
+            'ch_whatsapp'        => 1,
+            'ch_call'            => 1,
+            'ch_bale'            => 0,
+            'bale_url'           => '',
+
             // --- Messaging ---
             'welcome_message'    => __('سلام! 👋 چطور می‌تونم کمکتون کنم؟', 'signteb-web-chat'),
             'quick_replies'      => "هزینه ویزیت\nآدرس کلینیک\nرزرو نوبت",

@@ -32,12 +32,14 @@ class SWC_Conversations_Page
         }
 
         $leads_only = ! empty($_GET['leads']);
+        $score      = isset($_GET['score']) ? sanitize_key((string) $_GET['score']) : '';
         $page       = max(1, isset($_GET['paged']) ? absint($_GET['paged']) : 1);
         $per_page   = 20;
 
-        $items = $repo->paginate($page, $per_page, ['leads_only' => $leads_only]);
-        $total = $repo->count(['leads_only' => $leads_only]);
-        $pages = (int) ceil($total / $per_page);
+        $filters = ['leads_only' => $leads_only, 'score' => $score];
+        $items   = $repo->paginate($page, $per_page, $filters);
+        $total   = $repo->count($filters);
+        $pages   = (int) ceil($total / $per_page);
 
         include SWC_DIR . 'includes/admin/views/conversations-list.php';
     }

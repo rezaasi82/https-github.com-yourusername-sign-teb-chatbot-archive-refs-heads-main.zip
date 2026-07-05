@@ -41,6 +41,8 @@ class SWC_Autoloader
         'SWC_System_Prompt_Builder'   => 'ai/class-system-prompt-builder.php',
         'SWC_Language_Detector'       => 'ai/class-language-detector.php',
         'SWC_Cta_Detector'            => 'ai/class-cta-detector.php',
+        'SWC_Lead_Scorer'             => 'ai/class-lead-scorer.php',
+        'SWC_Summary_Builder'         => 'ai/class-summary-builder.php',
 
         // Safety.
         'SWC_Medical_Safety_Filter'   => 'safety/class-medical-safety-filter.php',
@@ -49,6 +51,7 @@ class SWC_Autoloader
         'SWC_Schema'                  => 'database/class-schema.php',
         'SWC_Conversation_Repository' => 'database/class-conversation-repository.php',
         'SWC_Message_Repository'      => 'database/class-message-repository.php',
+        'SWC_Event_Repository'        => 'database/class-event-repository.php',
 
         // Rate limiting.
         'SWC_Rate_Limiter'            => 'ratelimit/class-rate-limiter.php',

@@ -72,8 +72,14 @@ class SWC_Settings_Page
             $update['address']          = sanitize_text_field($in['address'] ?? '');
             $update['emergency_number'] = sanitize_text_field($in['emergency_number'] ?? '115');
             $update['booking_url']      = esc_url_raw($in['booking_url'] ?? '');
+            $update['bale_url']         = esc_url_raw($in['bale_url'] ?? '');
             $update['business_hours']   = sanitize_text_field($in['business_hours'] ?? '');
             $update['manual_services']  = sanitize_textarea_field($in['manual_services'] ?? '');
+            $update['lead_capture']     = isset($in['lead_capture']) ? 1 : 0;
+            $update['ch_booking']       = isset($in['ch_booking']) ? 1 : 0;
+            $update['ch_whatsapp']      = isset($in['ch_whatsapp']) ? 1 : 0;
+            $update['ch_call']          = isset($in['ch_call']) ? 1 : 0;
+            $update['ch_bale']          = isset($in['ch_bale']) ? 1 : 0;
         } elseif ($tab === 'appearance') {
             $update['bot_name']         = sanitize_text_field($in['bot_name'] ?? '');
             $update['avatar_url']       = esc_url_raw($in['avatar_url'] ?? '');
@@ -110,7 +116,7 @@ class SWC_Settings_Page
         $license = new SWC_License_Manager();
 
         echo '<div class="wrap swc-admin" dir="rtl">';
-        echo '<h1>' . esc_html__('SignTeb AI Web Chat', 'signteb-web-chat') . '</h1>';
+        echo '<h1>' . esc_html__('Medora AI — دستیار هوشمند جذب بیمار', 'signteb-web-chat') . '</h1>';
         settings_errors('swc');
         $this->render_tab_nav($tab);
 

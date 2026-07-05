@@ -56,6 +56,7 @@ class SWC_Widget
 
         wp_localize_script('swc-widget', 'SWC_CONFIG', [
             'restUrl'   => esc_url_raw(rest_url('signteb-web-chat/v1/message')),
+            'eventUrl'  => esc_url_raw(rest_url('signteb-web-chat/v1/event')),
             'restNonce' => wp_create_nonce('wp_rest'),
             'ajaxUrl'   => esc_url_raw(admin_url('admin-ajax.php')),
             'ajaxNonce' => wp_create_nonce('swc_chat_nonce'),
@@ -64,10 +65,13 @@ class SWC_Widget
                 'placeholder' => __('پیام خود را بنویسید…', 'signteb-web-chat'),
                 'send'        => __('ارسال', 'signteb-web-chat'),
                 'typing'      => __('در حال نوشتن…', 'signteb-web-chat'),
-                'book'        => __('رزرو نوبت', 'signteb-web-chat'),
-                'whatsapp'    => __('واتس‌اپ', 'signteb-web-chat'),
-                'call'        => __('تماس تلفنی', 'signteb-web-chat'),
+                'book'        => __('رزرو نوبت آنلاین', 'signteb-web-chat'),
+                'whatsapp'    => __('واتساپ', 'signteb-web-chat'),
+                'call'        => __('تماس با مطب', 'signteb-web-chat'),
+                'bale'        => __('ارتباط در بله', 'signteb-web-chat'),
                 'error'       => __('خطا در ارتباط. دوباره تلاش کنید.', 'signteb-web-chat'),
+                'ctaTitle'    => __('آماده دریافت نوبت هستید؟', 'signteb-web-chat'),
+                'ctaText'     => __('برای رزرو آنلاین و انتخاب زمان مراجعه روی دکمه زیر کلیک کنید.', 'signteb-web-chat'),
             ],
         ]);
     }
@@ -93,6 +97,14 @@ class SWC_Widget
             'booking_url'   => esc_url_raw((string) $s->get('booking_url', '')),
             'whatsapp'      => (string) $s->get('whatsapp', ''),
             'phone'         => (string) $s->get('phone', ''),
+            'bale_url'      => esc_url_raw((string) $s->get('bale_url', '')),
+            'lead_capture'  => (int) $s->get('lead_capture', 1) === 1,
+            'channels'      => [
+                'booking'  => (int) $s->get('ch_booking', 1) === 1 && (string) $s->get('booking_url', '') !== '',
+                'whatsapp' => (int) $s->get('ch_whatsapp', 1) === 1 && (string) $s->get('whatsapp', '') !== '',
+                'call'     => (int) $s->get('ch_call', 1) === 1 && (string) $s->get('phone', '') !== '',
+                'bale'     => (int) $s->get('ch_bale', 0) === 1 && (string) $s->get('bale_url', '') !== '',
+            ],
         ];
 
         // Template handles all escaping.

@@ -59,6 +59,25 @@ class SWC_Message_Repository
         );
     }
 
+    /**
+     * All visitor (user) message texts, oldest-first. Used for lead scoring
+     * and the auto-summary.
+     *
+     * @return array<int,string>
+     */
+    public function user_texts(int $conversation_id): array
+    {
+        global $wpdb;
+        $table = SWC_Schema::messages_table();
+        $rows  = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT content FROM {$table} WHERE conversation_id = %d AND role = 'user' ORDER BY id ASC",
+                $conversation_id
+            )
+        ) ?: [];
+        return array_map('strval', $rows);
+    }
+
     /** @return array<int,object> */
     public function for_conversation(int $conversation_id): array
     {

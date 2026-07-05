@@ -81,14 +81,89 @@ class SWC_Conversation_Repository
         );
     }
 
+    /**
+     * Save captured patient identity (only overwrites non-empty values).
+     */
+    public function set_patient(int $conversation_id, string $name, string $phone): void
+    {
+        $data    = ['updated_at' => current_time('mysql')];
+        $formats = ['%s'];
+        if ($name !== '') {
+            $data['patient_name'] = $name;
+            $formats[]            = '%s';
+        }
+        if ($phone !== '') {
+            $data['patient_phone'] = $phone;
+            $formats[]             = '%s';
+        }
+        if (count($data) === 1) {
+            return;
+        }
+        global $wpdb;
+        $wpdb->update(SWC_Schema::conversations_table(), $data, ['id' => $conversation_id], $formats, ['%d']);
+    }
+
+    public function set_score(int $conversation_id, string $level): void
+    {
+        global $wpdb;
+        $wpdb->update(
+            SWC_Schema::conversations_table(),
+            ['lead_score' => $level, 'updated_at' => current_time('mysql')],
+            ['id' => $conversation_id],
+            ['%s', '%s'],
+            ['%d']
+        );
+    }
+
+    public function set_summary(int $conversation_id, string $summary): void
+    {
+        global $wpdb;
+        $wpdb->update(
+            SWC_Schema::conversations_table(),
+            ['summary' => $summary, 'updated_at' => current_time('mysql')],
+            ['id' => $conversation_id],
+            ['%s', '%s'],
+            ['%d']
+        );
+    }
+
+    public function set_booking_status(int $conversation_id, string $status): void
+    {
+        global $wpdb;
+        $wpdb->update(
+            SWC_Schema::conversations_table(),
+            ['booking_status' => $status, 'updated_at' => current_time('mysql')],
+            ['id' => $conversation_id],
+            ['%s', '%s'],
+            ['%d']
+        );
+    }
+
+    /**
+     * WHERE clause from filters. Only fixed, whitelisted fragments are used
+     * (no user input reaches SQL here), so the concatenation is safe.
+     */
+    private function where(array $filters): string
+    {
+        $clauses = [];
+        if (! empty($filters['leads_only'])) {
+            $clauses[] = 'is_lead = 1';
+        }
+        if (! empty($filters['score']) && in_array($filters['score'], ['hot', 'warm', 'cold'], true)) {
+            $clauses[] = "lead_score = '" . $filters['score'] . "'";
+        }
+        return $clauses ? implode(' AND ', $clauses) : '1=1';
+    }
+
     /** @return array<int,object> */
     public function paginate(int $page = 1, int $per_page = 20, array $filters = []): array
     {
         global $wpdb;
         $table  = SWC_Schema::conversations_table();
         $offset = max(0, ($page - 1) * $per_page);
-        $where  = empty($filters['leads_only']) ? '1=1' : 'is_lead = 1';
+        $where  = $this->where($filters);
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$table} WHERE {$where} ORDER BY id DESC LIMIT %d OFFSET %d",
@@ -102,7 +177,7 @@ class SWC_Conversation_Repository
     {
         global $wpdb;
         $table = SWC_Schema::conversations_table();
-        $where = empty($filters['leads_only']) ? '1=1' : 'is_lead = 1';
+        $where = $this->where($filters);
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE {$where}");
     }
@@ -134,11 +209,51 @@ class SWC_Conversation_Repository
         $leads = (int) $wpdb->get_var(
             $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE created_at >= %s AND is_lead = 1", $since)
         );
+        $hot = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE created_at >= %s AND lead_score = 'hot'", $since)
+        );
+        $booked = (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE created_at >= %s AND booking_status <> 'none'", $since)
+        );
 
         return [
             'conversations'   => $total,
             'leads'           => $leads,
+            'hot_leads'       => $hot,
+            'booked'          => $booked,
             'conversion_rate' => $total > 0 ? round(($leads / $total) * 100, 1) : 0.0,
         ];
+    }
+
+    /**
+     * Daily conversation counts for the last N days (trend chart).
+     *
+     * @return array<string,int> date (Y-m-d) => count
+     */
+    public function daily(int $days = 14): array
+    {
+        global $wpdb;
+        $table = SWC_Schema::conversations_table();
+        $since = gmdate('Y-m-d 00:00:00', time() - (($days - 1) * DAY_IN_SECONDS));
+
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT DATE(created_at) AS d, COUNT(*) AS c FROM {$table}
+                 WHERE created_at >= %s GROUP BY DATE(created_at)",
+                $since
+            )
+        ) ?: [];
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[$row->d] = (int) $row->c;
+        }
+
+        $out = [];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $day       = gmdate('Y-m-d', time() - ($i * DAY_IN_SECONDS));
+            $out[$day] = $map[$day] ?? 0;
+        }
+        return $out;
     }
 }

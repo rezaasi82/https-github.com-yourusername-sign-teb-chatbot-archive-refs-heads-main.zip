@@ -1,10 +1,9 @@
 /**
- * SignTeb AI Web Chat — frontend widget (Vanilla JS, no jQuery).
+ * Medora AI — frontend widget (Vanilla JS, no jQuery).
  *
- * Talks to the REST endpoint first and falls back to admin-ajax automatically
- * if REST is blocked. Renders a natural typing effect, localized digits, and
- * inline CTA cards when booking/contact intent is detected. RTL/LTR aware and
- * fully white-label (all visuals come from CSS variables set inline).
+ * REST-first with automatic admin-ajax fallback. Lead capture (name + phone),
+ * natural typing effect, professional booking CTA + communication channels,
+ * click tracking for analytics, and mobile keyboard handling (visualViewport).
  */
 (function () {
 	'use strict';
@@ -27,56 +26,125 @@
 	var input = root.querySelector('.swc-input');
 	var messages = root.querySelector('.swc-messages');
 	var quickWrap = root.querySelector('.swc-quick');
+	var lead = root.querySelector('.swc-lead');
 
 	var sessionId = getSession();
+	var profile = getProfile();
+	var conversationId = 0;
+	var started = false;
+
+	function store(key, val) {
+		try { window.localStorage.setItem(key, val); } catch (e) {}
+	}
+	function load(key) {
+		try { return window.localStorage.getItem(key); } catch (e) { return null; }
+	}
 
 	function getSession() {
-		var key = 'swc_session';
-		try {
-			var existing = window.localStorage.getItem(key);
-			if (existing) {
-				return existing;
-			}
-			var id = 'sess_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-			window.localStorage.setItem(key, id);
-			return id;
-		} catch (e) {
-			return 'sess_' + Date.now().toString(36);
-		}
+		var existing = load('swc_session');
+		if (existing) { return existing; }
+		var id = 'sess_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+		store('swc_session', id);
+		return id;
+	}
+
+	function getProfile() {
+		try { return JSON.parse(load('swc_profile') || '{}') || {}; } catch (e) { return {}; }
 	}
 
 	function localizeDigits(str) {
-		// Persian digits only for RTL widgets; keep Latin digits for LTR sites.
-		if (!isRtl) {
-			return String(str);
-		}
+		if (!isRtl) { return String(str); }
 		var fa = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-		return String(str).replace(/[0-9]/g, function (d) {
-			return fa[d];
-		});
+		return String(str).replace(/[0-9]/g, function (d) { return fa[d]; });
 	}
+
+	/* ---------- open / close + mobile keyboard ---------- */
 
 	function openPanel() {
 		panel.hidden = false;
 		root.classList.add('swc-open');
+		applyViewport();
+		maybeShowLead();
 		setTimeout(function () {
-			input.focus();
-		}, 120);
+			if (started) { input.focus(); }
+		}, 150);
 	}
-
 	function closePanel() {
 		root.classList.remove('swc-open');
 		panel.hidden = true;
 	}
-
 	launcher.addEventListener('click', function () {
-		if (panel.hidden) {
-			openPanel();
-		} else {
-			closePanel();
-		}
+		if (panel.hidden) { openPanel(); } else { closePanel(); }
 	});
 	closeBtn.addEventListener('click', closePanel);
+
+	// Keep the panel glued to the visible viewport when the mobile keyboard opens.
+	function applyViewport() {
+		if (!window.visualViewport || window.innerWidth > 480) {
+			panel.style.height = '';
+			return;
+		}
+		panel.style.height = window.visualViewport.height + 'px';
+	}
+	if (window.visualViewport) {
+		window.visualViewport.addEventListener('resize', function () {
+			if (!panel.hidden) { applyViewport(); }
+		});
+	}
+
+	/* ---------- lead capture ---------- */
+
+	function maybeShowLead() {
+		var enabled = root.dataset.leadCapture === '1';
+		if (!enabled || (profile && profile.name)) {
+			started = true;
+			return;
+		}
+		if (lead) {
+			lead.hidden = false;
+			root.classList.add('swc-lead-active');
+			var nameField = lead.querySelector('.swc-lead-name');
+			if (nameField) { setTimeout(function () { nameField.focus(); }, 200); }
+		} else {
+			started = true;
+		}
+	}
+
+	function finishLead(saveProfile) {
+		if (lead) { lead.hidden = true; }
+		root.classList.remove('swc-lead-active');
+		started = true;
+		if (saveProfile) { store('swc_profile', JSON.stringify(profile)); }
+		setTimeout(function () { input.focus(); }, 100);
+	}
+
+	if (lead) {
+		var startBtn = lead.querySelector('.swc-lead-start');
+		var skipBtn = lead.querySelector('.swc-lead-skip');
+		var errBox = lead.querySelector('.swc-lead-error');
+
+		startBtn.addEventListener('click', function () {
+			var name = (lead.querySelector('.swc-lead-name').value || '').trim();
+			var phone = (lead.querySelector('.swc-lead-phone').value || '').trim();
+			var digits = phone.replace(/[^\d]/g, '');
+			if (name.length < 2) {
+				return showLeadError('لطفاً نام خود را وارد کنید.');
+			}
+			if (digits.length < 10) {
+				return showLeadError('لطفاً شماره موبایل معتبر وارد کنید.');
+			}
+			profile = { name: name, phone: phone };
+			finishLead(true);
+		});
+		if (skipBtn) {
+			skipBtn.addEventListener('click', function () { finishLead(false); });
+		}
+		function showLeadError(msg) {
+			if (errBox) { errBox.textContent = msg; errBox.hidden = false; }
+		}
+	}
+
+	/* ---------- messages ---------- */
 
 	function appendMessage(text, who) {
 		var el = document.createElement('div');
@@ -87,15 +155,12 @@
 		return el;
 	}
 
-	/** Natural typing effect (simulated streaming). */
 	function typeInto(el, text) {
 		el.textContent = '';
 		var chars = localizeDigits(text).split('');
 		var i = 0;
 		(function step() {
-			if (i >= chars.length) {
-				return;
-			}
+			if (i >= chars.length) { return; }
 			el.textContent += chars[i++];
 			messages.scrollTop = messages.scrollHeight;
 			setTimeout(step, 12);
@@ -111,60 +176,75 @@
 		return el;
 	}
 
+	/* ---------- CTA card + channels ---------- */
+
 	function renderCtaCard(card) {
-		if (!card || !card.type) {
-			return;
-		}
+		var bookingUrl = (card && card.booking_url) || root.dataset.bookingUrl || '';
+		var whatsapp = (card && card.whatsapp) || root.dataset.whatsapp || '';
+		var phone = (card && card.phone) || root.dataset.phone || '';
+		var baleUrl = root.dataset.baleUrl || '';
+
 		var wrap = document.createElement('div');
 		wrap.className = 'swc-cta-card';
 
-		var bookingUrl = card.booking_url || root.dataset.bookingUrl || '';
-		var whatsapp = card.whatsapp || root.dataset.whatsapp || '';
-		var phone = card.phone || root.dataset.phone || '';
+		if (root.dataset.chBooking === '1' && bookingUrl) {
+			var head = document.createElement('div');
+			head.className = 'swc-cta-head';
+			head.innerHTML = '<div class="swc-cta-title"></div><div class="swc-cta-text"></div>';
+			head.querySelector('.swc-cta-title').textContent = cfg.strings.ctaTitle;
+			head.querySelector('.swc-cta-text').textContent = cfg.strings.ctaText;
+			wrap.appendChild(head);
+			wrap.appendChild(channelBtn(cfg.strings.book, bookingUrl, 'booking', '📅', true));
+		}
 
-		if (bookingUrl) {
-			wrap.appendChild(makeCtaButton(cfg.strings.book, bookingUrl, 'book'));
+		var row = document.createElement('div');
+		row.className = 'swc-channel-row';
+		if (root.dataset.chWhatsapp === '1' && whatsapp) {
+			row.appendChild(channelBtn(cfg.strings.whatsapp, 'https://wa.me/' + whatsapp.replace(/[^0-9]/g, ''), 'whatsapp', '💬', false));
 		}
-		if (whatsapp) {
-			var wa = whatsapp.replace(/[^0-9]/g, '');
-			wrap.appendChild(makeCtaButton(cfg.strings.whatsapp, 'https://wa.me/' + wa, 'wa'));
+		if (root.dataset.chCall === '1' && phone) {
+			row.appendChild(channelBtn(cfg.strings.call, 'tel:' + phone.replace(/[^0-9+]/g, ''), 'call', '📞', false));
 		}
-		if (phone) {
-			wrap.appendChild(makeCtaButton(cfg.strings.call, 'tel:' + phone.replace(/[^0-9+]/g, ''), 'call'));
+		if (root.dataset.chBale === '1' && baleUrl) {
+			row.appendChild(channelBtn(cfg.strings.bale, baleUrl, 'bale', '🟦', false));
 		}
+		if (row.children.length) { wrap.appendChild(row); }
+
 		if (wrap.children.length) {
 			messages.appendChild(wrap);
 			messages.scrollTop = messages.scrollHeight;
 		}
 	}
 
-	function makeCtaButton(label, href, kind) {
+	function channelBtn(label, href, type, emoji, primary) {
 		var a = document.createElement('a');
-		a.className = 'swc-cta-btn swc-cta-' + kind;
+		a.className = 'swc-cta-btn swc-cta-' + type + (primary ? ' swc-cta-primary' : '');
 		a.href = href;
 		a.target = '_blank';
 		a.rel = 'noopener';
-		a.textContent = label;
+		a.innerHTML = '<span class="swc-cta-emoji" aria-hidden="true"></span><span class="swc-cta-label"></span>';
+		a.querySelector('.swc-cta-emoji').textContent = emoji;
+		a.querySelector('.swc-cta-label').textContent = label;
+		a.addEventListener('click', function () { trackEvent(type); });
 		return a;
 	}
 
+	/* ---------- transport ---------- */
+
 	function send(text) {
 		appendMessage(text, 'user');
-		if (quickWrap) {
-			quickWrap.style.display = 'none';
-		}
+		if (quickWrap) { quickWrap.style.display = 'none'; }
 		var typing = showTyping();
 
 		request(text)
 			.then(function (data) {
 				typing.remove();
+				if (data && data.conversation_id) { conversationId = data.conversation_id; }
 				if (data && data.ok && data.reply) {
 					var el = appendMessage('', 'bot');
 					typeInto(el, data.reply);
 					if (data.cta_card) {
-						setTimeout(function () {
-							renderCtaCard(data.cta_card);
-						}, 400);
+						setTimeout(function () { renderCtaCard(data.cta_card); }, 450);
 					}
 				} else {
 					appendMessage((data && data.error) || cfg.strings.error, 'bot');
@@ -176,51 +256,66 @@
 			});
 	}
 
-	/** Try REST first; on network/HTTP failure, retry through admin-ajax. */
+	function payload(text) {
+		return {
+			message: text,
+			session_id: sessionId,
+			page_url: cfg.pageUrl,
+			name: (profile && profile.name) || '',
+			phone: (profile && profile.phone) || ''
+		};
+	}
+
 	function request(text) {
 		return fetch(cfg.restUrl, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': cfg.restNonce
-			},
-			body: JSON.stringify({
-				message: text,
-				session_id: sessionId,
-				page_url: cfg.pageUrl
-			})
+			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': cfg.restNonce },
+			body: JSON.stringify(payload(text))
 		})
-			.then(function (r) {
-				return r.json();
-			})
-			.catch(function () {
-				return ajaxFallback(text);
-			});
+			.then(function (r) { return r.json(); })
+			.catch(function () { return ajaxFallback(text); });
 	}
 
 	function ajaxFallback(text) {
 		var body = new URLSearchParams();
+		var p = payload(text);
 		body.append('action', 'swc_chat_message');
 		body.append('nonce', cfg.ajaxNonce);
-		body.append('message', text);
-		body.append('session_id', sessionId);
-		body.append('page_url', cfg.pageUrl);
-
+		Object.keys(p).forEach(function (k) { body.append(k, p[k]); });
 		return fetch(cfg.ajaxUrl, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 			body: body.toString()
-		}).then(function (r) {
-			return r.json();
+		}).then(function (r) { return r.json(); });
+	}
+
+	function trackEvent(type) {
+		// Fire-and-forget; REST first, admin-ajax fallback.
+		fetch(cfg.eventUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': cfg.restNonce },
+			body: JSON.stringify({ type: type, conversation_id: conversationId })
+		}).catch(function () {
+			var body = new URLSearchParams();
+			body.append('action', 'swc_track_event');
+			body.append('nonce', cfg.ajaxNonce);
+			body.append('type', type);
+			body.append('conversation_id', conversationId);
+			fetch(cfg.ajaxUrl, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: body.toString()
+			}).catch(function () {});
 		});
 	}
 
+	/* ---------- events ---------- */
+
 	form.addEventListener('submit', function (e) {
 		e.preventDefault();
+		if (!started) { return; }
 		var text = input.value.trim();
-		if (!text) {
-			return;
-		}
+		if (!text) { return; }
 		input.value = '';
 		send(text);
 	});
@@ -228,9 +323,7 @@
 	if (quickWrap) {
 		quickWrap.addEventListener('click', function (e) {
 			var btn = e.target.closest('.swc-quick-reply');
-			if (btn) {
-				send(btn.textContent.trim());
-			}
+			if (btn && started) { send(btn.textContent.trim()); }
 		});
 	}
 })();

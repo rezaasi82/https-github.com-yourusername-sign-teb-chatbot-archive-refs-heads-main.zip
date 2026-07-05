@@ -23,7 +23,7 @@ class SWC_System_Prompt_Builder
         $this->settings = $settings;
     }
 
-    public function build(string $language): string
+    public function build(string $language, string $patient_name = ''): string
     {
         $clinic    = (string) $this->settings->get('clinic_name', get_bloginfo('name'));
         $specialty = (string) $this->settings->get('specialty', '');
@@ -33,6 +33,9 @@ class SWC_System_Prompt_Builder
 
         $lines   = [];
         $lines[] = "تو دستیار هوشمند و فروشِ «{$clinic}» هستی.";
+        if (trim($patient_name) !== '') {
+            $lines[] = "نام مراجعه‌کننده «{$patient_name}» است؛ او را با نامش خطاب کن.";
+        }
         if ($specialty !== '') {
             $lines[] = "تخصص: {$specialty}.";
         }

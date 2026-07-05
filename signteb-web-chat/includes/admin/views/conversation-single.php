@@ -30,6 +30,25 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
         <?php endif; ?>
     </p>
 
+    <?php
+    $name  = trim((string) ($conversation->patient_name ?? ''));
+    $phone = trim((string) ($conversation->patient_phone ?? ''));
+    $badge = ['hot' => '🟢 ' . __('لید داغ', 'signteb-web-chat'), 'warm' => '🟡 ' . __('لید متوسط', 'signteb-web-chat'), 'cold' => '⚪ ' . __('لید سرد', 'signteb-web-chat')];
+    ?>
+    <div class="swc-lead-panel">
+        <div class="swc-lead-info">
+            <span><strong><?php esc_html_e('بیمار:', 'signteb-web-chat'); ?></strong> <?php echo esc_html($name !== '' ? $name : '—'); ?></span>
+            <span><strong><?php esc_html_e('موبایل:', 'signteb-web-chat'); ?></strong> <?php echo $phone !== '' ? '<a href="tel:' . esc_attr($phone) . '">' . esc_html($phone) . '</a>' : '—'; ?></span>
+            <span><strong><?php esc_html_e('امتیاز:', 'signteb-web-chat'); ?></strong> <?php echo esc_html($badge[$conversation->lead_score] ?? '—'); ?></span>
+        </div>
+        <?php if (! empty($conversation->summary)) : ?>
+            <div class="swc-summary-box">
+                <div class="swc-summary-title"><?php esc_html_e('خلاصه هوشمند گفتگو', 'signteb-web-chat'); ?></div>
+                <pre class="swc-summary-text"><?php echo esc_html($conversation->summary); ?></pre>
+            </div>
+        <?php endif; ?>
+    </div>
+
     <div class="swc-transcript">
         <?php foreach ($messages as $m) : ?>
             <div class="swc-bubble swc-bubble-<?php echo esc_attr($m->role); ?> <?php echo $m->flagged ? 'swc-flagged' : ''; ?>">

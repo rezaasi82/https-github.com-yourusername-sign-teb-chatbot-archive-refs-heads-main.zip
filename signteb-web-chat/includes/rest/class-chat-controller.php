@@ -28,6 +28,15 @@ class SWC_Chat_Controller
                     'session_id' => ['required' => true, 'type' => 'string'],
                 ],
             ]);
+
+            register_rest_route(self::REST_NAMESPACE, '/event', [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'handle_event'],
+                'permission_callback' => [$this, 'verify_nonce'],
+                'args'                => [
+                    'type' => ['required' => true, 'type' => 'string'],
+                ],
+            ]);
         });
     }
 
@@ -44,6 +53,8 @@ class SWC_Chat_Controller
         $result = (new SWC_AI_Manager())->handle([
             'session_id' => SWC_Sanitizer::session_id((string) $request->get_param('session_id')),
             'message'    => sanitize_textarea_field((string) $request->get_param('message')),
+            'name'       => SWC_Sanitizer::name((string) $request->get_param('name')),
+            'phone'      => SWC_Sanitizer::phone((string) $request->get_param('phone')),
             'ip'         => SWC_Sanitizer::client_ip(),
             'page_url'   => esc_url_raw((string) $request->get_param('page_url')),
             'user_id'    => get_current_user_id() ?: null,
@@ -51,5 +62,17 @@ class SWC_Chat_Controller
 
         $status = ! empty($result['ok']) ? 200 : (($result['code'] ?? '') === 'rate_limited' ? 429 : 400);
         return new WP_REST_Response($result, $status);
+    }
+
+    public function handle_event(WP_REST_Request $request): WP_REST_Response
+    {
+        SWC_Json_Guard::arm();
+        $type = sanitize_key((string) $request->get_param('type'));
+        $cid  = absint($request->get_param('conversation_id'));
+        $ok   = (new SWC_Event_Repository())->record($type, $cid);
+        if ($ok && $type === 'booking' && $cid > 0) {
+            (new SWC_Conversation_Repository())->set_booking_status($cid, 'clicked');
+        }
+        return new WP_REST_Response(['ok' => $ok], $ok ? 200 : 400);
     }
 }

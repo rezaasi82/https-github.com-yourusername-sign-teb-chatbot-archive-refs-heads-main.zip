@@ -20,7 +20,11 @@ class SWC_Stats_Page
             return;
         }
         $repo    = new SWC_Conversation_Repository();
+        $events  = new SWC_Event_Repository();
         $stats   = $repo->stats(30);
+        $clicks  = $events->counts(30);
+        $daily   = $repo->daily(14);
+        $daily_c = $events->daily(14);
         $top     = $this->top_questions();
         $license = new SWC_License_Manager();
 

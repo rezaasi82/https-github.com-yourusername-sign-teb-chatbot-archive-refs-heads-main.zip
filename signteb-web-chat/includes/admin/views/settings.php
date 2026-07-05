@@ -142,11 +142,30 @@ if (! defined('ABSPATH')) {
             <tr><th><?php esc_html_e('ساعات کاری', 'signteb-web-chat'); ?></th><td><input type="text" name="business_hours" value="<?php echo esc_attr($s->get('business_hours')); ?>" placeholder="09:00-20:00" class="regular-text"><p class="description"><?php esc_html_e('خالی = همیشه باز.', 'signteb-web-chat'); ?></p></td></tr>
             <tr><th><?php esc_html_e('شماره اورژانس', 'signteb-web-chat'); ?></th><td><input type="text" name="emergency_number" value="<?php echo esc_attr($s->get('emergency_number', '115')); ?>" class="small-text"></td></tr>
             <tr><th><?php esc_html_e('لینک رزرو نوبت', 'signteb-web-chat'); ?></th><td><input type="url" name="booking_url" value="<?php echo esc_attr($s->get('booking_url')); ?>" class="large-text" placeholder="https://"><p class="description"><?php esc_html_e('لینک یا شماره خروجی برای رزرو (سیستم نوبت‌دهی داخلی وجود ندارد).', 'signteb-web-chat'); ?></p></td></tr>
+            <tr><th><?php esc_html_e('لینک پیام‌رسان بله', 'signteb-web-chat'); ?></th><td><input type="url" name="bale_url" value="<?php echo esc_attr($s->get('bale_url')); ?>" class="large-text" placeholder="https://ble.ir/…"></td></tr>
             <tr>
                 <th><?php esc_html_e('خدمات و قیمت‌ها', 'signteb-web-chat'); ?></th>
                 <td>
                     <textarea name="manual_services" rows="6" class="large-text" placeholder="ویزیت عمومی | ۲۵۰ هزار تومان&#10;لیزر | ۵۰۰ هزار تومان"><?php echo esc_textarea($s->get('manual_services')); ?></textarea>
                     <p class="description"><?php esc_html_e('هر خط یک خدمت با فرمت: «نام | قیمت».', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
+        </table>
+
+        <h2 class="title"><?php esc_html_e('جذب لید و کانال‌های ارتباطی', 'signteb-web-chat'); ?></h2>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th><?php esc_html_e('فرم جذب لید', 'signteb-web-chat'); ?></th>
+                <td><label><input type="checkbox" name="lead_capture" value="1" <?php checked($s->get('lead_capture', 1), 1); ?>> <?php esc_html_e('پیش از شروع گفتگو، نام و شماره موبایل بیمار دریافت شود.', 'signteb-web-chat'); ?></label></td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('دکمه‌های ارتباطی', 'signteb-web-chat'); ?></th>
+                <td>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_booking" value="1" <?php checked($s->get('ch_booking', 1), 1); ?>> 📅 <?php esc_html_e('رزرو نوبت', 'signteb-web-chat'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_whatsapp" value="1" <?php checked($s->get('ch_whatsapp', 1), 1); ?>> 💬 <?php esc_html_e('واتساپ', 'signteb-web-chat'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_call" value="1" <?php checked($s->get('ch_call', 1), 1); ?>> 📞 <?php esc_html_e('تماس با مطب', 'signteb-web-chat'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_bale" value="1" <?php checked($s->get('ch_bale', 0), 1); ?>> 🟦 <?php esc_html_e('پیام‌رسان بله', 'signteb-web-chat'); ?></label>
+                    <p class="description"><?php esc_html_e('هر دکمه فقط وقتی نمایش داده می‌شود که هم فعال باشد و هم مقدار مربوطه (لینک/شماره) وارد شده باشد.', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
         </table>
