@@ -33,6 +33,17 @@
 	var conversationId = 0;
 	var started = false;
 
+	// Opt-in debug logging: enable with localStorage.setItem('swc_debug','1')
+	// or by setting SWC_CONFIG.debug = true. Traces the full flow so the source
+	// of any issue is visible in the console.
+	var DEBUG = !!cfg.debug || (function () {
+		try { return window.localStorage.getItem('swc_debug') === '1'; } catch (e) { return false; }
+	})();
+	function log() {
+		if (!DEBUG || !window.console) { return; }
+		try { console.log.apply(console, ['[Medora AI]'].concat([].slice.call(arguments))); } catch (e) {}
+	}
+
 	function store(key, val) {
 		try { window.localStorage.setItem(key, val); } catch (e) {}
 	}
@@ -157,10 +168,16 @@
 	}
 
 	function finishLead(saveProfile) {
+		if (saveProfile) {
+			store('swc_profile', JSON.stringify(profile));
+			log('Lead saved', profile);
+		}
+		// Move from Lead Form -> Chat Mode: hide the overlay and reveal the chat.
 		if (lead) { lead.hidden = true; }
 		root.classList.remove('swc-lead-active');
 		started = true;
-		if (saveProfile) { store('swc_profile', JSON.stringify(profile)); }
+		log('Chat started (session ' + sessionId + ')');
+		scrollToLatest();
 		setTimeout(function () { input.focus(); }, 100);
 	}
 
@@ -278,27 +295,38 @@
 	/* ---------- transport ---------- */
 
 	function send(text) {
+		// 1) Render the user's message instantly (before the AI responds).
 		appendMessage(text, 'user');
 		if (quickWrap) { quickWrap.style.display = 'none'; }
+		// 2) Show the typing indicator so the user knows we're processing.
 		var typing = showTyping();
+		log('Message sent', text);
 
 		request(text)
 			.then(function (data) {
 				typing.remove();
-				if (data && data.conversation_id) { conversationId = data.conversation_id; }
+				log('Response received', data);
+				if (data && data.conversation_id) {
+					conversationId = data.conversation_id;
+					log('Conversation id', conversationId);
+				}
 				if (data && data.ok && data.reply) {
+					// 3) Render the AI reply (no refresh/reopen needed).
 					var el = appendMessage('', 'bot');
 					typeInto(el, data.reply);
 					if (data.cta_card) {
 						setTimeout(function () { renderCtaCard(data.cta_card); }, 450);
 					}
+					log('UI rendered');
 				} else {
 					appendMessage((data && data.error) || cfg.strings.error, 'bot');
+					log('UI rendered (error state)', data && data.error);
 				}
 			})
-			.catch(function () {
+			.catch(function (err) {
 				typing.remove();
 				appendMessage(cfg.strings.error, 'bot');
+				log('Request failed', err);
 			});
 	}
 

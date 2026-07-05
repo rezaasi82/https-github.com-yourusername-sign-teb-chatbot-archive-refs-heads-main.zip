@@ -164,6 +164,12 @@
 	padding: 18px;
 	overflow-y: auto;
 }
+/* The `hidden` attribute must win over display:flex above, otherwise the lead
+   overlay stays on top and covers the chat after "start" (messages/AI reply
+   render underneath and appear to do nothing). */
+.swc-lead[hidden] {
+	display: none !important;
+}
 .swc-lead-card { width: 100%; max-width: 320px; text-align: center; }
 .swc-lead-badge {
 	width: 62px; height: 62px; margin: 0 auto 12px;
