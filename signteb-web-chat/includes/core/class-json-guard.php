@@ -10,9 +10,9 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Some cheap shared hosts emit notices/warnings that corrupt a JSON body. Arm
- * the buffer before producing output; the shutdown handler discards any leaked
- * bytes so the JSON stays valid (a hard-won lesson from earlier SignTeb work).
+ * Some shared hosts emit PHP notices/warnings that corrupt a JSON body. Arm the
+ * buffer before producing output; the shutdown handler discards any leaked bytes
+ * so the response stays valid JSON.
  */
 class SWC_Json_Guard
 {

@@ -1,11 +1,10 @@
 <?php
 /**
- * SWC_License_Manager — annual-license scaffold with a free trial gate.
+ * SWC_License_Manager — per-site license with a free trial gate.
  *
- * The business model is an annual license sold per-site, plus a free trial
- * (default 50 messages) before activation is required. The activation-key
- * architecture is in place from day one so it can be wired to a license server
- * later by changing is_active(); call sites do not change.
+ * A free trial (default 50 messages) applies until an activation key is
+ * entered. is_active() is the single gate; wiring it to a remote license
+ * server later does not affect any call site.
  *
  * @package SignTeb_Web_Chat
  */

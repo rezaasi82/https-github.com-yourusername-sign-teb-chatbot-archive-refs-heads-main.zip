@@ -5,8 +5,8 @@
  * The single entry point used by both the REST controller and the admin-ajax
  * handler. Coordinates the license/trial gate, rate limiting, the safety
  * layer, the dynamic system prompt, the swappable AI provider, persistence,
- * and CTA/lead detection. Never crashes: every failure path returns a polite,
- * structured fallback.
+ * and CTA/lead detection. Every failure path returns a structured fallback
+ * rather than an error.
  *
  * @package SignTeb_Web_Chat
  */
@@ -24,6 +24,7 @@ class SWC_AI_Manager
     private SWC_Cta_Detector $cta;
     private SWC_Lead_Scorer $scorer;
     private SWC_Summary_Builder $summary;
+    private SWC_Provider_Factory $providers;
     private SWC_Conversation_Repository $conversations;
     private SWC_Message_Repository $messages;
     private SWC_License_Manager $license;
@@ -37,6 +38,7 @@ class SWC_AI_Manager
         $this->cta           = new SWC_Cta_Detector();
         $this->scorer        = new SWC_Lead_Scorer();
         $this->summary       = new SWC_Summary_Builder($this->settings);
+        $this->providers     = new SWC_Provider_Factory($this->settings);
         $this->conversations = new SWC_Conversation_Repository();
         $this->messages      = new SWC_Message_Repository();
         $this->license       = new SWC_License_Manager();
@@ -106,7 +108,7 @@ class SWC_AI_Manager
         }
 
         // --- Provider call ---
-        $provider = $this->make_provider($this->settings->active_provider());
+        $provider = $this->providers->create_active();
         if ($provider === null) {
             return $this->graceful_fallback($conversation_id, 'no_provider');
         }
@@ -126,9 +128,9 @@ class SWC_AI_Manager
 
         if (empty($result['ok'])) {
             // Try the other provider as a fallback if its key is configured.
-            $fallback = $this->make_fallback_provider($provider->id());
+            $fallback = $this->providers->create_fallback($provider->id());
             if ($fallback !== null) {
-                $context['model'] = $this->model_for($fallback->id());
+                $context['model'] = $this->providers->model_for($fallback->id());
                 $result           = $fallback->generate_reply($message, $context);
             }
         }
@@ -198,48 +200,6 @@ class SWC_AI_Manager
         );
 
         return $score;
-    }
-
-    private function make_provider(string $id): ?SWC_AI_Provider_Interface
-    {
-        $key = $this->settings->get_api_key($id);
-        if ($key === '') {
-            return null;
-        }
-        switch ($id) {
-            case 'openai':
-                return new SWC_Provider_OpenAI($key);
-            case 'gapgpt':
-                return new SWC_Provider_GapGPT($key);
-            default:
-                return new SWC_Provider_Anthropic($key);
-        }
-    }
-
-    /**
-     * First configured provider other than the one that just failed.
-     */
-    private function make_fallback_provider(string $primary_id): ?SWC_AI_Provider_Interface
-    {
-        foreach (['gapgpt', 'anthropic', 'openai'] as $id) {
-            if ($id === $primary_id) {
-                continue;
-            }
-            $provider = $this->make_provider($id);
-            if ($provider !== null) {
-                return $provider;
-            }
-        }
-        return null;
-    }
-
-    private function model_for(string $provider_id): string
-    {
-        $model = trim((string) $this->settings->get('model_' . $provider_id, ''));
-        if ($model !== '') {
-            return $model;
-        }
-        return $provider_id === 'anthropic' ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
     }
 
     private function graceful_fallback(int $conversation_id, string $reason): array

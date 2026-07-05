@@ -59,12 +59,7 @@ class SWC_Settings
      */
     public function active_model(): string
     {
-        $provider = $this->active_provider();
-        $model    = trim((string) ($this->data[ 'model_' . $provider ] ?? ''));
-        if ($model !== '') {
-            return $model;
-        }
-        return $provider === 'anthropic' ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
+        return (new SWC_Provider_Factory($this))->model_for($this->active_provider());
     }
 
     /**

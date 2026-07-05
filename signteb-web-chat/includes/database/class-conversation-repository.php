@@ -3,7 +3,7 @@
  * SWC_Conversation_Repository — repository for chat conversations.
  *
  * All SQL is prepared and centralized here (Repository pattern, not Active
- * Record) so query logic lives in one auditable place.
+ * Record) so query logic lives in one place.
  *
  * @package SignTeb_Web_Chat
  */
@@ -193,7 +193,7 @@ class SWC_Conversation_Repository
     }
 
     /**
-     * Aggregate stats for the dashboard (ROI proof).
+     * Aggregate stats for the dashboard.
      *
      * @return array{conversations:int,leads:int,conversion_rate:float}
      */

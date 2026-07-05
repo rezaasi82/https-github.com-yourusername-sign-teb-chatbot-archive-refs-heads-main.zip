@@ -1,13 +1,9 @@
 <?php
 /**
- * SWC_Autoloader — explicit class-map autoloader.
+ * Class-map autoloader.
  *
- * The plugin follows the WordPress class-file convention (one class per file,
- * `SWC_Foo_Bar` => `class-foo-bar.php`). An explicit map is used instead of a
- * path-guessing PSR-4 loader so the relationship between class names and the
- * files that must exist on disk is auditable at a glance — this is the exact
- * class of bug (a `require` pointing at a file that was never created) that
- * earlier SignTeb plugins hit, so it is made impossible here by construction.
+ * One class per file, following the WordPress `class-*.php` convention. An
+ * explicit map keeps the class-to-file relationship in a single place.
  *
  * @package SignTeb_Web_Chat
  */
@@ -33,11 +29,13 @@ class SWC_Autoloader
         'SWC_Json_Guard'              => 'core/class-json-guard.php',
 
         // AI provider layer.
-        'SWC_AI_Provider_Interface'   => 'ai/interface-ai-provider.php',
-        'SWC_Provider_Anthropic'      => 'ai/class-provider-anthropic.php',
-        'SWC_Provider_OpenAI'         => 'ai/class-provider-openai.php',
-        'SWC_Provider_GapGPT'         => 'ai/class-provider-gapgpt.php',
-        'SWC_AI_Manager'              => 'ai/class-ai-manager.php',
+        'SWC_AI_Provider_Interface'        => 'ai/interface-ai-provider.php',
+        'SWC_Provider_Anthropic'           => 'ai/class-provider-anthropic.php',
+        'SWC_OpenAI_Compatible_Provider'   => 'ai/class-provider-openai-compatible.php',
+        'SWC_Provider_OpenAI'              => 'ai/class-provider-openai.php',
+        'SWC_Provider_GapGPT'              => 'ai/class-provider-gapgpt.php',
+        'SWC_Provider_Factory'             => 'ai/class-provider-factory.php',
+        'SWC_AI_Manager'                   => 'ai/class-ai-manager.php',
         'SWC_System_Prompt_Builder'   => 'ai/class-system-prompt-builder.php',
         'SWC_Language_Detector'       => 'ai/class-language-detector.php',
         'SWC_Cta_Detector'            => 'ai/class-cta-detector.php',
@@ -88,15 +86,5 @@ class SWC_Autoloader
         if (is_readable($file)) {
             require_once $file;
         }
-    }
-
-    /**
-     * Exposed for the integrity self-check (see SWC_Plugin::verify_integrity).
-     *
-     * @return array<string,string>
-     */
-    public static function class_map(): array
-    {
-        return self::$map;
     }
 }

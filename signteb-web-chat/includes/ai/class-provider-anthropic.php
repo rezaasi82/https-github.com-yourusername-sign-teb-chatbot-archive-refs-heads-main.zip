@@ -10,9 +10,9 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Uses wp_remote_post with a short timeout (host max_execution_time is ~30s)
- * and full error handling — it never crashes the request and always returns a
- * structured result the caller can fall back on.
+ * Uses a short request timeout (hosts commonly cap max_execution_time at 30s)
+ * and returns a structured result on every path, including errors, so the
+ * caller can fall back gracefully.
  */
 class SWC_Provider_Anthropic implements SWC_AI_Provider_Interface
 {
