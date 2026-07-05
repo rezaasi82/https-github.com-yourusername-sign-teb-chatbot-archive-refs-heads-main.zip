@@ -57,9 +57,10 @@ class SWC_Provider_OpenAI implements SWC_AI_Provider_Interface
                     'Authorization' => 'Bearer ' . $this->api_key,
                 ],
                 'body'    => wp_json_encode([
-                    'model'      => $context['model'] ?? self::DEFAULT_MODEL,
-                    'max_tokens' => (int) ($context['max_tokens'] ?? 1024),
-                    'messages'   => array_values($payload_messages),
+                    'model'       => $context['model'] ?? self::DEFAULT_MODEL,
+                    'max_tokens'  => (int) ($context['max_tokens'] ?? 1024),
+                    'temperature' => (float) ($context['temperature'] ?? 0.8),
+                    'messages'    => array_values($payload_messages),
                 ]),
             ]
         );

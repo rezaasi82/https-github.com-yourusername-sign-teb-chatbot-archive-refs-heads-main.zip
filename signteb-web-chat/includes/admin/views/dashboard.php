@@ -7,6 +7,7 @@
  * @var array<string,int>   $daily     Daily conversation counts.
  * @var array<string,int>   $daily_c   Daily click counts.
  * @var array<int,object>   $top
+ * @var array<string,int>   $demand   Most-requested services.
  * @var SWC_License_Manager $license
  *
  * @package SignTeb_Web_Chat
@@ -59,6 +60,21 @@ $render_bars = static function (array $series, string $color): void {
 
 <h2><?php esc_html_e('روند کلیک‌ها (۱۴ روز اخیر)', 'signteb-web-chat'); ?></h2>
 <?php $render_bars($daily_c, '#c8a04e'); ?>
+
+<h2><?php esc_html_e('پرتقاضاترین خدمات', 'signteb-web-chat'); ?></h2>
+<p class="description"><?php esc_html_e('خدماتی که بیماران در گفتگوها بیشتر درباره‌شان پرسیده‌اند (سیگنال یادگیری برای تمرکز تبلیغات و محتوا).', 'signteb-web-chat'); ?></p>
+<table class="widefat striped" style="max-width:520px">
+    <thead><tr><th><?php esc_html_e('خدمت', 'signteb-web-chat'); ?></th><th style="width:90px"><?php esc_html_e('درخواست', 'signteb-web-chat'); ?></th></tr></thead>
+    <tbody>
+    <?php if (empty($demand)) : ?>
+        <tr><td colspan="2"><?php esc_html_e('هنوز داده‌ای ثبت نشده است.', 'signteb-web-chat'); ?></td></tr>
+    <?php else : ?>
+        <?php foreach ($demand as $name => $count) : ?>
+            <tr><td><?php echo esc_html($name); ?></td><td><?php echo esc_html(number_format_i18n($count)); ?></td></tr>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    </tbody>
+</table>
 
 <h2><?php esc_html_e('پرتکرارترین پرسش‌ها', 'signteb-web-chat'); ?></h2>
 <p class="description"><?php esc_html_e('برای کشف شکاف محتوایی و ایده‌ی سئو', 'signteb-web-chat'); ?></p>

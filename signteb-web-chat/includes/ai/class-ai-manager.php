@@ -115,10 +115,11 @@ class SWC_AI_Manager
         $known_name   = $conversation ? (string) ($conversation->patient_name ?? '') : $patient_name;
 
         $context = [
-            'system'     => $this->prompt->build($lang, $known_name),
-            'history'    => $this->messages->history($conversation_id, 12),
-            'model'      => $this->settings->active_model(),
-            'max_tokens' => 1024,
+            'system'      => $this->prompt->build($lang, $known_name),
+            'history'     => $this->messages->history($conversation_id, 20),
+            'model'       => $this->settings->active_model(),
+            'max_tokens'  => 1200,
+            'temperature' => (float) apply_filters('swc_temperature', 0.8),
         ];
 
         $result = $provider->generate_reply($message, $context);
@@ -153,11 +154,16 @@ class SWC_AI_Manager
         $score = $this->score_and_summarize($conversation_id, $cta, $known_name, (string) ($conversation->patient_phone ?? $patient_phone));
         do_action('swc_message_handled', $conversation_id, $cta, $score['level']);
 
+        // --- Smart appointment trigger: only surface the booking card when the
+        // visitor shows genuine readiness (explicit booking intent, or a warm/
+        // hot lead) — never push it on a cold, purely-informational chat.
+        $show_card = $cta !== '' && ($cta === 'booking' || in_array($score['level'], ['hot', 'warm'], true));
+
         return [
             'ok'              => true,
             'reply'           => $reply,
             'cta'             => $cta,
-            'cta_card'        => $cta !== '' ? $this->cta_card($cta) : null,
+            'cta_card'        => $show_card ? $this->cta_card($cta) : null,
             'lead'            => ['level' => $score['level'], 'label' => $score['label'], 'emoji' => $score['emoji']],
             'conversation_id' => $conversation_id,
         ];

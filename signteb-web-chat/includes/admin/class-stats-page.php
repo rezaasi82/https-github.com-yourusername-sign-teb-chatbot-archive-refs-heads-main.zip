@@ -19,13 +19,19 @@ class SWC_Stats_Page
         if (! current_user_can('manage_options')) {
             return;
         }
-        $repo    = new SWC_Conversation_Repository();
-        $events  = new SWC_Event_Repository();
-        $stats   = $repo->stats(30);
-        $clicks  = $events->counts(30);
-        $daily   = $repo->daily(14);
-        $daily_c = $events->daily(14);
-        $top     = $this->top_questions();
+        $repo     = new SWC_Conversation_Repository();
+        $events   = new SWC_Event_Repository();
+        $settings = new SWC_Settings();
+        $stats    = $repo->stats(30);
+        $clicks   = $events->counts(30);
+        $daily    = $repo->daily(14);
+        $daily_c  = $events->daily(14);
+        $top      = $this->top_questions();
+        $services = array_map(
+            static fn($s) => (string) $s['name'],
+            (new SWC_System_Prompt_Builder($settings))->services()
+        );
+        $demand  = $repo->service_demand($services, 30);
         $license = new SWC_License_Manager();
 
         include SWC_DIR . 'includes/admin/views/dashboard.php';

@@ -40,10 +40,11 @@ class SWC_Provider_Anthropic implements SWC_AI_Provider_Interface
 
         $messages   = $this->build_messages($message, $context['history'] ?? []);
         $body = [
-            'model'      => $context['model'] ?? self::DEFAULT_MODEL,
-            'max_tokens' => (int) ($context['max_tokens'] ?? 1024),
-            'system'     => (string) ($context['system'] ?? ''),
-            'messages'   => $messages,
+            'model'       => $context['model'] ?? self::DEFAULT_MODEL,
+            'max_tokens'  => (int) ($context['max_tokens'] ?? 1024),
+            'temperature' => (float) ($context['temperature'] ?? 0.8),
+            'system'      => (string) ($context['system'] ?? ''),
+            'messages'    => $messages,
         ];
 
         $response = wp_remote_post(

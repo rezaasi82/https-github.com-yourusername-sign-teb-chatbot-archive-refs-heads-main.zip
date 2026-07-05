@@ -226,6 +226,41 @@ class SWC_Conversation_Repository
     }
 
     /**
+     * How many conversations mentioned each configured service (from the
+     * stored summaries) — the "most-requested services" learning signal.
+     *
+     * @param array<int,string> $names
+     * @return array<string,int> service name => count, sorted desc
+     */
+    public function service_demand(array $names, int $days = 30): array
+    {
+        global $wpdb;
+        $table = SWC_Schema::conversations_table();
+        $since = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
+
+        $out = [];
+        foreach ($names as $name) {
+            $name = trim((string) $name);
+            if ($name === '') {
+                continue;
+            }
+            $like  = '%' . $wpdb->esc_like($name) . '%';
+            $count = (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$table} WHERE created_at >= %s AND summary LIKE %s",
+                    $since,
+                    $like
+                )
+            );
+            if ($count > 0) {
+                $out[$name] = $count;
+            }
+        }
+        arsort($out);
+        return array_slice($out, 0, 10, true);
+    }
+
+    /**
      * Daily conversation counts for the last N days (trend chart).
      *
      * @return array<string,int> date (Y-m-d) => count
