@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'MEDCORE_VERSION',   '1.0.0' );
+define( 'MEDCORE_VERSION',   '1.0.3' );
 define( 'MEDCORE_DIR',       get_template_directory() );
 define( 'MEDCORE_URI',       get_template_directory_uri() );
 define( 'MEDCORE_INC',       MEDCORE_DIR . '/inc/' );
@@ -43,28 +43,71 @@ if ( version_compare( PHP_VERSION, MEDCORE_MIN_PHP, '<' ) ) {
 	return;
 }
 
-// ── Load modules in dependency order ─────────────────────────────────────────
+// ── Logger (must load first, no dependencies) ────────────────────────────────
+
+require_once MEDCORE_INC . 'class-medcore-logger.php';
+
+// ── Load modules in dependency order (defensively) ───────────────────────────
+//
+// هر ماژول در یک try/catch ایزوله بارگذاری می‌شود. در PHP 7+ حتی خطاهای
+// «فاتال» مثل Class not found و ParseError از نوع \Throwable هستند و داخل
+// بلوک try قابل گرفتن‌اند؛ پس اگر یک ماژول خراب باشد، به‌جای «صفحه سفید»
+// روی کل سایت، فقط همان ماژول رد می‌شود، خطا لاگ می‌شود، و بقیه‌ی قالب به
+// کار خود ادامه می‌دهد (graceful degradation). ماژول‌های حیاتی جداگانه
+// علامت‌گذاری می‌شوند تا در صورت شکست، به مدیر هشدار داده شود.
 
 $medcore_modules = [
-	'helpers.php',                     // 1. Utility functions (no dependencies)
-	'class-medcore-setup.php',         // 2. Theme supports, image sizes, menus
-	'class-medcore-enqueue.php',       // 3. Scripts + Styles loader
-	'class-medcore-template-tags.php', // 4. Template helper functions
-	'class-medcore-customizer.php',    // 5. WordPress Customizer
-	'class-medcore-block-patterns.php',// 6. Block patterns registration
-	'class-medcore-nav-walker.php',    // 7. Accessible nav walker
+	'helpers.php'                      => true,  // 1. Utility functions (critical)
+	'class-medcore-setup.php'          => true,  // 2. Theme supports, menus (critical)
+	'class-medcore-enqueue.php'        => true,  // 3. Scripts + Styles (critical)
+	'class-medcore-template-tags.php'  => true,  // 4. Template helpers (critical)
+	'class-medcore-customizer.php'     => false, // 5. Customizer (non-critical)
+	'class-medcore-block-patterns.php' => false, // 6. Block patterns (non-critical)
+	'class-medcore-nav-walker.php'     => false, // 7. Nav walker (non-critical)
 ];
 
-foreach ( $medcore_modules as $module ) {
+$medcore_failed = [];
+
+foreach ( $medcore_modules as $module => $is_critical ) {
 	$path = MEDCORE_INC . $module;
-	if ( file_exists( $path ) ) {
+
+	if ( ! file_exists( $path ) ) {
+		MedCore_Logger::log( 'Missing module: ' . $module, $is_critical ? 'error' : 'warning' );
+		if ( $is_critical ) {
+			$medcore_failed[] = $module;
+		}
+		continue;
+	}
+
+	try {
 		require_once $path;
-	} else {
-		// Log missing module in debug mode only
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( sprintf( '[SignTeb MedCore] Missing module: %s', $path ) );
+	} catch ( \Throwable $e ) {
+		// خطای فاتال/parse در این ماژول گرفته شد — سایت سفید نمی‌شود.
+		MedCore_Logger::log(
+			'Module failed to load: ' . $module,
+			$is_critical ? 'error' : 'warning',
+			[
+				'error' => $e->getMessage(),
+				'file'  => basename( $e->getFile() ),
+				'line'  => $e->getLine(),
+			]
+		);
+		if ( $is_critical ) {
+			$medcore_failed[] = $module;
 		}
 	}
 }
 
-unset( $medcore_modules, $module, $path );
+// اگر ماژول حیاتی‌ای شکست خورد، به‌جای صفحه‌ی سفید، به مدیر در پیشخوان هشدار بده.
+if ( $medcore_failed ) {
+	add_action( 'admin_notices', function () use ( $medcore_failed ) {
+		printf(
+			'<div class="notice notice-error"><p><strong>%s</strong><br>%s<br><code>%s</code></p></div>',
+			esc_html__( 'SignTeb MedCore: برخی بخش‌های قالب بارگذاری نشدند.', 'signteb-medcore' ),
+			esc_html__( 'سایت در حالت ایمن اجرا می‌شود تا از «صفحه سفید» جلوگیری شود. برای جزئیات، حالت دیباگ را فعال کرده و لاگ‌ها را در wp-content/uploads/signteb-logs بررسی کنید.', 'signteb-medcore' ),
+			esc_html( implode( ', ', $medcore_failed ) )
+		);
+	} );
+}
+
+unset( $medcore_modules, $module, $is_critical, $path, $medcore_failed );
