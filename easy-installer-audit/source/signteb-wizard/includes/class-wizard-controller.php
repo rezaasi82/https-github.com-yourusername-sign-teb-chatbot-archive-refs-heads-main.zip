@@ -32,6 +32,8 @@ final class Controller {
 	public function boot(): void {
 		add_action( 'admin_menu',                   [ $this, 'register_page' ] );
 		add_action( 'admin_enqueue_scripts',        [ $this, 'enqueue_assets' ] );
+		// رندر مستقل و تمام‌صفحه‌ی دستیار پیش از چاپ چارچوب wp-admin (رفع ناخوانایی)
+		add_action( 'admin_init',                   [ $this, 'maybe_render_standalone' ] );
 		add_action( 'wp_ajax_stwiz_save_step',      [ $this, 'ajax_save_step' ] );
 		add_action( 'wp_ajax_stwiz_import_demo',    [ $this, 'ajax_import_demo' ] );
 		add_action( 'wp_ajax_stwiz_check_plugins',  [ $this, 'ajax_check_plugins' ] );
@@ -53,6 +55,34 @@ final class Controller {
 	}
 
 	// ─── Render ───────────────────────────────────────────────────────────────
+
+	/**
+	 * رندر دستیار به‌صورت یک صفحه‌ی HTML کاملاً مستقل، پیش از آنکه وردپرس
+	 * چارچوب wp-admin (هدر/منو/body با پس‌زمینه‌ی روشن) را چاپ کند.
+	 *
+	 * چرا لازم است: طراحی دستیار یک تم تیره‌ی تمام‌صفحه است. اگر مثل حالت
+	 * پیش‌فرض از طریق callbackِ add_menu_page رندر شود، وردپرس چارچوب ادمین
+	 * (با پس‌زمینه‌ی سفید) را قبلاً چاپ کرده و سلکتور body.stwiz-body دیگر
+	 * اعمال نمی‌شود؛ در نتیجه متن‌های روشن دستیار روی پس‌زمینه‌ی سفید می‌افتند
+	 * و کاملاً ناخوانا می‌شوند. با رندر زودهنگام روی admin_init و سپس exit،
+	 * یک بوم خالی در اختیار می‌گیریم و طراحی درست نمایش داده می‌شود.
+	 */
+	public function maybe_render_standalone(): void {
+		if ( wp_doing_ajax() ) {
+			return;
+		}
+
+		if ( 'signteb-wizard' !== sanitize_key( $_GET['page'] ?? '' ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return; // اجازه بده جریان عادی ادمین پیام دسترسی غیرمجاز را نشان دهد
+		}
+
+		$this->render_wizard();
+		exit;
+	}
 
 	public function render_wizard(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -79,7 +109,14 @@ final class Controller {
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<title><?php esc_html_e( 'راه‌اندازی SignTeb MedCore', STWIZ_TEXT ); ?></title>
-			<?php wp_print_styles( 'stwiz-wizard' ); ?>
+			<?php
+			// چون رندر روی admin_init (پیش از admin_enqueue_scripts) انجام می‌شود،
+			// استایل را همین‌جا ثبت و چاپ می‌کنیم تا مستقل از زمان‌بندی enqueue باشد.
+			if ( ! wp_style_is( 'stwiz-wizard', 'registered' ) ) {
+				wp_register_style( 'stwiz-wizard', STWIZ_URI . 'assets/css/wizard.css', [], STWIZ_VERSION );
+			}
+			wp_print_styles( 'stwiz-wizard' );
+			?>
 		</head>
 		<body class="stwiz-body">
 
@@ -187,7 +224,12 @@ final class Controller {
 			</main>
 		</div>
 
-		<?php wp_print_scripts( 'stwiz-wizard' ); ?>
+		<?php
+		if ( ! wp_script_is( 'stwiz-wizard', 'registered' ) ) {
+			wp_register_script( 'stwiz-wizard', STWIZ_URI . 'assets/js/wizard.js', [], STWIZ_VERSION, true );
+		}
+		wp_print_scripts( 'stwiz-wizard' );
+		?>
 		<script>
 		var stWizData = {
 			ajaxUrl: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
