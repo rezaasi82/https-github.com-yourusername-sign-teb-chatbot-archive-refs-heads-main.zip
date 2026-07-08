@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
 
 class SWC_Schema
 {
-    public const DB_VERSION = '2.0.0';
+    public const DB_VERSION = '3.0.0';
 
     public static function conversations_table(): string
     {
@@ -32,6 +32,12 @@ class SWC_Schema
     {
         global $wpdb;
         return $wpdb->prefix . 'swc_events';
+    }
+
+    public static function sync_logs_table(): string
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'swc_sync_logs';
     }
 
     /**
@@ -63,6 +69,7 @@ class SWC_Schema
             lead_score VARCHAR(8) DEFAULT NULL,
             booking_status VARCHAR(16) NOT NULL DEFAULT 'none',
             summary LONGTEXT DEFAULT NULL,
+            pdf_url VARCHAR(255) DEFAULT NULL,
             message_count INT UNSIGNED NOT NULL DEFAULT 0,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
@@ -97,9 +104,28 @@ class SWC_Schema
             KEY idx_created (created_at)
         ) {$charset_collate};";
 
+        $sync_logs = self::sync_logs_table();
+        $sql_sync  = "CREATE TABLE {$sync_logs} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            lead_id BIGINT UNSIGNED NOT NULL,
+            provider VARCHAR(32) NOT NULL,
+            event VARCHAR(32) NOT NULL DEFAULT 'manual',
+            status VARCHAR(16) NOT NULL DEFAULT 'pending',
+            attempts INT UNSIGNED NOT NULL DEFAULT 0,
+            response LONGTEXT DEFAULT NULL,
+            duration_ms INT UNSIGNED DEFAULT NULL,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            PRIMARY KEY  (id),
+            KEY idx_lead (lead_id),
+            KEY idx_provider (provider),
+            KEY idx_status (status)
+        ) {$charset_collate};";
+
         dbDelta($sql_conversations);
         dbDelta($sql_messages);
         dbDelta($sql_events);
+        dbDelta($sql_sync);
 
         update_option('swc_db_version', self::DB_VERSION);
     }
@@ -110,7 +136,9 @@ class SWC_Schema
         $conversations = self::conversations_table();
         $messages      = self::messages_table();
         $events        = self::events_table();
+        $sync_logs     = self::sync_logs_table();
         // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+        $wpdb->query("DROP TABLE IF EXISTS {$sync_logs}");
         $wpdb->query("DROP TABLE IF EXISTS {$events}");
         $wpdb->query("DROP TABLE IF EXISTS {$messages}");
         $wpdb->query("DROP TABLE IF EXISTS {$conversations}");

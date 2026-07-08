@@ -15,7 +15,7 @@ if (! defined('ABSPATH')) {
 
 class SWC_Settings_Page
 {
-    private const TABS = ['provider', 'clinic', 'appearance', 'conversations', 'stats', 'license'];
+    private const TABS = ['provider', 'clinic', 'appearance', 'integrations', 'conversations', 'stats', 'license'];
 
     public function current_tab(): string
     {
@@ -38,6 +38,11 @@ class SWC_Settings_Page
 
         if ($tab === 'license') {
             (new SWC_License_Manager())->activate((string) ($in['license_key'] ?? ''));
+            $this->finish($tab);
+        }
+
+        if ($tab === 'integrations') {
+            $this->save_integrations($in);
             $this->finish($tab);
         }
 
@@ -97,6 +102,35 @@ class SWC_Settings_Page
         $this->finish($tab);
     }
 
+    /**
+     * Persist the Integrations tab (webhook + Google Sheets). Secrets are
+     * stored encrypted and only overwritten when a new value is typed.
+     */
+    private function save_integrations(array $in): void
+    {
+        $existing = get_option(SWC_Settings::OPTION, []);
+        $existing = is_array($existing) ? $existing : [];
+
+        $update = [
+            'webhook_enabled'  => isset($in['webhook_enabled']) ? 1 : 0,
+            'webhook_url'      => esc_url_raw($in['webhook_url'] ?? ''),
+            'webhook_events'   => sanitize_text_field($in['webhook_events'] ?? ''),
+            'webhook_retry'    => isset($in['webhook_retry']) ? 1 : 0,
+            'gsheet_enabled'   => isset($in['gsheet_enabled']) ? 1 : 0,
+            'gsheet_auto'      => isset($in['gsheet_auto']) ? 1 : 0,
+            'gsheet_webapp_url' => esc_url_raw($in['gsheet_webapp_url'] ?? ''),
+            'gsheet_name'      => sanitize_text_field($in['gsheet_name'] ?? 'Leads'),
+        ];
+        update_option(SWC_Settings::OPTION, array_merge($existing, $update));
+
+        if (isset($in['webhook_secret']) && trim((string) $in['webhook_secret']) !== '') {
+            SWC_Webhook_Manager::save_secret((string) $in['webhook_secret']);
+        }
+        if (isset($in['gsheet_secret']) && trim((string) $in['gsheet_secret']) !== '') {
+            SWC_Google_Sheets::save_secret((string) $in['gsheet_secret']);
+        }
+    }
+
     private function finish(string $tab): void
     {
         add_settings_error('swc', 'saved', __('تنظیمات ذخیره شد.', 'signteb-web-chat'), 'updated');
@@ -120,7 +154,7 @@ class SWC_Settings_Page
         settings_errors('swc');
         $this->render_tab_nav($tab);
 
-        if (in_array($tab, ['provider', 'clinic', 'appearance', 'license'], true)) {
+        if (in_array($tab, ['provider', 'clinic', 'appearance', 'integrations', 'license'], true)) {
             include SWC_DIR . 'includes/admin/views/settings.php';
         } elseif ($tab === 'conversations') {
             (new SWC_Conversations_Page())->render_inner();
@@ -137,7 +171,8 @@ class SWC_Settings_Page
             'provider'      => __('هوش مصنوعی', 'signteb-web-chat'),
             'clinic'        => __('اطلاعات کلینیک', 'signteb-web-chat'),
             'appearance'    => __('ظاهر ویجت', 'signteb-web-chat'),
-            'conversations' => __('تاریخچه مکالمات', 'signteb-web-chat'),
+            'integrations'  => __('اتصال‌ها و خروجی', 'signteb-web-chat'),
+            'conversations' => __('لیدها و مکالمات', 'signteb-web-chat'),
             'stats'         => __('آمار', 'signteb-web-chat'),
             'license'       => __('لایسنس', 'signteb-web-chat'),
         ];

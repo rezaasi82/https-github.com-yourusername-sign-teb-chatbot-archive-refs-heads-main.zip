@@ -30,12 +30,17 @@ class SWC_Plugin
 
         // REST transport (preferred).
         (new SWC_Chat_Controller())->register_routes();
+        (new SWC_Export_Controller())->register_routes();
 
         // admin-ajax fallback for hosts that block the REST API.
         (new SWC_Chat_Ajax_Handler())->register();
 
+        // Export module: cron retries + automatic lead-event triggers.
+        (new SWC_Export_Manager())->register();
+
         if (is_admin()) {
             (new SWC_Admin_Menu())->register();
+            (new SWC_Export_Ajax_Handler())->register();
         } else {
             (new SWC_Widget())->register();
         }

@@ -90,5 +90,61 @@
 ## امنیت
 nonce و sanitize/escape روی همه‌ی ورودی‌ها اعمال می‌شود. این افزونه برای نصب روی سایت‌های ناشناس طراحی شده است؛ هیچ `exec()`/`proc_open()` استفاده نمی‌شود.
 
+---
+
+## ماژول خروجی و اتصال‌ها (Export & Integrations)
+
+از تب **Medora AI ← اتصال‌ها و خروجی** قابل تنظیم است. لیدها = مکالمات ذخیره‌شده در `swc_conversations`/`swc_messages`؛ ماژول خروجی روی همین داده‌ها کار می‌کند و یک جدول لاگ همگام‌سازی (`swc_sync_logs`) اضافه می‌کند.
+
+### ۱) خروجی PDF
+از تب «لیدها و مکالمات» روی **دانلود PDF** بزنید. گزارش با طراحی حرفه‌ای، RTL و تاریخ شمسی ساخته می‌شود و در `wp-content/uploads/medora-pdf/YYYY/MM/` با نامی غیرقابل‌حدس ذخیره می‌گردد. دانلود از طریق endpoint امن با بررسی capability و nonce انجام می‌شود.
+
+- اگر روی سایت کتابخانه‌ی **mPDF** یا **Dompdf** نصب باشد، خروجی PDF واقعی تولید می‌شود.
+- در غیر این صورت، گزارش به‌صورت HTML آماده‌ی چاپ ذخیره می‌شود (مرورگر با «Print → Save as PDF» فارسی را بی‌نقص رندر می‌کند).
+
+### ۲) Webhook (n8n / Make / Zapier / CRM)
+آدرس Webhook و یک Secret وارد کنید. هنگام رویدادها یک `POST` با بدنه‌ی JSON ارسال می‌شود و در صورت تنظیم Secret، هدر امضا هم می‌آید:
+
+```
+X-Medora-Event: lead_created
+X-Medora-Signature: sha256=<hmac_sha256(body, secret)>
+```
+
+نمونه‌ی راستی‌آزمایی امضا در گیرنده (PHP):
+
+```php
+$expected = 'sha256=' . hash_hmac('sha256', file_get_contents('php://input'), $secret);
+if (hash_equals($expected, $_SERVER['HTTP_X_MEDORA_SIGNATURE'] ?? '')) { /* trusted */ }
+```
+
+ساختار payload شامل `lead_id, patient_name, phone, request_type, conversation_summary, pdf_url, created_at, messages[]` است. در صورت خطا و فعال‌بودن «تلاش مجدد»، تا ۳ بار با WP-Cron دوباره تلاش می‌شود و وضعیت در لاگ ثبت می‌گردد.
+
+### ۳) Google Sheets (بدون OAuth، از طریق Apps Script)
+نوشتن در Google Sheets نیاز به OAuth دارد؛ به همین دلیل از یک **Google Apps Script Web App** استفاده می‌کنیم. یک اسکریپت ساده مستقر کنید و آدرس `…/exec` آن را در تنظیمات وارد کنید:
+
+```javascript
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  if (data.secret !== 'YOUR_SECRET') return ContentService.createTextOutput('forbidden');
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(data.sheet) || ss.insertSheet(data.sheet);
+  if (sheet.getLastRow() === 0) sheet.appendRow(data.columns);
+  sheet.appendRow(data.row);
+  return ContentService.createTextOutput('ok');
+}
+```
+
+سپس Deploy → New deployment → Web app → Execute as: Me، Who has access: Anyone.
+
+### REST API (فقط ادمین، capability = manage_options)
+- `GET /wp-json/medora/v1/leads`
+- `GET /wp-json/medora/v1/lead/{id}`
+- `POST /wp-json/medora/v1/export/pdf` · `/export/webhook` · `/export/google-sheet` (بدنه: `{ "lead_id": 123 }`)
+
+### امنیت
+همه‌ی اکشن‌های خروجی nonce + capability دارند، ورودی‌ها sanitize و SQLها prepared هستند، Secretها رمزنگاری‌شده ذخیره می‌شوند، دانلود فایل فقط از داخل پوشه‌ی `medora-pdf` مجاز است (بدون دسترسی دلخواه به فایل)، و Webhook با امضای HMAC ارسال می‌شود.
+
+---
+
 ## لایسنس
 GPL-2.0-or-later.

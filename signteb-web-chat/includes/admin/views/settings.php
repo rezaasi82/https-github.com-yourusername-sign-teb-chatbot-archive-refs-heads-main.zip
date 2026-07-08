@@ -201,6 +201,41 @@ if (! defined('ABSPATH')) {
             <tr><th><?php esc_html_e('پیام خارج از ساعت کاری', 'signteb-web-chat'); ?></th><td><textarea name="offhours_message" rows="2" class="large-text"><?php echo esc_textarea($s->get('offhours_message')); ?></textarea></td></tr>
         </table>
 
+    <?php elseif ($tab === 'integrations') : ?>
+        <?php
+        $webhook = new SWC_Webhook_Manager();
+        $gsheet  = new SWC_Google_Sheets();
+        ?>
+        <h2 class="title"><?php esc_html_e('Webhook (n8n / Make / Zapier / CRM)', 'signteb-web-chat'); ?></h2>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th>
+                <td><label><input type="checkbox" name="webhook_enabled" value="1" <?php checked($s->get('webhook_enabled', 0), 1); ?>> <?php esc_html_e('ارسال خودکار لید به Webhook', 'signteb-web-chat'); ?></label></td>
+            </tr>
+            <tr><th><?php esc_html_e('آدرس Webhook', 'signteb-web-chat'); ?></th><td><input type="url" name="webhook_url" value="<?php echo esc_attr($s->get('webhook_url')); ?>" class="large-text" placeholder="https://"></td></tr>
+            <tr>
+                <th><?php esc_html_e('کلید امنیتی (Secret)', 'signteb-web-chat'); ?></th>
+                <td>
+                    <input type="password" name="webhook_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo $webhook->secret() !== '' ? '••••••••' : esc_attr__('برای امضای HMAC', 'signteb-web-chat'); ?>">
+                    <p class="description"><?php esc_html_e('اگر تنظیم شود، هدر X-Medora-Signature با امضای HMAC-SHA256 ارسال می‌شود.', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
+            <tr><th><?php esc_html_e('رویدادها', 'signteb-web-chat'); ?></th><td><input type="text" name="webhook_events" value="<?php echo esc_attr($s->get('webhook_events')); ?>" class="regular-text" placeholder="lead_created,pdf_generated"><p class="description"><?php esc_html_e('خالی = همه رویدادها. مقادیر: lead_created, chat_finished, pdf_generated, manual', 'signteb-web-chat'); ?></p></td></tr>
+            <tr><th><?php esc_html_e('تلاش مجدد', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="webhook_retry" value="1" <?php checked($s->get('webhook_retry', 1), 1); ?>> <?php esc_html_e('در صورت خطا تا ۳ بار دوباره تلاش کن', 'signteb-web-chat'); ?></label></td></tr>
+            <tr><th></th><td><button type="button" class="button swc-test-btn" data-target="webhook"><?php esc_html_e('تست اتصال', 'signteb-web-chat'); ?></button> <span class="swc-test-result" data-for="webhook"></span></td></tr>
+        </table>
+
+        <h2 class="title"><?php esc_html_e('Google Sheets', 'signteb-web-chat'); ?></h2>
+        <p class="description"><?php esc_html_e('برای افزودن ردیف به Google Sheets، یک Google Apps Script Web App مستقر کنید (بدون OAuth). راهنما در README.', 'signteb-web-chat'); ?></p>
+        <table class="form-table" role="presentation">
+            <tr><th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="gsheet_enabled" value="1" <?php checked($s->get('gsheet_enabled', 0), 1); ?>> <?php esc_html_e('همگام‌سازی با Google Sheets', 'signteb-web-chat'); ?></label></td></tr>
+            <tr><th><?php esc_html_e('همگام‌سازی خودکار', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="gsheet_auto" value="1" <?php checked($s->get('gsheet_auto', 0), 1); ?>> <?php esc_html_e('لید جدید به‌صورت خودکار افزوده شود', 'signteb-web-chat'); ?></label></td></tr>
+            <tr><th><?php esc_html_e('آدرس Web App', 'signteb-web-chat'); ?></th><td><input type="url" name="gsheet_webapp_url" value="<?php echo esc_attr($s->get('gsheet_webapp_url')); ?>" class="large-text" placeholder="https://script.google.com/macros/s/…/exec"></td></tr>
+            <tr><th><?php esc_html_e('کلید امنیتی', 'signteb-web-chat'); ?></th><td><input type="password" name="gsheet_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo $gsheet->secret() !== '' ? '••••••••' : ''; ?>"></td></tr>
+            <tr><th><?php esc_html_e('نام شیت', 'signteb-web-chat'); ?></th><td><input type="text" name="gsheet_name" value="<?php echo esc_attr($s->get('gsheet_name', 'Leads')); ?>" class="regular-text"></td></tr>
+            <tr><th></th><td><button type="button" class="button swc-test-btn" data-target="gsheet"><?php esc_html_e('تست اتصال', 'signteb-web-chat'); ?></button> <span class="swc-test-result" data-for="gsheet"></span></td></tr>
+        </table>
+
     <?php elseif ($tab === 'license') : ?>
         <?php $info = $license->info(); ?>
         <table class="form-table" role="presentation">

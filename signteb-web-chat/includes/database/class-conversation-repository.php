@@ -139,6 +139,18 @@ class SWC_Conversation_Repository
         );
     }
 
+    public function set_pdf_url(int $conversation_id, string $url): void
+    {
+        global $wpdb;
+        $wpdb->update(
+            SWC_Schema::conversations_table(),
+            ['pdf_url' => $url, 'updated_at' => current_time('mysql')],
+            ['id' => $conversation_id],
+            ['%s', '%s'],
+            ['%d']
+        );
+    }
+
     /**
      * WHERE clause from filters. Only fixed, whitelisted fragments are used
      * (no user input reaches SQL here), so the concatenation is safe.

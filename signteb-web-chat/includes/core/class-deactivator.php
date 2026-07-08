@@ -17,6 +17,7 @@ class SWC_Deactivator
     public static function deactivate(): void
     {
         wp_clear_scheduled_hook('swc_license_check');
+        wp_clear_scheduled_hook('swc_webhook_retry');
         flush_rewrite_rules();
     }
 }

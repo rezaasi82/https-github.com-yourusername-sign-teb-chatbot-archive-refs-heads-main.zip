@@ -50,14 +50,26 @@ class SWC_Autoloader
         'SWC_Conversation_Repository' => 'database/class-conversation-repository.php',
         'SWC_Message_Repository'      => 'database/class-message-repository.php',
         'SWC_Event_Repository'        => 'database/class-event-repository.php',
+        'SWC_Sync_Log_Repository'     => 'database/class-sync-log-repository.php',
 
         // Rate limiting.
         'SWC_Rate_Limiter'            => 'ratelimit/class-rate-limiter.php',
 
+        // Export / integrations.
+        'SWC_Lead_Payload'            => 'export/class-lead-payload.php',
+        'SWC_Export_Logger'           => 'export/class-export-logger.php',
+        'SWC_PDF_Generator'           => 'export/class-pdf-generator.php',
+        'SWC_Webhook_Manager'         => 'export/class-webhook-manager.php',
+        'SWC_Google_Sheets'           => 'export/class-google-sheets.php',
+        'SWC_Export_Manager'          => 'export/class-export-manager.php',
+        'SWC_Sync_Status'             => 'export/class-sync-status.php',
+
         // Transports.
         'SWC_Chat_Controller'         => 'rest/class-chat-controller.php',
+        'SWC_Export_Controller'       => 'rest/class-export-controller.php',
         'SWC_Sanitizer'               => 'rest/class-sanitizer.php',
         'SWC_Chat_Ajax_Handler'       => 'ajax/class-chat-ajax-handler.php',
+        'SWC_Export_Ajax_Handler'     => 'ajax/class-export-ajax-handler.php',
 
         // License / trial.
         'SWC_License_Manager'         => 'license/class-license-manager.php',

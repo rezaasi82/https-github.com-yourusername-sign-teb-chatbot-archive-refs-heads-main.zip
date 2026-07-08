@@ -47,5 +47,15 @@ class SWC_Admin_Menu
         }
         wp_enqueue_style('swc-admin', SWC_URL . 'assets/css/admin.css', [], SWC_VERSION);
         wp_enqueue_script('swc-admin', SWC_URL . 'assets/js/admin.js', [], SWC_VERSION, true);
+        wp_localize_script('swc-admin', 'SWC_ADMIN', [
+            'ajaxUrl' => esc_url_raw(admin_url('admin-ajax.php')),
+            'nonce'   => wp_create_nonce('swc_export'),
+            'strings' => [
+                'working' => __('در حال انجام…', 'signteb-web-chat'),
+                'ok'      => __('موفق', 'signteb-web-chat'),
+                'failed'  => __('ناموفق', 'signteb-web-chat'),
+                'noSel'   => __('ابتدا چند مورد را انتخاب کنید.', 'signteb-web-chat'),
+            ],
+        ]);
     }
 }

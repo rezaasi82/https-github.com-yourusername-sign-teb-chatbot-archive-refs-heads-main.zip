@@ -26,6 +26,8 @@ $options = [
     'swc_api_key_anthropic_enc',
     'swc_api_key_openai_enc',
     'swc_api_key_gapgpt_enc',
+    'swc_webhook_secret_enc',
+    'swc_gsheet_secret_enc',
     'swc_fallback_salt',
     'swc_license',
     'swc_trial_used',

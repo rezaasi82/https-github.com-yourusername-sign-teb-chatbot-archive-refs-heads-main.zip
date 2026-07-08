@@ -1,7 +1,6 @@
 <?php
 /**
- * Smart conversations list (Conversations tab). Patient identity is primary;
- * the numeric id is secondary. Shows lead temperature and booking status.
+ * Leads list (Conversations tab) with export columns and actions.
  *
  * @var array<int,object> $items
  * @var int               $total
@@ -17,7 +16,10 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$base = admin_url('admin.php?page=swc-chat&tab=conversations');
+$base   = admin_url('admin.php?page=swc-chat&tab=conversations');
+$status = new SWC_Sync_Status();
+$dl_url = admin_url('admin-ajax.php');
+$dl_nonce = wp_create_nonce('swc_export');
 
 $score_badge = static function (?string $level): string {
     switch ($level) {
@@ -27,11 +29,6 @@ $score_badge = static function (?string $level): string {
         default:     return '—';
     }
 };
-$booking_badge = static function (?string $status): string {
-    return $status && $status !== 'none'
-        ? '<span class="swc-pill swc-pill-book">' . esc_html__('کلیک رزرو', 'signteb-web-chat') . '</span>'
-        : '—';
-};
 ?>
 <ul class="subsubsub">
     <li><a href="<?php echo esc_url($base); ?>" class="<?php echo (! $leads_only && $score === '') ? 'current' : ''; ?>"><?php esc_html_e('همه', 'signteb-web-chat'); ?></a> | </li>
@@ -39,39 +36,59 @@ $booking_badge = static function (?string $status): string {
     <li><a href="<?php echo esc_url(add_query_arg('score', 'hot', $base)); ?>" class="<?php echo $score === 'hot' ? 'current' : ''; ?>">🟢 <?php esc_html_e('لید داغ', 'signteb-web-chat'); ?></a></li>
 </ul>
 
-<table class="widefat striped">
+<div class="swc-bulkbar">
+    <select id="swc-bulk-op">
+        <option value=""><?php esc_html_e('عملیات گروهی', 'signteb-web-chat'); ?></option>
+        <option value="pdf"><?php esc_html_e('ساخت PDF انتخاب‌شده‌ها', 'signteb-web-chat'); ?></option>
+        <option value="webhook"><?php esc_html_e('همگام‌سازی Webhook', 'signteb-web-chat'); ?></option>
+        <option value="gsheet"><?php esc_html_e('همگام‌سازی Google Sheets', 'signteb-web-chat'); ?></option>
+        <option value="resend"><?php esc_html_e('ارسال مجدد Webhookهای ناموفق', 'signteb-web-chat'); ?></option>
+        <option value="delete_files"><?php esc_html_e('حذف فایل‌های خروجی', 'signteb-web-chat'); ?></option>
+    </select>
+    <button type="button" class="button" id="swc-bulk-apply"><?php esc_html_e('اجرا', 'signteb-web-chat'); ?></button>
+    <span id="swc-bulk-result"></span>
+</div>
+
+<table class="widefat striped swc-leads-table">
     <thead>
         <tr>
+            <td class="check-column"><input type="checkbox" id="swc-check-all"></td>
             <th><?php esc_html_e('بیمار', 'signteb-web-chat'); ?></th>
             <th><?php esc_html_e('موبایل', 'signteb-web-chat'); ?></th>
             <th><?php esc_html_e('تاریخ', 'signteb-web-chat'); ?></th>
-            <th><?php esc_html_e('امتیاز لید', 'signteb-web-chat'); ?></th>
-            <th><?php esc_html_e('پیام‌ها', 'signteb-web-chat'); ?></th>
-            <th><?php esc_html_e('رزرو', 'signteb-web-chat'); ?></th>
-            <th></th>
+            <th><?php esc_html_e('امتیاز', 'signteb-web-chat'); ?></th>
+            <th><?php esc_html_e('PDF', 'signteb-web-chat'); ?></th>
+            <th><?php esc_html_e('Google Sheet', 'signteb-web-chat'); ?></th>
+            <th><?php esc_html_e('Webhook', 'signteb-web-chat'); ?></th>
+            <th><?php esc_html_e('عملیات', 'signteb-web-chat'); ?></th>
         </tr>
     </thead>
     <tbody>
     <?php if (empty($items)) : ?>
-        <tr><td colspan="7"><?php esc_html_e('مکالمه‌ای یافت نشد.', 'signteb-web-chat'); ?></td></tr>
+        <tr><td colspan="9"><?php esc_html_e('مکالمه‌ای یافت نشد.', 'signteb-web-chat'); ?></td></tr>
     <?php else : ?>
-        <?php foreach ($items as $c) : ?>
-            <?php
+        <?php foreach ($items as $c) :
             $name  = trim((string) ($c->patient_name ?? ''));
             $phone = trim((string) ($c->patient_phone ?? ''));
             $label = $name !== '' ? $name : ($phone !== '' ? $phone : sprintf(__('مهمان #%d', 'signteb-web-chat'), $c->id));
+            $st    = $status->for_lead((int) $c->id);
+            $dl    = add_query_arg(['action' => 'swc_download_pdf', 'lead_id' => $c->id, 'nonce' => $dl_nonce], $dl_url);
             ?>
-            <tr>
-                <td>
-                    <strong><?php echo esc_html($label); ?></strong>
-                    <div class="swc-row-sub">#<?php echo esc_html($c->id); ?> · <?php echo esc_html($c->language); ?></div>
-                </td>
-                <td><?php echo $phone !== '' ? '<a href="tel:' . esc_attr($phone) . '">' . esc_html($phone) . '</a>' : '—'; ?></td>
+            <tr data-lead="<?php echo esc_attr($c->id); ?>">
+                <th class="check-column"><input type="checkbox" class="swc-check" value="<?php echo esc_attr($c->id); ?>"></th>
+                <td><strong><?php echo esc_html($label); ?></strong><div class="swc-row-sub">#<?php echo esc_html($c->id); ?> · <?php echo esc_html($c->language); ?></div></td>
+                <td><?php echo $phone !== '' ? esc_html($phone) : '—'; ?></td>
                 <td><?php echo esc_html(mysql2date('Y/m/d H:i', $c->created_at)); ?></td>
                 <td><?php echo wp_kses_post($score_badge($c->lead_score ?? null)); ?></td>
-                <td><?php echo esc_html(number_format_i18n($c->message_count)); ?></td>
-                <td><?php echo wp_kses_post($booking_badge($c->booking_status ?? null)); ?></td>
-                <td><a href="<?php echo esc_url(add_query_arg('conversation', $c->id, $base)); ?>"><?php esc_html_e('مشاهده', 'signteb-web-chat'); ?></a></td>
+                <td><?php echo SWC_Sync_Status::badge($st['pdf']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+                <td><?php echo SWC_Sync_Status::badge($st['google_sheets']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+                <td><?php echo SWC_Sync_Status::badge($st['webhook']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+                <td class="swc-actions">
+                    <a class="button button-small" href="<?php echo esc_url($dl); ?>" target="_blank"><?php esc_html_e('دانلود PDF', 'signteb-web-chat'); ?></a>
+                    <button type="button" class="button button-small swc-act" data-op="webhook" data-lead="<?php echo esc_attr($c->id); ?>">Webhook</button>
+                    <button type="button" class="button button-small swc-act" data-op="gsheet" data-lead="<?php echo esc_attr($c->id); ?>">Sheet</button>
+                    <a href="<?php echo esc_url(add_query_arg('conversation', $c->id, $base)); ?>"><?php esc_html_e('مشاهده', 'signteb-web-chat'); ?></a>
+                </td>
             </tr>
         <?php endforeach; ?>
     <?php endif; ?>
