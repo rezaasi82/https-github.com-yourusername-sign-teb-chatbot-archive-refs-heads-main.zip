@@ -1,0 +1,560 @@
+<!--
+  سایدبار وب‌سایت دکتر یوسف فلاح (VIP/Premium)
+  ویجت Custom-HTML وردپرس — بدون وابستگی خارجی، خودکفا و سبک.
+
+  دو بخش هوشمند (با کامنت «MODIFIED» در کد مشخص شده‌اند):
+    ‹۱› فهرست مطالب هوشمند  → فقط h2/h3 مقاله، تودرتو + اسکرول نرم + تیتر فعال
+    ‹۲› بررسی علائم         → استخراج پویا از متن مقاله، با Fallback به پیش‌فرض‌ها
+
+  اصل بازنویسی: ساختار HTML، کلاس‌های CSS و ظاهر VIP دست‌نخورده مانده‌اند؛
+  فقط لایهٔ جاوااسکریپت تمیز، DRY و بهینه شده است.
+-->
+<aside class="f-sidebar" aria-label="مشاوره و دسترسی سریع">
+  <style>
+    .f-sidebar {
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      direction: rtl;
+      max-width: 310px;
+      margin: 0 auto;
+    }
+    /* استایل‌دهی مستقیم به جای استفاده از انتخابگر جهانی ستاره */
+    .f-sidebar,
+    .f-sidebar div,
+    .f-sidebar nav,
+    .f-sidebar ul,
+    .f-sidebar li,
+    .f-sidebar a,
+    .f-sidebar label,
+    .f-sidebar input,
+    .f-sidebar span,
+    .f-sidebar button,
+    .f-sidebar p,
+    .f-sidebar img {
+      box-sizing: border-box;
+    }
+    .f-scard {
+      background: #ffffff;
+      border: 1px solid #E4E6EF;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 8px 32px rgba(15, 32, 64, 0.08);
+      margin-bottom: 18px;
+    }
+    .f-sl {
+      font-size: 13px;
+      font-weight: 800;
+      color: #7A7F93;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .f-sl::before {
+      content: '';
+      width: 18px;
+      height: 2px;
+      background: #D4961A;
+      border-radius: 2px;
+      display: inline-block;
+    }
+    .f-tocl {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .f-tocl li {
+      margin-bottom: 3px;
+    }
+    .f-tocl a {
+      display: block;
+      font-size: 14px;
+      color: #353845;
+      font-weight: 500;
+      padding: 8px 11px;
+      border-radius: 8px;
+      border-right: 3px solid transparent;
+      transition: all 0.15s ease-in-out;
+      line-height: 1.5;
+      text-decoration: none;
+    }
+    .f-tocl a:hover,
+    .f-tocl a:focus {
+      background: #EFF6FF;
+      border-right-color: #D4961A;
+      color: #163256;
+      font-weight: 700;
+    }
+
+    /* ساختار سلسله‌مراتبی h3 در فهرست مطالب */
+    .f-tocl .f-toc-h3 a {
+      padding-right: 26px;
+      font-size: 13px;
+      color: #5A5F70;
+      font-weight: 500;
+    }
+    .f-tocl .f-toc-h3 a::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #C9CDDA;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    /* وضعیت فعال تیتر در حال مطالعه */
+    .f-tocl a.is-active {
+      background: #EFF6FF;
+      border-right-color: #D4961A;
+      color: #163256;
+      font-weight: 700;
+    }
+    .f-tocl .f-toc-h3 a.is-active::before {
+      background: #D4961A;
+    }
+
+    .f-syml {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .f-syml li {
+      margin-bottom: 7px;
+    }
+    .f-sym-lbl {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #F8F9FC;
+      border: 1px solid #E4E6EF;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #353845;
+      cursor: pointer;
+      width: 100%;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .f-sym-lbl:hover {
+      background: #EFF6FF;
+    }
+    .f-sym-lbl input {
+      width: 16px;
+      height: 16px;
+      accent-color: #2563B0;
+      flex-shrink: 0;
+      cursor: pointer;
+      margin: 0;
+    }
+    .f-symcta {
+      margin-top: 14px;
+      display: block;
+      background: #2563B0;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.2s;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+    }
+    .f-symcta:hover,
+    .f-symcta:focus {
+      background: #1E4E8C;
+    }
+    .f-acard2 {
+      background: linear-gradient(145deg, #0F2040, #0A1628);
+      border: 1px solid rgba(212, 150, 26, 0.25);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(10, 22, 40, 0.22);
+    }
+    .f-abadge {
+      display: inline-block;
+      background: rgba(212, 150, 26, 0.15);
+      border: 1px solid rgba(212, 150, 26, 0.35);
+      color: #E5AD2C;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .f-atitle {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .f-adesc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.75;
+      margin-bottom: 20px;
+    }
+    .f-abtn {
+      display: block;
+      background: linear-gradient(135deg, #D4961A, #E5AD2C);
+      color: #0A1628;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 13px 20px;
+      border-radius: 8px;
+      margin-bottom: 11px;
+      box-shadow: 0 4px 14px rgba(212, 150, 26, 0.35);
+      transition: transform 0.2s;
+      text-decoration: none;
+    }
+    .f-abtn:hover {
+      transform: translateY(-1px);
+    }
+    .f-awa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(31, 175, 82, 0.1);
+      border: 1px solid rgba(31, 175, 82, 0.3);
+      color: #1FAF52;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .f-adr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: right;
+    }
+    .f-adr-av {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 2px solid #D4961A;
+      flex-shrink: 0;
+    }
+    .f-adr-n {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .f-adr-s {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+  </style>
+
+  <!-- ═══════════ فهرست مطالب هوشمند ═══════════ -->
+  <nav class="f-scard" data-f-toc-card style="display: none;" aria-label="فهرست مطالب مقاله">
+    <div class="f-sl" aria-hidden="true">فهرست مطالب</div>
+    <ul class="f-tocl">
+      <!-- محتوا توسط جاوااسکریپت پر می‌شود -->
+    </ul>
+  </nav>
+
+  <!-- ═══════════ بررسی علائم و ارسال به واتساپ ═══════════ -->
+  <div class="f-scard">
+    <div class="f-sl" id="f-symptoms-title">🩺 علائم خود را بررسی کنید</div>
+    <ul class="f-syml" aria-describedby="f-symptoms-title">
+      <!-- آیتم‌های پیش‌فرض (Fallback) — اگر مقاله علائمی نداشت همین‌ها می‌مانند -->
+      <li>
+        <label class="f-sym-lbl">
+          <input type="checkbox" class="f-sym-chk" value="بی‌حسی انگشت کوچک و حلقه" />
+          <span>بی‌حسی انگشت کوچک و حلقه</span>
+        </label>
+      </li>
+      <li>
+        <label class="f-sym-lbl">
+          <input type="checkbox" class="f-sym-chk" value="گزگز که شب‌ها بدتر می‌شود" />
+          <span>گزگز که شب‌ها بدتر می‌شود</span>
+        </label>
+      </li>
+      <li>
+        <label class="f-sym-lbl">
+          <input type="checkbox" class="f-sym-chk" value="ضعف در قدرت گرفتن اشیا" />
+          <span>ضعف در قدرت گرفتن اشیا</span>
+        </label>
+      </li>
+      <li>
+        <label class="f-sym-lbl">
+          <input type="checkbox" class="f-sym-chk" value="لاغرشدن عضلات کف دست" />
+          <span>لاغرشدن عضلات کف دست</span>
+        </label>
+      </li>
+      <li>
+        <label class="f-sym-lbl">
+          <input type="checkbox" class="f-sym-chk" value="درد با خم‌کردن آرنج" />
+          <span>درد با خم‌کردن آرنج</span>
+        </label>
+      </li>
+    </ul>
+    <button type="button" class="f-symcta" id="f-submit-symptoms">ارسال علائم به واتساپ پزشک</button>
+  </div>
+
+  <!-- ═══════════ کارت مشاوره و تماس ═══════════ -->
+  <div class="f-acard2">
+    <span class="f-abadge">نوبت آنلاین</span>
+    <div class="f-atitle">بی‌حسی انگشت کوچک نگران‌کننده است؟</div>
+    <p class="f-adesc">قبل از پیشرفت آسیب عصبی، نوبت مشاوره رزرو کنید.</p>
+    <a href="https://nobat.ir/6937" class="f-abtn" rel="nofollow noopener">📅 رزرو نوبت آنلاین</a>
+    <a href="https://wa.me/989372896262" class="f-awa" rel="nofollow noopener noreferrer">💬 مشاوره واتساپ</a>
+    <div class="f-adr">
+      <img class="f-adr-av" src="https://dryousoffallah.com/wp-content/uploads/2025/10/IMG_1997copy.webp" alt="دکتر یوسف فلاح" width="42" height="42" loading="lazy" />
+      <div>
+        <div class="f-adr-n">دکتر یوسف فلاح</div>
+        <div class="f-adr-s">فوق تخصص جراحی دست، شانه و آرنج</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* jshint browser: true, esversion: 6, devel: true */
+  /* global IntersectionObserver */
+  (function () {
+    'use strict';
+
+    /* ═══════════ پیکربندی مرکزی ═══════════ */
+    var CONFIG = {
+      whatsapp: '989372896262',
+      // ترتیب اهمیت: از خاص‌ترین ظرف محتوا به عام‌ترین
+      contentSelectors: ['.entry-content', '.post-content', 'article .elementor-widget-container', 'article', 'main'],
+      symptomKeywords: ['علائم', 'علايم', 'نشانه'],
+      headingSelector: 'h2, h3',
+      maxSymptoms: 6,
+      scrollOffset: 90
+    };
+
+    /* ═══════════ ابزارهای مشترک (DRY) ═══════════ */
+    function each(list, fn) {
+      if (!list) return;
+      for (var i = 0; i < list.length; i++) fn(list[i], i);
+    }
+    // آیا المان داخل خود سایدبار است؟ (برای نادیده‌گرفتن تیترهای سایدبار)
+    function inSidebar(el) {
+      return !!(el && el.closest && el.closest('.f-sidebar'));
+    }
+    // متن تمیز و بدون فاصله‌های اضافی
+    function cleanText(node) {
+      return ((node && node.textContent) || '').trim().replace(/\s+/g, ' ');
+    }
+
+    // یافتن ظرف اصلی متن مقاله (هرگز خود سایدبار)
+    function findContentRoot() {
+      for (var i = 0; i < CONFIG.contentSelectors.length; i++) {
+        var els = document.querySelectorAll(CONFIG.contentSelectors[i]);
+        for (var j = 0; j < els.length; j++) {
+          var el = els[j];
+          if (inSidebar(el)) continue;
+          if (el.querySelector('h2, h3') || el.querySelector('ul, ol')) return el;
+        }
+      }
+      return document.body;
+    }
+
+    // یک‌بار پیمایش DOM: تیترهای معتبر مقاله را جمع می‌کند و بین TOC و علائم به اشتراک می‌گذارد
+    function collectHeadings(root) {
+      var out = [];
+      each(root.querySelectorAll(CONFIG.headingSelector), function (h) {
+        if (inSidebar(h)) return;
+        if (cleanText(h)) out.push(h);
+      });
+      return out;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ‹۱› MODIFIED — فهرست مطالب هوشمند (Smart Table of Contents)
+       • فقط تیترهای h2 (تیتر ۱) و h3 (تیتر ۲) خوانده می‌شوند
+       • h3 با کلاس .f-toc-h3 به‌صورت تودرتو/تورفته زیر h2 نمایش می‌یابد
+       • کلیک → اسکرول نرم؛ اسکرول → افزودن کلاس فعال (is-active) به تیتر جاری
+       ═══════════════════════════════════════════════════════════════ */
+    function buildTOC(headings) {
+      var tocList = document.querySelector('.f-tocl');
+      var tocCard = document.querySelector('[data-f-toc-card]');
+      if (!tocList) return;
+
+      // بدون تیتر → کارت فهرست پنهان می‌ماند (نمایش مشروط)
+      if (!headings.length) {
+        if (tocCard) tocCard.style.display = 'none';
+        return;
+      }
+
+      if (tocCard) tocCard.style.display = 'block';
+      tocList.innerHTML = '';
+      var linkMap = {};
+
+      each(headings, function (h, i) {
+        if (!h.id) h.id = 'f-sec-' + i; // تضمین وجود لنگر برای هر تیتر
+
+        var li = document.createElement('li');
+        if (h.tagName === 'H3') li.className = 'f-toc-h3'; // تورفتگی سلسله‌مراتبی
+
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = cleanText(h);
+        a.setAttribute('data-target', h.id);
+        a.addEventListener('click', onTocClick);
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+        linkMap[h.id] = a;
+      });
+
+      enableScrollSpy(headings, linkMap);
+    }
+
+    // اسکرول نرم به تیتر مقصد با احتساب آفست هدر ثابت
+    function onTocClick(e) {
+      var target = document.getElementById(this.getAttribute('data-target'));
+      if (!target) return;
+      e.preventDefault();
+      var top = target.getBoundingClientRect().top + window.pageYOffset - CONFIG.scrollOffset;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+
+    // Scroll-spy: بالاترین تیترِ در حال نمایش را (به ترتیب سند) فعال می‌کند
+    function enableScrollSpy(headings, linkMap) {
+      if (!('IntersectionObserver' in window)) return;
+
+      var visible = {};       // id تیتر → آیا اکنون در ناحیهٔ دید است؟
+      var currentId = null;   // تیتر فعال فعلی (برای پرهیز از پیمایش کامل در هر رویداد)
+
+      var observer = new IntersectionObserver(function (entries) {
+        each(entries, function (entry) {
+          visible[entry.target.id] = entry.isIntersecting;
+        });
+
+        // اولین تیتر قابل‌مشاهده به ترتیب سند = تیتر فعال (پایدار هنگام اسکرول بالا/پایین)
+        var activeId = null;
+        for (var i = 0; i < headings.length; i++) {
+          if (visible[headings[i].id]) { activeId = headings[i].id; break; }
+        }
+        if (!activeId || activeId === currentId) return;
+
+        if (currentId && linkMap[currentId]) linkMap[currentId].classList.remove('is-active');
+        linkMap[activeId].classList.add('is-active');
+        currentId = activeId;
+      }, { rootMargin: '0px 0px -75% 0px', threshold: 0 });
+
+      each(headings, function (h) { observer.observe(h); });
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ‹۲› MODIFIED — سکشن «علائم خود را بررسی کنید» (Symptom Checker)
+       • متن مقالهٔ جاری اسکن می‌شود؛ اگر تیتری شامل «علائم/علايم/نشانه»
+         و پس از آن لیستی (ul/ol) بود، آیتم‌های آن به‌عنوان علائم استخراج
+         و جایگزین آیتم‌های سایدبار می‌شوند
+       • Fallback: اگر مقاله دربارهٔ بیماری نبود یا علائمی یافت نشد،
+         آیتم‌های پیش‌فرضِ داخل HTML دست‌نخورده می‌مانند (سکشن هرگز خالی نمی‌شود)
+       ═══════════════════════════════════════════════════════════════ */
+    function extractSymptoms(headings) {
+      for (var i = 0; i < headings.length; i++) {
+        var text = cleanText(headings[i]);
+        var isSymptomHead = CONFIG.symptomKeywords.some(function (k) { return text.indexOf(k) !== -1; });
+        if (!isSymptomHead) continue;
+
+        // اولین لیست بعد از تیتر علائم را تا رسیدن به تیتر بعدی جست‌وجو کن
+        var node = headings[i].nextElementSibling;
+        while (node && node.tagName !== 'H2' && node.tagName !== 'H3') {
+          if (node.tagName === 'UL' || node.tagName === 'OL') {
+            var items = [];
+            each(node.querySelectorAll('li'), function (li) {
+              var s = cleanText(li);
+              if (s) items.push(s);
+            });
+            if (items.length) return items.slice(0, CONFIG.maxSymptoms);
+          }
+          node = node.nextElementSibling;
+        }
+      }
+      return []; // یافت نشد → آرایهٔ خالی، یعنی Fallback به پیش‌فرض‌ها
+    }
+
+    // آرایهٔ خالی = دست‌نزدن به علائم پیش‌فرض؛ در غیر این صورت جایگزینی کامل
+    function renderSymptoms(symptoms) {
+      if (!symptoms.length) return; // Fallback: آیتم‌های پیش‌فرض HTML حفظ می‌شوند
+      var list = document.querySelector('.f-syml');
+      if (!list) return;
+
+      list.innerHTML = '';
+      each(symptoms, function (text) {
+        var li = document.createElement('li');
+        var label = document.createElement('label');
+        label.className = 'f-sym-lbl';
+
+        var input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'f-sym-chk';
+        input.value = text;
+
+        var span = document.createElement('span');
+        span.textContent = text;
+
+        label.appendChild(input);
+        label.appendChild(span);
+        li.appendChild(label);
+        list.appendChild(li);
+      });
+    }
+
+    /* ═══════════ ارسال علائم انتخاب‌شده به واتساپ ═══════════ */
+    // موضوع مقاله از h1 (یا عنوان صفحه) — بدون دُم برند سایت
+    function getArticleTopic() {
+      var h1 = document.querySelector('h1');
+      var raw = h1 ? h1.textContent : document.title;
+      return (raw || '').split('|')[0].split('–')[0].split('-')[0].trim();
+    }
+
+    function sendSymptomsToWhatsApp() {
+      var selected = [];
+      each(document.querySelectorAll('.f-syml .f-sym-chk:checked'), function (el) {
+        selected.push(el.value);
+      });
+
+      var topic = getArticleTopic();
+      var text = 'سلام آقای دکتر فلاح \n';
+      text += 'من علائم زیر را' + (topic ? ' در رابطه با «' + topic + '»' : '') + ' دارم:\n\n';
+
+      if (selected.length) {
+        each(selected, function (s) { text += '🔹 ' + s + '\n'; });
+      } else {
+        text += '🔹 مایل به بررسی و معاینه علائم دستم هستم.\n';
+      }
+      text += '\nخواهشمند است جهت نوبت‌دهی و بررسی پرونده راهنمایی بفرمایید.';
+
+      window.open('https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(text), '_blank');
+    }
+
+    /* ═══════════ اجرا و ثبت رویدادها ═══════════ */
+    function init() {
+      var root = findContentRoot();
+      var headings = collectHeadings(root); // یک پیمایش، دو مصرف‌کننده
+
+      buildTOC(headings);                         // ‹۱› فهرست مطالب
+      renderSymptoms(extractSymptoms(headings));  // ‹۲› علائم پویا با Fallback
+
+      var submitBtn = document.getElementById('f-submit-symptoms');
+      if (submitBtn) submitBtn.addEventListener('click', sendSymptomsToWhatsApp);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+</aside>
