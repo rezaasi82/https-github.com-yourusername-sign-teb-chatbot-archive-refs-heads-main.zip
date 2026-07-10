@@ -205,6 +205,19 @@ class SWC_Conversation_Repository
     }
 
     /**
+     * Count of conversations active (updated) within the last N hours.
+     */
+    public function active_count(int $hours = 24): int
+    {
+        global $wpdb;
+        $table = SWC_Schema::conversations_table();
+        $since = gmdate('Y-m-d H:i:s', time() - ($hours * HOUR_IN_SECONDS));
+        return (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE updated_at >= %s", $since)
+        );
+    }
+
+    /**
      * Aggregate stats for the dashboard.
      *
      * @return array{conversations:int,leads:int,conversion_rate:float}

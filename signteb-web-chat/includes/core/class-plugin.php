@@ -39,6 +39,7 @@ class SWC_Plugin
         (new SWC_Export_Manager())->register();
 
         if (is_admin()) {
+            (new SWC_Premium_Dashboard())->register();
             (new SWC_Admin_Menu())->register();
             (new SWC_Export_Ajax_Handler())->register();
         } else {

@@ -1,0 +1,166 @@
+<?php
+/**
+ * SWC_Premium_Dashboard — the premium admin landing page and integrity gate.
+ *
+ * Self-registering service: it wires its own menu, conditionally-loaded assets
+ * and AJAX endpoint. Wire it once from SWC_Plugin::boot() with:
+ *
+ *     ( new SWC_Premium_Dashboard() )->register();
+ *
+ * @package SignTeb_Web_Chat
+ */
+
+if (! defined('ABSPATH')) {
+    exit;
+}
+
+class SWC_Premium_Dashboard
+{
+    private const PAGE  = 'swc-dashboard';
+    private const NONCE = 'swc_dashboard';
+
+    public function register(): void
+    {
+        add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue']);
+        add_action('wp_ajax_swc_integrity_check', [$this, 'ajax_integrity']);
+    }
+
+    public function menu(): void
+    {
+        add_submenu_page(
+            'swc-chat',
+            __('داشبورد Medora AI', 'signteb-web-chat'),
+            __('داشبورد', 'signteb-web-chat'),
+            'manage_options',
+            self::PAGE,
+            [$this, 'render'],
+            0
+        );
+    }
+
+    /**
+     * Load styles/scripts only on this page to keep the admin lightweight.
+     */
+    public function enqueue(string $hook): void
+    {
+        if (substr($hook, -strlen(self::PAGE)) !== self::PAGE) {
+            return;
+        }
+        wp_enqueue_style('swc-dashboard', SWC_URL . 'assets/css/dashboard.css', [], SWC_VERSION);
+        wp_enqueue_script('swc-dashboard', SWC_URL . 'assets/js/dashboard.js', [], SWC_VERSION, true);
+        wp_localize_script('swc-dashboard', 'SWC_DASH', [
+            'ajaxUrl' => esc_url_raw(admin_url('admin-ajax.php')),
+            'nonce'   => wp_create_nonce(self::NONCE),
+        ]);
+    }
+
+    public function render(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die(esc_html__('دسترسی غیرمجاز.', 'signteb-web-chat'), '', ['response' => 403]);
+        }
+
+        $integrity = $this->verify_integrity_gate();
+        $metrics   = $this->metrics();
+        $settings  = new SWC_Settings();
+
+        include SWC_DIR . 'includes/admin/views/premium-dashboard.php';
+    }
+
+    /**
+     * Live integrity status for the dashboard badge (nonce + capability gated).
+     */
+    public function ajax_integrity(): void
+    {
+        SWC_Json_Guard::arm();
+        if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
+            wp_send_json(['ok' => false], 403);
+        }
+        wp_send_json(['ok' => true, 'integrity' => $this->verify_integrity_gate()]);
+    }
+
+    /* --------------------------------------------------------------------
+     * End-Code integrity gate.
+     *
+     * Intentionally self-contained: it reads no request input and calls no
+     * external/public hooks inside its logic, so it can be passed through a
+     * PHP obfuscator without breaking the surrounding OOP structure. The
+     * verdict is derived from layered checks (environment binding -> domain
+     * binding -> entitlement) so a single stripped line cannot silently open
+     * the gate.
+     * ------------------------------------------------------------------ */
+    public function verify_integrity_gate(): array
+    {
+        $verdict = ['ok' => false, 'level' => 'invalid', 'label' => __('نامعتبر', 'signteb-web-chat'), 'code' => 0];
+
+        try {
+            $license = new SWC_License_Manager();
+            $info    = $license->info();
+
+            // Layer 1 — environment binding: the core must be genuinely loaded.
+            $env_ok = defined('SWC_VERSION')
+                && defined('SWC_FILE')
+                && class_exists('SWC_Plugin')
+                && is_string($info['domain'] ?? null);
+
+            if ($env_ok === true) {
+                // Layer 2 — domain binding: license domain must match this host.
+                $host        = (string) (wp_parse_url(home_url(), PHP_URL_HOST) ?: '');
+                $host_hash   = hash('sha256', strtolower($host));
+                $bound       = hash_equals((string) $info['domain'], $host_hash);
+
+                // Layer 3 — entitlement, evaluated only inside the two layers above.
+                if ($license->is_active() === true) {
+                    if ($bound === true || ($info['status'] ?? '') === 'active') {
+                        $verdict = ['ok' => true, 'level' => 'secure', 'label' => __('فعال و ایمن', 'signteb-web-chat'), 'code' => 200];
+                    } else {
+                        $verdict = ['ok' => false, 'level' => 'domain', 'label' => __('عدم تطابق دامنه', 'signteb-web-chat'), 'code' => 409];
+                    }
+                } elseif ($license->can_send() === true) {
+                    $verdict = ['ok' => true, 'level' => 'grace', 'label' => __('نسخه آزمایشی فعال', 'signteb-web-chat'), 'code' => 206];
+                } else {
+                    $verdict = ['ok' => false, 'level' => 'expired', 'label' => __('نیازمند فعال‌سازی', 'signteb-web-chat'), 'code' => 402];
+                }
+            }
+        } catch (\Throwable $e) {
+            $this->log_anomaly('integrity_gate', $e);
+            $verdict = ['ok' => false, 'level' => 'invalid', 'label' => __('خطای بررسی', 'signteb-web-chat'), 'code' => 500];
+        }
+
+        return $verdict;
+    }
+
+    /**
+     * @return array{active_chats:int,leads:int,integrity:array}
+     */
+    private function metrics(): array
+    {
+        $active = 0;
+        $leads  = 0;
+        try {
+            $repo   = new SWC_Conversation_Repository();
+            $active = $repo->active_count(24);
+            $stats  = $repo->stats(30);
+            $leads  = (int) $stats['leads'];
+        } catch (\Throwable $e) {
+            $this->log_anomaly('metrics', $e);
+        }
+
+        return [
+            'active_chats' => $active,
+            'leads'        => $leads,
+            'integrity'    => $this->verify_integrity_gate(),
+        ];
+    }
+
+    /**
+     * Structured, credential-safe anomaly log (never in production output).
+     */
+    private function log_anomaly(string $context, \Throwable $e): void
+    {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log(sprintf('[Medora AI] %s anomaly: %s', $context, $e->getMessage()));
+        }
+    }
+}

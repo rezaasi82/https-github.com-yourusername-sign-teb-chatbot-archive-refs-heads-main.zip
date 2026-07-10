@@ -78,6 +78,7 @@ class SWC_Autoloader
         'SWC_Widget'                  => 'frontend/class-widget.php',
 
         // Admin.
+        'SWC_Premium_Dashboard'       => 'admin/class-premium-dashboard.php',
         'SWC_Admin_Menu'              => 'admin/class-admin-menu.php',
         'SWC_Settings_Page'           => 'admin/class-settings-page.php',
         'SWC_Conversations_Page'      => 'admin/class-conversations-page.php',
