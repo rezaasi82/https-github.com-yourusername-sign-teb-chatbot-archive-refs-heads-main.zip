@@ -53,8 +53,10 @@ class SWC_Branches_Page
             $id   = absint($in['branch_id'] ?? 0);
             if ($id > 0 && $repo->exists($id)) {
                 $repo->update($id, $data);
+                SWC_Audit_Log::record('branch_updated', ['object' => 'branch#' . $id]);
             } else {
-                $repo->create($data);
+                $new = $repo->create($data);
+                SWC_Audit_Log::record('branch_created', ['object' => 'branch#' . $new]);
             }
         }
 
@@ -72,6 +74,7 @@ class SWC_Branches_Page
         $id = absint($_POST['branch_id'] ?? 0);
         if ($id > 0) {
             (new SWC_Branch_Repository())->delete($id);
+            SWC_Audit_Log::record('branch_deleted', ['object' => 'branch#' . $id, 'severity' => 'warning']);
         }
         wp_safe_redirect(admin_url('admin.php?page=swc-branches&deleted=1'));
         exit;

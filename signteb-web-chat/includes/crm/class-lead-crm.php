@@ -57,7 +57,11 @@ class SWC_Lead_CRM
     {
         SWC_Json_Guard::arm();
 
+        if (SWC_Security::is_locked()) {
+            wp_send_json(['ok' => false, 'error' => 'locked'], 429);
+        }
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
+            SWC_Security::note_failure('crm_update');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
 

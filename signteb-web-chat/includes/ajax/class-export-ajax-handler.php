@@ -30,7 +30,11 @@ class SWC_Export_Ajax_Handler
 
     private function guard(): void
     {
+        if (SWC_Security::is_locked()) {
+            wp_send_json(['ok' => false, 'error' => 'locked'], 429);
+        }
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
+            SWC_Security::note_failure('export_ajax');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
     }
@@ -115,7 +119,11 @@ class SWC_Export_Ajax_Handler
      */
     public function download_pdf(): void
     {
+        if (SWC_Security::is_locked()) {
+            wp_die(esc_html__('دسترسی موقتاً مسدود شده است.', 'signteb-web-chat'), '', ['response' => 429]);
+        }
         if (! current_user_can('manage_options') || ! check_admin_referer(self::NONCE, 'nonce')) {
+            SWC_Security::note_failure('pdf_download');
             wp_die(esc_html__('دسترسی غیرمجاز.', 'signteb-web-chat'), '', ['response' => 403]);
         }
         $lead_id = absint($_GET['lead_id'] ?? 0);

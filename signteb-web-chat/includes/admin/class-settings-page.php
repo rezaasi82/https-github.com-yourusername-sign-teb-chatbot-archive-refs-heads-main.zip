@@ -139,6 +139,7 @@ class SWC_Settings_Page
 
     private function finish(string $tab): void
     {
+        SWC_Audit_Log::record('settings_saved', ['object' => $tab, 'severity' => $tab === 'license' ? 'warning' : 'info']);
         add_settings_error('swc', 'saved', __('تنظیمات ذخیره شد.', 'signteb-web-chat'), 'updated');
         set_transient('settings_errors', get_settings_errors(), 30);
         wp_safe_redirect(admin_url('admin.php?page=swc-chat&tab=' . $tab . '&updated=1'));

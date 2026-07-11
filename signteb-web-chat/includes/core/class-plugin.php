@@ -45,6 +45,9 @@ class SWC_Plugin
         (new SWC_Rollup())->register();
         (new SWC_Job_Queue())->register();
 
+        // Security audit trail (event listeners + admin viewer).
+        (new SWC_Audit_Log())->register();
+
         if (is_admin()) {
             (new SWC_Premium_Dashboard())->register();
             (new SWC_Crm_Board())->register();

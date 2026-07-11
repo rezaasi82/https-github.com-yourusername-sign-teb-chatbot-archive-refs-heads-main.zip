@@ -52,6 +52,9 @@ class SWC_Chat_Ajax_Handler
         if (! check_ajax_referer('swc_chat_nonce', 'nonce', false)) {
             wp_send_json(['ok' => false], 403);
         }
+        if (! SWC_Security::rate_limit('event', 60, MINUTE_IN_SECONDS)) {
+            wp_send_json(['ok' => false, 'error' => 'rate_limited'], 429);
+        }
 
         $type = sanitize_key((string) ($_POST['type'] ?? ''));
         $cid  = absint($_POST['conversation_id'] ?? 0);

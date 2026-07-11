@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
 
 class SWC_Schema
 {
-    public const DB_VERSION = '3.3.0';
+    public const DB_VERSION = '3.4.0';
 
     public static function conversations_table(): string
     {
@@ -56,6 +56,12 @@ class SWC_Schema
     {
         global $wpdb;
         return $wpdb->prefix . 'swc_branches';
+    }
+
+    public static function audit_logs_table(): string
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'swc_audit_logs';
     }
 
     /**
@@ -185,6 +191,22 @@ class SWC_Schema
             PRIMARY KEY  (id)
         ) {$charset_collate};";
 
+        $audit     = self::audit_logs_table();
+        $sql_audit = "CREATE TABLE {$audit} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id BIGINT UNSIGNED DEFAULT NULL,
+            action VARCHAR(48) NOT NULL,
+            object VARCHAR(64) DEFAULT NULL,
+            severity VARCHAR(16) NOT NULL DEFAULT 'info',
+            ip VARCHAR(45) DEFAULT NULL,
+            detail VARCHAR(255) DEFAULT NULL,
+            created_at DATETIME NOT NULL,
+            PRIMARY KEY  (id),
+            KEY idx_action (action),
+            KEY idx_severity (severity),
+            KEY idx_created (created_at)
+        ) {$charset_collate};";
+
         dbDelta($sql_conversations);
         dbDelta($sql_messages);
         dbDelta($sql_events);
@@ -192,6 +214,7 @@ class SWC_Schema
         dbDelta($sql_analytics);
         dbDelta($sql_jobs);
         dbDelta($sql_branches);
+        dbDelta($sql_audit);
 
         update_option('swc_db_version', self::DB_VERSION);
     }
@@ -206,7 +229,9 @@ class SWC_Schema
         $analytics     = self::analytics_table();
         $jobs          = self::jobs_table();
         $branches      = self::branches_table();
+        $audit         = self::audit_logs_table();
         // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+        $wpdb->query("DROP TABLE IF EXISTS {$audit}");
         $wpdb->query("DROP TABLE IF EXISTS {$branches}");
         $wpdb->query("DROP TABLE IF EXISTS {$jobs}");
         $wpdb->query("DROP TABLE IF EXISTS {$analytics}");

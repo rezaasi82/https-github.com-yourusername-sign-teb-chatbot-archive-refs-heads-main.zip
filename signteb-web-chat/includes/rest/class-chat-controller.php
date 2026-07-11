@@ -68,6 +68,9 @@ class SWC_Chat_Controller
     public function handle_event(WP_REST_Request $request): WP_REST_Response
     {
         SWC_Json_Guard::arm();
+        if (! SWC_Security::rate_limit('event', 60, MINUTE_IN_SECONDS)) {
+            return new WP_REST_Response(['ok' => false, 'error' => 'rate_limited'], 429);
+        }
         $type = sanitize_key((string) $request->get_param('type'));
         $cid  = absint($request->get_param('conversation_id'));
         $ok   = (new SWC_Event_Repository())->record($type, $cid);

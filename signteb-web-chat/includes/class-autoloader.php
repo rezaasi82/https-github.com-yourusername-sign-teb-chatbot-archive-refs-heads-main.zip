@@ -29,6 +29,10 @@ class SWC_Autoloader
         'SWC_Json_Guard'              => 'core/class-json-guard.php',
         'SWC_Cache'                   => 'core/class-cache.php',
 
+        // Security.
+        'SWC_Security'                => 'security/class-security.php',
+        'SWC_Audit_Log'               => 'security/class-audit-log.php',
+
         // AI provider layer.
         'SWC_AI_Provider_Interface'        => 'ai/interface-ai-provider.php',
         'SWC_Provider_Anthropic'           => 'ai/class-provider-anthropic.php',
