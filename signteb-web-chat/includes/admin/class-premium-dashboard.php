@@ -61,8 +61,13 @@ class SWC_Premium_Dashboard
             wp_die(esc_html__('دسترسی غیرمجاز.', 'signteb-web-chat'), '', ['response' => 403]);
         }
 
+        $ranges    = ['day' => 1, 'week' => 7, 'month' => 30, 'year' => 365];
+        $range     = isset($_GET['range']) ? sanitize_key((string) $_GET['range']) : 'month';
+        $range     = isset($ranges[$range]) ? $range : 'month';
+        $days      = $ranges[$range];
+
         $integrity = $this->verify_integrity_gate();
-        $metrics   = $this->metrics();
+        $metrics   = $this->metrics($days);
         $settings  = new SWC_Settings();
 
         include SWC_DIR . 'includes/admin/views/premium-dashboard.php';
@@ -132,29 +137,47 @@ class SWC_Premium_Dashboard
     }
 
     /**
-     * @return array{active_chats:int,leads:int,funnel:array<string,int>,integrity:array}
+     * Full overview metrics for a period (in days).
+     *
+     * @return array<string,mixed>
      */
-    private function metrics(): array
+    private function metrics(int $days): array
     {
-        $active = 0;
-        $leads  = 0;
-        $funnel = [];
+        $m = [
+            'active_chats' => 0,
+            'conversations' => 0,
+            'leads'        => 0,
+            'hot_leads'    => 0,
+            'conversion'   => 0.0,
+            'booked'       => 0,
+            'clicks'       => ['booking' => 0, 'whatsapp' => 0, 'call' => 0, 'bale' => 0],
+            'revenue'      => 0,
+            'funnel'       => [],
+            'integrity'    => $this->verify_integrity_gate(),
+        ];
+
         try {
             $repo   = new SWC_Conversation_Repository();
-            $active = $repo->active_count(24);
-            $stats  = $repo->stats(30);
-            $leads  = (int) $stats['leads'];
-            $funnel = $repo->funnel_counts(30);
+            $events = new SWC_Event_Repository();
+            $stats  = $repo->stats($days);
+
+            $m['active_chats']  = $repo->active_count(24);
+            $m['conversations'] = (int) $stats['conversations'];
+            $m['leads']         = (int) $stats['leads'];
+            $m['hot_leads']     = (int) $stats['hot_leads'];
+            $m['conversion']    = (float) $stats['conversion_rate'];
+            $m['booked']        = (int) $stats['booked'];
+            $m['clicks']        = $events->counts($days);
+            $m['funnel']        = $repo->funnel_counts($days);
+
+            // Revenue estimate = Leads × Conversion Rate × Average Service Price.
+            $avg_price     = (int) (new SWC_Settings())->get('avg_service_price', 0);
+            $m['revenue']  = (int) round($m['leads'] * ($m['conversion'] / 100) * $avg_price);
         } catch (\Throwable $e) {
             $this->log_anomaly('metrics', $e);
         }
 
-        return [
-            'active_chats' => $active,
-            'leads'        => $leads,
-            'funnel'       => $funnel,
-            'integrity'    => $this->verify_integrity_gate(),
-        ];
+        return $m;
     }
 
     /**

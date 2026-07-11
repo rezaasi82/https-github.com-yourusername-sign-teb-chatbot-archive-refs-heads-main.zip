@@ -163,6 +163,28 @@ class SWC_Conversation_Repository
     }
 
     /**
+     * Recent leads in a given pipeline stage (for the Kanban board).
+     * Only real leads (captured name/phone or flagged) are shown.
+     *
+     * @return array<int,object>
+     */
+    public function by_status(string $status, int $limit = 40): array
+    {
+        global $wpdb;
+        $table = SWC_Schema::conversations_table();
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, patient_name, patient_phone, lead_score, lead_status, created_at
+                 FROM {$table}
+                 WHERE lead_status = %s AND (is_lead = 1 OR patient_name <> '' OR patient_phone <> '')
+                 ORDER BY id DESC LIMIT %d",
+                $status,
+                $limit
+            )
+        ) ?: [];
+    }
+
+    /**
      * Count of leads per pipeline stage (for the CRM funnel).
      *
      * @return array<string,int> lead_status => count

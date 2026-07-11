@@ -58,13 +58,55 @@
 .swc-chip-off { background: rgba(214,54,56,0.14); color: #fca5a5; }
 .swc-chip-off .swc-dot { background: #f87171; }
 
+/* range selector */
+.swc-range { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.swc-range-btn {
+	text-decoration: none;
+	padding: 7px 16px;
+	border-radius: 30px;
+	font-size: 13px; font-weight: 700;
+	color: rgba(234,240,251,0.8);
+	background: rgba(255,255,255,0.05);
+	border: 1px solid rgba(255,255,255,0.12);
+	transition: all 0.15s ease;
+}
+.swc-range-btn:hover { color: #fff; border-color: rgba(200,160,78,0.5); }
+.swc-range-btn.is-active { color: var(--navy); background: linear-gradient(135deg, var(--gold), var(--gold-2)); border-color: transparent; }
+
 /* metric grid */
 .swc-grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 18px;
-	margin-top: 22px;
+	margin-top: 18px;
 }
+.swc-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* revenue card */
+.swc-revenue {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-top: 20px;
+	padding: 22px 26px;
+	border-radius: 18px;
+	background:
+		radial-gradient(600px 200px at 100% 0, rgba(200,160,78,0.22), transparent 60%),
+		linear-gradient(135deg, rgba(200,160,78,0.14), rgba(255,255,255,0.04));
+	border: 1px solid rgba(200,160,78,0.4);
+}
+.swc-revenue-label { display: block; font-size: 13px; color: rgba(234,240,251,0.82); }
+.swc-revenue-num { display: block; font-size: 32px; font-weight: 800; color: var(--gold-2); margin: 4px 0; }
+.swc-revenue-formula { display: block; font-size: 11.5px; color: rgba(234,240,251,0.55); }
+.swc-revenue-cta {
+	text-decoration: none; white-space: nowrap;
+	padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+	color: var(--navy); background: linear-gradient(135deg, var(--gold), var(--gold-2));
+}
+
+@media (max-width: 1100px) { .swc-grid-4 { grid-template-columns: repeat(2, 1fr); } }
 .swc-tile {
 	border-radius: 16px;
 	padding: 24px 22px;

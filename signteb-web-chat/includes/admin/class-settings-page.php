@@ -80,6 +80,7 @@ class SWC_Settings_Page
             $update['bale_url']         = esc_url_raw($in['bale_url'] ?? '');
             $update['business_hours']   = sanitize_text_field($in['business_hours'] ?? '');
             $update['manual_services']  = sanitize_textarea_field($in['manual_services'] ?? '');
+            $update['avg_service_price'] = max(0, (int) ($in['avg_service_price'] ?? 0));
             $update['lead_capture']     = isset($in['lead_capture']) ? 1 : 0;
             $update['ch_booking']       = isset($in['ch_booking']) ? 1 : 0;
             $update['ch_whatsapp']      = isset($in['ch_whatsapp']) ? 1 : 0;

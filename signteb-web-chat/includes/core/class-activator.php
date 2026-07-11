@@ -76,6 +76,7 @@ class SWC_Activator
             'emergency_number'   => '115',
             'booking_url'        => '',
             'manual_services'    => '', // one "name | price" per line
+            'avg_service_price'  => 0,  // Toman — used for the revenue estimate
         ];
     }
 
