@@ -120,6 +120,8 @@ class SWC_Settings_Page
             'gsheet_auto'      => isset($in['gsheet_auto']) ? 1 : 0,
             'gsheet_webapp_url' => esc_url_raw($in['gsheet_webapp_url'] ?? ''),
             'gsheet_name'      => sanitize_text_field($in['gsheet_name'] ?? 'Leads'),
+            'cloud_enabled'    => isset($in['cloud_enabled']) ? 1 : 0,
+            'cloud_endpoint'   => esc_url_raw($in['cloud_endpoint'] ?? ''),
         ];
         update_option(SWC_Settings::OPTION, array_merge($existing, $update));
 
@@ -128,6 +130,9 @@ class SWC_Settings_Page
         }
         if (isset($in['gsheet_secret']) && trim((string) $in['gsheet_secret']) !== '') {
             SWC_Google_Sheets::save_secret((string) $in['gsheet_secret']);
+        }
+        if (isset($in['cloud_secret']) && trim((string) $in['cloud_secret']) !== '') {
+            SWC_Cloud_Client::save_secret((string) $in['cloud_secret']);
         }
     }
 

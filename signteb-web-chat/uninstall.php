@@ -28,6 +28,8 @@ $options = [
     'swc_api_key_gapgpt_enc',
     'swc_webhook_secret_enc',
     'swc_gsheet_secret_enc',
+    'swc_cloud_secret_enc',
+    'swc_cloud_registered',
     'swc_fallback_salt',
     'swc_license',
     'swc_trial_used',

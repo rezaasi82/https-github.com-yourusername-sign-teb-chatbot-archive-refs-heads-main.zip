@@ -55,6 +55,12 @@ class SWC_Autoloader
         // Rate limiting.
         'SWC_Rate_Limiter'            => 'ratelimit/class-rate-limiter.php',
 
+        // CRM.
+        'SWC_Lead_CRM'                => 'crm/class-lead-crm.php',
+
+        // Cloud (Level 2 telemetry spine).
+        'SWC_Cloud_Client'            => 'cloud/class-cloud-client.php',
+
         // Export / integrations.
         'SWC_Lead_Payload'            => 'export/class-lead-payload.php',
         'SWC_Export_Logger'           => 'export/class-export-logger.php',

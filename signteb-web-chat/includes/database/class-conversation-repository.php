@@ -139,6 +139,54 @@ class SWC_Conversation_Repository
         );
     }
 
+    /**
+     * Update CRM fields with a strict whitelist of columns and formats.
+     *
+     * @param array<string,string> $fields
+     */
+    public function update_crm(int $conversation_id, array $fields): void
+    {
+        $allowed = ['lead_status' => '%s', 'email' => '%s', 'tags' => '%s', 'notes' => '%s'];
+        $data    = ['updated_at' => current_time('mysql')];
+        $formats = ['%s'];
+        foreach ($fields as $key => $value) {
+            if (isset($allowed[$key])) {
+                $data[$key]  = $value;
+                $formats[]   = $allowed[$key];
+            }
+        }
+        if (count($data) === 1) {
+            return;
+        }
+        global $wpdb;
+        $wpdb->update(SWC_Schema::conversations_table(), $data, ['id' => $conversation_id], $formats, ['%d']);
+    }
+
+    /**
+     * Count of leads per pipeline stage (for the CRM funnel).
+     *
+     * @return array<string,int> lead_status => count
+     */
+    public function funnel_counts(int $days = 30): array
+    {
+        global $wpdb;
+        $table = SWC_Schema::conversations_table();
+        $since = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
+        $rows  = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT lead_status, COUNT(*) AS c FROM {$table}
+                 WHERE created_at >= %s GROUP BY lead_status",
+                $since
+            )
+        ) ?: [];
+
+        $out = [];
+        foreach ($rows as $row) {
+            $out[(string) $row->lead_status] = (int) $row->c;
+        }
+        return $out;
+    }
+
     public function set_pdf_url(int $conversation_id, string $url): void
     {
         global $wpdb;

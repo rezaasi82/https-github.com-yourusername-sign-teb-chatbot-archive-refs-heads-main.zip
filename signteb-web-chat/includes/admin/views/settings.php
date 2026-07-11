@@ -236,6 +236,14 @@ if (! defined('ABSPATH')) {
             <tr><th></th><td><button type="button" class="button swc-test-btn" data-target="gsheet"><?php esc_html_e('تست اتصال', 'signteb-web-chat'); ?></button> <span class="swc-test-result" data-for="gsheet"></span></td></tr>
         </table>
 
+        <h2 class="title"><?php esc_html_e('Medora Cloud (اختیاری)', 'signteb-web-chat'); ?></h2>
+        <p class="description"><?php esc_html_e('اتصال به پلتفرم ابری برای مانیتورینگ و لایسنس. فقط شمارنده‌های فنی و هش دامنه ارسال می‌شود؛ هیچ داده‌ی بیمار ارسال نمی‌گردد. پیش‌فرض: خاموش.', 'signteb-web-chat'); ?></p>
+        <table class="form-table" role="presentation">
+            <tr><th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="cloud_enabled" value="1" <?php checked($s->get('cloud_enabled', 0), 1); ?>> <?php esc_html_e('ارسال heartbeat روزانه به Medora Cloud', 'signteb-web-chat'); ?></label></td></tr>
+            <tr><th><?php esc_html_e('آدرس Cloud', 'signteb-web-chat'); ?></th><td><input type="url" name="cloud_endpoint" value="<?php echo esc_attr($s->get('cloud_endpoint')); ?>" class="large-text" placeholder="https://cloud.medora.ai/v1/heartbeat"></td></tr>
+            <tr><th><?php esc_html_e('کلید امنیتی', 'signteb-web-chat'); ?></th><td><input type="password" name="cloud_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo (new SWC_Cloud_Client())->secret() !== '' ? '••••••••' : ''; ?>"></td></tr>
+        </table>
+
     <?php elseif ($tab === 'license') : ?>
         <?php $info = $license->info(); ?>
         <table class="form-table" role="presentation">

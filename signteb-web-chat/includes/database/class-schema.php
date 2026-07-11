@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
 
 class SWC_Schema
 {
-    public const DB_VERSION = '3.0.0';
+    public const DB_VERSION = '3.1.0';
 
     public static function conversations_table(): string
     {
@@ -70,6 +70,10 @@ class SWC_Schema
             booking_status VARCHAR(16) NOT NULL DEFAULT 'none',
             summary LONGTEXT DEFAULT NULL,
             pdf_url VARCHAR(255) DEFAULT NULL,
+            email VARCHAR(190) DEFAULT NULL,
+            lead_status VARCHAR(20) NOT NULL DEFAULT 'new',
+            notes LONGTEXT DEFAULT NULL,
+            tags VARCHAR(255) DEFAULT NULL,
             message_count INT UNSIGNED NOT NULL DEFAULT 0,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
@@ -77,6 +81,7 @@ class SWC_Schema
             KEY idx_session (session_id),
             KEY idx_is_lead (is_lead),
             KEY idx_lead_score (lead_score),
+            KEY idx_lead_status (lead_status),
             KEY idx_phone (patient_phone),
             KEY idx_created (created_at)
         ) {$charset_collate};";

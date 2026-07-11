@@ -60,6 +60,18 @@ $int_class = 'is-' . preg_replace('/[^a-z]/', '', $integrity['level']);
             </div>
         </div>
 
+        <div class="swc-funnel-wrap">
+            <div class="swc-funnel-head"><?php esc_html_e('قیف تبدیل بیمار (۳۰ روز)', 'signteb-web-chat'); ?></div>
+            <div class="swc-funnel">
+                <?php foreach (SWC_Lead_CRM::STATUSES as $key => $def) : ?>
+                    <div class="swc-funnel-step">
+                        <b><?php echo esc_html(number_format_i18n($metrics['funnel'][$key] ?? 0)); ?></b>
+                        <span><span class="swc-funnel-dot" style="background:<?php echo esc_attr($def[1]); ?>"></span><?php echo esc_html($def[0]); ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
         <div class="swc-quicklinks">
             <a class="swc-ql" href="<?php echo esc_url(admin_url('admin.php?page=swc-chat&tab=provider')); ?>"><?php esc_html_e('تنظیمات هوش مصنوعی', 'signteb-web-chat'); ?></a>
             <a class="swc-ql" href="<?php echo esc_url(admin_url('admin.php?page=swc-chat&tab=conversations')); ?>"><?php esc_html_e('لیدها و مکالمات', 'signteb-web-chat'); ?></a>

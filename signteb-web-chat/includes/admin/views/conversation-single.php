@@ -49,6 +49,36 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
         <?php endif; ?>
     </div>
 
+    <div class="swc-crm-panel" data-lead="<?php echo esc_attr($conversation->id); ?>" data-nonce="<?php echo esc_attr(SWC_Lead_CRM::nonce()); ?>">
+        <div class="swc-crm-title"><?php esc_html_e('مدیریت لید (CRM)', 'signteb-web-chat'); ?></div>
+        <div class="swc-crm-grid">
+            <label>
+                <span><?php esc_html_e('وضعیت لید', 'signteb-web-chat'); ?></span>
+                <select class="swc-crm-status">
+                    <?php foreach (SWC_Lead_CRM::STATUSES as $key => $def) : ?>
+                        <option value="<?php echo esc_attr($key); ?>" <?php selected((string) ($conversation->lead_status ?? 'new'), $key); ?>><?php echo esc_html($def[0]); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <label>
+                <span><?php esc_html_e('ایمیل', 'signteb-web-chat'); ?></span>
+                <input type="email" class="swc-crm-email" value="<?php echo esc_attr($conversation->email ?? ''); ?>" placeholder="name@example.com">
+            </label>
+            <label>
+                <span><?php esc_html_e('برچسب‌ها', 'signteb-web-chat'); ?></span>
+                <input type="text" class="swc-crm-tags" value="<?php echo esc_attr($conversation->tags ?? ''); ?>" placeholder="VIP، جراحی، فوری">
+            </label>
+        </div>
+        <label class="swc-crm-notes-wrap">
+            <span><?php esc_html_e('یادداشت‌ها', 'signteb-web-chat'); ?></span>
+            <textarea class="swc-crm-notes" rows="3" placeholder="<?php esc_attr_e('یادداشت داخلی برای پیگیری…', 'signteb-web-chat'); ?>"><?php echo esc_textarea($conversation->notes ?? ''); ?></textarea>
+        </label>
+        <div class="swc-crm-foot">
+            <button type="button" class="button button-primary swc-crm-save"><?php esc_html_e('ذخیره تغییرات', 'signteb-web-chat'); ?></button>
+            <span class="swc-crm-result"></span>
+        </div>
+    </div>
+
     <div class="swc-transcript">
         <?php foreach ($messages as $m) : ?>
             <div class="swc-bubble swc-bubble-<?php echo esc_attr($m->role); ?> <?php echo $m->flagged ? 'swc-flagged' : ''; ?>">

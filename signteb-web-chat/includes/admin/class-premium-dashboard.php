@@ -132,17 +132,19 @@ class SWC_Premium_Dashboard
     }
 
     /**
-     * @return array{active_chats:int,leads:int,integrity:array}
+     * @return array{active_chats:int,leads:int,funnel:array<string,int>,integrity:array}
      */
     private function metrics(): array
     {
         $active = 0;
         $leads  = 0;
+        $funnel = [];
         try {
             $repo   = new SWC_Conversation_Repository();
             $active = $repo->active_count(24);
             $stats  = $repo->stats(30);
             $leads  = (int) $stats['leads'];
+            $funnel = $repo->funnel_counts(30);
         } catch (\Throwable $e) {
             $this->log_anomaly('metrics', $e);
         }
@@ -150,6 +152,7 @@ class SWC_Premium_Dashboard
         return [
             'active_chats' => $active,
             'leads'        => $leads,
+            'funnel'       => $funnel,
             'integrity'    => $this->verify_integrity_gate(),
         ];
     }

@@ -18,6 +18,8 @@ class SWC_Deactivator
     {
         wp_clear_scheduled_hook('swc_license_check');
         wp_clear_scheduled_hook('swc_webhook_retry');
+        wp_clear_scheduled_hook('swc_cloud_heartbeat');
+        wp_clear_scheduled_hook('swc_cloud_install');
         flush_rewrite_rules();
     }
 }

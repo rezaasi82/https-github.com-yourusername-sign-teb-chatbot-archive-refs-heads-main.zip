@@ -76,7 +76,12 @@ $score_badge = static function (?string $level): string {
             ?>
             <tr data-lead="<?php echo esc_attr($c->id); ?>">
                 <th class="check-column"><input type="checkbox" class="swc-check" value="<?php echo esc_attr($c->id); ?>"></th>
-                <td><strong><?php echo esc_html($label); ?></strong><div class="swc-row-sub">#<?php echo esc_html($c->id); ?> · <?php echo esc_html($c->language); ?></div></td>
+                <?php $lead_status = (string) ($c->lead_status ?? 'new'); ?>
+                <td>
+                    <strong><?php echo esc_html($label); ?></strong>
+                    <span class="swc-status-pill" style="background:<?php echo esc_attr(SWC_Lead_CRM::color($lead_status)); ?>"><?php echo esc_html(SWC_Lead_CRM::label($lead_status)); ?></span>
+                    <div class="swc-row-sub">#<?php echo esc_html($c->id); ?> · <?php echo esc_html($c->language); ?></div>
+                </td>
                 <td><?php echo $phone !== '' ? esc_html($phone) : '—'; ?></td>
                 <td><?php echo esc_html(mysql2date('Y/m/d H:i', $c->created_at)); ?></td>
                 <td><?php echo wp_kses_post($score_badge($c->lead_score ?? null)); ?></td>

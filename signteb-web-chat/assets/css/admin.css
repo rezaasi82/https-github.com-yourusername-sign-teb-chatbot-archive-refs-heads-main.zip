@@ -170,3 +170,36 @@
 .swc-leads-table .swc-actions .button-small { margin: 0 2px; }
 .swc-leads-table .swc-act[disabled] { opacity: 0.6; }
 .swc-test-result { margin-inline-start: 8px; font-size: 12.5px; font-weight: 600; }
+
+/* --- CRM --- */
+.swc-status-pill {
+	display: inline-block;
+	margin-inline-start: 6px;
+	padding: 1px 9px;
+	border-radius: 20px;
+	font-size: 10.5px;
+	font-weight: 700;
+	color: #fff;
+	vertical-align: middle;
+}
+.swc-crm-panel {
+	max-width: 760px;
+	margin: 16px 0 24px;
+	padding: 18px 20px;
+	background: #fff;
+	border: 1px solid #dcdfe5;
+	border-radius: 14px;
+	box-shadow: 0 2px 10px rgba(15,31,61,0.05);
+}
+.swc-crm-title { font-weight: 800; color: #0f1f3d; margin-bottom: 14px; font-size: 14px; }
+.swc-crm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.swc-crm-panel label { display: block; }
+.swc-crm-panel label > span { display: block; font-size: 12px; font-weight: 700; color: #50607a; margin-bottom: 5px; }
+.swc-crm-panel select, .swc-crm-panel input, .swc-crm-panel textarea {
+	width: 100%; box-sizing: border-box; border-radius: 8px;
+}
+.swc-crm-notes-wrap { margin-top: 14px; }
+.swc-crm-foot { margin-top: 14px; display: flex; align-items: center; gap: 12px; }
+.swc-crm-result { font-size: 12.5px; font-weight: 700; }
+
+@media (max-width: 782px) { .swc-crm-grid { grid-template-columns: 1fr; } }
