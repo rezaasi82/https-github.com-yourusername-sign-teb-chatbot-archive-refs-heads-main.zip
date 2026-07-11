@@ -81,10 +81,11 @@ class SWC_AI_Manager
         $lang = $this->language->resolve((string) $this->settings->get('language', 'auto'), $message);
 
         $conversation_id = $this->conversations->find_or_create($req['session_id'], [
-            'ip'       => $req['ip'],
-            'user_id'  => $req['user_id'],
-            'language' => $lang,
-            'page_url' => $req['page_url'],
+            'ip'        => $req['ip'],
+            'user_id'   => $req['user_id'],
+            'language'  => $lang,
+            'page_url'  => $req['page_url'],
+            'branch_id' => (int) ($req['branch'] ?? 0),
         ]);
 
         // Lead capture: persist any patient identity sent with the request.

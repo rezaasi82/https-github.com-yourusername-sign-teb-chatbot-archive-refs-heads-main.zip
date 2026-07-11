@@ -335,6 +335,7 @@
 			message: text,
 			session_id: sessionId,
 			page_url: cfg.pageUrl,
+			branch: root.dataset.branch || '0',
 			name: (profile && profile.name) || '',
 			phone: (profile && profile.phone) || ''
 		};

@@ -101,14 +101,17 @@
 		var result = crm.querySelector('.swc-crm-result');
 		saveBtn.addEventListener('click', function () {
 			saveBtn.disabled = true; result.textContent = A.strings.working;
-			post('swc_lead_update', {
+			var branchSel = crm.querySelector('.swc-crm-branch');
+			var data = {
 				lead_id: crm.getAttribute('data-lead'),
 				nonce: crm.getAttribute('data-nonce'),
 				lead_status: crm.querySelector('.swc-crm-status').value,
 				email: crm.querySelector('.swc-crm-email').value,
 				tags: crm.querySelector('.swc-crm-tags').value,
 				notes: crm.querySelector('.swc-crm-notes').value
-			}).then(function (res) {
+			};
+			if (branchSel) { data.branch_id = branchSel.value; }
+			post('swc_lead_update', data).then(function (res) {
 				result.textContent = (res && res.ok) ? '✓ ' + A.strings.ok : '✕ ' + (res && res.error ? res.error : A.strings.failed);
 				result.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 				saveBtn.disabled = false;

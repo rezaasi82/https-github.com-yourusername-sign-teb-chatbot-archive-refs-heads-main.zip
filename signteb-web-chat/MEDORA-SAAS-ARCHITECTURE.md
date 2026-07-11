@@ -141,7 +141,7 @@ swc_audit_logs   (NEW) id, user_id, action, object, ip, created_at
 | **P1 (این نسخه)** | CRM Core + Cloud spine | فیلدهای CRM (status/email/notes/tags)، Pipeline/Funnel، heartbeat client (opt-in) | پایین |
 | P2 ✅ | Dashboard SaaS UI | Overview کارت‌ها + بازه‌ی زمانی + Revenue/ROI + Kanban drag&drop | انجام شد (v3.3) |
 | P3 ✅ | Performance & DB | `swc_analytics` rollup + cron، batch status (رفع N+1)، `SWC_Cache`، صف پس‌زمینه (`swc_jobs`)، ایندکس‌های ترکیبی | انجام شد (v3.4) |
-| P4 | Multi-clinic | `swc_branches` + branch scoping در repositoryها + آمار جداگانه | متوسط |
+| P4 ✅ | Multi-clinic | `swc_branches` + `branch_id` + مدیریت شعب + انتساب لید + فیلتر و آمار جداگانه‌ی شعب | انجام شد (v3.5) |
 | P5 | Security hardening | audit log، GCM، rate-limit توسعه، replay-protection، secure tokens | متوسط |
 | P6 | SEO Intelligence | استخراج FAQ/کلمات کلیدی/موضوعات از گفتگوها + پیشنهاد محتوا | پایین |
 | P7 | Cloud Platform | سرویس مستقل: install registry، realtime monitor، Telegram/WhatsApp، email digest | بالا (خارج از افزونه) |

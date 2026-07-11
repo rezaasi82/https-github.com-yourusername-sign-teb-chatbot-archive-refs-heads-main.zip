@@ -24,6 +24,7 @@ $channels = $config['channels'];
      data-whatsapp="<?php echo esc_attr($config['whatsapp']); ?>"
      data-phone="<?php echo esc_attr($config['phone']); ?>"
      data-bale-url="<?php echo esc_url($config['bale_url']); ?>"
+     data-branch="<?php echo esc_attr($config['branch']); ?>"
      data-lead-capture="<?php echo $config['lead_capture'] ? '1' : '0'; ?>"
      data-ch-booking="<?php echo $channels['booking'] ? '1' : '0'; ?>"
      data-ch-whatsapp="<?php echo $channels['whatsapp'] ? '1' : '0'; ?>"

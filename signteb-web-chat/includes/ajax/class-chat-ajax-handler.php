@@ -37,6 +37,7 @@ class SWC_Chat_Ajax_Handler
             'phone'      => SWC_Sanitizer::phone(wp_unslash((string) ($_POST['phone'] ?? ''))),
             'ip'         => SWC_Sanitizer::client_ip(),
             'page_url'   => esc_url_raw(wp_unslash((string) ($_POST['page_url'] ?? ''))),
+            'branch'     => absint($_POST['branch'] ?? 0),
             'user_id'    => get_current_user_id() ?: null,
         ]);
 

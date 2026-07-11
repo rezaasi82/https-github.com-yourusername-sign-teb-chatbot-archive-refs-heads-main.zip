@@ -57,6 +57,7 @@ class SWC_Chat_Controller
             'phone'      => SWC_Sanitizer::phone((string) $request->get_param('phone')),
             'ip'         => SWC_Sanitizer::client_ip(),
             'page_url'   => esc_url_raw((string) $request->get_param('page_url')),
+            'branch'     => absint($request->get_param('branch')),
             'user_id'    => get_current_user_id() ?: null,
         ]);
 

@@ -84,6 +84,12 @@ class SWC_Lead_CRM
         if (isset($_POST['notes'])) {
             $fields['notes'] = sanitize_textarea_field(wp_unslash($_POST['notes']));
         }
+        if (isset($_POST['branch_id'])) {
+            $branch = absint($_POST['branch_id']);
+            if ($branch === 0 || (new SWC_Branch_Repository())->exists($branch)) {
+                $fields['branch_id'] = $branch;
+            }
+        }
 
         if ($fields === []) {
             wp_send_json(['ok' => false, 'error' => 'nothing_to_update'], 400);

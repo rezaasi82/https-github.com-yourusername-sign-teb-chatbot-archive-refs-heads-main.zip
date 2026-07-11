@@ -203,3 +203,16 @@
 .swc-crm-result { font-size: 12.5px; font-weight: 700; }
 
 @media (max-width: 782px) { .swc-crm-grid { grid-template-columns: 1fr; } }
+
+/* --- branches --- */
+.swc-branch-layout { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; margin-top: 16px; }
+.swc-branch-list { flex: 1 1 560px; }
+.swc-branch-form {
+	flex: 0 0 320px;
+	background: #fff;
+	border: 1px solid #dcdfe5;
+	border-radius: 14px;
+	padding: 18px 20px;
+	box-shadow: 0 2px 10px rgba(15,31,61,0.05);
+}
+.swc-branch-form h2 { margin-top: 0; font-size: 15px; color: #0f1f3d; }

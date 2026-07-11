@@ -20,7 +20,8 @@ class SWC_Conversations_Page
             return;
         }
 
-        $repo = new SWC_Conversation_Repository();
+        $repo     = new SWC_Conversation_Repository();
+        $branches = (new SWC_Branch_Repository())->all();
 
         // Single-conversation transcript view.
         $view_id = isset($_GET['conversation']) ? absint($_GET['conversation']) : 0;
@@ -33,10 +34,11 @@ class SWC_Conversations_Page
 
         $leads_only = ! empty($_GET['leads']);
         $score      = isset($_GET['score']) ? sanitize_key((string) $_GET['score']) : '';
+        $branch     = isset($_GET['branch']) ? absint($_GET['branch']) : 0;
         $page       = max(1, isset($_GET['paged']) ? absint($_GET['paged']) : 1);
         $per_page   = 20;
 
-        $filters = ['leads_only' => $leads_only, 'score' => $score];
+        $filters = ['leads_only' => $leads_only, 'score' => $score, 'branch' => $branch];
         $items   = $repo->paginate($page, $per_page, $filters);
         $total   = $repo->count($filters);
         $pages   = (int) ceil($total / $per_page);

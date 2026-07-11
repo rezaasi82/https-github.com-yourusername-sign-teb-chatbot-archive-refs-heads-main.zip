@@ -68,6 +68,17 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
                 <span><?php esc_html_e('برچسب‌ها', 'signteb-web-chat'); ?></span>
                 <input type="text" class="swc-crm-tags" value="<?php echo esc_attr($conversation->tags ?? ''); ?>" placeholder="VIP، جراحی، فوری">
             </label>
+            <?php if (! empty($branches)) : ?>
+                <label>
+                    <span><?php esc_html_e('شعبه / کلینیک', 'signteb-web-chat'); ?></span>
+                    <select class="swc-crm-branch">
+                        <option value="0"><?php esc_html_e('بدون شعبه', 'signteb-web-chat'); ?></option>
+                        <?php foreach ($branches as $b) : ?>
+                            <option value="<?php echo esc_attr($b->id); ?>" <?php selected((int) ($conversation->branch_id ?? 0), (int) $b->id); ?>><?php echo esc_html($b->name); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+            <?php endif; ?>
         </div>
         <label class="swc-crm-notes-wrap">
             <span><?php esc_html_e('یادداشت‌ها', 'signteb-web-chat'); ?></span>

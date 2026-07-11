@@ -53,6 +53,7 @@ class SWC_Autoloader
         'SWC_Event_Repository'        => 'database/class-event-repository.php',
         'SWC_Sync_Log_Repository'     => 'database/class-sync-log-repository.php',
         'SWC_Analytics_Repository'    => 'database/class-analytics-repository.php',
+        'SWC_Branch_Repository'       => 'database/class-branch-repository.php',
 
         // Background jobs / analytics rollup.
         'SWC_Rollup'                  => 'jobs/class-rollup.php',
@@ -92,6 +93,7 @@ class SWC_Autoloader
         // Admin.
         'SWC_Premium_Dashboard'       => 'admin/class-premium-dashboard.php',
         'SWC_Crm_Board'               => 'admin/class-crm-board.php',
+        'SWC_Branches_Page'           => 'admin/class-branches-page.php',
         'SWC_Admin_Menu'              => 'admin/class-admin-menu.php',
         'SWC_Settings_Page'           => 'admin/class-settings-page.php',
         'SWC_Conversations_Page'      => 'admin/class-conversations-page.php',

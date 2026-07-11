@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
 
 class SWC_Schema
 {
-    public const DB_VERSION = '3.2.0';
+    public const DB_VERSION = '3.3.0';
 
     public static function conversations_table(): string
     {
@@ -52,6 +52,12 @@ class SWC_Schema
         return $wpdb->prefix . 'swc_jobs';
     }
 
+    public static function branches_table(): string
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'swc_branches';
+    }
+
     /**
      * Create / update tables via dbDelta. Safe to run repeatedly; on upgrade
      * dbDelta adds the new patient/lead/summary columns and the events table.
@@ -86,6 +92,7 @@ class SWC_Schema
             lead_status VARCHAR(20) NOT NULL DEFAULT 'new',
             notes LONGTEXT DEFAULT NULL,
             tags VARCHAR(255) DEFAULT NULL,
+            branch_id BIGINT UNSIGNED DEFAULT NULL,
             message_count INT UNSIGNED NOT NULL DEFAULT 0,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
@@ -97,7 +104,8 @@ class SWC_Schema
             KEY idx_phone (patient_phone),
             KEY idx_created (created_at),
             KEY idx_lead_created (is_lead, created_at),
-            KEY idx_status_created (lead_status, created_at)
+            KEY idx_status_created (lead_status, created_at),
+            KEY idx_branch (branch_id)
         ) {$charset_collate};";
 
         $sql_messages = "CREATE TABLE {$messages} (
@@ -165,12 +173,25 @@ class SWC_Schema
             KEY idx_status (status)
         ) {$charset_collate};";
 
+        $branches     = self::branches_table();
+        $sql_branches = "CREATE TABLE {$branches} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            name VARCHAR(190) NOT NULL,
+            doctor VARCHAR(190) DEFAULT NULL,
+            phone VARCHAR(32) DEFAULT NULL,
+            address VARCHAR(255) DEFAULT NULL,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            PRIMARY KEY  (id)
+        ) {$charset_collate};";
+
         dbDelta($sql_conversations);
         dbDelta($sql_messages);
         dbDelta($sql_events);
         dbDelta($sql_sync);
         dbDelta($sql_analytics);
         dbDelta($sql_jobs);
+        dbDelta($sql_branches);
 
         update_option('swc_db_version', self::DB_VERSION);
     }
@@ -184,7 +205,9 @@ class SWC_Schema
         $sync_logs     = self::sync_logs_table();
         $analytics     = self::analytics_table();
         $jobs          = self::jobs_table();
+        $branches      = self::branches_table();
         // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+        $wpdb->query("DROP TABLE IF EXISTS {$branches}");
         $wpdb->query("DROP TABLE IF EXISTS {$jobs}");
         $wpdb->query("DROP TABLE IF EXISTS {$analytics}");
         $wpdb->query("DROP TABLE IF EXISTS {$sync_logs}");

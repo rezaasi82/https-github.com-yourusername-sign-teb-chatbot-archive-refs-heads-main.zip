@@ -8,6 +8,8 @@
  * @var int               $page
  * @var bool              $leads_only
  * @var string            $score
+ * @var int               $branch
+ * @var array<int,object> $branches
  *
  * @package SignTeb_Web_Chat
  */
@@ -38,6 +40,19 @@ $score_badge = static function (?string $level): string {
     <li><a href="<?php echo esc_url(add_query_arg('leads', 1, $base)); ?>" class="<?php echo $leads_only ? 'current' : ''; ?>"><?php esc_html_e('لیدها', 'signteb-web-chat'); ?></a> | </li>
     <li><a href="<?php echo esc_url(add_query_arg('score', 'hot', $base)); ?>" class="<?php echo $score === 'hot' ? 'current' : ''; ?>">🟢 <?php esc_html_e('لید داغ', 'signteb-web-chat'); ?></a></li>
 </ul>
+
+<?php if (! empty($branches)) : ?>
+    <form method="get" style="margin:8px 0 12px">
+        <input type="hidden" name="page" value="swc-chat">
+        <input type="hidden" name="tab" value="conversations">
+        <select name="branch" onchange="this.form.submit()">
+            <option value="0"><?php esc_html_e('همه‌ی شعب', 'signteb-web-chat'); ?></option>
+            <?php foreach ($branches as $b) : ?>
+                <option value="<?php echo esc_attr($b->id); ?>" <?php selected($branch, (int) $b->id); ?>><?php echo esc_html($b->name); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </form>
+<?php endif; ?>
 
 <div class="swc-bulkbar">
     <select id="swc-bulk-op">
@@ -109,6 +124,7 @@ $score_badge = static function (?string $level): string {
         $page_base = $base;
         if ($leads_only) { $page_base = add_query_arg('leads', 1, $page_base); }
         if ($score !== '') { $page_base = add_query_arg('score', $score, $page_base); }
+        if ($branch > 0) { $page_base = add_query_arg('branch', $branch, $page_base); }
         echo wp_kses_post(paginate_links([
             'base'      => add_query_arg('paged', '%#%', $page_base),
             'format'    => '',

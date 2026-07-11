@@ -35,22 +35,24 @@ class SWC_Conversation_Repository
             return (int) $existing;
         }
 
-        $now = current_time('mysql');
-        $wpdb->insert(
-            $table,
-            [
-                'session_id'    => $session_id,
-                'visitor_ip'    => $meta['ip'] ?? null,
-                'user_id'       => $meta['user_id'] ?? null,
-                'language'      => $meta['language'] ?? 'fa',
-                'page_url'      => $meta['page_url'] ?? null,
-                'status'        => 'open',
-                'message_count' => 0,
-                'created_at'    => $now,
-                'updated_at'    => $now,
-            ],
-            ['%s', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s']
-        );
+        $now  = current_time('mysql');
+        $data = [
+            'session_id'    => $session_id,
+            'visitor_ip'    => $meta['ip'] ?? null,
+            'user_id'       => $meta['user_id'] ?? null,
+            'language'      => $meta['language'] ?? 'fa',
+            'page_url'      => $meta['page_url'] ?? null,
+            'status'        => 'open',
+            'message_count' => 0,
+            'created_at'    => $now,
+            'updated_at'    => $now,
+        ];
+        $formats = ['%s', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s'];
+        if (! empty($meta['branch_id'])) {
+            $data['branch_id'] = (int) $meta['branch_id'];
+            $formats[]         = '%d';
+        }
+        $wpdb->insert($table, $data, $formats);
 
         return (int) $wpdb->insert_id;
     }
@@ -146,7 +148,7 @@ class SWC_Conversation_Repository
      */
     public function update_crm(int $conversation_id, array $fields): void
     {
-        $allowed = ['lead_status' => '%s', 'email' => '%s', 'tags' => '%s', 'notes' => '%s'];
+        $allowed = ['lead_status' => '%s', 'email' => '%s', 'tags' => '%s', 'notes' => '%s', 'branch_id' => '%d'];
         $data    = ['updated_at' => current_time('mysql')];
         $formats = ['%s'];
         foreach ($fields as $key => $value) {
@@ -233,6 +235,9 @@ class SWC_Conversation_Repository
         }
         if (! empty($filters['score']) && in_array($filters['score'], ['hot', 'warm', 'cold'], true)) {
             $clauses[] = "lead_score = '" . $filters['score'] . "'";
+        }
+        if (! empty($filters['branch'])) {
+            $clauses[] = 'branch_id = ' . (int) $filters['branch']; // int-cast, safe
         }
         return $clauses ? implode(' AND ', $clauses) : '1=1';
     }

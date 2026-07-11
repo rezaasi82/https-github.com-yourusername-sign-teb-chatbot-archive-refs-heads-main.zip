@@ -98,6 +98,7 @@ class SWC_Widget
             'whatsapp'      => (string) $s->get('whatsapp', ''),
             'phone'         => (string) $s->get('phone', ''),
             'bale_url'      => esc_url_raw((string) $s->get('bale_url', '')),
+            'branch'        => (int) apply_filters('swc_widget_branch', (int) $s->get('default_branch', 0)),
             'lead_capture'  => (int) $s->get('lead_capture', 1) === 1,
             'channels'      => [
                 'booking'  => (int) $s->get('ch_booking', 1) === 1 && (string) $s->get('booking_url', '') !== '',
