@@ -144,7 +144,7 @@ swc_audit_logs   (NEW) id, user_id, action, object, ip, created_at
 | P4 ✅ | Multi-clinic | `swc_branches` + `branch_id` + مدیریت شعب + انتساب لید + فیلتر و آمار جداگانه‌ی شعب | انجام شد (v3.5) |
 | P5 ✅ | Security hardening | AES-256-GCM (سازگار عقب‌رو)، `swc_audit_logs` + viewer، rate-limit توسعه‌یافته + قفل ضد brute-force | انجام شد (v3.6) |
 | P6 ✅ | SEO Intelligence | استخراج FAQ/کلمات کلیدی/موضوعات از گفتگوها + تولید ایده‌ی بلاگ/FAQ/سئو با AI | انجام شد (v3.7) |
-| P7 | Cloud Platform | سرویس مستقل: install registry، realtime monitor، Telegram/WhatsApp، email digest | بالا (خارج از افزونه) |
+| P7 ✅ | Cloud Platform | سرویس مستقل `medora-cloud/` (Node.js بدون dependency): install registry، heartbeat ingest، realtime SSE monitor، Telegram alert + daily digest، license endpoint امضاشده، update feed | انجام شد (سرویس جدا) |
 | P8 | License Server + Auto-update | پلن‌ها (Starter/Pro/Clinic/Enterprise)، domain lock، grace، update feed، rollback، integrity | بالا |
 
 ---
