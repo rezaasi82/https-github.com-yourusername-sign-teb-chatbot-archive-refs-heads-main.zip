@@ -82,7 +82,13 @@
 			if (!op || ids.length === 0) { out.textContent = A.strings.noSel; return; }
 			bulkApply.disabled = true; out.textContent = A.strings.working;
 			post('swc_export_bulk', { op: op, ids: ids }).then(function (res) {
-				out.textContent = (res && res.ok) ? (res.processed + ' / ' + res.total) : A.strings.failed;
+				if (res && res.ok) {
+					out.textContent = (typeof res.queued !== 'undefined')
+						? (res.queued + ' ' + (A.strings.queued || 'در صف پردازش'))
+						: (res.processed + ' / ' + res.total);
+				} else {
+					out.textContent = A.strings.failed;
+				}
 				bulkApply.disabled = false;
 			}).catch(function () { out.textContent = A.strings.failed; bulkApply.disabled = false; });
 		});

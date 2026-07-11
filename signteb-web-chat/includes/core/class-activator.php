@@ -15,6 +15,9 @@ class SWC_Activator
     {
         SWC_Schema::install();
         self::seed_default_settings();
+        if (! wp_next_scheduled(SWC_Rollup::CRON)) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', SWC_Rollup::CRON);
+        }
         flush_rewrite_rules();
     }
 
@@ -25,6 +28,9 @@ class SWC_Activator
     {
         if (get_option('swc_db_version') !== SWC_Schema::DB_VERSION) {
             SWC_Schema::install();
+        }
+        if (! wp_next_scheduled(SWC_Rollup::CRON)) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', SWC_Rollup::CRON);
         }
     }
 

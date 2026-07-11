@@ -41,6 +41,10 @@ class SWC_Plugin
         // Level 2 telemetry spine (opt-in; no-op when disabled).
         (new SWC_Cloud_Client())->register();
 
+        // Background jobs + daily analytics rollup (cron workers).
+        (new SWC_Rollup())->register();
+        (new SWC_Job_Queue())->register();
+
         if (is_admin()) {
             (new SWC_Premium_Dashboard())->register();
             (new SWC_Crm_Board())->register();

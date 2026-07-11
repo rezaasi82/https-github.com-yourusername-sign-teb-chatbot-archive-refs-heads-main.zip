@@ -143,41 +143,40 @@ class SWC_Premium_Dashboard
      */
     private function metrics(int $days): array
     {
-        $m = [
-            'active_chats' => 0,
-            'conversations' => 0,
-            'leads'        => 0,
-            'hot_leads'    => 0,
-            'conversion'   => 0.0,
-            'booked'       => 0,
-            'clicks'       => ['booking' => 0, 'whatsapp' => 0, 'call' => 0, 'bale' => 0],
-            'revenue'      => 0,
-            'funnel'       => [],
-            'integrity'    => $this->verify_integrity_gate(),
-        ];
+        // DB-derived numbers are cached briefly; the integrity gate is always
+        // evaluated fresh (cheap + security-sensitive).
+        $data = SWC_Cache::remember('dash_metrics_' . $days, 300, function () use ($days) {
+            $m = [
+                'active_chats' => 0, 'conversations' => 0, 'leads' => 0, 'hot_leads' => 0,
+                'conversion' => 0.0, 'booked' => 0,
+                'clicks' => ['booking' => 0, 'whatsapp' => 0, 'call' => 0, 'bale' => 0],
+                'revenue' => 0, 'funnel' => [],
+            ];
+            try {
+                $repo   = new SWC_Conversation_Repository();
+                $events = new SWC_Event_Repository();
+                $stats  = $repo->stats($days);
 
-        try {
-            $repo   = new SWC_Conversation_Repository();
-            $events = new SWC_Event_Repository();
-            $stats  = $repo->stats($days);
+                $m['active_chats']  = $repo->active_count(24);
+                $m['conversations'] = (int) $stats['conversations'];
+                $m['leads']         = (int) $stats['leads'];
+                $m['hot_leads']     = (int) $stats['hot_leads'];
+                $m['conversion']    = (float) $stats['conversion_rate'];
+                $m['booked']        = (int) $stats['booked'];
+                $m['clicks']        = $events->counts($days);
+                $m['funnel']        = $repo->funnel_counts($days);
 
-            $m['active_chats']  = $repo->active_count(24);
-            $m['conversations'] = (int) $stats['conversations'];
-            $m['leads']         = (int) $stats['leads'];
-            $m['hot_leads']     = (int) $stats['hot_leads'];
-            $m['conversion']    = (float) $stats['conversion_rate'];
-            $m['booked']        = (int) $stats['booked'];
-            $m['clicks']        = $events->counts($days);
-            $m['funnel']        = $repo->funnel_counts($days);
+                // Revenue estimate = Leads × Conversion Rate × Average Service Price.
+                $avg_price    = (int) (new SWC_Settings())->get('avg_service_price', 0);
+                $m['revenue'] = (int) round($m['leads'] * ($m['conversion'] / 100) * $avg_price);
+            } catch (\Throwable $e) {
+                $this->log_anomaly('metrics', $e);
+            }
+            return $m;
+        });
 
-            // Revenue estimate = Leads × Conversion Rate × Average Service Price.
-            $avg_price     = (int) (new SWC_Settings())->get('avg_service_price', 0);
-            $m['revenue']  = (int) round($m['leads'] * ($m['conversion'] / 100) * $avg_price);
-        } catch (\Throwable $e) {
-            $this->log_anomaly('metrics', $e);
-        }
-
-        return $m;
+        $data['integrity'] = $this->verify_integrity_gate();
+        return $data;
     }
 
     /**

@@ -33,6 +33,25 @@ class SWC_Sync_Status
     }
 
     /**
+     * Batched variant for a whole page of leads (single query, no N+1).
+     *
+     * @param array<int,int> $lead_ids
+     * @return array<int,array<string,string>> lead_id => [provider => status]
+     */
+    public function for_leads(array $lead_ids): array
+    {
+        $defaults = ['webhook' => 'none', 'google_sheets' => 'none', 'pdf' => 'none'];
+        $map      = $this->logs->latest_for_leads($lead_ids);
+
+        $out = [];
+        foreach ($lead_ids as $id) {
+            $id       = (int) $id;
+            $out[$id] = array_merge($defaults, $map[$id] ?? []);
+        }
+        return $out;
+    }
+
+    /**
      * Render a WordPress-native status badge.
      */
     public static function badge(string $status): string

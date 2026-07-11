@@ -55,6 +55,7 @@ class SWC_Admin_Menu
                 'ok'      => __('موفق', 'signteb-web-chat'),
                 'failed'  => __('ناموفق', 'signteb-web-chat'),
                 'noSel'   => __('ابتدا چند مورد را انتخاب کنید.', 'signteb-web-chat'),
+                'queued'  => __('در صف پردازش پس‌زمینه', 'signteb-web-chat'),
             ],
         ]);
     }

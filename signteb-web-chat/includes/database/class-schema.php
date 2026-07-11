@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
 
 class SWC_Schema
 {
-    public const DB_VERSION = '3.1.0';
+    public const DB_VERSION = '3.2.0';
 
     public static function conversations_table(): string
     {
@@ -38,6 +38,18 @@ class SWC_Schema
     {
         global $wpdb;
         return $wpdb->prefix . 'swc_sync_logs';
+    }
+
+    public static function analytics_table(): string
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'swc_analytics';
+    }
+
+    public static function jobs_table(): string
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'swc_jobs';
     }
 
     /**
@@ -83,7 +95,9 @@ class SWC_Schema
             KEY idx_lead_score (lead_score),
             KEY idx_lead_status (lead_status),
             KEY idx_phone (patient_phone),
-            KEY idx_created (created_at)
+            KEY idx_created (created_at),
+            KEY idx_lead_created (is_lead, created_at),
+            KEY idx_status_created (lead_status, created_at)
         ) {$charset_collate};";
 
         $sql_messages = "CREATE TABLE {$messages} (
@@ -127,10 +141,36 @@ class SWC_Schema
             KEY idx_status (status)
         ) {$charset_collate};";
 
+        $analytics = self::analytics_table();
+        $sql_analytics = "CREATE TABLE {$analytics} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            day DATE NOT NULL,
+            metric VARCHAR(32) NOT NULL,
+            value BIGINT NOT NULL DEFAULT 0,
+            PRIMARY KEY  (id),
+            UNIQUE KEY uniq_day_metric (day, metric),
+            KEY idx_metric (metric)
+        ) {$charset_collate};";
+
+        $jobs     = self::jobs_table();
+        $sql_jobs = "CREATE TABLE {$jobs} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            type VARCHAR(32) NOT NULL,
+            payload TEXT DEFAULT NULL,
+            status VARCHAR(16) NOT NULL DEFAULT 'queued',
+            attempts INT UNSIGNED NOT NULL DEFAULT 0,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            PRIMARY KEY  (id),
+            KEY idx_status (status)
+        ) {$charset_collate};";
+
         dbDelta($sql_conversations);
         dbDelta($sql_messages);
         dbDelta($sql_events);
         dbDelta($sql_sync);
+        dbDelta($sql_analytics);
+        dbDelta($sql_jobs);
 
         update_option('swc_db_version', self::DB_VERSION);
     }
@@ -142,7 +182,11 @@ class SWC_Schema
         $messages      = self::messages_table();
         $events        = self::events_table();
         $sync_logs     = self::sync_logs_table();
+        $analytics     = self::analytics_table();
+        $jobs          = self::jobs_table();
         // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+        $wpdb->query("DROP TABLE IF EXISTS {$jobs}");
+        $wpdb->query("DROP TABLE IF EXISTS {$analytics}");
         $wpdb->query("DROP TABLE IF EXISTS {$sync_logs}");
         $wpdb->query("DROP TABLE IF EXISTS {$events}");
         $wpdb->query("DROP TABLE IF EXISTS {$messages}");

@@ -17,9 +17,12 @@ if (! defined('ABSPATH')) {
 }
 
 $base   = admin_url('admin.php?page=swc-chat&tab=conversations');
-$status = new SWC_Sync_Status();
 $dl_url = admin_url('admin-ajax.php');
 $dl_nonce = wp_create_nonce('swc_export');
+
+// Batched sync-status for the whole page (single query, no N+1).
+$lead_ids   = array_map(static fn($c) => (int) $c->id, $items);
+$status_map = (new SWC_Sync_Status())->for_leads($lead_ids);
 
 $score_badge = static function (?string $level): string {
     switch ($level) {
@@ -71,7 +74,7 @@ $score_badge = static function (?string $level): string {
             $name  = trim((string) ($c->patient_name ?? ''));
             $phone = trim((string) ($c->patient_phone ?? ''));
             $label = $name !== '' ? $name : ($phone !== '' ? $phone : sprintf(__('مهمان #%d', 'signteb-web-chat'), $c->id));
-            $st    = $status->for_lead((int) $c->id);
+            $st    = $status_map[(int) $c->id] ?? ['webhook' => 'none', 'google_sheets' => 'none', 'pdf' => 'none'];
             $dl    = add_query_arg(['action' => 'swc_download_pdf', 'lead_id' => $c->id, 'nonce' => $dl_nonce], $dl_url);
             ?>
             <tr data-lead="<?php echo esc_attr($c->id); ?>">

@@ -90,6 +90,42 @@ class SWC_Sync_Log_Repository
         return $out;
     }
 
+    /**
+     * Latest status per provider for MANY leads in a single query (avoids the
+     * N+1 pattern when rendering the leads list).
+     *
+     * @param array<int,int> $lead_ids
+     * @return array<int,array<string,string>> lead_id => [provider => status]
+     */
+    public function latest_for_leads(array $lead_ids): array
+    {
+        $lead_ids = array_values(array_unique(array_map('intval', $lead_ids)));
+        if ($lead_ids === []) {
+            return [];
+        }
+        global $wpdb;
+        $table        = SWC_Schema::sync_logs_table();
+        $placeholders = implode(',', array_fill(0, count($lead_ids), '%d'));
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT s.lead_id, s.provider, s.status FROM {$table} s
+                 INNER JOIN (
+                     SELECT lead_id, provider, MAX(id) AS max_id FROM {$table}
+                     WHERE lead_id IN ({$placeholders}) GROUP BY lead_id, provider
+                 ) m ON m.max_id = s.id",
+                ...$lead_ids
+            )
+        ) ?: [];
+
+        $out = [];
+        foreach ($rows as $row) {
+            $out[(int) $row->lead_id][(string) $row->provider] = (string) $row->status;
+        }
+        return $out;
+    }
+
     public function has_success(int $lead_id, string $provider): bool
     {
         global $wpdb;

@@ -85,30 +85,29 @@ class SWC_Export_Ajax_Handler
             wp_send_json(['ok' => false, 'error' => 'no_ids'], 400);
         }
 
-        $manager = new SWC_Export_Manager();
-        $done    = 0;
-        foreach ($ids as $id) {
-            $ok = false;
-            switch ($op) {
-                case 'pdf':
-                    $ok = ! empty($manager->export_pdf($id)['ok']);
-                    break;
-                case 'webhook':
-                case 'resend':
-                    $ok = ! empty($manager->export_webhook($id, 'manual')['ok']);
-                    break;
-                case 'gsheet':
-                    $ok = ! empty($manager->export_google_sheet($id)['ok']);
-                    break;
-                case 'delete_files':
-                    $ok = $this->delete_files($id);
-                    break;
+        // Deleting files is fast and stays synchronous; heavy export/sync jobs
+        // are queued so the request returns immediately and cron drains them.
+        if ($op === 'delete_files') {
+            $done = 0;
+            foreach ($ids as $id) {
+                if ($this->delete_files($id)) {
+                    $done++;
+                }
             }
-            if ($ok) {
-                $done++;
-            }
+            wp_send_json(['ok' => true, 'processed' => $done, 'total' => count($ids)]);
         }
-        wp_send_json(['ok' => true, 'processed' => $done, 'total' => count($ids)]);
+
+        if (! in_array($op, ['pdf', 'webhook', 'resend', 'gsheet'], true)) {
+            wp_send_json(['ok' => false, 'error' => 'bad_op'], 400);
+        }
+
+        $queue = new SWC_Job_Queue();
+        foreach ($ids as $id) {
+            $queue->enqueue('export', ['op' => $op, 'lead_id' => $id]);
+        }
+        $queue->schedule_soon();
+
+        wp_send_json(['ok' => true, 'queued' => count($ids), 'total' => count($ids)]);
     }
 
     /**

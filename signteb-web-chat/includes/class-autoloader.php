@@ -27,6 +27,7 @@ class SWC_Autoloader
         'SWC_Settings'                => 'core/class-settings.php',
         'SWC_Encryption'              => 'core/class-encryption.php',
         'SWC_Json_Guard'              => 'core/class-json-guard.php',
+        'SWC_Cache'                   => 'core/class-cache.php',
 
         // AI provider layer.
         'SWC_AI_Provider_Interface'        => 'ai/interface-ai-provider.php',
@@ -51,6 +52,11 @@ class SWC_Autoloader
         'SWC_Message_Repository'      => 'database/class-message-repository.php',
         'SWC_Event_Repository'        => 'database/class-event-repository.php',
         'SWC_Sync_Log_Repository'     => 'database/class-sync-log-repository.php',
+        'SWC_Analytics_Repository'    => 'database/class-analytics-repository.php',
+
+        // Background jobs / analytics rollup.
+        'SWC_Rollup'                  => 'jobs/class-rollup.php',
+        'SWC_Job_Queue'               => 'jobs/class-job-queue.php',
 
         // Rate limiting.
         'SWC_Rate_Limiter'            => 'ratelimit/class-rate-limiter.php',
