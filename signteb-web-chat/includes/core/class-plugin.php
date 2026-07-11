@@ -52,6 +52,7 @@ class SWC_Plugin
             (new SWC_Premium_Dashboard())->register();
             (new SWC_Crm_Board())->register();
             (new SWC_Branches_Page())->register();
+            (new SWC_Seo_Page())->register();
             (new SWC_Admin_Menu())->register();
             (new SWC_Export_Ajax_Handler())->register();
             (new SWC_Lead_CRM())->register();

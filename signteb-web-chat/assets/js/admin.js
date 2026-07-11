@@ -119,6 +119,23 @@
 		});
 	}
 
+	// SEO Intelligence — AI idea generation.
+	var seoGen = document.getElementById('swc-seo-gen');
+	if (seoGen) {
+		seoGen.addEventListener('click', function () {
+			var wrap = document.querySelector('.swc-seo-ai');
+			var out = document.getElementById('swc-seo-ideas');
+			seoGen.disabled = true;
+			var original = seoGen.textContent;
+			seoGen.textContent = A.strings.working;
+			out.textContent = '…';
+			post('swc_seo_generate', { nonce: wrap.getAttribute('data-nonce') }).then(function (res) {
+				out.textContent = (res && res.ok) ? res.ideas : ((res && res.error) || A.strings.failed);
+				seoGen.disabled = false; seoGen.textContent = original;
+			}).catch(function () { out.textContent = A.strings.failed; seoGen.disabled = false; seoGen.textContent = original; });
+		});
+	}
+
 	// Connection tests (Integrations tab).
 	document.querySelectorAll('.swc-test-btn').forEach(function (btn) {
 		btn.addEventListener('click', function () {

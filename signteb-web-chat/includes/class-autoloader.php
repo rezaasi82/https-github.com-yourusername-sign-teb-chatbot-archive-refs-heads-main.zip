@@ -63,6 +63,10 @@ class SWC_Autoloader
         'SWC_Rollup'                  => 'jobs/class-rollup.php',
         'SWC_Job_Queue'               => 'jobs/class-job-queue.php',
 
+        // SEO intelligence.
+        'SWC_Seo_Analyzer'            => 'seo/class-seo-analyzer.php',
+        'SWC_Seo_Page'                => 'seo/class-seo-page.php',
+
         // Rate limiting.
         'SWC_Rate_Limiter'            => 'ratelimit/class-rate-limiter.php',
 
