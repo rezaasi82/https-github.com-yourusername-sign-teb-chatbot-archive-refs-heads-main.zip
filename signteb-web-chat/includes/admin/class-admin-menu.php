@@ -42,7 +42,9 @@ class SWC_Admin_Menu
 
     public function enqueue(string $hook): void
     {
-        if (strpos($hook, 'swc-chat') === false) {
+        // Every plugin admin page (swc-chat, swc-seo, swc-branches, …) shares
+        // these assets; anything more page-specific enqueues its own on top.
+        if (strpos($hook, '_page_swc-') === false && strpos($hook, 'swc-chat') === false) {
             return;
         }
         wp_enqueue_style('swc-admin', SWC_URL . 'assets/css/admin.css', [], SWC_VERSION);
