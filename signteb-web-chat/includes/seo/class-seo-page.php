@@ -60,6 +60,9 @@ class SWC_Seo_Page
             SWC_Security::note_failure('seo_generate');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
+        if (! (new SWC_License_Manager())->allows('seo')) {
+            wp_send_json(['ok' => false, 'error' => __('این قابلیت نیازمند لایسنس فعال است.', 'signteb-web-chat')], 403);
+        }
         // Protect the API budget: a few generations per hour is plenty.
         if (! SWC_Security::rate_limit('seo_generate', 10, HOUR_IN_SECONDS)) {
             wp_send_json(['ok' => false, 'error' => __('محدودیت درخواست. کمی بعد دوباره تلاش کنید.', 'signteb-web-chat')], 429);

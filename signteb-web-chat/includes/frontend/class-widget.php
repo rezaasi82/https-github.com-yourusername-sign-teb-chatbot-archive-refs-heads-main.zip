@@ -36,6 +36,10 @@ class SWC_Widget
         if (is_admin() || is_feed() || is_robots()) {
             return false;
         }
+        // Hard license lock hides the widget (conversation data is preserved).
+        if ((new SWC_License_Manager())->is_locked()) {
+            return false;
+        }
         return (bool) apply_filters('swc_should_render', true);
     }
 

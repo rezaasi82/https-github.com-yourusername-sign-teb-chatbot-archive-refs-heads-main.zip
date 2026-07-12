@@ -145,7 +145,7 @@ swc_audit_logs   (NEW) id, user_id, action, object, ip, created_at
 | P5 ✅ | Security hardening | AES-256-GCM (سازگار عقب‌رو)، `swc_audit_logs` + viewer، rate-limit توسعه‌یافته + قفل ضد brute-force | انجام شد (v3.6) |
 | P6 ✅ | SEO Intelligence | استخراج FAQ/کلمات کلیدی/موضوعات از گفتگوها + تولید ایده‌ی بلاگ/FAQ/سئو با AI | انجام شد (v3.7) |
 | P7 ✅ | Cloud Platform | سرویس مستقل `medora-cloud/` (Node.js بدون dependency): install registry، heartbeat ingest، realtime SSE monitor، Telegram alert + daily digest، license endpoint امضاشده، update feed | انجام شد (سرویس جدا) |
-| P8 | License Server + Auto-update | پلن‌ها (Starter/Pro/Clinic/Enterprise)، domain lock، grace، update feed، rollback، integrity | بالا |
+| P8 ✅ | License Server + Auto-update | verdict امضاشده (HMAC canonical) + کش روزانه‌ی fail-open، state ماشین active/grace/locked/trial، soft-lock پریمیوم در grace و full-lock پس از آن (داده حفظ می‌شود)، upsert لایسنس ادمین در cloud، فید به‌روزرسانی وردپرس (`SWC_Updater`) | انجام شد (v3.8) |
 
 ---
 
@@ -157,10 +157,12 @@ swc_audit_logs   (NEW) id, user_id, action, object, ip, created_at
 - امنیت: بدنه JSON، امضای `X-Medora-Sign: sha256=HMAC(body, site_secret)` + timestamp؛ ارسال فقط وقتی ادمین **opt-in** کرده و endpoint تنظیم شده باشد. پیش‌فرض: خاموش (no-op).
 - Privacy: هیچ داده‌ی بیمار ارسال نمی‌شود؛ فقط شمارنده‌ها و متادیتای فنی + hash دامنه.
 
-### 5.2 License Server (P8)
-- پاسخ امضاشده (Ed25519/HMAC): `{status, plan, expires, features[], grace}`.
-- افزونه پاسخ را کش می‌کند (روزانه)، در قطعی سرور از کش استفاده می‌کند (عدم قفل فوری).
-- `SWC_License_Manager::is_active()` نقطه‌ی واحد enforcement؛ کاملاً decoupled از هوک‌های عمومی.
+### 5.2 License Server (P8 — پیاده‌سازی‌شده)
+- پاسخ امضاشده با HMAC روی رشته‌ی canonical پایپ‌جوین `domain|status|plan|expires|grace|ts` (بدون دام JSON-ordering)؛ افزونه همان بایت‌ها را بازتولید و با `hash_equals` تأیید می‌کند.
+- state machine: `active | grace | locked | trial`. در `grace` فقط قابلیت‌های پریمیوم (`export, cloud, seo`) قفل می‌شوند و بوکینگ/چت پایه فعال می‌ماند؛ پس از grace فرانت پیام غیرفعال نشان می‌دهد ولی **داده هرگز حذف نمی‌شود**.
+- کش روزانه (`swc_license_remote`)؛ **fail-open**: خطای امضا/قطعی سرور هرگز قفل نمی‌کند — فقط verdict صریح `expired/suspended` قفل می‌کند.
+- `SWC_License_Manager::state()`/`is_active()`/`allows()` نقطه‌ی واحد enforcement؛ decoupled از هوک‌های عمومی.
+- Auto-update: `SWC_Updater` فید `{version,url,sha256}` را می‌خواند و فقط وقتی لایسنس فعال است به‌روزرسانی وردپرس را پیشنهاد می‌دهد.
 
 ### 5.3 Cloud API (طرح REST)
 ```

@@ -45,6 +45,10 @@ class SWC_Plugin
         (new SWC_Rollup())->register();
         (new SWC_Job_Queue())->register();
 
+        // License validation cron + auto-update client.
+        add_action(SWC_License_Manager::CRON, ['SWC_License_Manager', 'cron_check']);
+        (new SWC_Updater())->register();
+
         // Security audit trail (event listeners + admin viewer).
         (new SWC_Audit_Log())->register();
 

@@ -123,6 +123,7 @@ class SWC_Settings_Page
             'gsheet_name'      => sanitize_text_field($in['gsheet_name'] ?? 'Leads'),
             'cloud_enabled'    => isset($in['cloud_enabled']) ? 1 : 0,
             'cloud_endpoint'   => esc_url_raw($in['cloud_endpoint'] ?? ''),
+            'update_feed_url'  => esc_url_raw($in['update_feed_url'] ?? ''),
         ];
         update_option(SWC_Settings::OPTION, array_merge($existing, $update));
 

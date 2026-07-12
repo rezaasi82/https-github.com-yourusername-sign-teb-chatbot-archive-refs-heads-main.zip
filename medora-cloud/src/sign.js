@@ -18,9 +18,17 @@ export function verify(rawBody, header, secret) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-/** Detached signature over a JSON object (for signed license responses). */
+/** Detached signature over a JSON object. */
 export function signObject(obj, secret) {
   return crypto.createHmac('sha256', secret).update(JSON.stringify(obj)).digest('hex');
+}
+
+/**
+ * HMAC over a canonical pipe-joined string. Used for signed license verdicts so
+ * the WordPress plugin can reproduce the exact bytes (no JSON-ordering pitfalls).
+ */
+export function hmacHex(base, secret) {
+  return crypto.createHmac('sha256', secret).update(base).digest('hex');
 }
 
 /** Reject stale requests (replay protection) — timestamp within `skew` seconds. */

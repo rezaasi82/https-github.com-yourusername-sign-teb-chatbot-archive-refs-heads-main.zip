@@ -18,7 +18,7 @@ import http from 'node:http';
 import { URL } from 'node:url';
 import fs from 'node:fs';
 import { store } from './store.js';
-import { verify, signObject, freshTimestamp } from './sign.js';
+import { verify, hmacHex, freshTimestamp } from './sign.js';
 import { notify } from './telegram.js';
 import { renderDashboard } from './dashboard.js';
 
@@ -61,6 +61,19 @@ const json = (res, code, obj) => {
 };
 const adminOk = (u) => ADMIN_TOKEN && u.searchParams.get('token') === ADMIN_TOKEN;
 
+/** Derive the live license status from a stored record. */
+function effectiveStatus(lic) {
+  if (lic.status === 'suspended') return 'suspended';
+  if (lic.expires) {
+    const exp = Date.parse(lic.expires);
+    if (Number.isFinite(exp) && Date.now() > exp) {
+      const graceMs = (lic.grace ?? 14) * 86400000;
+      return Date.now() <= exp + graceMs ? 'grace' : 'expired';
+    }
+  }
+  return lic.status === 'trial' ? 'trial' : 'active';
+}
+
 const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const p = u.pathname;
@@ -93,10 +106,42 @@ const server = http.createServer(async (req, res) => {
 
     // ---- signed license status ----
     if (req.method === 'GET' && p.startsWith('/v1/license/')) {
-      const domain = decodeURIComponent(p.slice('/v1/license/'.length));
-      const lic = store.getLicense(domain) || { status: 'trial', plan: 'starter', expires: null, features: ['chat', 'export'], grace: 14 };
-      const body = { domain, status: lic.status, plan: lic.plan, expires: lic.expires, features: lic.features, grace: lic.grace, ts: Math.floor(Date.now() / 1000) };
-      return json(res, 200, { ...body, signature: SECRET ? signObject(body, SECRET) : '' });
+      const domain = decodeURIComponent(p.slice('/v1/license/'.length)).slice(0, 64);
+      const lic = store.getLicense(domain) || { status: 'trial', plan: 'starter', expires: null, features: ['chat'], grace: 14 };
+      const status = effectiveStatus(lic);
+      const ts = Math.floor(Date.now() / 1000);
+      const body = {
+        domain, status,
+        plan: lic.plan || 'starter',
+        expires: lic.expires || null,
+        features: lic.features || ['chat'],
+        grace: lic.grace ?? 14,
+        ts,
+      };
+      // Canonical base — must match SWC_License_Manager::remote_check() exactly.
+      const base = [domain, status, body.plan, body.expires || '', body.grace, ts].join('|');
+      body.signature = SECRET ? hmacHex(base, SECRET) : '';
+      return json(res, 200, body);
+    }
+
+    // ---- admin: create / update a license (ADMIN_TOKEN) ----
+    if (req.method === 'POST' && p === '/admin/license') {
+      if (!adminOk(u)) return json(res, 403, { ok: false });
+      const raw = await readBody(req);
+      let b = {}; try { b = JSON.parse(raw); } catch {}
+      const domain = String(b.domain || '').slice(0, 64);
+      if (!domain) return json(res, 400, { ok: false, error: 'no_domain' });
+      const lic = {
+        status: String(b.status || 'active'),                 // active | suspended | trial
+        plan: String(b.plan || 'starter'),                    // starter | professional | clinic | enterprise
+        expires: b.expires || null,                           // ISO date or null
+        grace: Number.isFinite(+b.grace) ? +b.grace : 14,
+        features: Array.isArray(b.features) ? b.features : ['chat', 'export'],
+      };
+      store.setLicense(domain, lic);
+      broadcast({ type: 'license', severity: 'info', detail: `${domain.slice(0, 10)}… ${lic.plan}/${lic.status}` });
+      notify(`🔑 <b>License updated</b>\nDomain: <code>${domain.slice(0, 12)}…</code>\nPlan: ${lic.plan} · Status: ${lic.status}${lic.expires ? ` · Expires: ${lic.expires}` : ''}`);
+      return json(res, 200, { ok: true, domain, license: lic });
     }
 
     // ---- auto-update feed ----

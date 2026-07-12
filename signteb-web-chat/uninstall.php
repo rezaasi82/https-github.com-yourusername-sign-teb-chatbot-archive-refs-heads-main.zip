@@ -32,9 +32,15 @@ $options = [
     'swc_cloud_registered',
     'swc_fallback_salt',
     'swc_license',
+    'swc_license_remote',
     'swc_trial_used',
     'swc_db_version',
 ];
 foreach ($options as $option) {
     delete_option($option);
+}
+
+// Cached, regenerable transients.
+foreach (['swc_update_feed', 'swc_seo_ideas'] as $transient) {
+    delete_transient($transient);
 }

@@ -63,8 +63,19 @@ class SWC_Export_Manager
      *
      * @return array{ok:bool,url?:string,type?:string,error?:string}
      */
+    private function premium_blocked(): ?array
+    {
+        if (! (new SWC_License_Manager())->allows('export')) {
+            return ['ok' => false, 'error' => __('این قابلیت نیازمند لایسنس فعال است.', 'signteb-web-chat')];
+        }
+        return null;
+    }
+
     public function export_pdf(int $lead_id): array
     {
+        if ($blocked = $this->premium_blocked()) {
+            return $blocked;
+        }
         $logger  = new SWC_Export_Logger();
         $log_id  = $logger->begin($lead_id, 'pdf', 'manual');
         $started = microtime(true);
@@ -88,6 +99,9 @@ class SWC_Export_Manager
      */
     public function export_webhook(int $lead_id, string $event = 'manual'): array
     {
+        if ($blocked = $this->premium_blocked()) {
+            return ['ok' => false, 'status' => 'blocked', 'response' => $blocked['error']];
+        }
         return (new SWC_Webhook_Manager($this->settings))->dispatch($lead_id, $event, (string) $this->pdf_url($lead_id));
     }
 
@@ -96,6 +110,9 @@ class SWC_Export_Manager
      */
     public function export_google_sheet(int $lead_id): array
     {
+        if ($blocked = $this->premium_blocked()) {
+            return ['ok' => false, 'status' => 'blocked', 'response' => $blocked['error']];
+        }
         return (new SWC_Google_Sheets($this->settings))->dispatch($lead_id, (string) $this->pdf_url($lead_id));
     }
 
