@@ -16,7 +16,7 @@ class SWC_Branches_Page
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
         add_action('admin_post_swc_branch_save', [$this, 'handle_save']);
         add_action('admin_post_swc_branch_delete', [$this, 'handle_delete']);
     }

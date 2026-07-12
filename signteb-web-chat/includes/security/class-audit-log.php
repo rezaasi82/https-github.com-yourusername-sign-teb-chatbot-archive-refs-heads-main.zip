@@ -21,7 +21,7 @@ class SWC_Audit_Log
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
 
         // Hook existing plugin events into the trail.
         add_action('swc_license_status_changed', static function ($status): void {

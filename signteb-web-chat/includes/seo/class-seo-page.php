@@ -18,7 +18,7 @@ class SWC_Seo_Page
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
         add_action('wp_ajax_swc_seo_generate', [$this, 'ajax_generate']);
     }
 

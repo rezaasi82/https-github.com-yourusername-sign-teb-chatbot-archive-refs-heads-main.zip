@@ -53,11 +53,15 @@ class SWC_Plugin
         (new SWC_Audit_Log())->register();
 
         if (is_admin()) {
+            // The parent menu MUST register before any submenu page: WordPress
+            // derives each admin page's hookname from the parent menu present
+            // at registration time, so a submenu added before its parent ends
+            // up unroutable ("Sorry, you are not allowed…" on every click).
+            (new SWC_Admin_Menu())->register();
             (new SWC_Premium_Dashboard())->register();
             (new SWC_Crm_Board())->register();
             (new SWC_Branches_Page())->register();
             (new SWC_Seo_Page())->register();
-            (new SWC_Admin_Menu())->register();
             (new SWC_Export_Ajax_Handler())->register();
             (new SWC_Lead_CRM())->register();
         } else {
