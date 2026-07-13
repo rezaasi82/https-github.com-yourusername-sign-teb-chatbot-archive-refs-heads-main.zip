@@ -21,6 +21,7 @@ class LoginCustomizer
         }
 
         add_action('login_enqueue_scripts', [$this, 'enqueue_styles']);
+        add_action('login_footer', [$this, 'render_floating_icons']);
         add_filter('login_headerurl', [$this, 'header_url']);
         add_filter('login_headertext', [$this, 'header_text']);
         add_filter('login_body_class', [$this, 'body_class'], 10, 2);
@@ -90,6 +91,39 @@ class LoginCustomizer
         );
 
         return '<p class="nobatyar-login-welcome">' . esc_html($welcome) . '</p>' . $message;
+    }
+
+    /**
+     * Decorative booking-themed icons drifting behind the form. Purely
+     * visual: fixed-position, pointer-events:none, aria-hidden, and the
+     * stylesheet freezes them under prefers-reduced-motion.
+     */
+    public function render_floating_icons(): void
+    {
+        if ($this->is_interim_login()) {
+            return;
+        }
+
+        $svg = [
+            'calendar' => '<rect x="3" y="4.5" width="18" height="17" rx="3"/><path d="M3 9.5h18"/><path d="M8 2.5v4M16 2.5v4"/>',
+            'clock'    => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+            'bell'     => '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/>',
+            'star'     => '<path d="M12 2.5l2.9 5.9 6.5 1-4.7 4.6 1.1 6.5-5.8-3.1-5.8 3.1 1.1-6.5L2.6 9.4l6.5-1z"/>',
+            'check'    => '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.3l2.3 2.3 4.7-4.9"/>',
+            'ticket'   => '<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M13 5v2M13 11v2M13 17v2"/>',
+        ];
+
+        echo '<div class="nobatyar-login-icons" aria-hidden="true">';
+
+        foreach ($svg as $name => $paths) {
+            printf(
+                '<span class="nobatyar-icon nobatyar-icon-%1$s"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">%2$s</svg></span>',
+                esc_attr($name),
+                $paths // Static SVG path markup defined above, not user input.
+            );
+        }
+
+        echo '</div>';
     }
 
     private function is_interim_login(): bool

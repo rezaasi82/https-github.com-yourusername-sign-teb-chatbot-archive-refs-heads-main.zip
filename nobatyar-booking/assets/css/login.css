@@ -52,6 +52,102 @@ body.nobatyar-login #login {
     padding: 4vh 0;
 }
 
+/* ------------------------------------------------------- floating icons */
+
+body.nobatyar-login .nobatyar-login-icons {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.nobatyar-login .nobatyar-icon {
+    position: absolute;
+    color: var(--nby-gold);
+    opacity: 0.16;
+    animation: nobatyar-float 9s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 14px rgba(212, 167, 44, 0.35));
+}
+
+body.nobatyar-login .nobatyar-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+body.nobatyar-login .nobatyar-icon-calendar {
+    width: 64px;
+    height: 64px;
+    top: 16%;
+    inset-inline-start: 12%;
+    animation-duration: 11s;
+}
+
+body.nobatyar-login .nobatyar-icon-clock {
+    width: 46px;
+    height: 46px;
+    top: 62%;
+    inset-inline-start: 18%;
+    animation-duration: 8s;
+    animation-delay: -3s;
+}
+
+body.nobatyar-login .nobatyar-icon-bell {
+    width: 38px;
+    height: 38px;
+    top: 24%;
+    inset-inline-end: 16%;
+    animation-duration: 10s;
+    animation-delay: -5s;
+}
+
+body.nobatyar-login .nobatyar-icon-star {
+    width: 30px;
+    height: 30px;
+    top: 74%;
+    inset-inline-end: 22%;
+    animation-duration: 7s;
+    animation-delay: -2s;
+    opacity: 0.22;
+}
+
+body.nobatyar-login .nobatyar-icon-check {
+    width: 52px;
+    height: 52px;
+    top: 80%;
+    inset-inline-start: 40%;
+    animation-duration: 12s;
+    animation-delay: -6s;
+    opacity: 0.1;
+}
+
+body.nobatyar-login .nobatyar-icon-ticket {
+    width: 56px;
+    height: 56px;
+    top: 48%;
+    inset-inline-end: 8%;
+    animation-duration: 13s;
+    animation-delay: -8s;
+    opacity: 0.12;
+}
+
+@keyframes nobatyar-float {
+    from {
+        transform: translateY(-14px) rotate(-7deg);
+    }
+
+    to {
+        transform: translateY(16px) rotate(8deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.nobatyar-login .nobatyar-icon {
+        animation: none;
+    }
+}
+
 /* ---------------------------------------------------------------- logo */
 
 body.nobatyar-login #login h1 a,
@@ -336,5 +432,33 @@ body.nobatyar-login .language-switcher .button:hover {
     body.nobatyar-login #resetpassform,
     body.nobatyar-login #registerform {
         padding: 24px 20px 22px;
+    }
+
+    /* Fewer, smaller icons so the small screen doesn't get busy. */
+    body.nobatyar-login .nobatyar-icon-check,
+    body.nobatyar-login .nobatyar-icon-ticket {
+        display: none;
+    }
+
+    body.nobatyar-login .nobatyar-icon-calendar {
+        width: 44px;
+        height: 44px;
+        top: 8%;
+        inset-inline-start: 6%;
+    }
+
+    body.nobatyar-login .nobatyar-icon-bell {
+        top: 12%;
+        inset-inline-end: 8%;
+    }
+
+    body.nobatyar-login .nobatyar-icon-clock {
+        top: 78%;
+        inset-inline-start: 8%;
+    }
+
+    body.nobatyar-login .nobatyar-icon-star {
+        top: 84%;
+        inset-inline-end: 10%;
     }
 }
