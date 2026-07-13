@@ -1,32 +1,20 @@
 <?php
 defined('ABSPATH') || exit;
 $installed = get_option('stwiz_demo_installed', '');
-$demos = [
-  'solo-doctor' => [
-    'icon'  => '👨‍⚕️',
-    'title' => 'پزشک منفرد',
-    'desc'  => 'ایده‌آل برای پروفایل یک پزشک متخصص — صفحه Hero، خدمات، نوبت‌دهی',
-    'pages' => '۵ صفحه',
-    'lang'  => 'فارسی',
-    'color' => '#1a56db',
-  ],
-  'multi-clinic' => [
-    'icon'  => '🏥',
-    'title' => 'کلینیک چندتخصصی',
-    'desc'  => 'برای کلینیک با چندین پزشک — آرشیو پزشکان، خدمات گروهی، نوبت‌دهی مرکزی',
-    'pages' => '۷ صفحه',
-    'lang'  => 'فارسی',
-    'color' => '#059669',
-  ],
-  'medical-tourism' => [
-    'icon'  => '✈️',
-    'title' => 'گردشگری پزشکی',
-    'desc'  => 'برای جذب بیماران بین‌المللی — سه زبانه، Medical Tourism Funnel، ترکیه / دبی / ایران',
-    'pages' => '۸ صفحه',
-    'lang'  => 'EN + AR + FA',
-    'color' => '#C9A84C',
-  ],
-];
+
+// دموها به‌صورت پویا از رجیستری خوانده می‌شوند (افزودن دمو = افزودن پوشه).
+$registry = new \SignTeb\Wizard\Setup\DemoRegistry();
+$demos    = [];
+foreach ($registry->all() as $id => $def) {
+  $demos[$id] = [
+    'icon'  => $def['icon'] ?? '🏥',
+    'title' => $def['title'] ?? $id,
+    'desc'  => $def['description'] ?? '',
+    'pages' => $def['pages_count'] ?? '',
+    'lang'  => $def['lang'] ?? 'فارسی',
+    'color' => $def['color'] ?? '#1a56db',
+  ];
+}
 ?>
 <div class="stwiz-demo-step" data-step="demo">
   <h2><?php esc_html_e('انتخاب دمو محتوا', STWIZ_TEXT); ?></h2>

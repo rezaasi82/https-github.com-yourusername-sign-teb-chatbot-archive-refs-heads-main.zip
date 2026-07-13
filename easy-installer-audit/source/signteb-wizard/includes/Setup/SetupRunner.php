@@ -22,8 +22,6 @@ declare( strict_types=1 );
 
 namespace SignTeb\Wizard\Setup;
 
-use SignTeb\Wizard\DemoImporter;
-
 defined( 'ABSPATH' ) || exit;
 
 final class SetupRunner {
@@ -64,9 +62,9 @@ final class SetupRunner {
 			'plugins'     => $this->step_plugins(),
 			'demo'        => $this->step_demo( $args ),
 			'options'     => $this->step_options( $args ),
-			'menus'       => $this->step_menus(),
-			'home'        => $this->step_home(),
-			'blog'        => $this->step_blog(),
+			'menus'       => $this->step_menus( $args ),
+			'home'        => $this->step_home( $args ),
+			'blog'        => $this->step_blog( $args ),
 			'finish'      => $this->step_finish( $args ),
 			default       => StepResult::fail( sprintf( 'مرحله نامعتبر: %s', $key ) ),
 		};
@@ -123,44 +121,56 @@ final class SetupRunner {
 	}
 
 	private function step_demo( array $args ): StepResult {
-		$type = $this->demo_type( $args );
-		if ( ! DemoImporter::is_valid_type( $type ) ) {
-			return StepResult::fail( 'نوع دمو نامعتبر است.' );
+		$def = $this->definition( $args );
+		if ( null === $def ) {
+			return StepResult::fail( 'دموی انتخاب‌شده یافت نشد.' );
 		}
 
-		$importer = $this->importer();
-		$importer->create_doctor( $type );
-		$home_id = $importer->create_pages( $type );
+		$home_id = $this->content_importer( $def )->create_content( $def );
 
-		// شناسه‌ی صفحه‌ی خانه را برای مرحله‌ی home در state نگه می‌داریم.
 		$this->set_state_value( 'home_id', $home_id );
-		$this->set_state_value( 'demo_type', $type );
+		$this->set_state_value( 'demo_type', (string) $def['id'] );
 
-		return StepResult::ok( 'محتوای دمو ایمپورت شد.', [ 'home_id' => $home_id ] );
+		return StepResult::ok( 'محتوای دمو ایمپورت شد (خدمات، پزشکان، سؤالات متداول، مقالات و صفحات).', [ 'home_id' => $home_id ] );
 	}
 
 	private function step_options( array $args ): StepResult {
-		$type = $this->demo_type( $args );
-		$this->importer()->apply_options( $type );
+		$def = $this->definition( $args );
+		if ( null === $def ) {
+			return StepResult::fail( 'دموی انتخاب‌شده یافت نشد.' );
+		}
+		$this->content_importer( $def )->apply_options( $def );
 		return StepResult::ok( 'تنظیمات قالب اعمال شد.' );
 	}
 
-	private function step_menus(): StepResult {
-		$this->importer()->create_menus();
+	private function step_menus( array $args = [] ): StepResult {
+		$def = $this->definition( $args );
+		if ( null === $def ) {
+			return StepResult::fail( 'دموی انتخاب‌شده یافت نشد.' );
+		}
+		$this->content_importer( $def )->create_menu( $def );
 		return StepResult::ok( 'منوها ساخته و به جایگاه اصلی اختصاص یافتند.' );
 	}
 
-	private function step_home(): StepResult {
-		$home_id = (int) $this->get_state_value( 'home_id', 0 );
-		$assigned = $this->importer()->assign_front_page( $home_id );
+	private function step_home( array $args = [] ): StepResult {
+		$def = $this->definition( $args );
+		if ( null === $def ) {
+			return StepResult::fail( 'دموی انتخاب‌شده یافت نشد.' );
+		}
+		$home_id  = (int) $this->get_state_value( 'home_id', 0 );
+		$assigned = $this->content_importer( $def )->assign_front( $def, $home_id );
 		if ( ! $assigned ) {
 			return StepResult::fail( 'صفحه‌ی خانه یافت نشد؛ ابتدا مرحله‌ی دمو باید اجرا شود.' );
 		}
 		return StepResult::ok( 'صفحه‌ی خانه تعیین شد.', [ 'home_id' => $assigned ] );
 	}
 
-	private function step_blog(): StepResult {
-		$blog_id = $this->importer()->assign_blog_page();
+	private function step_blog( array $args = [] ): StepResult {
+		$def = $this->definition( $args );
+		if ( null === $def ) {
+			return StepResult::fail( 'دموی انتخاب‌شده یافت نشد.' );
+		}
+		$blog_id = $this->content_importer( $def )->assign_blog( $def );
 		if ( ! $blog_id ) {
 			return StepResult::fail( 'ساخت صفحه‌ی بلاگ ناموفق بود.' );
 		}
@@ -182,14 +192,23 @@ final class SetupRunner {
 	private function demo_type( array $args ): string {
 		$type = isset( $args['demo'] ) ? (string) $args['demo'] : '';
 		if ( '' === $type ) {
-			$type = (string) $this->get_state_value( 'demo_type', 'solo-doctor' );
+			$type = (string) $this->get_state_value( 'demo_type', '' );
+		}
+		if ( '' === $type ) {
+			// fallback: اولین دموی موجود در رجیستری.
+			$ids  = ( new DemoRegistry() )->ids();
+			$type = $ids[0] ?? '';
 		}
 		return $type;
 	}
 
-	private function importer(): DemoImporter {
-		require_once STWIZ_DIR . 'includes/class-wizard-demo-importer.php';
-		return new DemoImporter();
+	/** تعریف دموی انتخاب‌شده از رجیستری (یا null). */
+	private function definition( array $args ): ?array {
+		return ( new DemoRegistry() )->get( $this->demo_type( $args ) );
+	}
+
+	private function content_importer( array $def ): DemoContentImporter {
+		return new DemoContentImporter( (string) $def['id'] );
 	}
 
 	// ─── State (resumable) ──────────────────────────────────────────────────────
