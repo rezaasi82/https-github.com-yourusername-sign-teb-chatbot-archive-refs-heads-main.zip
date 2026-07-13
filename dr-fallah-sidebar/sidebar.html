@@ -330,8 +330,23 @@
     /* ═══════════ پیکربندی مرکزی ═══════════ */
     var CONFIG = {
       whatsapp: '989372896262',
-      // ترتیب اهمیت: از خاص‌ترین ظرف محتوا به عام‌ترین
-      contentSelectors: ['.entry-content', '.post-content', 'article .elementor-widget-container', 'article', 'main'],
+      // ظرف متن مقاله — از خاص‌ترین به عام‌ترین.
+      // هم مقالات «بلوک HTML»/گوتنبرگ و هم «ویرایشگر کلاسیک» در همین ظرف‌ها
+      // رندر می‌شوند؛ بنابراین هر دو نوع مقاله پوشش داده می‌شود.
+      contentSelectors: [
+        '.entry-content',           // ویرایشگر کلاسیک + بلوک HTML (رایج‌ترین)
+        '.post-content',
+        '.wp-block-post-content',   // قالب‌های بلوکی/FSE
+        'article .elementor-widget-container',
+        'article',
+        'main'
+      ],
+      // ظرف‌های سایدبار/ویجت که تیترهایشان نباید در فهرست یا علائم خوانده شوند.
+      // (علاوه بر خودِ .f-sidebar، تیترِ سایر ویجت‌های ستون کناری هم رد می‌شود)
+      excludeSelectors: [
+        '.f-sidebar', 'aside', '.widget', '.widget-area', '.widget-title',
+        '.sidebar', '#secondary', '.elementor-location-sidebar'
+      ],
       symptomKeywords: ['علائم', 'علايم', 'نشانه'],
       headingSelector: 'h2, h3',
       maxSymptoms: 6,
@@ -343,33 +358,37 @@
       if (!list) return;
       for (var i = 0; i < list.length; i++) fn(list[i], i);
     }
-    // آیا المان داخل خود سایدبار است؟ (برای نادیده‌گرفتن تیترهای سایدبار)
-    function inSidebar(el) {
-      return !!(el && el.closest && el.closest('.f-sidebar'));
+    // آیا المان داخل سایدبار/ویجت است؟ (خودِ .f-sidebar + سایر ویجت‌های ستون کناری)
+    // تیترهای این نواحی نباید در فهرست مطالب یا سکشن علائم خوانده شوند.
+    function isExcluded(el) {
+      if (!el || !el.closest) return false;
+      return !!el.closest(CONFIG.excludeSelectors.join(','));
     }
     // متن تمیز و بدون فاصله‌های اضافی
     function cleanText(node) {
       return ((node && node.textContent) || '').trim().replace(/\s+/g, ' ');
     }
 
-    // یافتن ظرف اصلی متن مقاله (هرگز خود سایدبار)
+    // یافتن ظرف اصلی متن مقاله (هرگز سایدبار/ویجت)
     function findContentRoot() {
       for (var i = 0; i < CONFIG.contentSelectors.length; i++) {
         var els = document.querySelectorAll(CONFIG.contentSelectors[i]);
         for (var j = 0; j < els.length; j++) {
           var el = els[j];
-          if (inSidebar(el)) continue;
+          if (isExcluded(el)) continue;
           if (el.querySelector('h2, h3') || el.querySelector('ul, ol')) return el;
         }
       }
       return document.body;
     }
 
-    // یک‌بار پیمایش DOM: تیترهای معتبر مقاله را جمع می‌کند و بین TOC و علائم به اشتراک می‌گذارد
+    // یک‌بار پیمایش DOM: تیترهای معتبر مقاله را جمع می‌کند و بین TOC و علائم به اشتراک می‌گذارد.
+    // تیترهای داخل سایدبار/ویجت‌ها (isExcluded) نادیده گرفته می‌شوند — حتی اگر ظرف محتوا
+    // به‌ناچار body باشد و شامل ستون کناری هم بشود.
     function collectHeadings(root) {
       var out = [];
       each(root.querySelectorAll(CONFIG.headingSelector), function (h) {
-        if (inSidebar(h)) return;
+        if (isExcluded(h)) return;
         if (cleanText(h)) out.push(h);
       });
       return out;
