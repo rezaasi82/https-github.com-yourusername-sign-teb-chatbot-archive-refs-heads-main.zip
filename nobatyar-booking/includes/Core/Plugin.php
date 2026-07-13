@@ -17,7 +17,6 @@ use Nobatyar\Booking\BookingRepository;
 use Nobatyar\Booking\SlotCalculator;
 use Nobatyar\Coupons\CouponEngine;
 use Nobatyar\Coupons\CouponRepository;
-use Nobatyar\Frontend\LoginCustomizer;
 use Nobatyar\Frontend\Shortcode\BookingShortcode;
 use Nobatyar\Frontend\Shortcode\PackagesShortcode;
 use Nobatyar\GiftCards\GiftCardEngine;
@@ -70,7 +69,6 @@ class Plugin
 
         $this->booking_shortcode()->register();
         $this->packages_shortcode()->register();
-        (new LoginCustomizer())->register();
         $this->notification_dispatcher()->register();
         $this->license_manager()->register();
         $this->admin_menu()->register();
