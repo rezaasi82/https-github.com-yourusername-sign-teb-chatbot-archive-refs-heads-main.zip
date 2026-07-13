@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Login
  * Plugin URI:        https://signteb.com
  * Description:       راهکار امنیت و برندسازی صفحه ورود وردپرس: طراحی اختصاصی مدرن، تغییر آدرس صفحه ورود (مخفی‌سازی wp-login.php)، و شخصی‌سازی رنگ سازمانی و لوگو از پیشخوان. محصولی از تیم توسعه SignTeb.
- * Version:           1.1.1
+ * Version:           1.1.2
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            رضا آسیابی
@@ -17,7 +17,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('SIGNTEB_LOGIN_VERSION', '1.1.1');
+define('SIGNTEB_LOGIN_VERSION', '1.1.2');
 define('SIGNTEB_LOGIN_DIR', plugin_dir_path(__FILE__));
 define('SIGNTEB_LOGIN_URL', plugin_dir_url(__FILE__));
 
@@ -43,6 +43,7 @@ class SignTeb_Login
         }
 
         add_action('login_enqueue_scripts', [$this, 'enqueue_styles']);
+        add_action('login_head', [$this, 'print_override_styles'], PHP_INT_MAX);
         add_action('login_footer', [$this, 'render_floating_icons']);
         add_action('login_footer', [$this, 'render_credit']);
         add_filter('login_headerurl', [$this, 'header_url']);
@@ -74,11 +75,23 @@ class SignTeb_Login
             [],
             SIGNTEB_LOGIN_VERSION
         );
+    }
+
+    /**
+     * Prints the per-site overrides as the very last thing in the login
+     * <head> (login_head, PHP_INT_MAX) instead of wp_add_inline_style, so
+     * they also outrank login styles injected by themes or other plugins.
+     */
+    public function print_override_styles(): void
+    {
+        if ($this->is_interim_login()) {
+            return;
+        }
 
         $overrides = $this->color_and_logo_overrides();
 
         if ($overrides !== '') {
-            wp_add_inline_style('signteb-login', $overrides);
+            echo '<style id="signteb-login-overrides">' . $overrides . '</style>' . "\n";
         }
     }
 
@@ -112,9 +125,11 @@ class SignTeb_Login
             // Client logos are usually wide and carry their own name, so the
             // square badge chrome and the SignTeb wordmark both step aside:
             // full-width transparent box, contain-fit, no border/glow.
+            // !important on the geometry keeps theme/plugin login CSS and
+            // core's fixed 84px logo rules from clipping the image.
             $css .= sprintf(
-                'body.signteb-login #login h1 a,body.signteb-login .wp-login-logo a{width:100%%;max-width:320px;height:%1$dpx;background-color:transparent;background-image:url("%2$s");background-size:contain;background-position:center;border:none;border-radius:0;box-shadow:none;}'
-                . 'body.signteb-login #login h1::after,body.signteb-login .wp-login-logo::after{content:none;}',
+                'html body.login.signteb-login #login h1 a,html body.login.signteb-login .wp-login-logo a{display:block;width:100%%!important;max-width:100%%!important;min-width:0!important;height:%1$dpx!important;margin:0 auto 14px!important;padding:0!important;background:transparent url("%2$s") center/contain no-repeat!important;border:none!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important;}'
+                . 'html body.login.signteb-login #login h1::after,html body.login.signteb-login .wp-login-logo::after{content:none;}',
                 $height,
                 esc_url($logo)
             );
