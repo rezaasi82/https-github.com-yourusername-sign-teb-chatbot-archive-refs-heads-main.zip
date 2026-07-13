@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       SignTeb Login — صفحه ورود اختصاصی
  * Plugin URI:        https://signteb.com
- * Description:       صفحه ورود وردپرس با طراحی اختصاصی برای سایت‌هایی که SignTeb.com طراحی می‌کند: تم تیره، رنگ برند SignTeb و ایکون‌های شناور.
+ * Description:       صفحه ورود وردپرس با طراحی اختصاصی برای سایت‌هایی که SignTeb.com طراحی می‌کند: تم تیره، لهجه‌های طلایی VIP و ایکون‌های شناور.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
