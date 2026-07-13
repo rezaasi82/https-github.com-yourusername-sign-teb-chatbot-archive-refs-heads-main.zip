@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'MEDCORE_VERSION',   '1.0.4' );
+define( 'MEDCORE_VERSION',   '1.0.5' );
 define( 'MEDCORE_DIR',       get_template_directory() );
 define( 'MEDCORE_URI',       get_template_directory_uri() );
 define( 'MEDCORE_INC',       MEDCORE_DIR . '/inc/' );
@@ -129,6 +129,13 @@ try {
 		static fn() => new \SignTeb\MedCore\Integration\Elementor()
 	);
 	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Integration\Elementor::class )->register();
+
+	// پل Theme Builder المنتور Pro (هدر/فوتر قابل‌ویرایش روی قالب FSE).
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Integration\ElementorLocations::class,
+		static fn() => new \SignTeb\MedCore\Integration\ElementorLocations()
+	);
+	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Integration\ElementorLocations::class )->register();
 } catch ( \Throwable $e ) {
 	MedCore_Logger::log( 'Elementor integration failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
 }
