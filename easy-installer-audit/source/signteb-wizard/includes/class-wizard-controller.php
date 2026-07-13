@@ -19,13 +19,14 @@ defined( 'ABSPATH' ) || exit;
 
 final class Controller {
 
-	/** ۶ مرحله wizard */
+	/** مراحل wizard (مرحله‌ی install = اجرای خودکار ۸ تسک راه‌اندازی) */
 	private const STEPS = [
 		'welcome'  => [ 'label' => 'خوش آمدید',   'icon' => '👋' ],
 		'brand'    => [ 'label' => 'برند و هویت',  'icon' => '🎨' ],
 		'clinic'   => [ 'label' => 'اطلاعات کلینیک','icon' => '🏥' ],
 		'contact'  => [ 'label' => 'تماس و شبکه‌ها','icon' => '📞' ],
 		'demo'     => [ 'label' => 'انتخاب دمو',   'icon' => '🖼️' ],
+		'install'  => [ 'label' => 'راه‌اندازی خودکار', 'icon' => '⚙️' ],
 		'finish'   => [ 'label' => 'پایان',         'icon' => '🎉' ],
 	];
 
@@ -37,6 +38,7 @@ final class Controller {
 		add_action( 'wp_ajax_stwiz_save_step',      [ $this, 'ajax_save_step' ] );
 		add_action( 'wp_ajax_stwiz_import_demo',    [ $this, 'ajax_import_demo' ] );
 		add_action( 'wp_ajax_stwiz_check_plugins',  [ $this, 'ajax_check_plugins' ] );
+		add_action( 'wp_ajax_stwiz_run_setup_step', [ $this, 'ajax_run_setup_step' ] );
 		add_action( 'wp_ajax_stwiz_reset',          [ $this, 'ajax_reset' ] );
 	}
 
@@ -333,6 +335,32 @@ final class Controller {
 			'message'  => __( 'دمو با موفقیت نصب شد.', STWIZ_TEXT ),
 			'redirect' => home_url( '/' ),
 		] );
+	}
+
+	// ─── AJAX: Run one setup step (موتور ۸ مرحله‌ای) ──────────────────────────
+
+	public function ajax_run_setup_step(): void {
+		check_ajax_referer( 'stwiz_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'دسترسی غیر مجاز', STWIZ_TEXT ) ], 403 );
+		}
+
+		$step = sanitize_key( $_POST['setup_step'] ?? '' );
+		$demo = sanitize_key( $_POST['demo'] ?? '' );
+
+		$runner = new \SignTeb\Wizard\Setup\SetupRunner();
+
+		if ( ! in_array( $step, $runner->steps(), true ) ) {
+			wp_send_json_error( [ 'message' => __( 'مرحله نامعتبر است.', STWIZ_TEXT ) ] );
+		}
+
+		$result = $runner->run_step( $step, [ 'demo' => $demo ] );
+
+		if ( $result->success ) {
+			wp_send_json_success( $result->to_array() );
+		}
+		wp_send_json_error( $result->to_array() );
 	}
 
 	// ─── AJAX: Check Plugins ──────────────────────────────────────────────────

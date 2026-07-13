@@ -18,35 +18,37 @@ defined( 'ABSPATH' ) || exit;
 
 final class DemoImporter {
 
+	/** انواع دموی مجاز. */
+	public const ALLOWED = [ 'solo-doctor', 'multi-clinic', 'medical-tourism' ];
+
+	public static function is_valid_type( string $type ): bool {
+		return in_array( $type, self::ALLOWED, true );
+	}
+
+	/**
+	 * ایمپورت کامل (مسیر قدیمی — سازگاری). مراحل گرانولار زیر را پشت‌سرهم اجرا می‌کند.
+	 */
 	public function import( string $demo_type ): true|\WP_Error {
-		$allowed = [ 'solo-doctor', 'multi-clinic', 'medical-tourism' ];
-		if ( ! in_array( $demo_type, $allowed, true ) ) {
+		if ( ! self::is_valid_type( $demo_type ) ) {
 			return new \WP_Error( 'invalid_demo', __( 'نوع دمو نامعتبر است.', STWIZ_TEXT ) );
 		}
 
-		// Set demo-specific options
-		$this->set_demo_options( $demo_type );
+		$this->apply_options( $demo_type );
+		$this->create_doctor( $demo_type );
+		$home_id = $this->create_pages( $demo_type );
+		$this->create_menus();
+		$this->assign_front_page( $home_id );
+		$this->assign_blog_page();
 
-		// Create demo doctor profile
-		$this->create_demo_doctor( $demo_type );
-
-		// Create demo pages
-		$this->create_demo_pages( $demo_type );
-
-		// Set menus
-		$this->setup_menus( $demo_type );
-
-		// Flush rewrite rules
 		flush_rewrite_rules();
-
 		update_option( 'stwiz_demo_installed', $demo_type );
 
 		return true;
 	}
 
-	// ─── Demo Options ────────────────────────────────────────────────────────
+	// ─── Demo Options (public — مرحله‌ی options) ─────────────────────────────
 
-	private function set_demo_options( string $type ): void {
+	public function apply_options( string $type ): void {
 		$presets = [
 			'solo-doctor' => [
 				'blogname'           => 'دکتر علیرضا محمدی',
@@ -79,9 +81,9 @@ final class DemoImporter {
 		}
 	}
 
-	// ─── Demo Doctor ─────────────────────────────────────────────────────────
+	// ─── Demo Doctor (public — بخشی از مرحله‌ی demo) ─────────────────────────
 
-	private function create_demo_doctor( string $type ): int {
+	public function create_doctor( string $type ): int {
 		// Check if demo doctor already exists
 		$existing = get_posts( [
 			'post_type'  => 'doctor',
@@ -126,9 +128,13 @@ final class DemoImporter {
 		return is_wp_error( $post_id ) ? 0 : $post_id;
 	}
 
-	// ─── Demo Pages ──────────────────────────────────────────────────────────
+	// ─── Demo Pages (public — بخشی از مرحله‌ی demo) ──────────────────────────
 
-	private function create_demo_pages( string $type ): void {
+	/**
+	 * ساخت صفحات دمو. شناسه‌ی صفحه‌ی خانه را برمی‌گرداند (تعیین front page در
+	 * مرحله‌ی جداگانه‌ی home انجام می‌شود، نه اینجا).
+	 */
+	public function create_pages( string $type ): int {
 		$pages = [
 			[
 				'title'   => 'خانه',
@@ -191,16 +197,56 @@ final class DemoImporter {
 			}
 		}
 
-		// Set as static front page
+		return $home_id;
+	}
+
+	// ─── Front page & Blog page (مراحل home / blog) ──────────────────────────
+
+	/**
+	 * تعیین صفحه‌ی خانه‌ی ثابت. اگر شناسه داده نشود، تلاش می‌کند صفحه‌ی «home»
+	 * را پیدا کند. idempotent است.
+	 */
+	public function assign_front_page( int $home_id = 0 ): int {
+		if ( ! $home_id ) {
+			$page = get_page_by_path( 'home' );
+			$home_id = $page ? (int) $page->ID : 0;
+		}
 		if ( $home_id ) {
 			update_option( 'show_on_front', 'page' );
 			update_option( 'page_on_front', $home_id );
 		}
+		return $home_id;
 	}
 
-	// ─── Menus ───────────────────────────────────────────────────────────────
+	/**
+	 * ساخت/تعیین صفحه‌ی بلاگ (posts page). idempotent است.
+	 */
+	public function assign_blog_page(): int {
+		$existing = get_page_by_path( 'blog' );
+		if ( $existing ) {
+			$blog_id = (int) $existing->ID;
+		} else {
+			$blog_id = wp_insert_post( [
+				'post_type'   => 'page',
+				'post_title'  => __( 'بلاگ', STWIZ_TEXT ),
+				'post_name'   => 'blog',
+				'post_status' => 'publish',
+				'post_content'=> '',
+			] );
+			if ( is_wp_error( $blog_id ) ) {
+				return 0;
+			}
+			update_post_meta( $blog_id, '_stwiz_demo', '1' );
+		}
 
-	private function setup_menus( string $type ): void {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_for_posts', $blog_id );
+		return (int) $blog_id;
+	}
+
+	// ─── Menus (public — مرحله‌ی menus) ──────────────────────────────────────
+
+	public function create_menus(): void {
 		$menu_name = __( 'منوی اصلی', STWIZ_TEXT );
 		$menu_id   = wp_create_nav_menu( $menu_name );
 

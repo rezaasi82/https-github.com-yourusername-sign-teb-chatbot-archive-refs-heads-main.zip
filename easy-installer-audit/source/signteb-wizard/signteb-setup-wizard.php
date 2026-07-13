@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       SignTeb Setup Wizard
  * Plugin URI:        https://signteb.com/medcore
- * Description:       ویزارد راه‌اندازی ۶ مرحله‌ای SignTeb MedCore — برند، کلینیک، تماس، دمو، پلاگین‌ها، پایان
- * Version:           1.0.2
+ * Description:       ویزارد راه‌اندازی SignTeb MedCore — جمع‌آوری اطلاعات + راه‌اندازی خودکار ۸ مرحله‌ای (بررسی محیط، افزونه‌ها، دمو، تنظیمات، منوها، خانه، بلاگ، پایان)
+ * Version:           1.0.3
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            SignTeb
@@ -17,10 +17,25 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STWIZ_VERSION', '1.0.0' );
+define( 'STWIZ_VERSION', '1.0.3' );
 define( 'STWIZ_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'STWIZ_URI',     plugin_dir_url( __FILE__ ) );
 define( 'STWIZ_TEXT',    'signteb-wizard' );
+
+// PSR-4 autoloader برای کلاس‌های جدیدِ namespaceدارِ SignTeb\Wizard\Setup\
+// (کلاس‌های قدیمی class-wizard-*.php مثل قبل require می‌شوند).
+spl_autoload_register( static function ( string $class ): void {
+	$prefix = 'SignTeb\\Wizard\\Setup\\';
+	$len    = strlen( $prefix );
+	if ( 0 !== strncmp( $prefix, $class, $len ) ) {
+		return;
+	}
+	$relative = str_replace( '\\', '/', substr( $class, $len ) );
+	$file     = STWIZ_DIR . 'includes/Setup/' . $relative . '.php';
+	if ( is_file( $file ) ) {
+		require $file;
+	}
+} );
 
 require_once STWIZ_DIR . 'includes/class-wizard-controller.php';
 

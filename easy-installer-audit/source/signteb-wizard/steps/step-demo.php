@@ -49,12 +49,11 @@ $demos = [
         type="button"
         class="stwiz-btn stwiz-demo-install-btn <?php echo $is_installed ? 'stwiz-btn--ghost' : 'stwiz-btn--primary'; ?>"
         data-demo="<?php echo esc_attr($key); ?>"
-        <?php echo $is_installed ? 'disabled' : ''; ?>
       >
         <?php if ($is_installed) : ?>
-          ✅ <?php esc_html_e('نصب شده', STWIZ_TEXT); ?>
+          ↻ <?php esc_html_e('راه‌اندازی مجدد', STWIZ_TEXT); ?>
         <?php else : ?>
-          <?php esc_html_e('نصب این دمو', STWIZ_TEXT); ?>
+          <?php esc_html_e('انتخاب و راه‌اندازی خودکار', STWIZ_TEXT); ?>
         <?php endif; ?>
       </button>
     </div>
@@ -76,40 +75,13 @@ $demos = [
 
 <script>
 (function() {
+  // انتخاب دمو → رفتن به صفحه‌ی راه‌اندازی خودکار (اجرای ۸ تسک با نوار پیشرفت)
+  var installBase = <?php echo wp_json_encode( admin_url( 'admin.php?page=signteb-wizard&step=install' ) ); ?>;
   document.querySelectorAll('.stwiz-demo-install-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      const demo    = btn.dataset.demo;
-      const status  = document.getElementById('demo-status');
-      const msg     = document.getElementById('demo-status-msg');
-
-      // Show progress
-      document.querySelectorAll('.stwiz-demo-card').forEach(c => c.style.opacity='0.5');
-      if (status)  status.hidden = false;
-
-      fetch(stWizData.ajaxUrl, {
-        method: 'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: new URLSearchParams({
-          action: 'stwiz_import_demo',
-          nonce:   stWizData.nonce,
-          demo:    demo
-        })
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success) {
-          if (msg) msg.textContent = '✅ دمو با موفقیت نصب شد!';
-          btn.textContent = '✅ نصب شده';
-          btn.disabled    = true;
-          document.querySelectorAll('.stwiz-demo-card').forEach(c => c.style.opacity='1');
-        } else {
-          if (msg) msg.textContent = '❌ خطا: ' + (data.data?.message || 'نامشخص');
-          document.querySelectorAll('.stwiz-demo-card').forEach(c => c.style.opacity='1');
-        }
-      })
-      .catch(() => {
-        if (msg) msg.textContent = '❌ خطای شبکه';
-      });
+      var demo = btn.dataset.demo;
+      document.querySelectorAll('.stwiz-demo-card').forEach(c => c.style.opacity = '0.5');
+      window.location.href = installBase + '&demo=' + encodeURIComponent(demo);
     });
   });
 })();
