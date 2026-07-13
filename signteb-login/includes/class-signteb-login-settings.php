@@ -82,6 +82,9 @@ JS;
 
         update_option('signteb_login_logo_url', esc_url_raw(wp_unslash($_POST['logo_url'] ?? '')));
 
+        $logo_height = (int) ($_POST['logo_height'] ?? 96);
+        update_option('signteb_login_logo_height', max(40, min(320, $logo_height ?: 96)));
+
         $this->notice = __('تنظیمات ذخیره شد.', 'signteb-login');
 
         if ($slug !== '') {
@@ -101,6 +104,7 @@ JS;
         $accent      = sanitize_hex_color(get_option('signteb_login_accent', '')) ?: SignTeb_Login::DEFAULT_ACCENT;
         $bright      = sanitize_hex_color(get_option('signteb_login_accent_bright', '')) ?: SignTeb_Login::DEFAULT_ACCENT_BRIGHT;
         $logo_url    = (string) get_option('signteb_login_logo_url', '');
+        $logo_height = (int) get_option('signteb_login_logo_height', 96);
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('صفحه ورود SignTeb', 'signteb-login'); ?></h1>
@@ -151,6 +155,13 @@ JS;
                             <input type="url" id="signteb_login_logo_url" name="logo_url" value="<?php echo esc_attr($logo_url); ?>" class="regular-text" dir="ltr">
                             <button type="button" class="button signteb-media-btn"><?php esc_html_e('انتخاب از کتابخانه پرونده‌ها', 'signteb-login'); ?></button>
                             <p class="description"><?php esc_html_e('تصویر لوگوی مشتری (PNG/SVG با پس‌زمینه شفاف پیشنهاد می‌شود). خالی بماند تا نشان پیش‌فرض SignTeb نمایش داده شود.', 'signteb-login'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="signteb_login_logo_height"><?php esc_html_e('ارتفاع لوگو', 'signteb-login'); ?></label></th>
+                        <td>
+                            <input type="number" id="signteb_login_logo_height" name="logo_height" value="<?php echo esc_attr($logo_height); ?>" min="40" max="320" step="4" class="small-text" dir="ltr"> px
+                            <p class="description"><?php esc_html_e('ارتفاع نمایش لوگوی سفارشی در صفحه ورود (پیش‌فرض ۹۶). عرض به‌صورت خودکار و متناسب محاسبه می‌شود.', 'signteb-login'); ?></p>
                         </td>
                     </tr>
                     <tr>

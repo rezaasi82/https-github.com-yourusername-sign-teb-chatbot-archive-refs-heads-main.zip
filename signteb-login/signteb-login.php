@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Login
  * Plugin URI:        https://signteb.com
  * Description:       راهکار امنیت و برندسازی صفحه ورود وردپرس: طراحی اختصاصی مدرن، تغییر آدرس صفحه ورود (مخفی‌سازی wp-login.php)، و شخصی‌سازی رنگ سازمانی و لوگو از پیشخوان. محصولی از تیم توسعه SignTeb.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            رضا آسیابی
@@ -17,7 +17,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('SIGNTEB_LOGIN_VERSION', '1.1.0');
+define('SIGNTEB_LOGIN_VERSION', '1.1.1');
 define('SIGNTEB_LOGIN_DIR', plugin_dir_path(__FILE__));
 define('SIGNTEB_LOGIN_URL', plugin_dir_url(__FILE__));
 
@@ -106,8 +106,16 @@ class SignTeb_Login
         }
 
         if ($logo !== '') {
+            $height = (int) get_option('signteb_login_logo_height', 96);
+            $height = max(40, min(320, $height ?: 96));
+
+            // Client logos are usually wide and carry their own name, so the
+            // square badge chrome and the SignTeb wordmark both step aside:
+            // full-width transparent box, contain-fit, no border/glow.
             $css .= sprintf(
-                'body.signteb-login #login h1 a,body.signteb-login .wp-login-logo a{background-image:url("%s");background-size:contain;}',
+                'body.signteb-login #login h1 a,body.signteb-login .wp-login-logo a{width:100%%;max-width:320px;height:%1$dpx;background-color:transparent;background-image:url("%2$s");background-size:contain;background-position:center;border:none;border-radius:0;box-shadow:none;}'
+                . 'body.signteb-login #login h1::after,body.signteb-login .wp-login-logo::after{content:none;}',
+                $height,
                 esc_url($logo)
             );
         } elseif ($bright !== self::DEFAULT_ACCENT_BRIGHT) {
