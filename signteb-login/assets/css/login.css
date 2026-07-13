@@ -14,7 +14,9 @@ body.signteb-login {
     --stb-ink: #e6edf3;
     --stb-muted: #8b949e;
     --stb-accent: #d4a72c;
+    --stb-accent-rgb: 212, 167, 44;
     --stb-accent-bright: #f2cc60;
+    --stb-accent-bright-rgb: 242, 204, 96;
     --stb-link: #58a6ff;
     --stb-card-radius: 14px;
 
@@ -39,7 +41,7 @@ body.signteb-login::before {
     width: 900px;
     height: 480px;
     border-radius: 50%;
-    background: radial-gradient(ellipse at center, rgba(212, 167, 44, 0.16) 0%, rgba(88, 166, 255, 0.07) 45%, rgba(13, 17, 23, 0) 72%);
+    background: radial-gradient(ellipse at center, rgba(var(--stb-accent-rgb), 0.16) 0%, rgba(88, 166, 255, 0.07) 45%, rgba(13, 17, 23, 0) 72%);
     pointer-events: none;
     z-index: 0;
 }
@@ -67,7 +69,7 @@ body.signteb-login .signteb-icon {
     color: var(--stb-accent);
     opacity: 0.16;
     animation: signteb-float 9s ease-in-out infinite alternate;
-    filter: drop-shadow(0 0 14px rgba(212, 167, 44, 0.35));
+    filter: drop-shadow(0 0 14px rgba(var(--stb-accent-rgb), 0.35));
 }
 
 body.signteb-login .signteb-icon svg {
@@ -162,8 +164,8 @@ body.signteb-login .wp-login-logo a {
     background-size: 46px 46px;
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid rgba(212, 167, 44, 0.45);
-    box-shadow: 0 0 0 6px rgba(212, 167, 44, 0.07), 0 16px 40px rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(var(--stb-accent-rgb), 0.45);
+    box-shadow: 0 0 0 6px rgba(var(--stb-accent-rgb), 0.07), 0 16px 40px rgba(0, 0, 0, 0.55);
 }
 
 /* SignTeb wordmark under the logo. */
@@ -196,7 +198,7 @@ body.signteb-login #registerform {
     background: var(--stb-card);
     border: 1px solid var(--stb-border);
     border-radius: var(--stb-card-radius);
-    box-shadow: 0 0 0 1px rgba(212, 167, 44, 0.06), 0 24px 48px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 1px rgba(var(--stb-accent-rgb), 0.06), 0 24px 48px rgba(0, 0, 0, 0.5);
     padding: 30px 28px 28px;
     margin-top: 18px;
     animation: signteb-card-in 0.4s ease both;
@@ -251,7 +253,7 @@ body.signteb-login form input[type="text"]:focus,
 body.signteb-login form input[type="password"]:focus,
 body.signteb-login form input[type="email"]:focus {
     border-color: var(--stb-accent);
-    box-shadow: 0 0 0 3px rgba(212, 167, 44, 0.25);
+    box-shadow: 0 0 0 3px rgba(var(--stb-accent-rgb), 0.25);
     outline: none;
 }
 
@@ -267,7 +269,7 @@ body.signteb-login .wp-pwd .wp-hide-pw:hover,
 body.signteb-login .wp-pwd .wp-hide-pw:focus {
     color: var(--stb-accent-bright);
     border-color: var(--stb-accent);
-    box-shadow: 0 0 0 2px rgba(212, 167, 44, 0.25);
+    box-shadow: 0 0 0 2px rgba(var(--stb-accent-rgb), 0.25);
 }
 
 body.signteb-login .forgetmenot {
@@ -283,7 +285,7 @@ body.signteb-login input[type="checkbox"] {
 }
 
 body.signteb-login input[type="checkbox"]:focus {
-    box-shadow: 0 0 0 2px rgba(212, 167, 44, 0.3);
+    box-shadow: 0 0 0 2px rgba(var(--stb-accent-rgb), 0.3);
 }
 
 /* --------------------------------------------------------------- button */
@@ -299,9 +301,9 @@ body.signteb-login p.submit input[type="submit"] {
     font-weight: 700;
     color: #1c1502;
     background: linear-gradient(180deg, var(--stb-accent-bright) 0%, var(--stb-accent) 100%);
-    border: 1px solid rgba(242, 204, 96, 0.6);
+    border: 1px solid rgba(var(--stb-accent-bright-rgb), 0.6);
     border-radius: 8px;
-    box-shadow: 0 8px 22px rgba(212, 167, 44, 0.28);
+    box-shadow: 0 8px 22px rgba(var(--stb-accent-rgb), 0.28);
     text-shadow: none;
     transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -310,12 +312,12 @@ body.signteb-login .submit .button-primary:hover,
 body.signteb-login p.submit input[type="submit"]:hover {
     filter: brightness(1.06);
     transform: translateY(-1px);
-    box-shadow: 0 12px 28px rgba(212, 167, 44, 0.38);
+    box-shadow: 0 12px 28px rgba(var(--stb-accent-rgb), 0.38);
 }
 
 body.signteb-login .submit .button-primary:focus,
 body.signteb-login p.submit input[type="submit"]:focus {
-    box-shadow: 0 0 0 3px rgba(212, 167, 44, 0.45);
+    box-shadow: 0 0 0 3px rgba(var(--stb-accent-rgb), 0.45);
     outline: none;
 }
 
