@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'MEDCORE_VERSION',   '1.0.3' );
+define( 'MEDCORE_VERSION',   '1.0.4' );
 define( 'MEDCORE_DIR',       get_template_directory() );
 define( 'MEDCORE_URI',       get_template_directory_uri() );
 define( 'MEDCORE_INC',       MEDCORE_DIR . '/inc/' );
@@ -46,6 +46,15 @@ if ( version_compare( PHP_VERSION, MEDCORE_MIN_PHP, '<' ) ) {
 // ── Logger (must load first, no dependencies) ────────────────────────────────
 
 require_once MEDCORE_INC . 'class-medcore-logger.php';
+
+// ── PSR-4 Autoloader + Service Container (معماری هدف — فاز ۱) ─────────────────
+// کد جدید زیر فضای‌نام SignTeb\MedCore\ در inc/src/ نوشته می‌شود و خودکار
+// بارگذاری می‌شود؛ ماژول‌های procedural موجود بدون تغییر و در کنار آن کار می‌کنند
+// (الگوی strangler — مهاجرت افزایشی و کم‌ریسک به معماری جدید).
+require_once MEDCORE_INC . 'src/Core/Autoloader.php';
+( new \SignTeb\MedCore\Core\Autoloader( 'SignTeb\\MedCore\\', MEDCORE_INC . 'src/' ) )->register();
+
+$GLOBALS['medcore_container'] = new \SignTeb\MedCore\Core\Container();
 
 // ── Load modules in dependency order (defensively) ───────────────────────────
 //
@@ -111,3 +120,15 @@ if ( $medcore_failed ) {
 }
 
 unset( $medcore_modules, $module, $is_critical, $path, $medcore_failed );
+
+// ── Integrations (namespaced services, booted via container) ─────────────────
+// هر ادغام در try/catch ایزوله بوت می‌شود تا هرگز باعث صفحه‌ی سفید نشود.
+try {
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Integration\Elementor::class,
+		static fn() => new \SignTeb\MedCore\Integration\Elementor()
+	);
+	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Integration\Elementor::class )->register();
+} catch ( \Throwable $e ) {
+	MedCore_Logger::log( 'Elementor integration failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
+}
