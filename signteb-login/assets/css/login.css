@@ -1,7 +1,7 @@
 /*
  * SignTeb Login — the branded login screen shipped on client sites
  * built by SIGNTEB.com. GitHub-dark palette (#0d1117 canvas, #161b22
- * card, #30363d borders, #e6edf3 text) with gold VIP accents.
+ * card, #30363d borders, #e6edf3 text) with SignTeb teal accents.
  * Every rule is scoped to body.signteb-login (added via the
  * login_body_class filter) so the interim re-auth iframe and any
  * unstyled fallback keep the stock WordPress look.
@@ -13,8 +13,8 @@ body.signteb-login {
     --stb-border: #30363d;
     --stb-ink: #e6edf3;
     --stb-muted: #8b949e;
-    --stb-gold: #d4a72c;
-    --stb-gold-bright: #f2cc60;
+    --stb-accent: #2e958a;
+    --stb-accent-bright: #3ec4b0;
     --stb-link: #58a6ff;
     --stb-card-radius: 14px;
 
@@ -29,7 +29,7 @@ body.signteb-login {
     overflow-x: hidden;
 }
 
-/* Faint gold aurora at the top of the canvas. */
+/* Faint teal aurora at the top of the canvas. */
 body.signteb-login::before {
     content: "";
     position: fixed;
@@ -39,7 +39,7 @@ body.signteb-login::before {
     width: 900px;
     height: 480px;
     border-radius: 50%;
-    background: radial-gradient(ellipse at center, rgba(212, 167, 44, 0.16) 0%, rgba(88, 166, 255, 0.07) 45%, rgba(13, 17, 23, 0) 72%);
+    background: radial-gradient(ellipse at center, rgba(46, 149, 138, 0.16) 0%, rgba(88, 166, 255, 0.07) 45%, rgba(13, 17, 23, 0) 72%);
     pointer-events: none;
     z-index: 0;
 }
@@ -64,10 +64,10 @@ body.signteb-login .signteb-login-icons {
 
 body.signteb-login .signteb-icon {
     position: absolute;
-    color: var(--stb-gold);
+    color: var(--stb-accent);
     opacity: 0.16;
     animation: signteb-float 9s ease-in-out infinite alternate;
-    filter: drop-shadow(0 0 14px rgba(212, 167, 44, 0.35));
+    filter: drop-shadow(0 0 14px rgba(46, 149, 138, 0.35));
 }
 
 body.signteb-login .signteb-icon svg {
@@ -76,7 +76,7 @@ body.signteb-login .signteb-icon svg {
     height: 100%;
 }
 
-body.signteb-login .signteb-icon-code {
+body.signteb-login .signteb-icon-cross {
     width: 64px;
     height: 64px;
     top: 16%;
@@ -84,7 +84,7 @@ body.signteb-login .signteb-icon-code {
     animation-duration: 11s;
 }
 
-body.signteb-login .signteb-icon-pen {
+body.signteb-login .signteb-icon-pulse {
     width: 46px;
     height: 46px;
     top: 62%;
@@ -93,7 +93,7 @@ body.signteb-login .signteb-icon-pen {
     animation-delay: -3s;
 }
 
-body.signteb-login .signteb-icon-layers {
+body.signteb-login .signteb-icon-pill {
     width: 42px;
     height: 42px;
     top: 24%;
@@ -112,7 +112,7 @@ body.signteb-login .signteb-icon-star {
     opacity: 0.22;
 }
 
-body.signteb-login .signteb-icon-sparkle {
+body.signteb-login .signteb-icon-code {
     width: 52px;
     height: 52px;
     top: 80%;
@@ -157,26 +157,26 @@ body.signteb-login .wp-login-logo a {
     margin: 0 auto 12px;
     border-radius: 20px;
     background-color: var(--stb-card);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e3b341' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 1.5L21 6.75V17.25L12 22.5L3 17.25V6.75Z'/%3E%3Ctext x='12' y='16' text-anchor='middle' font-family='Arial, sans-serif' font-size='11' font-weight='700' fill='%23e3b341' stroke='none'%3ES%3C/text%3E%3C/svg%3E");
+    /* Vector recreation of the SignTeb mark: medical cross + stethoscope. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233ec4b0' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 2.5h5v5.5H19v5h-5.5V19h-5v-6H3v-5h5.5z'/%3E%3Ccircle cx='15' cy='15.5' r='3.6'/%3E%3Cpath d='M17.6 13l2.7-2.7'/%3E%3Ccircle cx='21' cy='9.6' r='1.1' fill='%233ec4b0' stroke='none'/%3E%3Cpath d='M14.6 11.9l-.4-3.2'/%3E%3Ccircle cx='14' cy='7.6' r='1.1' fill='%233ec4b0' stroke='none'/%3E%3C/svg%3E");
     background-size: 46px 46px;
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid rgba(212, 167, 44, 0.45);
-    box-shadow: 0 0 0 6px rgba(212, 167, 44, 0.07), 0 16px 40px rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(46, 149, 138, 0.45);
+    box-shadow: 0 0 0 6px rgba(46, 149, 138, 0.07), 0 16px 40px rgba(0, 0, 0, 0.55);
 }
 
-/* Gold SIGNTEB wordmark under the logo. */
+/* SignTeb wordmark under the logo. */
 body.signteb-login #login h1::after,
 body.signteb-login .wp-login-logo::after {
-    content: "SIGNTEB";
+    content: "SignTeb";
     display: block;
     text-align: center;
     margin: 0 0 6px;
-    color: var(--stb-gold-bright);
-    font-size: 13px;
+    color: var(--stb-accent-bright);
+    font-size: 19px;
     font-weight: 700;
-    letter-spacing: 0.42em;
-    text-indent: 0.42em; /* re-centers letterspaced text */
+    letter-spacing: 0.04em;
 }
 
 body.signteb-login .signteb-login-welcome {
@@ -196,7 +196,7 @@ body.signteb-login #registerform {
     background: var(--stb-card);
     border: 1px solid var(--stb-border);
     border-radius: var(--stb-card-radius);
-    box-shadow: 0 0 0 1px rgba(212, 167, 44, 0.06), 0 24px 48px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 1px rgba(46, 149, 138, 0.06), 0 24px 48px rgba(0, 0, 0, 0.5);
     padding: 30px 28px 28px;
     margin-top: 18px;
     animation: signteb-card-in 0.4s ease both;
@@ -250,8 +250,8 @@ body.signteb-login form .input:focus,
 body.signteb-login form input[type="text"]:focus,
 body.signteb-login form input[type="password"]:focus,
 body.signteb-login form input[type="email"]:focus {
-    border-color: var(--stb-gold);
-    box-shadow: 0 0 0 3px rgba(212, 167, 44, 0.25);
+    border-color: var(--stb-accent);
+    box-shadow: 0 0 0 3px rgba(46, 149, 138, 0.25);
     outline: none;
 }
 
@@ -265,9 +265,9 @@ body.signteb-login .wp-pwd .wp-hide-pw {
 
 body.signteb-login .wp-pwd .wp-hide-pw:hover,
 body.signteb-login .wp-pwd .wp-hide-pw:focus {
-    color: var(--stb-gold-bright);
-    border-color: var(--stb-gold);
-    box-shadow: 0 0 0 2px rgba(212, 167, 44, 0.25);
+    color: var(--stb-accent-bright);
+    border-color: var(--stb-accent);
+    box-shadow: 0 0 0 2px rgba(46, 149, 138, 0.25);
 }
 
 body.signteb-login .forgetmenot {
@@ -276,14 +276,14 @@ body.signteb-login .forgetmenot {
 }
 
 body.signteb-login input[type="checkbox"] {
-    accent-color: var(--stb-gold);
+    accent-color: var(--stb-accent);
     background: var(--stb-canvas);
     border: 1px solid var(--stb-border);
     border-radius: 4px;
 }
 
 body.signteb-login input[type="checkbox"]:focus {
-    box-shadow: 0 0 0 2px rgba(212, 167, 44, 0.3);
+    box-shadow: 0 0 0 2px rgba(46, 149, 138, 0.3);
 }
 
 /* --------------------------------------------------------------- button */
@@ -297,11 +297,11 @@ body.signteb-login p.submit input[type="submit"] {
     min-height: 44px;
     font-size: 15px;
     font-weight: 700;
-    color: #1c1502;
-    background: linear-gradient(180deg, var(--stb-gold-bright) 0%, var(--stb-gold) 100%);
-    border: 1px solid rgba(242, 204, 96, 0.6);
+    color: #04211d;
+    background: linear-gradient(180deg, var(--stb-accent-bright) 0%, var(--stb-accent) 100%);
+    border: 1px solid rgba(62, 196, 176, 0.6);
     border-radius: 8px;
-    box-shadow: 0 8px 22px rgba(212, 167, 44, 0.28);
+    box-shadow: 0 8px 22px rgba(46, 149, 138, 0.28);
     text-shadow: none;
     transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -310,12 +310,12 @@ body.signteb-login .submit .button-primary:hover,
 body.signteb-login p.submit input[type="submit"]:hover {
     filter: brightness(1.06);
     transform: translateY(-1px);
-    box-shadow: 0 12px 28px rgba(212, 167, 44, 0.38);
+    box-shadow: 0 12px 28px rgba(46, 149, 138, 0.38);
 }
 
 body.signteb-login .submit .button-primary:focus,
 body.signteb-login p.submit input[type="submit"]:focus {
-    box-shadow: 0 0 0 3px rgba(212, 167, 44, 0.45);
+    box-shadow: 0 0 0 3px rgba(46, 149, 138, 0.45);
     outline: none;
 }
 
@@ -331,7 +331,7 @@ body.signteb-login .notice,
 body.signteb-login .message,
 body.signteb-login .success {
     border: 1px solid var(--stb-border);
-    border-inline-start: 4px solid var(--stb-gold);
+    border-inline-start: 4px solid var(--stb-accent);
     border-radius: 10px;
     background: var(--stb-card);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
@@ -374,7 +374,7 @@ body.signteb-login #backtoblog a {
 
 body.signteb-login #nav a:hover,
 body.signteb-login #backtoblog a:hover {
-    color: var(--stb-gold-bright);
+    color: var(--stb-accent-bright);
     text-decoration: underline;
     text-underline-offset: 4px;
 }
@@ -400,7 +400,7 @@ body.signteb-login .signteb-login-credit {
 }
 
 body.signteb-login .signteb-login-credit a {
-    color: var(--stb-gold-bright);
+    color: var(--stb-accent-bright);
     font-weight: 700;
     text-decoration: none;
 }
@@ -435,8 +435,8 @@ body.signteb-login .language-switcher .button {
 }
 
 body.signteb-login .language-switcher .button:hover {
-    border-color: var(--stb-gold);
-    color: var(--stb-gold-bright);
+    border-color: var(--stb-accent);
+    color: var(--stb-accent-bright);
 }
 
 /* --------------------------------------------------------------- mobile */
@@ -454,24 +454,24 @@ body.signteb-login .language-switcher .button:hover {
     }
 
     /* Fewer, smaller icons so the small screen doesn't get busy. */
-    body.signteb-login .signteb-icon-sparkle,
+    body.signteb-login .signteb-icon-code,
     body.signteb-login .signteb-icon-monitor {
         display: none;
     }
 
-    body.signteb-login .signteb-icon-code {
+    body.signteb-login .signteb-icon-cross {
         width: 44px;
         height: 44px;
         top: 8%;
         inset-inline-start: 6%;
     }
 
-    body.signteb-login .signteb-icon-layers {
+    body.signteb-login .signteb-icon-pill {
         top: 12%;
         inset-inline-end: 8%;
     }
 
-    body.signteb-login .signteb-icon-pen {
+    body.signteb-login .signteb-icon-pulse {
         top: 78%;
         inset-inline-start: 8%;
     }

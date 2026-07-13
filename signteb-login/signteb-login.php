@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       SignTeb Login — صفحه ورود اختصاصی
  * Plugin URI:        https://signteb.com
- * Description:       صفحه ورود وردپرس با طراحی اختصاصی VIP برای سایت‌هایی که SIGNTEB.com طراحی می‌کند: تم تیره، لهجه‌های طلایی و ایکون‌های شناور.
+ * Description:       صفحه ورود وردپرس با طراحی اختصاصی برای سایت‌هایی که SignTeb.com طراحی می‌کند: تم تیره، رنگ برند SignTeb و ایکون‌های شناور.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
@@ -110,7 +110,8 @@ class SignTeb_Login
     }
 
     /**
-     * Decorative web-design-themed icons drifting behind the form. Purely
+     * Decorative icons (medical + web-design mix, matching the SignTeb
+     * health-tech brand) drifting behind the form. Purely
      * visual: fixed-position, pointer-events:none, aria-hidden, and the
      * stylesheet freezes them under prefers-reduced-motion.
      */
@@ -121,11 +122,11 @@ class SignTeb_Login
         }
 
         $svg = [
+            'cross'   => '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+            'pulse'   => '<path d="M3 12h4l2.5-6 4 12 2.5-6h5"/>',
+            'pill'    => '<rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-45 12 12)"/><path d="M10.6 10.6l2.8 2.8"/>',
             'code'    => '<path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/>',
-            'pen'     => '<path d="M17.5 2.5l4 4L8 20l-5.5 1.5L4 16z"/><path d="M14.5 5.5l4 4"/>',
-            'layers'  => '<path d="M12 2l10 6-10 6L2 8z"/><path d="M2 14l10 6 10-6"/>',
             'monitor' => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
-            'sparkle' => '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
             'star'    => '<path d="M12 2.5l2.9 5.9 6.5 1-4.7 4.6 1.1 6.5-5.8-3.1-5.8 3.1 1.1-6.5L2.6 9.4l6.5-1z"/>',
         ];
 
@@ -159,7 +160,7 @@ class SignTeb_Login
         }
 
         printf(
-            '<p class="signteb-login-credit">%s <a href="%s" target="_blank" rel="noopener">SIGNTEB.com</a></p>',
+            '<p class="signteb-login-credit">%s <a href="%s" target="_blank" rel="noopener">SignTeb.com</a></p>',
             esc_html__('طراحی و توسعه:', 'signteb-login'),
             esc_url('https://signteb.com')
         );

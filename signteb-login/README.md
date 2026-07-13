@@ -1,6 +1,6 @@
 # SignTeb Login — صفحه ورود اختصاصی
 
-صفحه ورود وردپرس (`wp-login.php`) با طراحی اختصاصی VIP برای سایت‌هایی که **SIGNTEB.com** طراحی می‌کند: تم تیره الهام‌گرفته از GitHub Dark، لهجه‌های طلایی، لوگوی مونوگرام SignTeb، ایکون‌های شناور و امضای «طراحی و توسعه: SIGNTEB.com».
+صفحه ورود وردپرس (`wp-login.php`) با طراحی اختصاصی برای سایت‌هایی که **SignTeb.com** طراحی می‌کند: تم تیره الهام‌گرفته از GitHub Dark، رنگ سبز دریایی برند SignTeb، لوگوی صلیب پزشکی + استتوسکوپ، ایکون‌های شناور و امضای «طراحی و توسعه: SignTeb.com».
 
 پلاگین کاملاً مستقل است و به هیچ پلاگین دیگری وابسته نیست.
 
@@ -15,7 +15,7 @@
 | کار | روش |
 |---|---|
 | خاموش‌کردن کل طرح | `wp option update signteb_login_enabled 0` یا فیلتر `signteb_login_enabled` |
-| حذف امضای SIGNTEB.com | `wp option update signteb_login_show_credit 0` یا فیلتر `signteb_login_show_credit` |
+| حذف امضای SignTeb.com | `wp option update signteb_login_show_credit 0` یا فیلتر `signteb_login_show_credit` |
 
 مثال با فیلتر (در `functions.php` قالب):
 
