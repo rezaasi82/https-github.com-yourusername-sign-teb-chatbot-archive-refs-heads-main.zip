@@ -33,7 +33,7 @@ class SignTeb_Login_Slug
 
     public function register(): void
     {
-        if (self::slug() === '') {
+        if (self::slug() === '' || ! SignTeb_Login_License::is_valid()) {
             return;
         }
 

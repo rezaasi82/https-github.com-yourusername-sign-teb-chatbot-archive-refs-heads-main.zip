@@ -71,6 +71,11 @@ JS;
         update_option('signteb_login_enabled', empty($_POST['enabled']) ? '0' : '1');
         update_option('signteb_login_show_credit', empty($_POST['show_credit']) ? '0' : '1');
 
+        update_option(
+            SignTeb_Login_License::OPTION,
+            strtoupper(sanitize_text_field(wp_unslash($_POST['license_key'] ?? '')))
+        );
+
         $slug = sanitize_title(wp_unslash($_POST['login_slug'] ?? ''));
         update_option('signteb_login_slug', $slug);
 
@@ -118,6 +123,26 @@ JS;
                 <input type="hidden" name="signteb_login_settings" value="1">
 
                 <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><label for="signteb_login_license_key"><?php esc_html_e('کد فعال‌سازی', 'signteb-login'); ?></label></th>
+                        <td>
+                            <input type="text" id="signteb_login_license_key" name="license_key" value="<?php echo esc_attr(get_option(SignTeb_Login_License::OPTION, '')); ?>" class="regular-text" dir="ltr" placeholder="XXXX-XXXX-XXXX-XXXX">
+                            <?php if (SignTeb_Login_License::is_valid()) : ?>
+                                <span style="color:#00a32a;font-weight:600;"><?php esc_html_e('معتبر ✓', 'signteb-login'); ?></span>
+                            <?php else : ?>
+                                <span style="color:#d63638;font-weight:600;"><?php esc_html_e('نامعتبر ✗', 'signteb-login'); ?></span>
+                            <?php endif; ?>
+                            <p class="description">
+                                <?php
+                                echo esc_html(sprintf(
+                                    /* translators: %s: site host name. */
+                                    __('کد صادرشده برای دامنه %s را وارد کنید. بدون کد معتبر، طراحی صفحه ورود و تغییر آدرس ورود غیرفعال می‌مانند.', 'signteb-login'),
+                                    SignTeb_Login_License::host()
+                                ));
+                                ?>
+                            </p>
+                        </td>
+                    </tr>
                     <tr>
                         <th scope="row"><?php esc_html_e('فعال', 'signteb-login'); ?></th>
                         <td>
