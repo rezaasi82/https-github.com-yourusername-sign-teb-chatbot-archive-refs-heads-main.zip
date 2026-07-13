@@ -22,7 +22,7 @@ class SignTeb_Login
 
     public function register(): void
     {
-        if (! $this->is_enabled() || ! SignTeb_Login_License::is_valid()) {
+        if (! $this->is_enabled()) {
             return;
         }
 
