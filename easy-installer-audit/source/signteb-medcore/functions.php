@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'MEDCORE_VERSION',   '1.0.6' );
+define( 'MEDCORE_VERSION',   '1.0.7' );
 define( 'MEDCORE_DIR',       get_template_directory() );
 define( 'MEDCORE_URI',       get_template_directory_uri() );
 define( 'MEDCORE_INC',       MEDCORE_DIR . '/inc/' );
@@ -70,7 +70,7 @@ $medcore_modules = [
 	'class-medcore-setup.php'          => true,  // 2. Theme supports, menus (critical)
 	'class-medcore-enqueue.php'        => true,  // 3. Scripts + Styles (critical)
 	'class-medcore-template-tags.php'  => true,  // 4. Template helpers (critical)
-	'class-medcore-customizer.php'     => false, // 5. Customizer (non-critical)
+	// 5. Customizer اکنون از طریق SignTeb\MedCore\Customize (پایین) بوت می‌شود.
 	'class-medcore-block-patterns.php' => false, // 6. Block patterns (non-critical)
 	'class-medcore-nav-walker.php'     => false, // 7. Nav walker (non-critical)
 ];
@@ -138,4 +138,19 @@ try {
 	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Integration\ElementorLocations::class )->register();
 } catch ( \Throwable $e ) {
 	MedCore_Logger::log( 'Elementor integration failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
+}
+
+// ── Customizer + Design Tokens (فاز ۵) ───────────────────────────────────────
+try {
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Customize\DesignTokens::class,
+		static fn() => new \SignTeb\MedCore\Customize\DesignTokens()
+	);
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Customize\Customizer::class,
+		static fn( $c ) => new \SignTeb\MedCore\Customize\Customizer( $c->make( \SignTeb\MedCore\Customize\DesignTokens::class ) )
+	);
+	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Customize\Customizer::class )->register_hooks();
+} catch ( \Throwable $e ) {
+	MedCore_Logger::log( 'Customizer failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
 }
