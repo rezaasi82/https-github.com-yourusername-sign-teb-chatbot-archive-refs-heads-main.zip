@@ -24,7 +24,6 @@ body.signteb-login {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     font-family: Vazirmatn, Vazir, IRANSansX, IRANSans, Tahoma, -apple-system, "Segoe UI", Roboto, sans-serif;
     color: var(--stb-ink);
     position: relative;
@@ -51,7 +50,11 @@ body.signteb-login #login {
     z-index: 1;
     width: 400px;
     max-width: calc(100vw - 32px);
-    padding: 4vh 0;
+    padding: 32px 0;
+    /* Vertical auto margins center the box like justify-content:center,
+       but collapse gracefully when the content is taller than the
+       viewport, so the logo at the top never gets clipped. */
+    margin: auto;
 }
 
 /* ------------------------------------------------------- floating icons */

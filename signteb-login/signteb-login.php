@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Login
  * Plugin URI:        https://signteb.com
  * Description:       راهکار امنیت و برندسازی صفحه ورود وردپرس: طراحی اختصاصی مدرن، تغییر آدرس صفحه ورود (مخفی‌سازی wp-login.php)، و شخصی‌سازی رنگ سازمانی و لوگو از پیشخوان. محصولی از تیم توسعه SignTeb.
- * Version:           1.3.0
+ * Version:           1.3.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            رضا آسیابی
@@ -17,7 +17,8 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('SIGNTEB_LOGIN_VERSION', '1.3.0');
+define('SIGNTEB_LOGIN_VERSION', '1.3.1');
+define('SIGNTEB_LOGIN_FILE', __FILE__);
 define('SIGNTEB_LOGIN_DIR', plugin_dir_path(__FILE__));
 define('SIGNTEB_LOGIN_URL', plugin_dir_url(__FILE__));
 

@@ -20,6 +20,23 @@ class SignTeb_Login_Settings
         add_action('admin_menu', [$this, 'add_menu']);
         add_action('admin_init', [$this, 'handle_save']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_media_picker']);
+        add_filter('plugin_action_links_' . plugin_basename(SIGNTEB_LOGIN_FILE), [$this, 'add_settings_link']);
+    }
+
+    /**
+     * Adds a Settings shortcut next to Deactivate on the plugins list.
+     */
+    public function add_settings_link(array $links): array
+    {
+        $settings = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url(admin_url('options-general.php?page=' . self::PAGE_SLUG)),
+            esc_html__('تنظیمات', 'signteb-login')
+        );
+
+        array_unshift($links, $settings);
+
+        return $links;
     }
 
     public function add_menu(): void

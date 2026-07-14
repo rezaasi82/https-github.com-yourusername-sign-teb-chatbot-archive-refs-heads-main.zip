@@ -104,7 +104,7 @@ class SignTeb_Login
 
         $welcome = sprintf(
             /* translators: %s: site name. */
-            __('به پنل مدیریت %s خوش آمدید.', 'signteb-login'),
+            __('به پنل مدیریت سایت %s خوش آمدید.', 'signteb-login'),
             get_bloginfo('name', 'display')
         );
 
