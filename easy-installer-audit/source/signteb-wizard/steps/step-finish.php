@@ -72,6 +72,23 @@ $done_count   = count(array_intersect(['welcome','brand','clinic','contact','dem
     </div>
   </div>
 
+  <!-- ── منطقه‌ی خطر: حذف کامل داده‌های دمو ─────────────────────────────── -->
+  <div class="stwiz-info-box" id="stwiz-danger" style="margin-top:2rem;text-align:right;border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.06);">
+    <strong style="color:#f87171;">⚠️ <?php esc_html_e('حذف داده‌های دمو', STWIZ_TEXT); ?></strong>
+    <p style="margin:0.5rem 0 0.75rem;font-size:0.8125rem;">
+      <?php esc_html_e('این کار تمام محتوایی که ویزارد ساخته را برای همیشه حذف می‌کند: پزشکان، خدمات، سؤالات متداول، مقالات و صفحات دمو، تصاویر آپلودشده، نظرات نمونه، منو، و تنظیمات دمو. فقط محتوای ساخته‌شده توسط ویزارد حذف می‌شود، نه محتوای خودتان. این عمل قابل بازگشت نیست.', STWIZ_TEXT); ?>
+    </p>
+    <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;cursor:pointer;">
+      <input type="checkbox" id="stwiz-uninstall-confirm">
+      <?php esc_html_e('بله، مطمئنم و می‌خواهم داده‌های دمو حذف شوند.', STWIZ_TEXT); ?>
+    </label>
+    <button type="button" id="stwiz-uninstall" class="stwiz-btn" disabled
+      style="margin-top:0.875rem;background:#dc2626;color:#fff;opacity:0.5;">
+      🗑️ <?php esc_html_e('حذف داده‌های دمو', STWIZ_TEXT); ?>
+    </button>
+    <p id="stwiz-uninstall-result" style="margin-top:0.75rem;font-size:0.8125rem;"></p>
+  </div>
+
   <div class="stwiz-finish__brand">
     <p><?php esc_html_e('ساخته شده با ❤️ توسط', STWIZ_TEXT); ?> <a href="https://signteb.com" target="_blank" rel="noopener">SignTeb</a></p>
     <button type="button" class="stwiz-reset-btn" id="stwiz-reset">
@@ -89,4 +106,31 @@ document.getElementById('stwiz-reset')?.addEventListener('click', function() {
     body: new URLSearchParams({action:'stwiz_reset', nonce:stWizData.nonce})
   }).then(r=>r.json()).then(d => { if(d.success && d.data?.redirect) location.href = d.data.redirect; });
 });
+
+// حذف داده‌های دمو — دکمه فقط با تیک تأیید فعال می‌شود (صفحه‌ی تأیید).
+(function(){
+  var chk = document.getElementById('stwiz-uninstall-confirm');
+  var btn = document.getElementById('stwiz-uninstall');
+  var res = document.getElementById('stwiz-uninstall-result');
+  if(!chk||!btn) return;
+  chk.addEventListener('change', function(){
+    btn.disabled = !chk.checked;
+    btn.style.opacity = chk.checked ? '1' : '0.5';
+  });
+  btn.addEventListener('click', function(){
+    if(!chk.checked) return;
+    if(!confirm('<?php echo esc_js( __( 'آخرین تأیید: تمام داده‌های دمو برای همیشه حذف شوند؟', STWIZ_TEXT ) ); ?>')) return;
+    btn.disabled = true; btn.style.opacity='0.5';
+    res.textContent = '<?php echo esc_js( __( 'در حال حذف...', STWIZ_TEXT ) ); ?>';
+    fetch(stWizData.ajaxUrl, {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({action:'stwiz_uninstall', nonce:stWizData.nonce, confirm:'yes'})
+    }).then(r=>r.json()).then(function(d){
+      res.style.color = d.success ? '#10b981' : '#f87171';
+      res.textContent = (d.success?'✅ ':'❌ ') + (d.data && d.data.message ? d.data.message : '');
+      chk.checked=false;
+    }).catch(function(){ res.style.color='#f87171'; res.textContent='❌ خطای شبکه'; });
+  });
+})();
 </script>

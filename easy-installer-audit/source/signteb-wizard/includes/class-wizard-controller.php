@@ -40,6 +40,7 @@ final class Controller {
 		add_action( 'wp_ajax_stwiz_check_plugins',  [ $this, 'ajax_check_plugins' ] );
 		add_action( 'wp_ajax_stwiz_run_setup_step', [ $this, 'ajax_run_setup_step' ] );
 		add_action( 'wp_ajax_stwiz_reset',          [ $this, 'ajax_reset' ] );
+		add_action( 'wp_ajax_stwiz_uninstall',      [ $this, 'ajax_uninstall' ] );
 	}
 
 	// ─── Admin Page ───────────────────────────────────────────────────────────
@@ -405,7 +406,7 @@ final class Controller {
 		wp_send_json_success( compact( 'required', 'optional' ) );
 	}
 
-	// ─── AJAX: Reset ──────────────────────────────────────────────────────────
+	// ─── AJAX: Reset (فقط وضعیت ویزارد، بدون حذف محتوا) ────────────────────────
 
 	public function ajax_reset(): void {
 		check_ajax_referer( 'stwiz_nonce', 'nonce' );
@@ -419,6 +420,32 @@ final class Controller {
 		}
 
 		wp_send_json_success( [ 'redirect' => admin_url( 'admin.php?page=signteb-wizard&step=welcome' ) ] );
+	}
+
+	// ─── AJAX: Uninstall (حذف کاملِ داده‌های دمو — نیازمند تأیید صریح) ──────────
+
+	public function ajax_uninstall(): void {
+		check_ajax_referer( 'stwiz_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'دسترسی غیر مجاز', STWIZ_TEXT ) ], 403 );
+		}
+
+		// تأیید صریح: کاربر باید کلمه‌ی confirm را ارسال کند (صفحه‌ی تأیید).
+		if ( 'yes' !== sanitize_text_field( $_POST['confirm'] ?? '' ) ) {
+			wp_send_json_error( [ 'message' => __( 'حذف تأیید نشد.', STWIZ_TEXT ) ] );
+		}
+
+		$counts = ( new \SignTeb\Wizard\Setup\Uninstaller() )->run();
+
+		wp_send_json_success( [
+			'message' => sprintf(
+				/* translators: %1$d posts, %2$d media, %3$d reviews, %4$d menus, %5$d options */
+				__( 'حذف انجام شد: %1$d پست، %2$d رسانه، %3$d نظر، %4$d منو، %5$d آپشن.', STWIZ_TEXT ),
+				$counts['posts'], $counts['media'], $counts['reviews'], $counts['menus'], $counts['options']
+			),
+			'counts'  => $counts,
+		] );
 	}
 
 	// ─── Save Helpers ─────────────────────────────────────────────────────────
