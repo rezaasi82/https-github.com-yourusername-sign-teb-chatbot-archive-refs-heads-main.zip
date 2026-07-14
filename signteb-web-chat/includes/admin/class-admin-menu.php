@@ -29,9 +29,18 @@ class SWC_Admin_Menu
 
     public function menu(): void
     {
+        // Unseen-chat badge, same pattern as the core Comments bubble.
+        $unseen = (new SWC_Chat_Notifier())->unseen_count();
+        $title  = __('Medora AI', 'signteb-web-chat');
+        $badge  = sprintf(
+            ' <span class="awaiting-mod swc-menu-count"%s>%s</span>',
+            $unseen > 0 ? '' : ' style="display:none"',
+            esc_html(number_format_i18n($unseen))
+        );
+
         add_menu_page(
             __('Medora AI', 'signteb-web-chat'),
-            __('Medora AI', 'signteb-web-chat'),
+            $title . $badge,
             'manage_options',
             'swc-chat',
             [$this->page, 'render'],

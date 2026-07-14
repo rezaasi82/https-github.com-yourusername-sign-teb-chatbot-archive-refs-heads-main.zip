@@ -58,6 +58,7 @@ class SWC_Plugin
             // at registration time, so a submenu added before its parent ends
             // up unroutable ("Sorry, you are not allowed…" on every click).
             (new SWC_Admin_Menu())->register();
+            (new SWC_Chat_Notifier())->register();
             (new SWC_Premium_Dashboard())->register();
             (new SWC_Crm_Board())->register();
             (new SWC_Branches_Page())->register();

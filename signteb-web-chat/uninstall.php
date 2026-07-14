@@ -44,3 +44,6 @@ foreach ($options as $option) {
 foreach (['swc_update_feed', 'swc_seo_ideas'] as $transient) {
     delete_transient($transient);
 }
+
+// Per-user "chats seen" markers.
+delete_metadata('user', 0, 'swc_chats_seen_at', '', true);

@@ -280,6 +280,19 @@ class SWC_Conversation_Repository
     }
 
     /**
+     * Count of conversations started after a site-local datetime
+     * (same clock as created_at, i.e. current_time('mysql')).
+     */
+    public function count_since(string $since): int
+    {
+        global $wpdb;
+        $table = SWC_Schema::conversations_table();
+        return (int) $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE created_at > %s", $since)
+        );
+    }
+
+    /**
      * Count of conversations active (updated) within the last N hours.
      */
     public function active_count(int $hours = 24): int

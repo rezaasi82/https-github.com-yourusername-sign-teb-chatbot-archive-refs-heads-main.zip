@@ -104,6 +104,7 @@ class SWC_Autoloader
         'SWC_Crm_Board'               => 'admin/class-crm-board.php',
         'SWC_Branches_Page'           => 'admin/class-branches-page.php',
         'SWC_Admin_Menu'              => 'admin/class-admin-menu.php',
+        'SWC_Chat_Notifier'           => 'admin/class-chat-notifier.php',
         'SWC_Settings_Page'           => 'admin/class-settings-page.php',
         'SWC_Conversations_Page'      => 'admin/class-conversations-page.php',
         'SWC_Stats_Page'              => 'admin/class-stats-page.php',
