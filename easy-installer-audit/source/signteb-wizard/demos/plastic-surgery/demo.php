@@ -15,7 +15,7 @@ $home = stwiz_demo_homepage( [
 	],
 	'services_title' => 'خدمات زیبایی',
 	'doctors_title'  => 'جراحان ما',
-	'extra' => '<!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">نمونه کارها</h2><!-- /wp:heading --><!-- wp:signteb/before-after-slider {"initialPosition":50} /-->',
+	'extra' => '<!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">نمونه کارها</h2><!-- /wp:heading --><!-- wp:signteb/before-after-slider {"beforeImageUrl":"%%IMG_BEFORE%%","afterImageUrl":"%%IMG_AFTER%%","initialPosition":50} /-->',
 ] );
 
 return [

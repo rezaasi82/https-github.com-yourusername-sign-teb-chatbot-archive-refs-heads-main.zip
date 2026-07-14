@@ -28,7 +28,7 @@ $home = <<<'HTML'
 <!-- wp:signteb/service-grid {"columns":3,"showPrice":true} /-->
 
 <!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">نمونه کارها (قبل و بعد)</h2><!-- /wp:heading -->
-<!-- wp:signteb/before-after-slider {"initialPosition":50} /-->
+<!-- wp:signteb/before-after-slider {"beforeImageUrl":"%%IMG_BEFORE%%","afterImageUrl":"%%IMG_AFTER%%","initialPosition":50} /-->
 
 <!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">تیم ما</h2><!-- /wp:heading -->
 <!-- wp:signteb/doctor-card-grid {"columns":3} /-->

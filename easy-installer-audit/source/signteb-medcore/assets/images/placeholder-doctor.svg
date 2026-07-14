@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="400" height="450" role="img" aria-label="پزشک">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a56db"/><stop offset="1" stop-color="#0f3fa6"/></linearGradient></defs>
+<rect width="400" height="450" fill="url(#g)"/>
+<circle cx="200" cy="470" r="160" fill="#ffffff" opacity="0.92"/>
+<circle cx="200" cy="180" r="70" fill="#ffffff" opacity="0.92"/>
+<g fill="#C9A84C"><rect x="270" y="292" width="44" height="14" rx="3"/><rect x="285" y="277" width="14" height="44" rx="3"/></g>
+</svg>

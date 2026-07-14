@@ -74,6 +74,10 @@ final class DemoContentImporter {
 			if ( ! empty( $doc['specialty'] ) ) {
 				$this->assign_term( $pid, 'specialty', (string) $doc['specialty'] );
 			}
+
+			// تصویر شاخصِ placeholder (سه واریانت به‌صورت چرخشی).
+			$this->set_featured( $pid, 'doctor-' . ( ( $i % 3 ) + 1 ) . '.png' );
+
 			$ids[ $i ] = $pid;
 		}
 		return $ids;
@@ -103,6 +107,7 @@ final class DemoContentImporter {
 			if ( ! empty( $svc['specialty'] ) ) {
 				$this->assign_term( $pid, 'specialty', (string) $svc['specialty'] );
 			}
+			$this->set_featured( $pid, 'service.png' );
 		}
 	}
 
@@ -183,11 +188,17 @@ final class DemoContentImporter {
 				}
 				continue;
 			}
+			// جایگزینی توکن‌های تصویرِ قبل/بعد با URL واقعیِ آپلودشده.
+			$content = strtr( (string) ( $page['content'] ?? '' ), [
+				'%%IMG_BEFORE%%' => $this->image_url( 'before.png' ),
+				'%%IMG_AFTER%%'  => $this->image_url( 'after.png' ),
+			] );
+
 			$pid = wp_insert_post( [
 				'post_type'    => 'page',
 				'post_title'   => $page['title'] ?? '',
 				'post_name'    => $slug,
-				'post_content' => $page['content'] ?? '',
+				'post_content' => $content,
 				'post_status'  => 'publish',
 				'page_template'=> $page['template'] ?? '',
 			] );
@@ -280,6 +291,86 @@ final class DemoContentImporter {
 	private function tag_demo( int $post_id, string $key ): void {
 		update_post_meta( $post_id, '_stwiz_demo', $this->demo_id );
 		update_post_meta( $post_id, '_stwiz_key', $key );
+	}
+
+	// ─── Media / تصاویر placeholder ──────────────────────────────────────────
+
+	/**
+	 * ست کردن تصویر شاخص از یک placeholderِ همراهِ افزونه. کاملاً دفاعی: هر خطای
+	 * رسانه‌ای نباید ایمپورت را بشکند.
+	 */
+	private function set_featured( int $post_id, string $filename ): void {
+		if ( function_exists( 'has_post_thumbnail' ) && has_post_thumbnail( $post_id ) ) {
+			return; // idempotent
+		}
+		$att = $this->ensure_attachment( $filename );
+		if ( $att && function_exists( 'set_post_thumbnail' ) ) {
+			set_post_thumbnail( $post_id, $att );
+		}
+	}
+
+	/** URL تصویرِ placeholder (پس از اطمینان از وجود attachment). */
+	private function image_url( string $filename ): string {
+		$att = $this->ensure_attachment( $filename );
+		return $att ? (string) wp_get_attachment_url( $att ) : '';
+	}
+
+	/**
+	 * کپی یک تصویرِ همراهِ افزونه به کتابخانه‌ی رسانه (یک‌بار) و ساخت attachment.
+	 * idempotent با متای _stwiz_media_key. شناسه‌ی attachment را برمی‌گرداند (یا ۰).
+	 */
+	private function ensure_attachment( string $filename ): int {
+		try {
+			$existing = get_posts( [
+				'post_type'      => 'attachment',
+				'post_status'    => 'inherit',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_key'       => '_stwiz_media_key',
+				'meta_value'     => $filename,
+			] );
+			if ( $existing ) {
+				return (int) $existing[0];
+			}
+
+			$src = STWIZ_DIR . 'demos/_shared/img/' . $filename;
+			if ( ! is_file( $src ) ) {
+				return 0;
+			}
+
+			$uploads = wp_upload_dir();
+			if ( ! empty( $uploads['error'] ) || empty( $uploads['path'] ) ) {
+				return 0;
+			}
+			$dest = trailingslashit( $uploads['path'] ) . $filename;
+			if ( ! file_exists( $dest ) ) {
+				copy( $src, $dest );
+			}
+
+			$filetype  = wp_check_filetype( $filename );
+			$attach_id = wp_insert_attachment( [
+				'post_mime_type' => $filetype['type'] ?: 'image/png',
+				'post_title'     => pathinfo( $filename, PATHINFO_FILENAME ),
+				'post_status'    => 'inherit',
+			], $dest );
+
+			if ( is_wp_error( $attach_id ) || ! $attach_id ) {
+				return 0;
+			}
+
+			if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/image.php';
+			}
+			$meta = wp_generate_attachment_metadata( $attach_id, $dest );
+			if ( $meta ) {
+				wp_update_attachment_metadata( $attach_id, $meta );
+			}
+			update_post_meta( $attach_id, '_stwiz_media_key', $filename );
+
+			return (int) $attach_id;
+		} catch ( \Throwable $e ) {
+			return 0;
+		}
 	}
 
 	private function find_by_key( string $post_type, string $key ): int {
