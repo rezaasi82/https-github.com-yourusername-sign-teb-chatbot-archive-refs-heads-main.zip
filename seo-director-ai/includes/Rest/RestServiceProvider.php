@@ -8,6 +8,16 @@
 namespace SEODirector\Rest;
 
 use SEODirector\Core\Container;
+use SEODirector\Data\Repository\ConnectionsRepository;
+use SEODirector\Data\Repository\GscRepository;
+use SEODirector\Data\Repository\JobStateRepository;
+use SEODirector\Data\Repository\PropertiesRepository;
+use SEODirector\Integrations\Google\Analytics4Client;
+use SEODirector\Integrations\Google\OAuthClient;
+use SEODirector\Integrations\Google\SearchConsoleClient;
+use SEODirector\Jobs\Handlers\DailySyncCoordinator;
+use SEODirector\Rest\Controllers\ConnectionsController;
+use SEODirector\Rest\Controllers\MetricsController;
 use SEODirector\Rest\Controllers\OverviewController;
 use SEODirector\Rest\Controllers\SettingsController;
 use SEODirector\Support\Settings;
@@ -19,9 +29,29 @@ final class RestServiceProvider {
 	public function __construct( private Container $container ) {}
 
 	public function register_routes(): void {
+		$c = $this->container;
+
 		$controllers = [
-			new OverviewController(),
-			new SettingsController( $this->container->get( Settings::class ) ),
+			new OverviewController(
+				$c->get( ConnectionsRepository::class ),
+				$c->get( PropertiesRepository::class ),
+				$c->get( GscRepository::class ),
+				$c->get( JobStateRepository::class )
+			),
+			new MetricsController(
+				$c->get( GscRepository::class ),
+				$c->get( PropertiesRepository::class )
+			),
+			new ConnectionsController(
+				$c->get( ConnectionsRepository::class ),
+				$c->get( PropertiesRepository::class ),
+				$c->get( OAuthClient::class ),
+				$c->get( SearchConsoleClient::class ),
+				$c->get( Analytics4Client::class ),
+				$c->get( JobStateRepository::class ),
+				$c->get( DailySyncCoordinator::class )
+			),
+			new SettingsController( $c->get( Settings::class ) ),
 		];
 
 		/**

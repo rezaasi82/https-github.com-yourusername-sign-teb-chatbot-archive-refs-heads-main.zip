@@ -169,6 +169,22 @@
   color: var(--sda-text-muted);
 }
 
+.sda-input {
+  border: 1px solid var(--sda-border);
+  background: var(--sda-surface);
+  color: var(--sda-text);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sda-input:focus {
+  outline: 2px solid var(--sda-primary);
+  outline-offset: 1px;
+}
+
 .sda-empty {
   text-align: center;
   padding: 40px 16px;

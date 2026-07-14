@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../api/client';
+import { TrafficChart } from '../../components/charts/TrafficChart';
 
 function ConnectionBadge({ label, connected }: { label: string; connected: boolean }) {
   return (
@@ -58,14 +59,18 @@ export function OverviewPage() {
           )}
         </div>
 
-        <div className="sda-card">
+        <div className="sda-card" style={{ gridColumn: 'span 2' }}>
           <h2>Organic Traffic</h2>
           {data.traffic.series.length > 0 ? (
-            <p>{data.traffic.series.length} days of data</p>
+            <TrafficChart series={data.traffic.series} />
           ) : (
             <div className="sda-empty">
               <strong>No traffic data</strong>
-              {anyConnected ? 'Backfill in progress — check back soon.' : 'Waiting for a Google connection.'}
+              {data.meta.backfill
+                ? `Backfill ${data.meta.backfill.status}${data.meta.backfill.date ? ` — processing ${data.meta.backfill.date}` : ''}. Check back soon.`
+                : anyConnected
+                  ? 'Select a property in Settings to start syncing.'
+                  : 'Connect Google in Settings to begin.'}
             </div>
           )}
         </div>

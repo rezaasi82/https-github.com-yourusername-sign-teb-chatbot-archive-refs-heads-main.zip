@@ -25,17 +25,44 @@ export function boot(): BootData {
   return window.sdaBoot;
 }
 
+export interface TrafficPoint {
+  date: string;
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  position: number;
+}
+
 export interface OverviewResponse {
   connections: { gsc: boolean; ga4: boolean; psi: boolean; ai: boolean };
   health: { score: number; band: 'green' | 'yellow' | 'red'; delta: number } | null;
   traffic: {
-    series: Array<{ date: string; clicks: number; impressions: number; ctr: number; position: number }>;
+    series: TrafficPoint[];
     compare: unknown;
   };
   opportunities: unknown[];
   risks: unknown[];
   summaries: { weekly: string | null; monthly: string | null };
-  meta: { plugin_version: string; backfill: { progress: number } | null };
+  meta: { plugin_version: string; backfill: { status: string; date: string | null } | null };
+}
+
+export interface SyncState {
+  cursor: Record<string, unknown>;
+  status: string;
+  fail_count: number;
+}
+
+export interface ConnectionsState {
+  google: { status: string; redirect_uri: string };
+  keys: Record<string, boolean>;
+  properties: Array<{
+    id: number;
+    service: 'gsc' | 'ga4';
+    external_id: string;
+    display_name: string;
+    is_active: boolean;
+  }>;
+  sync: { gsc: SyncState | null; ga4: SyncState | null };
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -65,4 +92,21 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ settings }),
     }),
+  connections: () => request<ConnectionsState>('/connections'),
+  startGoogleOAuth: (clientId: string, clientSecret: string) =>
+    request<{ authorize_url: string }>('/connections/google/start', {
+      method: 'POST',
+      body: JSON.stringify({ client_id: clientId, client_secret: clientSecret }),
+    }),
+  saveKey: (service: string, apiKey: string) =>
+    request<ConnectionsState>('/connections/key', {
+      method: 'POST',
+      body: JSON.stringify({ service, api_key: apiKey }),
+    }),
+  selectProperty: (service: 'gsc' | 'ga4', propertyId: number) =>
+    request<ConnectionsState>('/connections/property', {
+      method: 'POST',
+      body: JSON.stringify({ service, property_id: propertyId }),
+    }),
+  disconnect: (service: string) => request<ConnectionsState>(`/connections/${service}`, { method: 'DELETE' }),
 };

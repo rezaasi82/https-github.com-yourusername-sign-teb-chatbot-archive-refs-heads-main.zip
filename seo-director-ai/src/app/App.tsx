@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { boot } from '../api/client';
 import { OverviewPage } from '../features/overview/OverviewPage';
+import { SettingsPage } from '../features/settings/SettingsPage';
 import { useHashRoute } from './router';
 import { useTheme } from './theme';
 
@@ -59,7 +60,9 @@ export function App() {
               </button>
             </div>
           </div>
-          {current.route === 'overview' ? <OverviewPage /> : <ComingSoon label={current.label} />}
+          {current.route === 'overview' && <OverviewPage />}
+          {current.route === 'settings' && <SettingsPage />}
+          {current.route !== 'overview' && current.route !== 'settings' && <ComingSoon label={current.label} />}
         </main>
       </div>
     </QueryClientProvider>

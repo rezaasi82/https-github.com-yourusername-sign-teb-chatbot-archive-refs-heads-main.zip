@@ -1,10 +1,7 @@
 <?php
 /**
- * GET /sda/v1/overview — dashboard bootstrap payload.
- *
- * Phase 0: serves connection state and empty/demo series so the SPA renders
- * end-to-end. Phase 1+ replaces the data sources with rollup repositories;
- * the response contract is stable from day one.
+ * GET /sda/v1/overview — dashboard bootstrap payload, served entirely from
+ * local tables (no live Google calls in a web request, ever).
  *
  * @package SEODirector
  */
@@ -12,11 +9,22 @@
 namespace SEODirector\Rest\Controllers;
 
 use SEODirector\Core\Capabilities;
-use SEODirector\Core\Schema;
+use SEODirector\Data\Repository\ConnectionsRepository;
+use SEODirector\Data\Repository\GscRepository;
+use SEODirector\Data\Repository\JobStateRepository;
+use SEODirector\Data\Repository\PropertiesRepository;
+use SEODirector\Jobs\Handlers\SyncGscJob;
 
 defined( 'ABSPATH' ) || exit;
 
 final class OverviewController extends AbstractController {
+
+	public function __construct(
+		private ConnectionsRepository $connections,
+		private PropertiesRepository $properties,
+		private GscRepository $gsc,
+		private JobStateRepository $job_state,
+	) {}
 
 	public function register_routes(): void {
 		register_rest_route(
@@ -31,27 +39,29 @@ final class OverviewController extends AbstractController {
 	}
 
 	public function get_overview(): \WP_REST_Response {
-		global $wpdb;
+		$connected    = $this->connections->connected_services();
+		$google_ok    = in_array( 'google', $connected, true );
+		$gsc_property = $this->properties->active( 'gsc' );
+		$ga4_property = $this->properties->active( 'ga4' );
 
-		$connections_table = Schema::table( 'connections' );
-		$connected         = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$wpdb->prepare(
-				"SELECT service FROM {$connections_table} WHERE site_id = %d AND status = 'connected'", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				get_current_blog_id()
-			)
-		);
+		$series = [];
+		if ( null !== $gsc_property ) {
+			$to     = gmdate( 'Y-m-d', strtotime( '-2 days' ) );
+			$from   = gmdate( 'Y-m-d', strtotime( $to . ' -27 days' ) );
+			$series = $this->gsc->daily_totals_series( $gsc_property['id'], $from, $to );
+		}
 
 		return rest_ensure_response(
 			[
-				'connections' => [
-					'gsc' => in_array( 'gsc', $connected, true ),
-					'ga4' => in_array( 'ga4', $connected, true ),
+				'connections'   => [
+					'gsc' => $google_ok && null !== $gsc_property,
+					'ga4' => $google_ok && null !== $ga4_property,
 					'psi' => in_array( 'psi', $connected, true ),
 					'ai'  => (bool) array_intersect( [ 'openai', 'claude', 'gemini' ], $connected ),
 				],
-				'health'      => null,   // { score, band, delta, components } once analyzers land.
-				'traffic'     => [
-					'series'  => [],     // [{date, clicks, impressions, ctr, position}]
+				'health'        => null, // Arrives with the Phase 2 analyzers.
+				'traffic'       => [
+					'series'  => $series,
 					'compare' => null,
 				],
 				'opportunities' => [],
@@ -62,9 +72,24 @@ final class OverviewController extends AbstractController {
 				],
 				'meta'          => [
 					'plugin_version' => SDA_VERSION,
-					'backfill'       => null, // { progress: 0-100 } while initial sync runs.
+					'backfill'       => $this->backfill_state(),
 				],
 			]
 		);
+	}
+
+	/**
+	 * @return array{status: string, date: string|null}|null
+	 */
+	private function backfill_state(): ?array {
+		$state = $this->job_state->get( SyncGscJob::NAME );
+		if ( null === $state || in_array( $state['status'], [ 'done' ], true ) ) {
+			return null;
+		}
+
+		return [
+			'status' => $state['status'],
+			'date'   => isset( $state['cursor']['date'] ) ? (string) $state['cursor']['date'] : null,
+		];
 	}
 }
