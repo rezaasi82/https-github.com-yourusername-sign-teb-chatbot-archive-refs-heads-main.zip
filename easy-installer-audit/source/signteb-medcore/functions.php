@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'MEDCORE_VERSION',   '1.0.7' );
+define( 'MEDCORE_VERSION',   '1.0.8' );
 define( 'MEDCORE_DIR',       get_template_directory() );
 define( 'MEDCORE_URI',       get_template_directory_uri() );
 define( 'MEDCORE_INC',       MEDCORE_DIR . '/inc/' );
@@ -153,4 +153,15 @@ try {
 	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Customize\Customizer::class )->register_hooks();
 } catch ( \Throwable $e ) {
 	MedCore_Logger::log( 'Customizer failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
+}
+
+// ── Performance Optimizer (فاز ۷) ────────────────────────────────────────────
+try {
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Performance\Optimizer::class,
+		static fn() => new \SignTeb\MedCore\Performance\Optimizer()
+	);
+	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Performance\Optimizer::class )->register();
+} catch ( \Throwable $e ) {
+	MedCore_Logger::log( 'Performance optimizer failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
 }
