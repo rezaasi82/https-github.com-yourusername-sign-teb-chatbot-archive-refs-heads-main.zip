@@ -257,6 +257,76 @@ if (! defined('ABSPATH')) {
             <tr><th><?php esc_html_e('آدرس فید به‌روزرسانی', 'signteb-web-chat'); ?></th><td><input type="url" name="update_feed_url" value="<?php echo esc_attr($s->get('update_feed_url')); ?>" class="large-text" placeholder="https://cloud.medora.ai/v1/update/latest"><p class="description"><?php esc_html_e('خالی = به‌صورت خودکار از آدرس Cloud استخراج می‌شود.', 'signteb-web-chat'); ?></p></td></tr>
         </table>
 
+        <?php $sms = new SWC_Sms_Manager(); $sms_active = $sms->active_id(); ?>
+        <h2 class="title"><?php esc_html_e('پنل پیامک و پیام‌رسان', 'signteb-web-chat'); ?></h2>
+        <p class="description"><?php esc_html_e('اتصال به پنل‌های پیامکی ایرانی یا سرویس خارجی. فقط کافی است سرویس را انتخاب و «کد فعال‌سازی/کلید API» پنل خود را وارد کنید.', 'signteb-web-chat'); ?></p>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th>
+                <td><label><input type="checkbox" name="sms_enabled" value="1" <?php checked($s->get('sms_enabled', 0), 1); ?>> <?php esc_html_e('ارسال پیامک از طریق پنل انتخاب‌شده', 'signteb-web-chat'); ?></label></td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('سرویس پیامک', 'signteb-web-chat'); ?></th>
+                <td>
+                    <select name="sms_provider" class="swc-sms-provider">
+                        <?php foreach ($sms->providers() as $pid => $plabel) : ?>
+                            <option value="<?php echo esc_attr($pid); ?>" <?php selected($sms_active, $pid); ?>><?php echo esc_html($plabel); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="description swc-sms-hint" data-for="melipayamak"><?php esc_html_e('ملی‌پیامک: نام کاربری را در «کد فعال‌سازی» و رمز عبور را در فیلد دوم وارد کنید.', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('کد فعال‌سازی / کلید API', 'signteb-web-chat'); ?></th>
+                <td><input type="password" name="sms_key" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::key() !== '' ? '••••••••' : esc_attr__('کلید دریافتی از پنل', 'signteb-web-chat'); ?>"></td>
+            </tr>
+            <tr class="swc-sms-secret-row">
+                <th><?php esc_html_e('رمز عبور (فقط ملی‌پیامک)', 'signteb-web-chat'); ?></th>
+                <td><input type="password" name="sms_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::secret() !== '' ? '••••••••' : ''; ?>"></td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('شماره فرستنده (خط)', 'signteb-web-chat'); ?></th>
+                <td><input type="text" name="sms_sender" value="<?php echo esc_attr($s->get('sms_sender')); ?>" class="regular-text" placeholder="10008663 / +1..."></td>
+            </tr>
+        </table>
+
+        <div class="swc-sms-custom" <?php echo $sms_active === 'custom' ? '' : 'style="display:none"'; ?>>
+            <h3><?php esc_html_e('تنظیمات سرویس سفارشی / خارجی', 'signteb-web-chat'); ?></h3>
+            <p class="description"><?php esc_html_e('برای سرویس‌هایی مانند Twilio یا هر API دلخواه. متغیرها: {to} {text} {key} {secret} {sender}', 'signteb-web-chat'); ?></p>
+            <table class="form-table" role="presentation">
+                <tr><th><?php esc_html_e('آدرس (URL)', 'signteb-web-chat'); ?></th><td><input type="text" name="sms_custom_url" value="<?php echo esc_attr($s->get('sms_custom_url')); ?>" class="large-text" placeholder="https://api.example.com/send"></td></tr>
+                <tr><th><?php esc_html_e('متد', 'signteb-web-chat'); ?></th><td>
+                    <select name="sms_custom_method">
+                        <?php foreach (['POST', 'GET', 'PUT'] as $mth) : ?>
+                            <option value="<?php echo esc_attr($mth); ?>" <?php selected(strtoupper((string) $s->get('sms_custom_method', 'POST')), $mth); ?>><?php echo esc_html($mth); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td></tr>
+                <tr><th><?php esc_html_e('هدرها (هر خط: Key: Value)', 'signteb-web-chat'); ?></th><td><textarea name="sms_custom_headers" rows="3" class="large-text" placeholder="Authorization: Bearer {key}&#10;Content-Type: application/json"><?php echo esc_textarea($s->get('sms_custom_headers')); ?></textarea></td></tr>
+                <tr><th><?php esc_html_e('بدنه درخواست', 'signteb-web-chat'); ?></th><td><textarea name="sms_custom_body" rows="3" class="large-text" placeholder='{"to":"{to}","text":"{text}"}'><?php echo esc_textarea($s->get('sms_custom_body')); ?></textarea></td></tr>
+            </table>
+        </div>
+
+        <table class="form-table" role="presentation">
+            <tr><th><?php esc_html_e('تست ارسال', 'signteb-web-chat'); ?></th><td>
+                <input type="tel" class="regular-text swc-sms-test-to" placeholder="<?php esc_attr_e('شماره موبایل برای تست', 'signteb-web-chat'); ?>">
+                <button type="button" class="button swc-sms-test-btn"><?php esc_html_e('ارسال پیامک تست', 'signteb-web-chat'); ?></button>
+                <span class="swc-test-result" data-for="sms"></span>
+                <p class="description"><?php esc_html_e('ابتدا تنظیمات را ذخیره کنید، سپس یک پیامک آزمایشی بفرستید.', 'signteb-web-chat'); ?></p>
+            </td></tr>
+        </table>
+
+        <h3><?php esc_html_e('قالب‌های پیام (قابل ویرایش)', 'signteb-web-chat'); ?></h3>
+        <p class="description"><?php esc_html_e('متغیرهای قابل استفاده: {name} {phone} {score} {status} {clinic} {summary}', 'signteb-web-chat'); ?></p>
+        <table class="form-table" role="presentation">
+            <?php foreach ($sms->templates() as $tkey => $tpl) : ?>
+                <tr>
+                    <th><?php echo esc_html($tpl['label']); ?></th>
+                    <td><textarea name="sms_templates[<?php echo esc_attr($tkey); ?>]" rows="2" class="large-text"><?php echo esc_textarea($tpl['text']); ?></textarea></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+
     <?php elseif ($tab === 'license') : ?>
         <?php
         $info    = $license->info();

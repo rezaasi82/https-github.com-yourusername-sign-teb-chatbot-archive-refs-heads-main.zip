@@ -119,6 +119,39 @@
 		});
 	}
 
+	// SMS panel settings — provider-specific field toggling + test send.
+	var smsProvider = document.querySelector('.swc-sms-provider');
+	if (smsProvider) {
+		var customBox = document.querySelector('.swc-sms-custom');
+		var secretRow = document.querySelector('.swc-sms-secret-row');
+		var meliHint = document.querySelector('.swc-sms-hint[data-for="melipayamak"]');
+		var syncProvider = function () {
+			var v = smsProvider.value;
+			if (customBox) { customBox.style.display = v === 'custom' ? '' : 'none'; }
+			if (secretRow) { secretRow.style.display = v === 'melipayamak' ? '' : 'none'; }
+			if (meliHint) { meliHint.style.display = v === 'melipayamak' ? '' : 'none'; }
+		};
+		smsProvider.addEventListener('change', syncProvider);
+		syncProvider();
+	}
+	var smsTestBtn = document.querySelector('.swc-sms-test-btn');
+	if (smsTestBtn) {
+		smsTestBtn.addEventListener('click', function () {
+			var toEl = document.querySelector('.swc-sms-test-to');
+			var out = document.querySelector('.swc-test-result[data-for="sms"]');
+			var to = toEl ? toEl.value : '';
+			if (!to) { if (out) { out.textContent = A.strings.noSel; } return; }
+			smsTestBtn.disabled = true; if (out) { out.textContent = A.strings.working; }
+			post('swc_test_sms', { to: to }).then(function (res) {
+				if (out) {
+					out.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				smsTestBtn.disabled = false;
+			}).catch(function () { if (out) { out.textContent = '✕'; } smsTestBtn.disabled = false; });
+		});
+	}
+
 	// Lead referral — email (server wp_mail) + SMS deep-link.
 	var refer = document.querySelector('.swc-refer');
 	if (refer) {
@@ -140,14 +173,19 @@
 			});
 		}
 
-		var smsBtn = refer.querySelector('.swc-refer-sms');
-		if (smsBtn) {
-			smsBtn.addEventListener('click', function (e) {
-				e.preventDefault();
+		// Server-side panel send (only present when the SMS panel is configured).
+		var panelBtn = refer.querySelector('.swc-refer-panel');
+		if (panelBtn) {
+			panelBtn.addEventListener('click', function () {
 				var phone = (refer.querySelector('.swc-refer-phone') || {}).value || '';
-				phone = phone.replace(/[^0-9+]/g, '');
-				// sms: URI — body prefilled with the lead summary, recipient optional.
-				window.location.href = 'sms:' + phone + '?&body=' + encodeURIComponent(refText);
+				if (!phone) { refResult.textContent = A.strings.noSel; return; }
+				var tpl = (refer.querySelector('.swc-refer-template') || {}).value || 'referral';
+				panelBtn.disabled = true; refResult.textContent = A.strings.working;
+				post('swc_send_sms', { lead_id: refer.getAttribute('data-lead'), to: phone, template: tpl }).then(function (res) {
+					refResult.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					refResult.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+					panelBtn.disabled = false;
+				}).catch(function () { refResult.textContent = '✕'; panelBtn.disabled = false; });
 			});
 		}
 	}

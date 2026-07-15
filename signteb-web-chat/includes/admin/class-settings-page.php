@@ -126,8 +126,35 @@ class SWC_Settings_Page
             'cloud_enabled'    => isset($in['cloud_enabled']) ? 1 : 0,
             'cloud_endpoint'   => esc_url_raw($in['cloud_endpoint'] ?? ''),
             'update_feed_url'  => esc_url_raw($in['update_feed_url'] ?? ''),
+            // SMS / messaging.
+            'sms_enabled'       => isset($in['sms_enabled']) ? 1 : 0,
+            'sms_provider'      => sanitize_key($in['sms_provider'] ?? 'kavenegar'),
+            'sms_sender'        => sanitize_text_field($in['sms_sender'] ?? ''),
+            'sms_custom_url'    => esc_url_raw($in['sms_custom_url'] ?? ''),
+            'sms_custom_method' => in_array(strtoupper((string) ($in['sms_custom_method'] ?? 'POST')), ['GET', 'POST', 'PUT'], true) ? strtoupper((string) $in['sms_custom_method']) : 'POST',
+            'sms_custom_headers' => sanitize_textarea_field($in['sms_custom_headers'] ?? ''),
+            'sms_custom_body'   => sanitize_textarea_field($in['sms_custom_body'] ?? ''),
         ];
+
+        // Editable message templates (defaults fill any left blank).
+        $tpls = [];
+        if (isset($in['sms_templates']) && is_array($in['sms_templates'])) {
+            foreach ($in['sms_templates'] as $key => $text) {
+                $tpls[sanitize_key($key)] = sanitize_textarea_field((string) $text);
+            }
+        }
+        $update['sms_templates'] = $tpls;
+
         update_option(SWC_Settings::OPTION, array_merge($existing, $update));
+
+        // Activation code (API key) + optional second credential — encrypted,
+        // only overwritten when a new value is typed.
+        if (isset($in['sms_key']) && trim((string) $in['sms_key']) !== '') {
+            SWC_Sms_Manager::save_key((string) $in['sms_key']);
+        }
+        if (isset($in['sms_secret']) && trim((string) $in['sms_secret']) !== '') {
+            SWC_Sms_Manager::save_secret((string) $in['sms_secret']);
+        }
 
         if (isset($in['webhook_secret']) && trim((string) $in['webhook_secret']) !== '') {
             SWC_Webhook_Manager::save_secret((string) $in['webhook_secret']);

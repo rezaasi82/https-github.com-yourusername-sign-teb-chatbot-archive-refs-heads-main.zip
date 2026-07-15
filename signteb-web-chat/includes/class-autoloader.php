@@ -33,6 +33,16 @@ class SWC_Autoloader
         'SWC_Security'                => 'security/class-security.php',
         'SWC_Audit_Log'               => 'security/class-audit-log.php',
 
+        // SMS / messaging gateways.
+        'SWC_Sms_Provider_Interface'  => 'notifications/class-sms-provider-interface.php',
+        'SWC_Sms_Provider_Base'       => 'notifications/class-sms-provider-base.php',
+        'SWC_Sms_Kavenegar'           => 'notifications/providers/class-sms-kavenegar.php',
+        'SWC_Sms_Melipayamak'         => 'notifications/providers/class-sms-melipayamak.php',
+        'SWC_Sms_Smsir'               => 'notifications/providers/class-sms-smsir.php',
+        'SWC_Sms_Ghasedak'            => 'notifications/providers/class-sms-ghasedak.php',
+        'SWC_Sms_Custom'              => 'notifications/providers/class-sms-custom.php',
+        'SWC_Sms_Manager'             => 'notifications/class-sms-manager.php',
+
         // AI provider layer.
         'SWC_AI_Provider_Interface'        => 'ai/interface-ai-provider.php',
         'SWC_Provider_Anthropic'           => 'ai/class-provider-anthropic.php',

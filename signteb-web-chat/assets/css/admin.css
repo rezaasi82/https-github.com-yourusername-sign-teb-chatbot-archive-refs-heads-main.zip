@@ -248,3 +248,9 @@
 .swc-refer-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 .swc-refer-row input { flex: 1 1 200px; min-width: 160px; }
 .swc-refer-result { margin: 6px 0 0; }
+
+/* ---------- referral messengers + SMS custom box ---------- */
+.swc-refer-messengers { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.swc-refer-ml-label { color: #50596b; font-size: 12px; }
+.swc-refer-template { min-width: 150px; }
+.swc-sms-custom { margin: 8px 0 4px; padding: 4px 14px; background: #f6f7f9; border: 1px solid #e4e7ec; border-radius: 6px; }

@@ -89,18 +89,45 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
             <span class="swc-crm-result"></span>
         </div>
 
-        <?php $ref_text = SWC_Lead_CRM::referral_text($conversation); ?>
+        <?php
+        $ref_text  = SWC_Lead_CRM::referral_text($conversation);
+        $sms_mgr   = new SWC_Sms_Manager();
+        $sms_ready = $sms_mgr->is_configured();
+        $messengers = SWC_Sms_Manager::messenger_links((string) ($conversation->patient_phone ?? ''), $ref_text);
+        ?>
         <div class="swc-refer" data-lead="<?php echo esc_attr($conversation->id); ?>" data-text="<?php echo esc_attr($ref_text); ?>">
             <div class="swc-crm-title"><?php esc_html_e('ارجاع لید به همکار', 'signteb-web-chat'); ?></div>
             <div class="swc-refer-row">
                 <input type="email" class="swc-refer-email" placeholder="<?php esc_attr_e('ایمیل همکار', 'signteb-web-chat'); ?>">
                 <button type="button" class="button swc-refer-mail"><?php esc_html_e('ارجاع با ایمیل', 'signteb-web-chat'); ?></button>
             </div>
+
             <div class="swc-refer-row">
-                <input type="tel" class="swc-refer-phone" placeholder="<?php esc_attr_e('موبایل همکار (اختیاری)', 'signteb-web-chat'); ?>" inputmode="tel">
-                <a class="button swc-refer-sms" href="#"><?php esc_html_e('ارجاع با پیامک', 'signteb-web-chat'); ?></a>
+                <input type="tel" class="swc-refer-phone" placeholder="<?php esc_attr_e('موبایل مقصد', 'signteb-web-chat'); ?>" inputmode="tel" value="<?php echo esc_attr($conversation->patient_phone ?? ''); ?>">
+                <?php if ($sms_ready) : ?>
+                    <select class="swc-refer-template">
+                        <?php foreach ($sms_mgr->templates() as $tk => $tp) : ?>
+                            <option value="<?php echo esc_attr($tk); ?>"><?php echo esc_html($tp['label']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="button" class="button button-primary swc-refer-panel"><?php esc_html_e('ارسال پیامک از پنل', 'signteb-web-chat'); ?></button>
+                <?php endif; ?>
             </div>
-            <p class="description swc-refer-result"><?php esc_html_e('ایمیل از طریق میل سرور سایت ارسال می‌شود؛ پیامک با اپلیکیشن پیام‌رسان دستگاه شما باز می‌شود.', 'signteb-web-chat'); ?></p>
+
+            <div class="swc-refer-messengers">
+                <span class="swc-refer-ml-label"><?php esc_html_e('ارسال با پیام‌رسان:', 'signteb-web-chat'); ?></span>
+                <?php foreach ($messengers as $mk => $mm) : ?>
+                    <a class="button button-small swc-refer-ml" data-ch="<?php echo esc_attr($mk); ?>" href="<?php echo esc_url($mm['url']); ?>" target="_blank" rel="noopener"><?php echo esc_html($mm['label']); ?></a>
+                <?php endforeach; ?>
+            </div>
+
+            <p class="description swc-refer-result">
+                <?php
+                echo $sms_ready
+                    ? esc_html__('پیامک پنل مستقیماً از سرور ارسال می‌شود. ایمیل با میل‌سرور سایت. پیام‌رسان‌ها روی دستگاه شما باز می‌شوند.', 'signteb-web-chat')
+                    : esc_html__('برای ارسال مستقیم پیامک، پنل پیامک را در «اتصال‌ها و خروجی» فعال کنید. فعلاً می‌توانید از ایمیل یا پیام‌رسان‌ها استفاده کنید.', 'signteb-web-chat');
+                ?>
+            </p>
         </div>
     </div>
 

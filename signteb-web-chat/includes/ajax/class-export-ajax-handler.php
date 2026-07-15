@@ -25,7 +25,50 @@ class SWC_Export_Ajax_Handler
         add_action('wp_ajax_swc_export_gsheet', [$this, 'export_gsheet']);
         add_action('wp_ajax_swc_test_webhook', [$this, 'test_webhook']);
         add_action('wp_ajax_swc_test_gsheet', [$this, 'test_gsheet']);
+        add_action('wp_ajax_swc_test_sms', [$this, 'test_sms']);
+        add_action('wp_ajax_swc_send_sms', [$this, 'send_sms']);
         add_action('wp_ajax_swc_export_bulk', [$this, 'bulk']);
+    }
+
+    /**
+     * Send a one-off test SMS through the configured panel.
+     */
+    public function test_sms(): void
+    {
+        SWC_Json_Guard::arm();
+        $this->guard();
+        $to = sanitize_text_field(wp_unslash($_POST['to'] ?? ''));
+        if ($to === '') {
+            wp_send_json(['ok' => false, 'error' => __('شماره مقصد را وارد کنید.', 'signteb-web-chat')], 400);
+        }
+        $clinic = (string) (new SWC_Settings())->get('clinic_name', get_bloginfo('name'));
+        $text   = sprintf(__('پیام آزمایشی از %s (Medora AI).', 'signteb-web-chat'), $clinic);
+        wp_send_json((new SWC_Sms_Manager())->send($to, $text));
+    }
+
+    /**
+     * Send a lead-related SMS from a chosen template (used by CRM referral).
+     */
+    public function send_sms(): void
+    {
+        SWC_Json_Guard::arm();
+        $this->guard();
+
+        $lead_id  = absint($_POST['lead_id'] ?? 0);
+        $to       = sanitize_text_field(wp_unslash($_POST['to'] ?? ''));
+        $tpl_key  = sanitize_key(wp_unslash($_POST['template'] ?? 'referral'));
+        if ($lead_id <= 0 || $to === '') {
+            wp_send_json(['ok' => false, 'error' => __('لید یا شماره مقصد نامعتبر است.', 'signteb-web-chat')], 400);
+        }
+
+        $c = (new SWC_Conversation_Repository())->get($lead_id);
+        if (! $c) {
+            wp_send_json(['ok' => false, 'error' => 'not_found'], 404);
+        }
+
+        $sms  = new SWC_Sms_Manager();
+        $text = $sms->render($sms->template_text($tpl_key), $sms->vars_for_lead($c));
+        wp_send_json($sms->send($to, $text));
     }
 
     private function guard(): void

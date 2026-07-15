@@ -29,6 +29,8 @@ $options = [
     'swc_webhook_secret_enc',
     'swc_gsheet_secret_enc',
     'swc_cloud_secret_enc',
+    'swc_sms_key_enc',
+    'swc_sms_secret_enc',
     'swc_cloud_registered',
     'swc_fallback_salt',
     'swc_license',
