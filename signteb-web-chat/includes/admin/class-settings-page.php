@@ -134,6 +134,11 @@ class SWC_Settings_Page
             'sms_custom_method' => in_array(strtoupper((string) ($in['sms_custom_method'] ?? 'POST')), ['GET', 'POST', 'PUT'], true) ? strtoupper((string) $in['sms_custom_method']) : 'POST',
             'sms_custom_headers' => sanitize_textarea_field($in['sms_custom_headers'] ?? ''),
             'sms_custom_body'   => sanitize_textarea_field($in['sms_custom_body'] ?? ''),
+            // Messenger lead alerts (Bale / Telegram).
+            'msgr_bale_enabled'     => isset($in['msgr_bale_enabled']) ? 1 : 0,
+            'msgr_bale_chat'        => sanitize_text_field($in['msgr_bale_chat'] ?? ''),
+            'msgr_telegram_enabled' => isset($in['msgr_telegram_enabled']) ? 1 : 0,
+            'msgr_telegram_chat'    => sanitize_text_field($in['msgr_telegram_chat'] ?? ''),
         ];
 
         // Editable message templates (defaults fill any left blank).
@@ -154,6 +159,13 @@ class SWC_Settings_Page
         }
         if (isset($in['sms_secret']) && trim((string) $in['sms_secret']) !== '') {
             SWC_Sms_Manager::save_secret((string) $in['sms_secret']);
+        }
+
+        // Messenger bot tokens — encrypted, only overwritten when re-typed.
+        foreach (['bale', 'telegram'] as $ch) {
+            if (isset($in['msgr_' . $ch . '_token']) && trim((string) $in['msgr_' . $ch . '_token']) !== '') {
+                SWC_Messenger_Notifier::save_token($ch, (string) $in['msgr_' . $ch . '_token']);
+            }
         }
 
         if (isset($in['webhook_secret']) && trim((string) $in['webhook_secret']) !== '') {

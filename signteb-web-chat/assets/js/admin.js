@@ -152,6 +152,22 @@
 		});
 	}
 
+	// Messenger lead-alert test buttons (Bale / Telegram bot).
+	document.querySelectorAll('.swc-msgr-test-btn').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			var ch = btn.getAttribute('data-channel');
+			var out = document.querySelector('.swc-test-result[data-for="msgr-' + ch + '"]');
+			btn.disabled = true; if (out) { out.textContent = A.strings.working; }
+			post('swc_test_messenger', { channel: ch }).then(function (res) {
+				if (out) {
+					out.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				btn.disabled = false;
+			}).catch(function () { if (out) { out.textContent = '✕'; } btn.disabled = false; });
+		});
+	});
+
 	// Lead referral — email (server wp_mail) + SMS deep-link.
 	var refer = document.querySelector('.swc-refer');
 	if (refer) {

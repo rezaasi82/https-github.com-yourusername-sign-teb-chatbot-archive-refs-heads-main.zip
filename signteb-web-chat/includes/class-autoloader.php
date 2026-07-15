@@ -42,6 +42,7 @@ class SWC_Autoloader
         'SWC_Sms_Ghasedak'            => 'notifications/providers/class-sms-ghasedak.php',
         'SWC_Sms_Custom'              => 'notifications/providers/class-sms-custom.php',
         'SWC_Sms_Manager'             => 'notifications/class-sms-manager.php',
+        'SWC_Messenger_Notifier'      => 'notifications/class-messenger-notifier.php',
 
         // AI provider layer.
         'SWC_AI_Provider_Interface'        => 'ai/interface-ai-provider.php',

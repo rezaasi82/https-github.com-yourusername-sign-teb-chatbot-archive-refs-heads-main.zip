@@ -31,6 +31,8 @@ $options = [
     'swc_cloud_secret_enc',
     'swc_sms_key_enc',
     'swc_sms_secret_enc',
+    'swc_msgr_bale_token_enc',
+    'swc_msgr_tg_token_enc',
     'swc_cloud_registered',
     'swc_fallback_salt',
     'swc_license',

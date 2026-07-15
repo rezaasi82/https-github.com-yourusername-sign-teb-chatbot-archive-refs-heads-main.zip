@@ -56,6 +56,10 @@ class SWC_Plugin
         // admin so the shortcode resolves in the block editor preview too.
         (new SWC_Chat_Shortcode())->register();
 
+        // Instant lead alerts to the clinic's Bale / Telegram (fires on the
+        // front-end lead-detection hook + the admin test endpoint).
+        (new SWC_Messenger_Notifier())->register();
+
         if (is_admin()) {
             // The parent menu MUST register before any submenu page: WordPress
             // derives each admin page's hookname from the parent menu present

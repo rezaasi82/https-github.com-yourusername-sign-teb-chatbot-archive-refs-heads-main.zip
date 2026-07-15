@@ -327,6 +327,25 @@ if (! defined('ABSPATH')) {
             <?php endforeach; ?>
         </table>
 
+        <h2 class="title"><?php esc_html_e('اعلان لید در پیام‌رسان (بله / تلگرام)', 'signteb-web-chat'); ?></h2>
+        <p class="description"><?php esc_html_e('با هر لید جدید، یک اعلان فوری به گروه یا کانال کلینیک شما در بله/تلگرام ارسال می‌شود. کافی است یک ربات بسازید و توکن + شناسه چت را وارد کنید.', 'signteb-web-chat'); ?></p>
+        <?php $msgr = new SWC_Messenger_Notifier(); ?>
+        <table class="form-table" role="presentation">
+            <?php foreach ($msgr->channels() as $ch => $cdef) : ?>
+                <tr>
+                    <th><?php echo esc_html($cdef['label']); ?></th>
+                    <td>
+                        <label><input type="checkbox" name="msgr_<?php echo esc_attr($ch); ?>_enabled" value="1" <?php checked($s->get('msgr_' . $ch . '_enabled', 0), 1); ?>> <?php esc_html_e('فعال', 'signteb-web-chat'); ?></label>
+                        <br>
+                        <input type="password" name="msgr_<?php echo esc_attr($ch); ?>_token" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Messenger_Notifier::token($ch) !== '' ? '•••••••• (توکن ربات)' : esc_attr__('توکن ربات', 'signteb-web-chat'); ?>" style="margin:4px 0">
+                        <input type="text" name="msgr_<?php echo esc_attr($ch); ?>_chat" value="<?php echo esc_attr($s->get('msgr_' . $ch . '_chat')); ?>" class="regular-text" placeholder="<?php esc_attr_e('شناسه چت (chat_id)', 'signteb-web-chat'); ?>" style="margin:4px 0">
+                        <button type="button" class="button swc-msgr-test-btn" data-channel="<?php echo esc_attr($ch); ?>"><?php esc_html_e('تست', 'signteb-web-chat'); ?></button>
+                        <span class="swc-test-result" data-for="msgr-<?php echo esc_attr($ch); ?>"></span>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+
     <?php elseif ($tab === 'license') : ?>
         <?php
         $info    = $license->info();
