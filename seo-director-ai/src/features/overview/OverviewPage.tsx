@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../api/client';
 import { TrafficChart } from '../../components/charts/TrafficChart';
+import { DETECTOR_LABELS, RULE_LABELS, severityColor } from '../../components/ui/labels';
+import { ScoreDial } from '../../components/ui/ScoreDial';
 
 function ConnectionBadge({ label, connected }: { label: string; connected: boolean }) {
   return (
@@ -50,11 +52,11 @@ export function OverviewPage() {
         <div className="sda-card">
           <h2>SEO Health Score</h2>
           {data.health ? (
-            <p style={{ fontSize: 36, fontWeight: 700, margin: '8px 0' }}>{data.health.score}</p>
+            <ScoreDial health={data.health} />
           ) : (
             <div className="sda-empty">
               <strong>No score yet</strong>
-              Connect Google Search Console to start scoring.
+              Scores appear after the first analysis pass over synced data.
             </div>
           )}
         </div>
@@ -77,16 +79,47 @@ export function OverviewPage() {
 
         <div className="sda-card">
           <h2>Top Opportunities</h2>
-          <div className="sda-empty">
-            {data.opportunities.length === 0 ? 'Opportunities appear after the first analysis run.' : ''}
-          </div>
+          {data.opportunities.length === 0 ? (
+            <div className="sda-empty">Opportunities appear after the first analysis run.</div>
+          ) : (
+            <ol style={{ margin: '8px 0 0', paddingInlineStart: 18, display: 'grid', gap: 6, fontSize: 13 }}>
+              {data.opportunities.map((opp) => (
+                <li key={opp.id}>
+                  <strong style={{ wordBreak: 'break-all' }}>{opp.label}</strong>
+                  <br />
+                  <small style={{ color: 'var(--sda-text-muted)' }}>
+                    {DETECTOR_LABELS[opp.detector] ?? opp.detector} · +{opp.est_traffic_gain.toLocaleString()} clicks/mo
+                  </small>
+                </li>
+              ))}
+            </ol>
+          )}
+          <a href="#/opportunities" style={{ fontSize: 12, display: 'inline-block', marginBlockStart: 8 }}>
+            All opportunities ▸
+          </a>
         </div>
 
         <div className="sda-card">
           <h2>Top Risks</h2>
-          <div className="sda-empty">
-            {data.risks.length === 0 ? 'No risks detected yet.' : ''}
-          </div>
+          {data.risks.length === 0 ? (
+            <div className="sda-empty">No active risks detected.</div>
+          ) : (
+            <ul style={{ margin: '8px 0 0', padding: 0, listStyle: 'none', display: 'grid', gap: 6, fontSize: 13 }}>
+              {data.risks.map((risk) => (
+                <li key={risk.id}>
+                  <span style={{ color: severityColor(risk.severity), fontWeight: 600 }}>
+                    {risk.severity.toUpperCase()}
+                  </span>{' '}
+                  {risk.message}
+                  <br />
+                  <small style={{ color: 'var(--sda-text-muted)' }}>{RULE_LABELS[risk.rule] ?? risk.rule}</small>
+                </li>
+              ))}
+            </ul>
+          )}
+          <a href="#/alerts" style={{ fontSize: 12, display: 'inline-block', marginBlockStart: 8 }}>
+            All alerts ▸
+          </a>
         </div>
       </div>
     </>

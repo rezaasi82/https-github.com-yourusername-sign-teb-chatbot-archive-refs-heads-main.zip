@@ -1,6 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { boot } from '../api/client';
+import { AlertsPage } from '../features/alerts/AlertsPage';
+import { WinnersLosersPage } from '../features/movers/WinnersLosersPage';
+import { OpportunitiesPage } from '../features/opportunities/OpportunitiesPage';
 import { OverviewPage } from '../features/overview/OverviewPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { useHashRoute } from './router';
@@ -61,8 +64,13 @@ export function App() {
             </div>
           </div>
           {current.route === 'overview' && <OverviewPage />}
+          {current.route === 'movers' && <WinnersLosersPage />}
+          {current.route === 'opportunities' && <OpportunitiesPage />}
+          {current.route === 'alerts' && <AlertsPage />}
           {current.route === 'settings' && <SettingsPage />}
-          {current.route !== 'overview' && current.route !== 'settings' && <ComingSoon label={current.label} />}
+          {!['overview', 'movers', 'opportunities', 'alerts', 'settings'].includes(current.route) && (
+            <ComingSoon label={current.label} />
+          )}
         </main>
       </div>
     </QueryClientProvider>

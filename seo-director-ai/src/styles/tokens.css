@@ -185,6 +185,32 @@
   outline-offset: 1px;
 }
 
+.sda-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sda-table th {
+  text-align: start;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--sda-text-muted);
+  padding: 8px 10px;
+  border-block-end: 1px solid var(--sda-border);
+}
+
+.sda-table td {
+  padding: 9px 10px;
+  border-block-end: 1px solid var(--sda-border);
+  white-space: nowrap;
+}
+
+.sda-table tbody tr:hover {
+  background: var(--sda-surface-2);
+}
+
 .sda-empty {
   text-align: center;
   padding: 40px 16px;

@@ -9,9 +9,12 @@
 namespace SEODirector\Rest\Controllers;
 
 use SEODirector\Core\Capabilities;
+use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\GscRepository;
+use SEODirector\Data\Repository\HealthScoreRepository;
 use SEODirector\Data\Repository\JobStateRepository;
+use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
 use SEODirector\Jobs\Handlers\SyncGscJob;
 
@@ -24,6 +27,9 @@ final class OverviewController extends AbstractController {
 		private PropertiesRepository $properties,
 		private GscRepository $gsc,
 		private JobStateRepository $job_state,
+		private HealthScoreRepository $health_scores,
+		private OpportunitiesRepository $opportunities,
+		private AlertsRepository $alerts,
 	) {}
 
 	public function register_routes(): void {
@@ -59,13 +65,13 @@ final class OverviewController extends AbstractController {
 					'psi' => in_array( 'psi', $connected, true ),
 					'ai'  => (bool) array_intersect( [ 'openai', 'claude', 'gemini' ], $connected ),
 				],
-				'health'        => null, // Arrives with the Phase 2 analyzers.
+				'health'        => $this->health_scores->latest(),
 				'traffic'       => [
 					'series'  => $series,
 					'compare' => null,
 				],
-				'opportunities' => [],
-				'risks'         => [],
+				'opportunities' => array_slice( $this->opportunities->list_open( 5 ), 0, 5 ),
+				'risks'         => array_slice( $this->alerts->list( 'active', 5 ), 0, 5 ),
 				'summaries'     => [
 					'weekly'  => null,
 					'monthly' => null,

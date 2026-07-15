@@ -33,15 +33,73 @@ export interface TrafficPoint {
   position: number;
 }
 
+export interface Health {
+  score: number;
+  band: 'green' | 'yellow' | 'red';
+  delta: number | null;
+  components: Record<string, { score: number | null; weight: number; available: boolean }>;
+}
+
+export interface Opportunity {
+  id: number;
+  detector: string;
+  entity_type: string;
+  label: string;
+  secondary_label: string;
+  score: number;
+  est_traffic_gain: number;
+  difficulty: number;
+  status: string;
+  data: Record<string, unknown>;
+  refreshed_at: string;
+}
+
+export interface Alert {
+  id: number;
+  rule: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  entity_label: string;
+  message: string;
+  status: string;
+  raised_at: string;
+  resolved_at: string | null;
+}
+
+export interface Winner {
+  label: string;
+  hash: string;
+  clicks: number;
+  clicks_delta: number;
+  growth_pct: number | null;
+  is_new: boolean;
+  position: number;
+  position_delta: number;
+  reason: string;
+  next_action: string;
+}
+
+export interface Loser {
+  label: string;
+  hash: string;
+  clicks: number;
+  clicks_delta: number;
+  loss_pct: number | null;
+  position: number;
+  position_delta: number;
+  cause: string;
+  priority: 'critical' | 'high' | 'medium' | 'low';
+  suggested_fix: string;
+}
+
 export interface OverviewResponse {
   connections: { gsc: boolean; ga4: boolean; psi: boolean; ai: boolean };
-  health: { score: number; band: 'green' | 'yellow' | 'red'; delta: number } | null;
+  health: Health | null;
   traffic: {
     series: TrafficPoint[];
     compare: unknown;
   };
-  opportunities: unknown[];
-  risks: unknown[];
+  opportunities: Opportunity[];
+  risks: Alert[];
   summaries: { weekly: string | null; monthly: string | null };
   meta: { plugin_version: string; backfill: { status: string; date: string | null } | null };
 }
@@ -109,4 +167,19 @@ export const api = {
       body: JSON.stringify({ service, property_id: propertyId }),
     }),
   disconnect: (service: string) => request<ConnectionsState>(`/connections/${service}`, { method: 'DELETE' }),
+  winners: (entity: 'query' | 'page', days: number) =>
+    request<{ items: Winner[]; period: unknown }>(`/winners?entity=${entity}&days=${days}`),
+  losers: (entity: 'query' | 'page', days: number) =>
+    request<{ items: Loser[]; period: unknown }>(`/losers?entity=${entity}&days=${days}`),
+  opportunities: () => request<{ items: Opportunity[] }>('/opportunities'),
+  rescanOpportunities: () => request<{ queued: boolean }>('/opportunities/rescan', { method: 'POST' }),
+  updateOpportunity: (id: number, status: string) =>
+    request<{ items: Opportunity[] }>(`/opportunities/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+  alerts: (status = 'active') =>
+    request<{ items: Alert[]; counts: Record<string, number> }>(`/alerts?status=${status}`),
+  updateAlert: (id: number, status: string) =>
+    request<{ items: Alert[]; counts: Record<string, number> }>(`/alerts/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }),
 };

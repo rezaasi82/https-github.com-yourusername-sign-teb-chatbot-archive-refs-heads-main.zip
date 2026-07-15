@@ -9,10 +9,28 @@ namespace SEODirector\Core;
 
 use SEODirector\Admin\AdminMenu;
 use SEODirector\Admin\Assets;
+use SEODirector\Alerts\AlertEngine;
+use SEODirector\Alerts\Channels\EmailChannel;
+use SEODirector\Alerts\Rules\CwvRegressionRule;
+use SEODirector\Alerts\Rules\KeywordLossRule;
+use SEODirector\Alerts\Rules\TrafficDropRule;
+use SEODirector\Analysis\ChangepointDetector;
+use SEODirector\Analysis\DeclineDetector;
+use SEODirector\Analysis\ExpectedCtrCurve;
+use SEODirector\Analysis\GrowthDetector;
+use SEODirector\Analysis\HealthScore\HealthScoreCalculator;
+use SEODirector\Analysis\OpportunityDetector\LowCtrDetector;
+use SEODirector\Analysis\OpportunityDetector\NearTopDetector;
+use SEODirector\Analysis\OpportunityDetector\StrikingDistanceDetector;
+use SEODirector\Analysis\TrendAnalyzer;
+use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\Ga4Repository;
 use SEODirector\Data\Repository\GscRepository;
+use SEODirector\Data\Repository\HealthScoreRepository;
 use SEODirector\Data\Repository\JobStateRepository;
+use SEODirector\Data\Repository\MoversRepository;
+use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
 use SEODirector\Data\Repository\PsiRepository;
 use SEODirector\Data\Retention\RetentionPolicy;
@@ -26,6 +44,7 @@ use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Integrations\Google\TokenVault;
 use SEODirector\Integrations\Http\RetryingHttpClient;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
+use SEODirector\Jobs\Handlers\RunAnalysisJob;
 use SEODirector\Jobs\Handlers\RunPsiAuditJob;
 use SEODirector\Jobs\Handlers\SyncGa4Job;
 use SEODirector\Jobs\Handlers\SyncGscJob;
@@ -122,7 +141,55 @@ final class Plugin {
 		$c->set( Analytics4Client::class, static fn( Container $c ) => new Analytics4Client( $c->get( OAuthClient::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ) ) );
 		$c->set( PageSpeedClient::class, static fn( Container $c ) => new PageSpeedClient( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ) ) );
 
+		// Analysis layer (pure).
+		$c->set( TrendAnalyzer::class, static fn() => new TrendAnalyzer() );
+		$c->set( ChangepointDetector::class, static fn( Container $c ) => new ChangepointDetector( $c->get( TrendAnalyzer::class ) ) );
+		$c->set( ExpectedCtrCurve::class, static fn() => new ExpectedCtrCurve() );
+		$c->set( GrowthDetector::class, static fn() => new GrowthDetector() );
+		$c->set( DeclineDetector::class, static fn() => new DeclineDetector() );
+		$c->set( HealthScoreCalculator::class, static fn( Container $c ) => new HealthScoreCalculator( $c->get( ExpectedCtrCurve::class ) ) );
+
+		// Intelligence repositories.
+		$c->set( MoversRepository::class, static fn() => new MoversRepository() );
+		$c->set( OpportunitiesRepository::class, static fn() => new OpportunitiesRepository() );
+		$c->set( AlertsRepository::class, static fn() => new AlertsRepository() );
+		$c->set( HealthScoreRepository::class, static fn() => new HealthScoreRepository() );
+
+		// Alerts.
+		$c->set( EmailChannel::class, static fn( Container $c ) => new EmailChannel( $c->get( Settings::class ) ) );
+		$c->set(
+			AlertEngine::class,
+			static fn( Container $c ) => new AlertEngine(
+				[
+					new TrafficDropRule( $c->get( GscRepository::class ), $c->get( PropertiesRepository::class ), $c->get( TrendAnalyzer::class ) ),
+					new KeywordLossRule( $c->get( MoversRepository::class ), $c->get( PropertiesRepository::class ) ),
+					new CwvRegressionRule(),
+				],
+				$c->get( AlertsRepository::class ),
+				$c->get( EmailChannel::class )
+			)
+		);
+
 		// Jobs.
+		$c->set(
+			RunAnalysisJob::class,
+			static fn( Container $c ) => new RunAnalysisJob(
+				$c->get( JobStateRepository::class ),
+				[
+					new StrikingDistanceDetector( $c->get( ExpectedCtrCurve::class ) ),
+					new LowCtrDetector( $c->get( ExpectedCtrCurve::class ) ),
+					new NearTopDetector( $c->get( ExpectedCtrCurve::class ) ),
+				],
+				$c->get( MoversRepository::class ),
+				$c->get( OpportunitiesRepository::class ),
+				$c->get( HealthScoreCalculator::class ),
+				$c->get( HealthScoreRepository::class ),
+				$c->get( GscRepository::class ),
+				$c->get( PropertiesRepository::class ),
+				$c->get( TrendAnalyzer::class ),
+				$c->get( AlertEngine::class )
+			)
+		);
 		$c->set(
 			SyncGscJob::class,
 			static fn( Container $c ) => new SyncGscJob(
@@ -174,12 +241,18 @@ final class Plugin {
 					SyncGscJob::NAME     => $c->get( SyncGscJob::class ),
 					SyncGa4Job::NAME     => $c->get( SyncGa4Job::class ),
 					RunPsiAuditJob::NAME => $c->get( RunPsiAuditJob::class ),
+					RunAnalysisJob::NAME => $c->get( RunAnalysisJob::class ),
 				]
 			)
 		);
 
 		add_action( Scheduler::HOOK_PREFIX . 'daily_sync', static fn() => $c->get( DailySyncCoordinator::class )->run_daily() );
 		add_action( Scheduler::HOOK_PREFIX . 'weekly_pipeline', static fn() => $c->get( DailySyncCoordinator::class )->run_weekly() );
+
+		// Every completed data sync triggers a fresh analysis pass; the hourly
+		// schedule re-evaluates alerts between syncs.
+		add_action( 'sda_sync_completed', static fn() => Scheduler::enqueue_next_chunk( RunAnalysisJob::NAME ) );
+		add_action( Scheduler::HOOK_PREFIX . 'hourly_alerts', static fn() => $c->get( AlertEngine::class )->evaluate() );
 
 		$c->set( Scheduler::class, static fn( Container $c ) => new Scheduler( $c->get( JobStateRepository::class ) ) );
 		$c->set( RestServiceProvider::class, static fn( Container $c ) => new RestServiceProvider( $c ) );
