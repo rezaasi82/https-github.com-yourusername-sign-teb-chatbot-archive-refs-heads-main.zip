@@ -52,6 +52,10 @@ class SWC_Plugin
         // Security audit trail (event listeners + admin viewer).
         (new SWC_Audit_Log())->register();
 
+        // Inline chat via [medora_chat] — registered on both front-end and
+        // admin so the shortcode resolves in the block editor preview too.
+        (new SWC_Chat_Shortcode())->register();
+
         if (is_admin()) {
             // The parent menu MUST register before any submenu page: WordPress
             // derives each admin page's hookname from the parent menu present

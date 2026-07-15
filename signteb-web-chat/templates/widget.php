@@ -17,9 +17,11 @@ $title    = $config['bot_name'] !== '' ? $config['bot_name'] : __('دستیار 
 $channels = $config['channels'];
 ?>
 <div id="swc-root"
-     class="swc-root"
+     class="swc-root<?php echo $config['inline'] ? ' swc-inline swc-open' : ''; ?>"
      dir="<?php echo esc_attr($config['direction']); ?>"
      style="--swc-bg: <?php echo esc_attr($config['widget_color']); ?>; --swc-accent: <?php echo esc_attr($config['accent_color']); ?>;"
+     data-inline="<?php echo $config['inline'] ? '1' : '0'; ?>"
+     data-teaser-delay="<?php echo (int) $config['teaser_delay']; ?>"
      data-booking-url="<?php echo esc_url($config['booking_url']); ?>"
      data-whatsapp="<?php echo esc_attr($config['whatsapp']); ?>"
      data-phone="<?php echo esc_attr($config['phone']); ?>"
@@ -30,6 +32,16 @@ $channels = $config['channels'];
      data-ch-whatsapp="<?php echo $channels['whatsapp'] ? '1' : '0'; ?>"
      data-ch-call="<?php echo $channels['call'] ? '1' : '0'; ?>"
      data-ch-bale="<?php echo $channels['bale'] ? '1' : '0'; ?>">
+
+    <?php if (! $config['inline'] && trim($config['teaser']) !== '') : ?>
+        <div class="swc-teaser" role="status" hidden>
+            <button type="button" class="swc-teaser-close" aria-label="<?php esc_attr_e('بستن پیام', 'signteb-web-chat'); ?>">&times;</button>
+            <?php if ($config['avatar_url'] !== '') : ?>
+                <img class="swc-teaser-avatar" src="<?php echo esc_url($config['avatar_url']); ?>" alt="" />
+            <?php endif; ?>
+            <span class="swc-teaser-text"><?php echo esc_html($config['teaser']); ?></span>
+        </div>
+    <?php endif; ?>
 
     <button type="button" class="swc-launcher" aria-label="<?php esc_attr_e('باز کردن گفتگوی هوشمند', 'signteb-web-chat'); ?>">
         <span class="swc-launcher-pulse" aria-hidden="true"></span>
@@ -45,7 +57,7 @@ $channels = $config['channels'];
         <?php endif; ?>
     </button>
 
-    <div class="swc-panel" role="dialog" aria-modal="false" aria-label="<?php echo esc_attr($title); ?>" hidden>
+    <div class="swc-panel" role="dialog" aria-modal="false" aria-label="<?php echo esc_attr($title); ?>"<?php echo $config['inline'] ? '' : ' hidden'; ?>>
         <div class="swc-header">
             <span class="swc-header-id">
                 <?php if ($config['avatar_url'] !== '') : ?>

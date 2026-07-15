@@ -200,6 +200,17 @@ if (! defined('ABSPATH')) {
                 <td><textarea name="quick_replies" rows="3" class="large-text" placeholder="هزینه ویزیت&#10;آدرس کلینیک&#10;رزرو نوبت"><?php echo esc_textarea($s->get('quick_replies')); ?></textarea><p class="description"><?php esc_html_e('هر گزینه در یک خط.', 'signteb-web-chat'); ?></p></td>
             </tr>
             <tr><th><?php esc_html_e('پیام خارج از ساعت کاری', 'signteb-web-chat'); ?></th><td><textarea name="offhours_message" rows="2" class="large-text"><?php echo esc_textarea($s->get('offhours_message')); ?></textarea></td></tr>
+            <tr>
+                <th><?php esc_html_e('پیام دعوت‌کننده (Teaser)', 'signteb-web-chat'); ?></th>
+                <td>
+                    <textarea name="teaser_message" rows="2" class="large-text" placeholder="<?php esc_attr_e('سلام! من اینجام تا اگه سوالی داری کمکت کنم 👋', 'signteb-web-chat'); ?>"><?php echo esc_textarea($s->get('teaser_message')); ?></textarea>
+                    <p class="description"><?php esc_html_e('حبابی که کنار آیکون چت ظاهر می‌شود تا بازدیدکننده متوجه دستیار شود. خالی = نمایش داده نشود.', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('تأخیر نمایش Teaser (ثانیه)', 'signteb-web-chat'); ?></th>
+                <td><input type="number" name="teaser_delay" min="0" max="120" value="<?php echo esc_attr((string) (int) $s->get('teaser_delay', 3)); ?>" class="small-text"><p class="description"><?php esc_html_e('چند ثانیه بعد از باز شدن صفحه، پیام دعوت‌کننده نمایش داده شود.', 'signteb-web-chat'); ?></p></td>
+            </tr>
         </table>
 
     <?php elseif ($tab === 'integrations') : ?>

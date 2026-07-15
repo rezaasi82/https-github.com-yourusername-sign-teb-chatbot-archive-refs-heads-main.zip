@@ -97,6 +97,8 @@ class SWC_Settings_Page
             $update['welcome_message']  = sanitize_textarea_field($in['welcome_message'] ?? '');
             $update['quick_replies']    = sanitize_textarea_field($in['quick_replies'] ?? '');
             $update['offhours_message'] = sanitize_textarea_field($in['offhours_message'] ?? '');
+            $update['teaser_message']   = sanitize_textarea_field($in['teaser_message'] ?? '');
+            $update['teaser_delay']     = max(0, min(120, (int) ($in['teaser_delay'] ?? 3)));
         }
 
         update_option(SWC_Settings::OPTION, array_merge($existing, $update));

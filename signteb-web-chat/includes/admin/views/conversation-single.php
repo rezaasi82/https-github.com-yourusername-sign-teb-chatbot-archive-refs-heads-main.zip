@@ -88,6 +88,20 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
             <button type="button" class="button button-primary swc-crm-save"><?php esc_html_e('ذخیره تغییرات', 'signteb-web-chat'); ?></button>
             <span class="swc-crm-result"></span>
         </div>
+
+        <?php $ref_text = SWC_Lead_CRM::referral_text($conversation); ?>
+        <div class="swc-refer" data-lead="<?php echo esc_attr($conversation->id); ?>" data-text="<?php echo esc_attr($ref_text); ?>">
+            <div class="swc-crm-title"><?php esc_html_e('ارجاع لید به همکار', 'signteb-web-chat'); ?></div>
+            <div class="swc-refer-row">
+                <input type="email" class="swc-refer-email" placeholder="<?php esc_attr_e('ایمیل همکار', 'signteb-web-chat'); ?>">
+                <button type="button" class="button swc-refer-mail"><?php esc_html_e('ارجاع با ایمیل', 'signteb-web-chat'); ?></button>
+            </div>
+            <div class="swc-refer-row">
+                <input type="tel" class="swc-refer-phone" placeholder="<?php esc_attr_e('موبایل همکار (اختیاری)', 'signteb-web-chat'); ?>" inputmode="tel">
+                <a class="button swc-refer-sms" href="#"><?php esc_html_e('ارجاع با پیامک', 'signteb-web-chat'); ?></a>
+            </div>
+            <p class="description swc-refer-result"><?php esc_html_e('ایمیل از طریق میل سرور سایت ارسال می‌شود؛ پیامک با اپلیکیشن پیام‌رسان دستگاه شما باز می‌شود.', 'signteb-web-chat'); ?></p>
+        </div>
     </div>
 
     <div class="swc-transcript">

@@ -13,10 +13,14 @@
 	}
 
 	var cfg = window.SWC_CONFIG;
-	var root = document.getElementById('swc-root');
-	if (!root) {
-		return;
-	}
+
+	// One page can host several widgets (the floating launcher plus any number
+	// of [medora_chat] shortcodes), so initialise every instance independently.
+	var roots = document.querySelectorAll('.swc-root');
+	if (!roots.length) { return; }
+	Array.prototype.forEach.call(roots, initWidget);
+
+	function initWidget(root) {
 
 	var isRtl = (root.getAttribute('dir') || 'rtl') === 'rtl';
 	var panel = root.querySelector('.swc-panel');
@@ -144,10 +148,25 @@
 		panel.style.transform = '';
 		unlockBody();
 	}
-	launcher.addEventListener('click', function () {
-		if (panel.hidden) { openPanel(); } else { closePanel(); }
-	});
-	closeBtn.addEventListener('click', closePanel);
+	var isInline = root.dataset.inline === '1';
+
+	if (launcher) {
+		launcher.addEventListener('click', function () {
+			if (panel.hidden) { openPanel(); } else { closePanel(); }
+		});
+	}
+	if (closeBtn) {
+		// Embedded chat has nothing to close; the button is hidden by CSS but
+		// guard the handler too.
+		closeBtn.addEventListener('click', function () { if (!isInline) { closePanel(); } });
+	}
+
+	// Embedded/inline chat is open from the start: prime lead capture + focus
+	// without waiting for a launcher click.
+	if (isInline) {
+		maybeShowLead();
+		setTimeout(function () { if (started) { input.focus(); } scrollToLatest(); }, 150);
+	}
 
 	/* ---------- lead capture ---------- */
 
@@ -401,4 +420,43 @@
 			if (btn && started) { send(btn.textContent.trim()); }
 		});
 	}
+
+	/* ---------- teaser greeting bubble ---------- */
+
+	(function initTeaser() {
+		var teaser = root.querySelector('.swc-teaser');
+		if (!teaser || root.dataset.inline === '1') { return; }
+		// Respect a per-visitor dismissal so it never nags on every page view.
+		if (load('swc_teaser_dismissed') === '1') { return; }
+
+		var delay = parseInt(root.dataset.teaserDelay, 10);
+		if (isNaN(delay)) { delay = 3; }
+
+		var timer = setTimeout(function () {
+			if (!panel.hidden) { return; } // already chatting
+			teaser.hidden = false;
+			root.classList.add('swc-teaser-on');
+		}, delay * 1000);
+
+		function dismiss(persist) {
+			clearTimeout(timer);
+			teaser.hidden = true;
+			root.classList.remove('swc-teaser-on');
+			if (persist) { store('swc_teaser_dismissed', '1'); }
+		}
+
+		var closeBubble = teaser.querySelector('.swc-teaser-close');
+		if (closeBubble) {
+			closeBubble.addEventListener('click', function (e) {
+				e.stopPropagation();
+				dismiss(true);
+			});
+		}
+		// Clicking the bubble body opens the chat.
+		teaser.addEventListener('click', function () { dismiss(true); openPanel(); });
+		// Opening the panel any other way also clears the teaser.
+		launcher.addEventListener('click', function () { dismiss(false); });
+	})();
+
+	} // end initWidget
 })();

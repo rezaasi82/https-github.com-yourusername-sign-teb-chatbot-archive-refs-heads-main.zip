@@ -48,6 +48,18 @@ class SWC_Widget
         if (! $this->should_render()) {
             return;
         }
+        $this->enqueue_assets();
+    }
+
+    /**
+     * Register + enqueue the widget CSS/JS and localize config. Idempotent, so
+     * both the footer widget and the [medora_chat] shortcode can call it.
+     */
+    public function enqueue_assets(): void
+    {
+        if (wp_script_is('swc-widget', 'enqueued')) {
+            return;
+        }
 
         // Optional self-hosted Vazirmatn font (only if the file is bundled).
         if ((int) $this->settings->get('use_bundled_font', 1) === 1
@@ -85,9 +97,39 @@ class SWC_Widget
         if (! $this->should_render()) {
             return;
         }
+        $config = $this->build_config(false);
+        // Template handles all escaping.
+        include SWC_DIR . 'templates/widget.php';
+    }
 
-        $s      = $this->settings;
-        $config = [
+    /**
+     * Inline (embedded) render for the [medora_chat] shortcode / sidebar block.
+     * Returns the markup instead of echoing so it can nest anywhere.
+     */
+    public function render_inline(): string
+    {
+        // Same gates as the floating widget, minus the "is this a normal page"
+        // checks — a shortcode is only reached on a rendered page anyway.
+        if (! $this->settings->is_enabled() || (new SWC_License_Manager())->is_locked()) {
+            return '';
+        }
+        $this->enqueue_assets();
+        $config = $this->build_config(true);
+
+        ob_start();
+        include SWC_DIR . 'templates/widget.php';
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * Assemble the view config shared by the floating and inline renders.
+     *
+     * @return array<string,mixed>
+     */
+    private function build_config(bool $inline): array
+    {
+        $s = $this->settings;
+        return [
             'direction'     => $s->get('direction', 'rtl') === 'ltr' ? 'ltr' : 'rtl',
             'widget_color'  => (string) $s->get('widget_color', '#0f1f3d'),
             'accent_color'  => (string) $s->get('accent_color', '#c8a04e'),
@@ -96,6 +138,9 @@ class SWC_Widget
             'brand_footer'  => (string) $s->get('brand_footer', ''),
             'welcome'       => (string) $s->get('welcome_message', ''),
             'offhours'      => (string) $s->get('offhours_message', ''),
+            'teaser'        => (string) $s->get('teaser_message', ''),
+            'teaser_delay'  => max(0, (int) $s->get('teaser_delay', 3)),
+            'inline'        => $inline,
             'quick_replies' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $s->get('quick_replies', ''))))),
             'within_hours'  => $this->within_business_hours(),
             'booking_url'   => esc_url_raw((string) $s->get('booking_url', '')),
@@ -111,9 +156,6 @@ class SWC_Widget
                 'bale'     => (int) $s->get('ch_bale', 0) === 1 && (string) $s->get('bale_url', '') !== '',
             ],
         ];
-
-        // Template handles all escaping.
-        include SWC_DIR . 'templates/widget.php';
     }
 
     private function within_business_hours(): bool

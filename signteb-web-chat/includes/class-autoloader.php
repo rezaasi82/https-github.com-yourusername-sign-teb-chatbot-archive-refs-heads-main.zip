@@ -98,6 +98,7 @@ class SWC_Autoloader
 
         // Frontend.
         'SWC_Widget'                  => 'frontend/class-widget.php',
+        'SWC_Chat_Shortcode'          => 'frontend/class-chat-shortcode.php',
 
         // Admin.
         'SWC_Premium_Dashboard'       => 'admin/class-premium-dashboard.php',

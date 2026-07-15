@@ -119,6 +119,39 @@
 		});
 	}
 
+	// Lead referral — email (server wp_mail) + SMS deep-link.
+	var refer = document.querySelector('.swc-refer');
+	if (refer) {
+		var refText = refer.getAttribute('data-text') || '';
+		var refResult = refer.querySelector('.swc-refer-result');
+		var origResult = refResult ? refResult.textContent : '';
+
+		var mailBtn = refer.querySelector('.swc-refer-mail');
+		if (mailBtn) {
+			mailBtn.addEventListener('click', function () {
+				var to = (refer.querySelector('.swc-refer-email') || {}).value || '';
+				if (!to) { refResult.textContent = A.strings.noSel; return; }
+				mailBtn.disabled = true; refResult.textContent = A.strings.working;
+				post('swc_lead_refer', { lead_id: refer.getAttribute('data-lead'), to: to }).then(function (res) {
+					refResult.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					refResult.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+					mailBtn.disabled = false;
+				}).catch(function () { refResult.textContent = '✕'; mailBtn.disabled = false; });
+			});
+		}
+
+		var smsBtn = refer.querySelector('.swc-refer-sms');
+		if (smsBtn) {
+			smsBtn.addEventListener('click', function (e) {
+				e.preventDefault();
+				var phone = (refer.querySelector('.swc-refer-phone') || {}).value || '';
+				phone = phone.replace(/[^0-9+]/g, '');
+				// sms: URI — body prefilled with the lead summary, recipient optional.
+				window.location.href = 'sms:' + phone + '?&body=' + encodeURIComponent(refText);
+			});
+		}
+	}
+
 	// SEO Intelligence — AI idea generation.
 	var seoGen = document.getElementById('swc-seo-gen');
 	if (seoGen) {
