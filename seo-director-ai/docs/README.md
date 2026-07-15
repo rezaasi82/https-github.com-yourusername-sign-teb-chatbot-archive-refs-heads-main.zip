@@ -1,7 +1,7 @@
 # SEO Director AI — Software Specification Suite
 
-> **Status:** Specification phase — awaiting approval before code generation begins.
-> **Version:** 1.0.0-spec · **Date:** 2026-07-14
+> **Status:** Implementation in progress — Phase 0 (Foundation) + core of Phases 1–3 landed in the plugin root (`../includes`, `../assets`). See the roadmap doc for phase scope.
+> **Version:** 1.0.0-spec · **Date:** 2026-07-14 · **Code started:** 2026-07-15
 
 **SEO Director AI** is a premium, AI-powered SEO management platform for WordPress that acts as a *virtual SEO Director* — it does not merely display data; it **monitors, analyzes, prioritizes, explains, and recommends actions**.
 
