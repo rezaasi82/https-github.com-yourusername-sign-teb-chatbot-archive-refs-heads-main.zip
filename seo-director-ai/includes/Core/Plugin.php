@@ -9,6 +9,15 @@ namespace SEODirector\Core;
 
 use SEODirector\Admin\AdminMenu;
 use SEODirector\Admin\Assets;
+use SEODirector\Ai\InsightCache;
+use SEODirector\Ai\InsightService;
+use SEODirector\Ai\ProviderRouter;
+use SEODirector\Ai\PromptLibrary;
+use SEODirector\Ai\Providers\ClaudeProvider;
+use SEODirector\Ai\Providers\GeminiProvider;
+use SEODirector\Ai\Providers\OpenAiProvider;
+use SEODirector\Ai\SchemaValidator;
+use SEODirector\Ai\TokenBudget;
 use SEODirector\Alerts\AlertEngine;
 use SEODirector\Alerts\Channels\EmailChannel;
 use SEODirector\Alerts\Rules\CwvRegressionRule;
@@ -22,17 +31,21 @@ use SEODirector\Analysis\HealthScore\HealthScoreCalculator;
 use SEODirector\Analysis\OpportunityDetector\LowCtrDetector;
 use SEODirector\Analysis\OpportunityDetector\NearTopDetector;
 use SEODirector\Analysis\OpportunityDetector\StrikingDistanceDetector;
+use SEODirector\Analysis\RootCause\CauseCandidateEngine;
+use SEODirector\Analysis\RootCause\CoreUpdateCalendar;
 use SEODirector\Analysis\TrendAnalyzer;
 use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\Ga4Repository;
 use SEODirector\Data\Repository\GscRepository;
 use SEODirector\Data\Repository\HealthScoreRepository;
+use SEODirector\Data\Repository\InsightRepository;
 use SEODirector\Data\Repository\JobStateRepository;
 use SEODirector\Data\Repository\MoversRepository;
 use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
 use SEODirector\Data\Repository\PsiRepository;
+use SEODirector\Data\Repository\TaskRepository;
 use SEODirector\Data\Retention\RetentionPolicy;
 use SEODirector\Data\Rollup\RollupBuilder;
 use SEODirector\Data\UrlCanonicalizer;
@@ -46,6 +59,9 @@ use SEODirector\Integrations\Http\RetryingHttpClient;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
 use SEODirector\Jobs\Handlers\RunAnalysisJob;
 use SEODirector\Jobs\Handlers\RunPsiAuditJob;
+use SEODirector\Jobs\Handlers\WeeklyIntelligence;
+use SEODirector\Roadmap\RoadmapGenerator;
+use SEODirector\Support\RateLimiter;
 use SEODirector\Jobs\Handlers\SyncGa4Job;
 use SEODirector\Jobs\Handlers\SyncGscJob;
 use SEODirector\Jobs\Scheduler;
@@ -154,6 +170,56 @@ final class Plugin {
 		$c->set( OpportunitiesRepository::class, static fn() => new OpportunitiesRepository() );
 		$c->set( AlertsRepository::class, static fn() => new AlertsRepository() );
 		$c->set( HealthScoreRepository::class, static fn() => new HealthScoreRepository() );
+		$c->set( InsightRepository::class, static fn() => new InsightRepository() );
+		$c->set( TaskRepository::class, static fn() => new TaskRepository() );
+		$c->set( RateLimiter::class, static fn() => new RateLimiter() );
+
+		// Root cause + roadmap.
+		$c->set( CoreUpdateCalendar::class, static fn() => new CoreUpdateCalendar() );
+		$c->set( CauseCandidateEngine::class, static fn( Container $c ) => new CauseCandidateEngine( $c->get( CoreUpdateCalendar::class ) ) );
+		$c->set( RoadmapGenerator::class, static fn( Container $c ) => new RoadmapGenerator( $c->get( OpportunitiesRepository::class ), $c->get( TaskRepository::class ) ) );
+
+		// AI layer.
+		$c->set( SchemaValidator::class, static fn() => new SchemaValidator() );
+		$c->set( PromptLibrary::class, static fn() => new PromptLibrary() );
+		$c->set( TokenBudget::class, static fn( Container $c ) => new TokenBudget( $c->get( Settings::class ) ) );
+		$c->set( InsightCache::class, static fn( Container $c ) => new InsightCache( $c->get( InsightRepository::class ) ) );
+		$c->set( ClaudeProvider::class, static fn( Container $c ) => new ClaudeProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
+		$c->set( OpenAiProvider::class, static fn( Container $c ) => new OpenAiProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
+		$c->set( GeminiProvider::class, static fn( Container $c ) => new GeminiProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
+		$c->set(
+			ProviderRouter::class,
+			static fn( Container $c ) => new ProviderRouter(
+				[
+					'claude' => $c->get( ClaudeProvider::class ),
+					'openai' => $c->get( OpenAiProvider::class ),
+					'gemini' => $c->get( GeminiProvider::class ),
+				],
+				$c->get( SchemaValidator::class ),
+				$c->get( TokenBudget::class ),
+				$c->get( Settings::class )
+			)
+		);
+		$c->set(
+			InsightService::class,
+			static fn( Container $c ) => new InsightService(
+				$c->get( ProviderRouter::class ),
+				$c->get( PromptLibrary::class ),
+				$c->get( InsightCache::class ),
+				$c->get( InsightRepository::class ),
+				$c->get( Settings::class )
+			)
+		);
+		$c->set(
+			WeeklyIntelligence::class,
+			static fn( Container $c ) => new WeeklyIntelligence(
+				$c->get( RoadmapGenerator::class ),
+				$c->get( InsightService::class ),
+				$c->get( GscRepository::class ),
+				$c->get( PropertiesRepository::class ),
+				$c->get( TrendAnalyzer::class )
+			)
+		);
 
 		// Alerts.
 		$c->set( EmailChannel::class, static fn( Container $c ) => new EmailChannel( $c->get( Settings::class ) ) );
@@ -253,6 +319,9 @@ final class Plugin {
 		// schedule re-evaluates alerts between syncs.
 		add_action( 'sda_sync_completed', static fn() => Scheduler::enqueue_next_chunk( RunAnalysisJob::NAME ) );
 		add_action( Scheduler::HOOK_PREFIX . 'hourly_alerts', static fn() => $c->get( AlertEngine::class )->evaluate() );
+
+		// Weekly intelligence: roadmap regeneration + AI weekly summary.
+		add_action( Scheduler::HOOK_PREFIX . 'weekly_pipeline', static fn() => $c->get( WeeklyIntelligence::class )->run() );
 
 		$c->set( Scheduler::class, static fn( Container $c ) => new Scheduler( $c->get( JobStateRepository::class ) ) );
 		$c->set( RestServiceProvider::class, static fn( Container $c ) => new RestServiceProvider( $c ) );

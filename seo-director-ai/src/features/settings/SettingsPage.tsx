@@ -153,6 +153,71 @@ function KeyCard({ state, service, title, hint }: { state: ConnectionsState; ser
   );
 }
 
+function AiProviderCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+  const provider = (data.settings.ai_provider as string) ?? '';
+  const cap = (data.settings.ai_monthly_token_cap as number) ?? 0;
+  const meter = data.ai.meter;
+  const pct = meter.cap > 0 ? Math.min(100, Math.round((meter.used / meter.cap) * 100)) : 0;
+
+  return (
+    <div className="sda-card">
+      <h2>AI Provider</h2>
+      <div style={{ display: 'grid', gap: 10, marginBlockStart: 8 }}>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Preferred provider (falls back to any other configured one)
+          <select
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            value={provider}
+            onChange={(e) => save.mutate({ ai_provider: e.target.value })}
+          >
+            <option value="">Auto (first configured)</option>
+            <option value="claude">Anthropic Claude</option>
+            <option value="openai">OpenAI</option>
+            <option value="gemini">Google Gemini</option>
+          </select>
+        </label>
+
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Monthly token cap (0 = unlimited)
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            type="number"
+            defaultValue={cap}
+            onBlur={(e) => save.mutate({ ai_monthly_token_cap: Number(e.target.value) })}
+          />
+        </label>
+
+        <div>
+          <div style={{ fontSize: 12, color: 'var(--sda-text-muted)', marginBlockEnd: 4 }}>
+            Used this month: {meter.used.toLocaleString()}
+            {meter.cap > 0 ? ` / ${meter.cap.toLocaleString()} (${pct}%)` : ' (uncapped)'}
+          </div>
+          {meter.cap > 0 && (
+            <div style={{ height: 6, background: 'var(--sda-surface-2)', borderRadius: 3 }}>
+              <div style={{ width: `${pct}%`, height: '100%', background: pct >= 90 ? 'var(--sda-negative)' : 'var(--sda-primary)', borderRadius: 3 }} />
+            </div>
+          )}
+        </div>
+
+        <span className={`sda-badge ${data.ai.available ? 'sda-badge--ok' : 'sda-badge--off'}`}>
+          {data.ai.available ? 'AI ready ✓' : 'AI unavailable — add a key or raise the cap'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function SettingsPage() {
   const { data, isLoading, error } = useQuery({ queryKey: ['connections'], queryFn: api.connections });
 
@@ -178,6 +243,7 @@ export function SettingsPage() {
       <KeyCard state={data} service="claude" title="AI — Anthropic Claude" hint="sk-ant-…" />
       <KeyCard state={data} service="openai" title="AI — OpenAI" hint="sk-…" />
       <KeyCard state={data} service="gemini" title="AI — Google Gemini" hint="API key" />
+      <AiProviderCard />
     </div>
   );
 }

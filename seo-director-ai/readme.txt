@@ -42,5 +42,12 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 
 == Changelog ==
 
+= 0.3.0 =
+* AI layer: pluggable OpenAI/Claude/Gemini providers with fallback chain, token budget, evidence-hash cache, and strict JSON schema validation.
+* Root-cause engine (deterministic candidates + AI ranking with confidence), on-demand explanations, roadmap generator, and AI weekly summaries.
+
+= 0.2.0 =
+* Deterministic intelligence: trend/changepoint analyzers, SEO Health Score, Winners/Losers, opportunity detectors, and the Alert Center.
+
 = 0.1.0 =
 * Phase 0 foundation: plugin core, database schema, job framework, REST API scaffold, React dashboard shell.

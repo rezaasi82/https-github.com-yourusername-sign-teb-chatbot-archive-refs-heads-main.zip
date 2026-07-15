@@ -91,6 +91,43 @@ export interface Loser {
   suggested_fix: string;
 }
 
+export interface RoadmapTask {
+  id: number;
+  scope: string;
+  title: string;
+  description: string;
+  category: string;
+  impact: number;
+  difficulty: number;
+  est_hours: number | null;
+  priority: number;
+  expected_result: string;
+  status: 'todo' | 'in_progress' | 'done' | 'dismissed';
+  measured_result: Record<string, unknown> | null;
+}
+
+export interface RootCause {
+  cause: string;
+  confidence: number;
+  fix: string;
+}
+
+export interface ExplainResponse {
+  payload: {
+    summary?: string;
+    causes?: RootCause[];
+    explanation?: string;
+    recommendation?: string;
+  };
+  cached: boolean;
+}
+
+export interface AiMeter {
+  used: number;
+  cap: number;
+  remaining: number | null;
+}
+
 export interface OverviewResponse {
   connections: { gsc: boolean; ga4: boolean; psi: boolean; ai: boolean };
   health: Health | null;
@@ -144,9 +181,10 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export const api = {
   overview: () => request<OverviewResponse>('/overview'),
-  settings: () => request<{ settings: Record<string, unknown> }>('/settings'),
+  settings: () =>
+    request<{ settings: Record<string, unknown>; ai: { available: boolean; meter: AiMeter } }>('/settings'),
   updateSettings: (settings: Record<string, unknown>) =>
-    request<{ settings: Record<string, unknown> }>('/settings', {
+    request<{ settings: Record<string, unknown>; ai: { available: boolean; meter: AiMeter } }>('/settings', {
       method: 'POST',
       body: JSON.stringify({ settings }),
     }),
@@ -181,5 +219,21 @@ export const api = {
     request<{ items: Alert[]; counts: Record<string, number> }>(`/alerts/${id}`, {
       method: 'PATCH',
       body: JSON.stringify({ status }),
+    }),
+  roadmap: (scope: string) => request<{ items: RoadmapTask[]; scope: string }>(`/roadmap?scope=${scope}`),
+  generateRoadmap: (scope: string) =>
+    request<{ items: RoadmapTask[]; scope: string }>('/roadmap/generate', {
+      method: 'POST',
+      body: JSON.stringify({ scope }),
+    }),
+  updateTask: (id: number, status: string, scope: string) =>
+    request<{ items: RoadmapTask[]; scope: string }>(`/roadmap/tasks/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, scope }),
+    }),
+  explain: (entity: 'query' | 'page', hash: string, kind: string) =>
+    request<ExplainResponse>('/insights/explain', {
+      method: 'POST',
+      body: JSON.stringify({ entity, hash, kind }),
     }),
 };

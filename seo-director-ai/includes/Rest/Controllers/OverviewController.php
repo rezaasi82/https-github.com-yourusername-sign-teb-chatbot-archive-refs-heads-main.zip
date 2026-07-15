@@ -13,6 +13,7 @@ use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\GscRepository;
 use SEODirector\Data\Repository\HealthScoreRepository;
+use SEODirector\Data\Repository\InsightRepository;
 use SEODirector\Data\Repository\JobStateRepository;
 use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
@@ -30,6 +31,7 @@ final class OverviewController extends AbstractController {
 		private HealthScoreRepository $health_scores,
 		private OpportunitiesRepository $opportunities,
 		private AlertsRepository $alerts,
+		private InsightRepository $insights,
 	) {}
 
 	public function register_routes(): void {
@@ -73,8 +75,8 @@ final class OverviewController extends AbstractController {
 				'opportunities' => array_slice( $this->opportunities->list_open( 5 ), 0, 5 ),
 				'risks'         => array_slice( $this->alerts->list( 'active', 5 ), 0, 5 ),
 				'summaries'     => [
-					'weekly'  => null,
-					'monthly' => null,
+					'weekly'  => $this->insights->latest_site( 'summary_weekly' )['summary'] ?? null,
+					'monthly' => $this->insights->latest_site( 'summary_monthly' )['summary'] ?? null,
 				],
 				'meta'          => [
 					'plugin_version' => SDA_VERSION,

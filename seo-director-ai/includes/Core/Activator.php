@@ -55,6 +55,11 @@ final class Activator {
 			'ai_provider'          => '',           // '' | openai | claude | gemini
 			'ai_auto_explain'      => true,
 			'ai_monthly_token_cap' => 500000,
+			'ai_model_claude'      => 'claude-sonnet-5',
+			'ai_model_openai'      => 'gpt-4.1-mini',
+			'ai_model_gemini'      => 'gemini-2.0-flash',
+			'site_niche'           => '',
+			'site_goals'           => '',
 			'gsc_query_rows_cap'   => 5000,
 			'gsc_page_rows_cap'    => 2000,
 			'report_day'           => 'saturday',

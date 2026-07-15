@@ -7,28 +7,38 @@
 
 namespace SEODirector\Rest;
 
+use SEODirector\Ai\InsightService;
+use SEODirector\Ai\TokenBudget;
+use SEODirector\Analysis\ChangepointDetector;
 use SEODirector\Analysis\DeclineDetector;
 use SEODirector\Analysis\GrowthDetector;
+use SEODirector\Analysis\RootCause\CauseCandidateEngine;
 use SEODirector\Core\Container;
 use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\GscRepository;
 use SEODirector\Data\Repository\HealthScoreRepository;
+use SEODirector\Data\Repository\InsightRepository;
 use SEODirector\Data\Repository\JobStateRepository;
 use SEODirector\Data\Repository\MoversRepository;
 use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
+use SEODirector\Data\Repository\TaskRepository;
 use SEODirector\Integrations\Google\Analytics4Client;
 use SEODirector\Integrations\Google\OAuthClient;
 use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
+use SEODirector\Roadmap\RoadmapGenerator;
 use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
+use SEODirector\Rest\Controllers\InsightsController;
 use SEODirector\Rest\Controllers\MetricsController;
 use SEODirector\Rest\Controllers\MoversController;
 use SEODirector\Rest\Controllers\OpportunitiesController;
 use SEODirector\Rest\Controllers\OverviewController;
+use SEODirector\Rest\Controllers\RoadmapController;
 use SEODirector\Rest\Controllers\SettingsController;
+use SEODirector\Support\RateLimiter;
 use SEODirector\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -48,7 +58,8 @@ final class RestServiceProvider {
 				$c->get( JobStateRepository::class ),
 				$c->get( HealthScoreRepository::class ),
 				$c->get( OpportunitiesRepository::class ),
-				$c->get( AlertsRepository::class )
+				$c->get( AlertsRepository::class ),
+				$c->get( InsightRepository::class )
 			),
 			new MoversController(
 				$c->get( MoversRepository::class ),
@@ -58,6 +69,18 @@ final class RestServiceProvider {
 			),
 			new OpportunitiesController( $c->get( OpportunitiesRepository::class ) ),
 			new AlertsController( $c->get( AlertsRepository::class ) ),
+			new RoadmapController( $c->get( TaskRepository::class ), $c->get( RoadmapGenerator::class ) ),
+			new InsightsController(
+				$c->get( InsightService::class ),
+				$c->get( MoversRepository::class ),
+				$c->get( PropertiesRepository::class ),
+				$c->get( GscRepository::class ),
+				$c->get( CauseCandidateEngine::class ),
+				$c->get( ChangepointDetector::class ),
+				$c->get( GrowthDetector::class ),
+				$c->get( DeclineDetector::class ),
+				$c->get( RateLimiter::class )
+			),
 			new MetricsController(
 				$c->get( GscRepository::class ),
 				$c->get( PropertiesRepository::class )
@@ -71,7 +94,11 @@ final class RestServiceProvider {
 				$c->get( JobStateRepository::class ),
 				$c->get( DailySyncCoordinator::class )
 			),
-			new SettingsController( $c->get( Settings::class ) ),
+			new SettingsController(
+				$c->get( Settings::class ),
+				$c->get( TokenBudget::class ),
+				$c->get( InsightService::class )
+			),
 		];
 
 		/**

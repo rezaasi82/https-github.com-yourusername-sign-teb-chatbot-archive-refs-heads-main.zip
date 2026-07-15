@@ -5,6 +5,7 @@ import { AlertsPage } from '../features/alerts/AlertsPage';
 import { WinnersLosersPage } from '../features/movers/WinnersLosersPage';
 import { OpportunitiesPage } from '../features/opportunities/OpportunitiesPage';
 import { OverviewPage } from '../features/overview/OverviewPage';
+import { RoadmapPage } from '../features/roadmap/RoadmapPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { useHashRoute } from './router';
 import { useTheme } from './theme';
@@ -66,9 +67,10 @@ export function App() {
           {current.route === 'overview' && <OverviewPage />}
           {current.route === 'movers' && <WinnersLosersPage />}
           {current.route === 'opportunities' && <OpportunitiesPage />}
+          {current.route === 'roadmap' && <RoadmapPage />}
           {current.route === 'alerts' && <AlertsPage />}
           {current.route === 'settings' && <SettingsPage />}
-          {!['overview', 'movers', 'opportunities', 'alerts', 'settings'].includes(current.route) && (
+          {!['overview', 'movers', 'opportunities', 'roadmap', 'alerts', 'settings'].includes(current.route) && (
             <ComingSoon label={current.label} />
           )}
         </main>

@@ -61,6 +61,18 @@ export function OverviewPage() {
           )}
         </div>
 
+        {data.summaries.weekly && (
+          <div className="sda-card" style={{ gridColumn: 'span 2' }}>
+            <h2>
+              <span className="sda-badge" style={{ background: 'var(--sda-primary-soft)', color: 'var(--sda-primary)' }}>
+                ✦ AI
+              </span>{' '}
+              Weekly Summary
+            </h2>
+            <p style={{ fontSize: 14, marginBlockStart: 8 }}>{data.summaries.weekly}</p>
+          </div>
+        )}
+
         <div className="sda-card" style={{ gridColumn: 'span 2' }}>
           <h2>Organic Traffic</h2>
           {data.traffic.series.length > 0 ? (

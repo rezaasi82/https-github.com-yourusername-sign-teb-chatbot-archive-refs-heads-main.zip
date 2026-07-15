@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, Loser, Winner } from '../../api/client';
 import { ACTION_LABELS, CAUSE_LABELS, FIX_LABELS, REASON_LABELS, severityColor } from '../../components/ui/labels';
+import { ExplainButton } from '../rootcause/ExplainButton';
 
 type Tab = 'winners' | 'losers';
 type Entity = 'query' | 'page';
@@ -76,6 +77,7 @@ export function WinnersLosersPage() {
                 <th>{tab === 'winners' ? 'Reason' : 'Cause'}</th>
                 {tab === 'losers' && <th>Priority</th>}
                 <th>{tab === 'winners' ? 'Next action' : 'Suggested fix'}</th>
+                <th>AI</th>
               </tr>
             </thead>
             <tbody>
@@ -113,6 +115,9 @@ export function WinnersLosersPage() {
                     )}
                     <td style={{ color: 'var(--sda-text-muted)' }}>
                       {winner ? ACTION_LABELS[winner.next_action] ?? winner.next_action : FIX_LABELS[loser!.suggested_fix] ?? loser!.suggested_fix}
+                    </td>
+                    <td style={{ whiteSpace: 'normal', minWidth: 240 }}>
+                      <ExplainButton entity={entity} hash={item.hash} kind={winner ? 'growth' : 'root_cause'} />
                     </td>
                   </tr>
                 );
