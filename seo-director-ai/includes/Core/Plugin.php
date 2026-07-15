@@ -11,6 +11,10 @@ defined( 'ABSPATH' ) || exit;
 
 use SEODirector\Admin\AdminMenu;
 use SEODirector\Admin\Assets;
+use SEODirector\Alerts\AlertEngine;
+use SEODirector\Alerts\Channels\EmailChannel;
+use SEODirector\Alerts\Rules\CwvDegradationRule;
+use SEODirector\Alerts\Rules\TrafficDropRule;
 use SEODirector\Ai\InsightCache;
 use SEODirector\Ai\ProviderRouter;
 use SEODirector\Ai\SchemaValidator;
@@ -24,18 +28,28 @@ use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\GscDailyTotalsRepository;
 use SEODirector\Data\Repository\GscPageDailyRepository;
+use SEODirector\Data\Repository\Ga4DailyRepository;
 use SEODirector\Data\Repository\GscQueryDailyRepository;
 use SEODirector\Data\Repository\HealthScoreRepository;
 use SEODirector\Data\Repository\JobStateRepository;
 use SEODirector\Data\Repository\OpportunitiesRepository;
+use SEODirector\Data\Repository\PropertiesRepository;
+use SEODirector\Data\Repository\PsiAuditsRepository;
+use SEODirector\Data\Retention\RetentionPolicy;
+use SEODirector\Data\Rollup\RollupBuilder;
 use SEODirector\Data\UrlCanonicalizer;
+use SEODirector\Integrations\Google\Analytics4Client;
 use SEODirector\Integrations\Google\OAuthClient;
+use SEODirector\Integrations\Google\PageSpeedClient;
 use SEODirector\Integrations\Google\QuotaManager;
 use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Integrations\Google\TokenVault;
 use SEODirector\Integrations\Http\RetryingHttpClient;
 use SEODirector\Jobs\Handlers\RunAnalysisJob;
+use SEODirector\Jobs\Handlers\RunPsiAuditJob;
+use SEODirector\Jobs\Handlers\SyncGa4Job;
 use SEODirector\Jobs\Handlers\SyncGscJob;
+use SEODirector\Jobs\Handlers\WeeklyMaintenanceJob;
 use SEODirector\Jobs\Scheduler;
 use SEODirector\Rest\RestServiceProvider;
 
@@ -72,6 +86,10 @@ final class Plugin {
 		$rest = $this->container->get( RestServiceProvider::class );
 		add_action( 'rest_api_init', array( $rest, 'register_routes' ) );
 
+		/** @var EmailChannel $email_channel */
+		$email_channel = $this->container->get( EmailChannel::class );
+		$email_channel->register();
+
 		if ( is_admin() ) {
 			/** @var AdminMenu $menu */
 			$menu = $this->container->get( AdminMenu::class );
@@ -105,6 +123,9 @@ final class Plugin {
 
 		// Repositories.
 		$c->set( ConnectionsRepository::class, static fn( $c ) => new ConnectionsRepository( $c->get( TokenVault::class ) ) );
+		$c->set( PropertiesRepository::class, static fn() => new PropertiesRepository() );
+		$c->set( Ga4DailyRepository::class, static fn() => new Ga4DailyRepository() );
+		$c->set( PsiAuditsRepository::class, static fn() => new PsiAuditsRepository() );
 		$c->set( JobStateRepository::class, static fn() => new JobStateRepository() );
 		$c->set( GscDailyTotalsRepository::class, static fn() => new GscDailyTotalsRepository() );
 		$c->set( GscQueryDailyRepository::class, static fn() => new GscQueryDailyRepository() );
@@ -129,6 +150,40 @@ final class Plugin {
 				$c->get( RetryingHttpClient::class ),
 				$c->get( OAuthClient::class ),
 				$c->get( QuotaManager::class )
+			)
+		);
+		$c->set(
+			Analytics4Client::class,
+			static fn( $c ) => new Analytics4Client(
+				$c->get( RetryingHttpClient::class ),
+				$c->get( OAuthClient::class ),
+				$c->get( QuotaManager::class )
+			)
+		);
+		$c->set(
+			PageSpeedClient::class,
+			static fn( $c ) => new PageSpeedClient(
+				$c->get( RetryingHttpClient::class ),
+				$c->get( ConnectionsRepository::class ),
+				$c->get( QuotaManager::class )
+			)
+		);
+
+		// Rollups, retention, alerts.
+		$c->set( RollupBuilder::class, static fn() => new RollupBuilder() );
+		$c->set( RetentionPolicy::class, static fn( $c ) => new RetentionPolicy( $c->get( Options::class ) ) );
+		$c->set(
+			AlertEngine::class,
+			static fn( $c ) => new AlertEngine(
+				$c->get( AlertsRepository::class ),
+				array(
+					new TrafficDropRule(
+						$c->get( PropertiesRepository::class ),
+						$c->get( GscDailyTotalsRepository::class ),
+						$c->get( TrendAnalyzer::class )
+					),
+					new CwvDegradationRule( $c->get( PsiAuditsRepository::class ) ),
+				)
 			)
 		);
 
@@ -178,9 +233,49 @@ final class Plugin {
 				$c->get( OpportunitiesRepository::class )
 			)
 		);
-		$c->set( Scheduler::class, static fn( $c ) => new Scheduler( $c->get( SyncGscJob::class ), $c->get( RunAnalysisJob::class ) ) );
+		$c->set(
+			SyncGa4Job::class,
+			static fn( $c ) => new SyncGa4Job(
+				$c->get( Analytics4Client::class ),
+				$c->get( PropertiesRepository::class ),
+				$c->get( JobStateRepository::class ),
+				$c->get( Ga4DailyRepository::class ),
+				$c->get( UrlCanonicalizer::class )
+			)
+		);
+		$c->set(
+			RunPsiAuditJob::class,
+			static fn( $c ) => new RunPsiAuditJob(
+				$c->get( PageSpeedClient::class ),
+				$c->get( PropertiesRepository::class ),
+				$c->get( GscPageDailyRepository::class ),
+				$c->get( PsiAuditsRepository::class ),
+				$c->get( JobStateRepository::class ),
+				$c->get( UrlCanonicalizer::class )
+			)
+		);
+		$c->set(
+			WeeklyMaintenanceJob::class,
+			static fn( $c ) => new WeeklyMaintenanceJob(
+				$c->get( PropertiesRepository::class ),
+				$c->get( RollupBuilder::class ),
+				$c->get( RetentionPolicy::class )
+			)
+		);
+		$c->set(
+			Scheduler::class,
+			static fn( $c ) => new Scheduler(
+				$c->get( SyncGscJob::class ),
+				$c->get( SyncGa4Job::class ),
+				$c->get( RunAnalysisJob::class ),
+				$c->get( RunPsiAuditJob::class ),
+				$c->get( WeeklyMaintenanceJob::class ),
+				$c->get( AlertEngine::class )
+			)
+		);
 
 		// Presentation.
+		$c->set( EmailChannel::class, static fn() => new EmailChannel() );
 		$c->set( RestServiceProvider::class, static fn( $c ) => new RestServiceProvider( $c ) );
 		$c->set( AdminMenu::class, static fn() => new AdminMenu() );
 		$c->set( Assets::class, static fn() => new Assets() );

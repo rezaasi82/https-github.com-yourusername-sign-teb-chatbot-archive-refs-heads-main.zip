@@ -18,12 +18,19 @@ use SEODirector\Data\Repository\GscPageDailyRepository;
 use SEODirector\Data\Repository\HealthScoreRepository;
 use SEODirector\Data\Repository\JobStateRepository;
 use SEODirector\Data\Repository\OpportunitiesRepository;
+use SEODirector\Data\Repository\PropertiesRepository;
+use SEODirector\Data\Repository\PsiAuditsRepository;
+use SEODirector\Integrations\Google\Analytics4Client;
 use SEODirector\Integrations\Google\OAuthClient;
+use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Jobs\Scheduler;
+use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
 use SEODirector\Rest\Controllers\OpportunitiesController;
 use SEODirector\Rest\Controllers\OverviewController;
+use SEODirector\Rest\Controllers\PropertiesController;
 use SEODirector\Rest\Controllers\SettingsController;
+use SEODirector\Rest\Controllers\VitalsController;
 
 final class RestServiceProvider {
 
@@ -53,6 +60,20 @@ final class RestServiceProvider {
 			$c->get( OAuthClient::class ),
 			$c->get( Scheduler::class )
 		) )->register();
+
+		( new PropertiesController(
+			$c->get( PropertiesRepository::class ),
+			$c->get( ConnectionsRepository::class ),
+			$c->get( SearchConsoleClient::class ),
+			$c->get( Analytics4Client::class )
+		) )->register();
+
+		( new VitalsController(
+			$c->get( PsiAuditsRepository::class ),
+			$c->get( Scheduler::class )
+		) )->register();
+
+		( new AlertsController( $c->get( AlertsRepository::class ) ) )->register();
 
 		( new SettingsController( $c->get( Options::class ) ) )->register();
 	}

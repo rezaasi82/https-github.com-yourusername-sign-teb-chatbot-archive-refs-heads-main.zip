@@ -38,6 +38,11 @@ final class Activator {
 		if ( ! wp_next_scheduled( 'sda_hourly_alerts' ) ) {
 			wp_schedule_event( time() + HOUR_IN_SECONDS, 'hourly', 'sda_hourly_alerts' );
 		}
+		if ( ! wp_next_scheduled( 'sda_weekly_pipeline' ) ) {
+			// Saturday 07:00 site time per architecture doc.
+			$next = strtotime( 'next saturday 07:00:00' ) - ( (int) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+			wp_schedule_event( $next, 'weekly', 'sda_weekly_pipeline' );
+		}
 	}
 
 	/**
@@ -143,6 +148,29 @@ final class Activator {
 			UNIQUE KEY uq_row (property_id, week_start, page_hash, query_hash),
 			KEY idx_query (property_id, query_hash, week_start)
 		) {$charset};";
+
+		// Weekly/monthly rollups: what Winners/Losers and comparisons read.
+		foreach ( array( 'query' => 'query', 'page' => 'page_path' ) as $dim => $label_col ) {
+			$hash_col = 'query' === $dim ? 'query_hash' : 'page_hash';
+			foreach ( array( 'weekly' => 'week_start', 'monthly' => 'month_start' ) as $grain => $date_col ) {
+				$tables[] = "CREATE TABLE {$p}gsc_{$dim}_{$grain} (
+					id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+					site_id BIGINT UNSIGNED NOT NULL,
+					property_id BIGINT UNSIGNED NOT NULL,
+					{$date_col} DATE NOT NULL,
+					{$hash_col} BINARY(16) NOT NULL,
+					{$label_col} VARCHAR(750) NOT NULL,
+					clicks INT UNSIGNED NOT NULL DEFAULT 0,
+					impressions BIGINT UNSIGNED NOT NULL DEFAULT 0,
+					ctr DECIMAL(6,4) NOT NULL DEFAULT 0,
+					position DECIMAL(6,2) NOT NULL DEFAULT 0,
+					best_position DECIMAL(6,2) NOT NULL DEFAULT 0,
+					PRIMARY KEY  (id),
+					UNIQUE KEY uq_row (property_id, {$date_col}, {$hash_col}),
+					KEY idx_entity_time (property_id, {$hash_col}, {$date_col})
+				) {$charset};";
+			}
+		}
 
 		$tables[] = "CREATE TABLE {$p}gsc_dimension_daily (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

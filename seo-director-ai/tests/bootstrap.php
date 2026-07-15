@@ -8,6 +8,13 @@
 
 define( 'ABSPATH', __DIR__ . '/' );
 
+// Core time constants (wp-includes/default-constants.php).
+define( 'MINUTE_IN_SECONDS', 60 );
+define( 'HOUR_IN_SECONDS', 3600 );
+define( 'DAY_IN_SECONDS', 86400 );
+define( 'WEEK_IN_SECONDS', 604800 );
+define( 'MONTH_IN_SECONDS', 2592000 );
+
 if ( ! function_exists( 'wp_json_encode' ) ) {
 	function wp_json_encode( $data, $options = 0, $depth = 512 ) {
 		return json_encode( $data, $options, $depth ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode

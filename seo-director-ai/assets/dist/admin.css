@@ -297,3 +297,33 @@
 	color: var( --sda-text-soft );
 	font-style: italic;
 }
+
+/* Connections: stacked rows with a property picker underneath */
+.sda-list__item--stack {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.sda-list__row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.sda-props {
+	margin: 8px 0 0;
+	padding-inline-start: 24px;
+	list-style: none;
+}
+
+.sda-props li {
+	padding-block: 3px;
+	font-size: 13px;
+}
+
+/* Setup guide */
+.sda-setup {
+	margin: 0 0 16px;
+	padding-inline-start: 20px;
+	line-height: 1.9;
+}

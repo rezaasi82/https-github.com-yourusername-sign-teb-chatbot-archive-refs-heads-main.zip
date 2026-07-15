@@ -10,29 +10,50 @@ namespace SEODirector\Jobs;
 
 defined( 'ABSPATH' ) || exit;
 
+use SEODirector\Alerts\AlertEngine;
 use SEODirector\Jobs\Handlers\RunAnalysisJob;
+use SEODirector\Jobs\Handlers\RunPsiAuditJob;
+use SEODirector\Jobs\Handlers\SyncGa4Job;
 use SEODirector\Jobs\Handlers\SyncGscJob;
+use SEODirector\Jobs\Handlers\WeeklyMaintenanceJob;
 
 final class Scheduler {
 
-	public const HOOK_DAILY_SYNC = 'sda_daily_sync';
-	public const HOOK_RUN_CHUNK  = 'sda_run_chunk';
+	public const HOOK_DAILY_SYNC      = 'sda_daily_sync';
+	public const HOOK_HOURLY_ALERTS   = 'sda_hourly_alerts';
+	public const HOOK_WEEKLY_PIPELINE = 'sda_weekly_pipeline';
+	public const HOOK_RUN_CHUNK       = 'sda_run_chunk';
 
 	public function __construct(
 		private readonly SyncGscJob $sync_gsc,
+		private readonly SyncGa4Job $sync_ga4,
 		private readonly RunAnalysisJob $run_analysis,
+		private readonly RunPsiAuditJob $run_psi,
+		private readonly WeeklyMaintenanceJob $weekly_maintenance,
+		private readonly AlertEngine $alert_engine,
 	) {}
 
 	public function register_hooks(): void {
 		add_action( self::HOOK_DAILY_SYNC, array( $this, 'start_daily_pipeline' ) );
+		add_action( self::HOOK_HOURLY_ALERTS, array( $this->alert_engine, 'evaluate_all' ) );
+		add_action( self::HOOK_WEEKLY_PIPELINE, array( $this, 'start_weekly_pipeline' ) );
 		add_action( self::HOOK_RUN_CHUNK, array( $this, 'run_chunk' ), 10, 1 );
 	}
 
 	/**
-	 * Nightly entry point: kick the GSC sync; analysis chains automatically after it.
+	 * Nightly entry point: GSC + GA4 syncs; analysis chains after the GSC sync.
 	 */
 	public function start_daily_pipeline(): void {
 		$this->enqueue( SyncGscJob::NAME );
+		$this->enqueue( SyncGa4Job::NAME );
+	}
+
+	/**
+	 * Saturday pipeline: rollups + retention, then the CWV audit round.
+	 */
+	public function start_weekly_pipeline(): void {
+		$this->enqueue( WeeklyMaintenanceJob::NAME );
+		$this->enqueue( RunPsiAuditJob::NAME, 60 );
 	}
 
 	/**
@@ -53,9 +74,12 @@ final class Scheduler {
 	 */
 	public function run_chunk( string $job ): void {
 		$result = match ( $job ) {
-			SyncGscJob::NAME     => $this->sync_gsc->run_chunk(),
-			RunAnalysisJob::NAME => $this->run_analysis->run_chunk(),
-			default              => JobResult::done(),
+			SyncGscJob::NAME           => $this->sync_gsc->run_chunk(),
+			SyncGa4Job::NAME           => $this->sync_ga4->run_chunk(),
+			RunAnalysisJob::NAME       => $this->run_analysis->run_chunk(),
+			RunPsiAuditJob::NAME       => $this->run_psi->run_chunk(),
+			WeeklyMaintenanceJob::NAME => $this->weekly_maintenance->run_chunk(),
+			default                    => JobResult::done(),
 		};
 
 		if ( $result->has_more ) {
@@ -63,7 +87,7 @@ final class Scheduler {
 			return;
 		}
 
-		// Chain: analysis follows a completed sync.
+		// Chain: analysis follows a completed GSC sync.
 		if ( SyncGscJob::NAME === $job && $result->succeeded ) {
 			/**
 			 * Fires after a data sync completes.

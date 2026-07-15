@@ -91,9 +91,26 @@
 	/* Screens                                                             */
 	/* ------------------------------------------------------------------ */
 
-	function OverviewScreen( { data, onRescan } ) {
+	function SetupGuide( { goToConnections } ) {
+		return h( Card, { title: __( 'Welcome — let’s get you set up', 'seo-director-ai' ) },
+			h( 'ol', { className: 'sda-setup' },
+				h( 'li', null, __( 'Add your Google OAuth Client ID under Settings.', 'seo-director-ai' ) ),
+				h( 'li', null, __( 'Connect Google Search Console under Connections.', 'seo-director-ai' ) ),
+				h( 'li', null, __( 'Pick your property, then run the first sync.', 'seo-director-ai' ) ),
+				h( 'li', null, __( '(Optional) Add an AI provider key for explanations and roadmaps.', 'seo-director-ai' ) )
+			),
+			config.canManage
+				? h( 'button', { className: 'button button-primary', onClick: goToConnections }, __( 'Open Connections', 'seo-director-ai' ) )
+				: null
+		);
+	}
+
+	function OverviewScreen( { data, onRescan, goToConnections } ) {
 		if ( ! data ) {
 			return h( 'p', { className: 'sda-loading' }, __( 'Loading…', 'seo-director-ai' ) );
+		}
+		if ( data.connected === false ) {
+			return h( SetupGuide, { goToConnections: goToConnections } );
 		}
 		const t = data.totals || {};
 		return h(
@@ -208,6 +225,38 @@
 		);
 	}
 
+	function PropertyPicker( { service } ) {
+		const [ properties, setProperties ] = useState( null );
+		const [ error, setError ] = useState( '' );
+
+		const load = () =>
+			apiFetch( { path: 'properties?service=' + service } )
+				.then( ( r ) => setProperties( r.properties || [] ) )
+				.catch( ( e ) => setError( ( e && e.message ) || __( 'Could not load properties.', 'seo-director-ai' ) ) );
+		useEffect( () => { load(); }, [] );
+
+		const activate = ( id ) =>
+			apiFetch( { path: 'properties/' + id + '/activate', method: 'POST', data: { service: service } } ).then( load );
+
+		if ( error ) return h( 'p', { className: 'sda-empty' }, error );
+		if ( properties === null ) return h( 'p', { className: 'sda-loading' }, __( 'Discovering properties…', 'seo-director-ai' ) );
+		if ( ! properties.length ) return h( 'p', { className: 'sda-empty' }, __( 'No properties found on this account.', 'seo-director-ai' ) );
+
+		return h( 'ul', { className: 'sda-props' }, properties.map( ( p ) =>
+			h( 'li', { key: p.id },
+				h( 'label', null,
+					h( 'input', {
+						type: 'radio',
+						name: 'sda-prop-' + service,
+						checked: p.is_active,
+						onChange: () => activate( p.id ),
+					} ),
+					' ', p.display_name || p.external_id
+				)
+			)
+		) );
+	}
+
 	function ConnectionsScreen() {
 		const [ connections, setConnections ] = useState( null );
 		const [ busy, setBusy ] = useState( '' );
@@ -252,16 +301,77 @@
 		return h( Card, { title: __( 'Connections', 'seo-director-ai' ) },
 			h( 'ul', { className: 'sda-list' }, services.map( ( svc ) => {
 				const row = connections.find( ( c ) => c.service === svc.slug );
-				return h( 'li', { key: svc.slug, className: 'sda-list__item' },
-					h( 'span', { className: 'sda-list__label' }, svc.name ),
-					row
-						? h( Fragment, null,
-							h( 'span', { className: 'sda-badge sda-badge--sev-' + ( row.status === 'connected' ? 'low' : 'high' ) }, row.status ),
-							h( 'button', { className: 'button-link sda-danger', onClick: () => disconnect( svc.slug ) }, __( 'Disconnect', 'seo-director-ai' ) ) )
-						: h( 'button', { className: 'button', disabled: busy === svc.slug, onClick: () => connect( svc ) },
-							busy === svc.slug ? __( 'Working…', 'seo-director-ai' ) : __( 'Connect', 'seo-director-ai' ) )
+				return h( 'li', { key: svc.slug, className: 'sda-list__item sda-list__item--stack' },
+					h( 'div', { className: 'sda-list__row' },
+						h( 'span', { className: 'sda-list__label' }, svc.name ),
+						row
+							? h( Fragment, null,
+								h( 'span', { className: 'sda-badge sda-badge--sev-' + ( row.status === 'connected' ? 'low' : 'high' ) }, row.status ),
+								h( 'button', { className: 'button-link sda-danger', onClick: () => disconnect( svc.slug ) }, __( 'Disconnect', 'seo-director-ai' ) ) )
+							: h( 'button', { className: 'button', disabled: busy === svc.slug, onClick: () => connect( svc ) },
+								busy === svc.slug ? __( 'Working…', 'seo-director-ai' ) : __( 'Connect', 'seo-director-ai' ) )
+					),
+					svc.oauth && row && row.status === 'connected'
+						? h( PropertyPicker, { service: svc.slug } )
+						: null
 				);
 			} ) )
+		);
+	}
+
+	function VitalsScreen() {
+		const [ data, setData ] = useState( null );
+		const [ queued, setQueued ] = useState( false );
+
+		useEffect( () => {
+			apiFetch( { path: 'metrics/vitals' } ).then( setData ).catch( () => setData( { home: [], recent: [] } ) );
+		}, [] );
+
+		if ( ! data ) return h( 'p', { className: 'sda-loading' }, __( 'Loading…', 'seo-director-ai' ) );
+
+		const queueAudit = () =>
+			apiFetch( { path: 'metrics/vitals', method: 'POST' } ).then( () => setQueued( true ) );
+
+		const metricCell = ( v, unit ) => ( v == null ? '—' : Number( v ).toLocaleString() + ( unit || '' ) );
+
+		return h( Fragment, null,
+			h( Card, { title: __( 'Core Web Vitals — home page', 'seo-director-ai' ) },
+				data.home && data.home.length
+					? h( 'div', { className: 'sda-table-wrap' }, h( 'table', { className: 'sda-table' },
+						h( 'thead', null, h( 'tr', null,
+							h( 'th', null, __( 'Device', 'seo-director-ai' ) ),
+							h( 'th', null, 'LCP' ), h( 'th', null, 'CLS' ), h( 'th', null, 'INP' ), h( 'th', null, 'TTFB' ),
+							h( 'th', null, __( 'Score', 'seo-director-ai' ) ),
+							h( 'th', null, __( 'Status', 'seo-director-ai' ) )
+						) ),
+						h( 'tbody', null, data.home.map( ( a, i ) => h( 'tr', { key: i },
+							h( 'td', null, a.strategy ),
+							h( 'td', null, metricCell( a.lcp_ms, ' ms' ) ),
+							h( 'td', null, a.cls == null ? '—' : a.cls ),
+							h( 'td', null, metricCell( a.inp_ms, ' ms' ) ),
+							h( 'td', null, metricCell( a.ttfb_ms, ' ms' ) ),
+							h( 'td', null, a.perf_score == null ? '—' : a.perf_score ),
+							h( 'td', null, h( 'span', {
+								className: 'sda-badge sda-badge--sev-' + ( a.cwv_status === 'good' ? 'low' : a.cwv_status === 'poor' ? 'critical' : 'medium' ),
+							}, a.cwv_status ) )
+						) ) )
+					) )
+					: h( 'p', { className: 'sda-empty' }, __( 'No audits yet — run one below.', 'seo-director-ai' ) ),
+				config.canManage
+					? h( 'p', null, h( 'button', { className: 'button', disabled: queued, onClick: queueAudit },
+						queued ? __( 'Audit queued ✓', 'seo-director-ai' ) : __( 'Run audit round', 'seo-director-ai' ) ) )
+					: null
+			),
+			h( Card, { title: __( 'Recent audits', 'seo-director-ai' ) },
+				data.recent && data.recent.length
+					? h( 'ul', { className: 'sda-list' }, data.recent.map( ( a, i ) =>
+						h( 'li', { key: i, className: 'sda-list__item' },
+							h( 'span', { className: 'sda-badge' }, a.strategy ),
+							h( 'span', { className: 'sda-list__label' }, a.page_path ),
+							h( 'span', { className: 'sda-list__meta' }, ( a.perf_score == null ? '—' : a.perf_score ) + ' / 100' )
+						) ) )
+					: h( 'p', { className: 'sda-empty' }, __( 'Nothing audited yet.', 'seo-director-ai' ) )
+			)
 		);
 	}
 
@@ -335,6 +445,7 @@
 
 		const tabs = [
 			[ 'overview', __( 'Overview', 'seo-director-ai' ) ],
+			[ 'vitals', __( 'Web Vitals', 'seo-director-ai' ) ],
 			[ 'connections', __( 'Connections', 'seo-director-ai' ) ],
 			[ 'settings', __( 'Settings', 'seo-director-ai' ) ],
 		];
@@ -357,7 +468,8 @@
 					? h( 'button', { className: 'button', onClick: sync, title: __( 'Queue a background data sync', 'seo-director-ai' ) }, __( 'Sync now', 'seo-director-ai' ) )
 					: null
 			),
-			screen === 'overview' ? h( OverviewScreen, { data: overview, onRescan: rescan } ) : null,
+			screen === 'overview' ? h( OverviewScreen, { data: overview, onRescan: rescan, goToConnections: () => setScreen( 'connections' ) } ) : null,
+			screen === 'vitals' ? h( VitalsScreen ) : null,
 			screen === 'connections' ? h( ConnectionsScreen ) : null,
 			screen === 'settings' ? h( SettingsScreen ) : null
 		);
