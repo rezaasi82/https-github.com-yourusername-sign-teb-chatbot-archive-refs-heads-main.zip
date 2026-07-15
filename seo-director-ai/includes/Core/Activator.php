@@ -65,6 +65,11 @@ final class Activator {
 			'report_day'           => 'saturday',
 			'report_time'          => '07:00',
 			'alert_email'          => get_option( 'admin_email' ),
+			'alert_webhook_url'    => '',
+			'alert_slack_url'      => '',
+			'alert_telegram_token' => '',
+			'alert_telegram_chat'  => '',
+			'license_shared_secret' => '',
 			'delete_data_on_uninstall' => false,
 		];
 	}

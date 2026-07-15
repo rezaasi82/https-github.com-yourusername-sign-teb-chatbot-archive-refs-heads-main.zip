@@ -1,7 +1,7 @@
 <?php
 /**
  * Email alert channel: one digest per evaluation run, never one mail per
- * alert. Webhook/Slack/Telegram channels arrive with the PRO phase.
+ * alert. Included in every edition.
  *
  * @package SEODirector
  */
@@ -12,9 +12,21 @@ use SEODirector\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
-final class EmailChannel {
+final class EmailChannel implements AlertChannelInterface {
 
 	public function __construct( private Settings $settings ) {}
+
+	public function slug(): string {
+		return 'email';
+	}
+
+	public function is_enabled(): bool {
+		return '' !== (string) $this->settings->get( 'alert_email', '' );
+	}
+
+	public function requires_pro(): bool {
+		return false;
+	}
 
 	/**
 	 * @param array<int, array{rule: string, severity: string, message: string}> $alerts
@@ -32,23 +44,11 @@ final class EmailChannel {
 			count( $alerts )
 		);
 
-		$severity_icons = [
-			'critical' => '⛔',
-			'high'     => '⚠️',
-			'medium'   => '🔶',
-			'low'      => 'ℹ️',
-		];
-
+		$icons = [ 'critical' => '⛔', 'high' => '⚠️', 'medium' => '🔶', 'low' => 'ℹ️' ];
 		$lines = [];
 		foreach ( $alerts as $alert ) {
-			$lines[] = sprintf(
-				'%s [%s] %s',
-				$severity_icons[ $alert['severity'] ] ?? '',
-				strtoupper( $alert['severity'] ),
-				$alert['message']
-			);
+			$lines[] = sprintf( '%s [%s] %s', $icons[ $alert['severity'] ] ?? '', strtoupper( $alert['severity'] ), $alert['message'] );
 		}
-
 		$lines[] = '';
 		$lines[] = __( 'Review and act on alerts:', 'seo-director-ai' ) . ' ' . admin_url( 'admin.php?page=seo-director-ai#/alerts' );
 

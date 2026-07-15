@@ -160,6 +160,46 @@ export interface ConnectionsState {
   sync: { gsc: SyncState | null; ga4: SyncState | null };
 }
 
+export interface LicenseState {
+  state: 'none' | 'active' | 'grace' | 'expired';
+  edition: string;
+  tier: string | null;
+  expires_at: string | null;
+  days_left: number | null;
+  in_grace: boolean;
+  has_license: boolean;
+}
+
+export interface LicenseStatusResponse {
+  license: LicenseState;
+  features: Record<string, boolean>;
+  edition: string;
+}
+
+export interface MetaSuggestion {
+  title: string;
+  description: string;
+  title_px: number;
+  desc_px: number;
+}
+
+export interface ContentGapTopic {
+  topic: string;
+  rationale?: string;
+  target_queries?: string[];
+  [key: string]: unknown;
+}
+
+export interface ReportRow {
+  id: number;
+  type: string;
+  period_start: string;
+  period_end: string;
+  formats: string[];
+  status: string;
+  created_at: string;
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const { restUrl, nonce } = boot();
   const response = await fetch(`${restUrl}${path}`, {
@@ -236,4 +276,21 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ entity, hash, kind }),
     }),
+  licenseStatus: () => request<LicenseStatusResponse>('/license/status'),
+  activateLicense: (licenseKey: string) =>
+    request<LicenseStatusResponse>('/license/activate', {
+      method: 'POST',
+      body: JSON.stringify({ license_key: licenseKey }),
+    }),
+  deactivateLicense: () => request<LicenseStatusResponse>('/license/deactivate', { method: 'POST' }),
+  contentMeta: (hash: string) =>
+    request<MetaSuggestion>('/content/meta', { method: 'POST', body: JSON.stringify({ hash }) }),
+  contentGap: () => request<{ topics: ContentGapTopic[] }>('/content/gap', { method: 'POST' }),
+  reports: () => request<{ items: ReportRow[] }>('/reports'),
+  generateReport: (type: string, formats: string[]) =>
+    request<{ items: ReportRow[] }>('/reports', { method: 'POST', body: JSON.stringify({ type, formats }) }),
+  reportDownloadUrl: (id: number, format: string): string => {
+    const { restUrl, nonce } = boot();
+    return `${restUrl}/reports/${id}/download?format=${format}&_wpnonce=${encodeURIComponent(nonce)}`;
+  },
 };

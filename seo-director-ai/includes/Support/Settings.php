@@ -78,6 +78,11 @@ final class Settings {
 			'report_day'           => static fn( $v ) => in_array( $v, [ 'saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday' ], true ) ? $v : 'saturday',
 			'report_time'          => static fn( $v ) => preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', (string) $v ) ? (string) $v : '07:00',
 			'alert_email'          => static fn( $v ) => sanitize_email( (string) $v ),
+			'alert_webhook_url'    => static fn( $v ) => esc_url_raw( (string) $v ),
+			'alert_slack_url'      => static fn( $v ) => esc_url_raw( (string) $v ),
+			'alert_telegram_token' => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'alert_telegram_chat'  => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'license_shared_secret' => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'delete_data_on_uninstall' => static fn( $v ) => (bool) $v,
 		];
 	}

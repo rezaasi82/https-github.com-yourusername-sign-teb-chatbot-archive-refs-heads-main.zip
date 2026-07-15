@@ -29,13 +29,21 @@ use SEODirector\Integrations\Google\OAuthClient;
 use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
 use SEODirector\Roadmap\RoadmapGenerator;
+use SEODirector\Content\ContentStrategist;
+use SEODirector\License\FeatureGate;
+use SEODirector\License\LicenseManager;
+use SEODirector\Reports\ReportGenerator;
+use SEODirector\Data\Repository\ReportsRepository;
 use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
+use SEODirector\Rest\Controllers\ContentController;
 use SEODirector\Rest\Controllers\InsightsController;
+use SEODirector\Rest\Controllers\LicenseController;
 use SEODirector\Rest\Controllers\MetricsController;
 use SEODirector\Rest\Controllers\MoversController;
 use SEODirector\Rest\Controllers\OpportunitiesController;
 use SEODirector\Rest\Controllers\OverviewController;
+use SEODirector\Rest\Controllers\ReportsController;
 use SEODirector\Rest\Controllers\RoadmapController;
 use SEODirector\Rest\Controllers\SettingsController;
 use SEODirector\Support\RateLimiter;
@@ -98,6 +106,20 @@ final class RestServiceProvider {
 				$c->get( Settings::class ),
 				$c->get( TokenBudget::class ),
 				$c->get( InsightService::class )
+			),
+			new LicenseController(
+				$c->get( LicenseManager::class ),
+				$c->get( FeatureGate::class ),
+				$c->get( RateLimiter::class )
+			),
+			new ContentController(
+				$c->get( ContentStrategist::class ),
+				$c->get( FeatureGate::class ),
+				$c->get( RateLimiter::class )
+			),
+			new ReportsController(
+				$c->get( ReportsRepository::class ),
+				$c->get( ReportGenerator::class )
 			),
 		];
 

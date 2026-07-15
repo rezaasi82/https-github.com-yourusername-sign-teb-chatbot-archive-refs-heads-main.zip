@@ -1,6 +1,140 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { api, ConnectionsState } from '../../api/client';
+import { api, boot, ConnectionsState, type LicenseStatusResponse } from '../../api/client';
+
+function LicenseCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['license'], queryFn: api.licenseStatus });
+  const [key, setKey] = useState('');
+
+  const activate = useMutation({
+    mutationFn: () => api.activateLicense(key),
+    onSuccess: (next: LicenseStatusResponse) => {
+      queryClient.setQueryData(['license'], next);
+      setKey('');
+    },
+  });
+
+  const deactivate = useMutation({
+    mutationFn: api.deactivateLicense,
+    onSuccess: (next: LicenseStatusResponse) => queryClient.setQueryData(['license'], next),
+  });
+
+  if (!data) return null;
+  const { license, edition } = data;
+
+  const stateBadge: Record<string, string> = {
+    active: 'sda-badge--ok',
+    grace: 'sda-badge--off',
+    expired: 'sda-badge--off',
+    none: 'sda-badge--off',
+  };
+
+  return (
+    <div className="sda-card">
+      <h2>License</h2>
+      <div style={{ display: 'grid', gap: 10, marginBlockStart: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <span className={`sda-badge ${stateBadge[license.state] ?? 'sda-badge--off'}`}>
+            {license.state === 'active' ? 'Active ✓' : license.state === 'grace' ? 'Grace period' : license.state === 'expired' ? 'Expired' : 'Not activated'}
+          </span>
+          <strong style={{ textTransform: 'capitalize' }}>{edition}</strong>
+          {license.days_left != null && license.state !== 'none' && (
+            <span style={{ fontSize: 12, color: license.in_grace ? 'var(--sda-warning)' : 'var(--sda-text-muted)' }}>
+              {license.days_left} day(s) {license.in_grace ? 'left in grace' : 'remaining'}
+            </span>
+          )}
+        </div>
+
+        {license.in_grace && (
+          <p style={{ fontSize: 12, color: 'var(--sda-warning)', margin: 0 }}>
+            Your license has expired but Pro features remain active during the grace period. Renew to avoid interruption.
+          </p>
+        )}
+
+        {boot().canManage &&
+          (license.has_license ? (
+            <div>
+              <button type="button" className="sda-btn" onClick={() => deactivate.mutate()} disabled={deactivate.isPending}>
+                {deactivate.isPending ? 'Deactivating…' : 'Deactivate on this domain'}
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <input
+                className="sda-input"
+                style={{ flex: 1, minWidth: 200 }}
+                placeholder="License key"
+                value={key}
+                onChange={(e) => setKey(e.target.value.trim())}
+              />
+              <button
+                type="button"
+                className="sda-btn sda-btn--primary"
+                disabled={key === '' || activate.isPending}
+                onClick={() => activate.mutate()}
+              >
+                {activate.isPending ? 'Activating…' : 'Activate'}
+              </button>
+            </div>
+          ))}
+
+        {activate.isError && <p style={{ color: 'var(--sda-negative)', fontSize: 12, margin: 0 }}>{(activate.error as Error).message}</p>}
+      </div>
+    </div>
+  );
+}
+
+const ALERT_CHANNEL_FIELDS: Array<{ key: string; label: string; placeholder: string; type?: string }> = [
+  { key: 'alert_email', label: 'Alert email', placeholder: 'you@example.com', type: 'email' },
+  { key: 'alert_webhook_url', label: 'Webhook URL', placeholder: 'https://…' },
+  { key: 'alert_slack_url', label: 'Slack incoming webhook', placeholder: 'https://hooks.slack.com/…' },
+  { key: 'alert_telegram_token', label: 'Telegram bot token', placeholder: '123456:ABC…' },
+  { key: 'alert_telegram_chat', label: 'Telegram chat ID', placeholder: '-1001234567890' },
+];
+
+function AlertChannelsCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+  const { data: licenseData } = useQuery({ queryKey: ['license'], queryFn: api.licenseStatus });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+  const proChannels = Boolean(licenseData?.features?.alert_channels);
+
+  return (
+    <div className="sda-card">
+      <h2>Alert channels</h2>
+      <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
+        Email always works. Webhook, Slack and Telegram require a Pro license.
+      </p>
+      <div style={{ display: 'grid', gap: 10 }}>
+        {ALERT_CHANNEL_FIELDS.map((field) => {
+          const isPro = field.key !== 'alert_email';
+          return (
+            <label key={field.key} style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+              {field.label}
+              {isPro && !proChannels && <span style={{ color: 'var(--sda-warning)' }}> · Pro</span>}
+              <input
+                className="sda-input"
+                style={{ marginBlockStart: 4 }}
+                type={field.type ?? 'text'}
+                defaultValue={(data.settings[field.key] as string) ?? ''}
+                placeholder={field.placeholder}
+                disabled={isPro && !proChannels}
+                onBlur={(e) => save.mutate({ [field.key]: e.target.value })}
+              />
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function GoogleCard({ state }: { state: ConnectionsState }) {
   const [clientId, setClientId] = useState('');
@@ -244,6 +378,8 @@ export function SettingsPage() {
       <KeyCard state={data} service="openai" title="AI — OpenAI" hint="sk-…" />
       <KeyCard state={data} service="gemini" title="AI — Google Gemini" hint="API key" />
       <AiProviderCard />
+      <LicenseCard />
+      <AlertChannelsCard />
     </div>
   );
 }

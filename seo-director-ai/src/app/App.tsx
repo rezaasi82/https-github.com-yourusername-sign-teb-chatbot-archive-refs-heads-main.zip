@@ -2,9 +2,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { boot } from '../api/client';
 import { AlertsPage } from '../features/alerts/AlertsPage';
+import { ContentPage } from '../features/content/ContentPage';
 import { WinnersLosersPage } from '../features/movers/WinnersLosersPage';
 import { OpportunitiesPage } from '../features/opportunities/OpportunitiesPage';
 import { OverviewPage } from '../features/overview/OverviewPage';
+import { ReportsPage } from '../features/reports/ReportsPage';
 import { RoadmapPage } from '../features/roadmap/RoadmapPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { useHashRoute } from './router';
@@ -18,6 +20,7 @@ const NAV: Array<{ route: string; label: string }> = [
   { route: 'overview', label: 'Overview' },
   { route: 'movers', label: 'Winners & Losers' },
   { route: 'opportunities', label: 'Opportunities' },
+  { route: 'content', label: 'Content' },
   { route: 'roadmap', label: 'Roadmap' },
   { route: 'alerts', label: 'Alerts' },
   { route: 'reports', label: 'Reports' },
@@ -67,12 +70,14 @@ export function App() {
           {current.route === 'overview' && <OverviewPage />}
           {current.route === 'movers' && <WinnersLosersPage />}
           {current.route === 'opportunities' && <OpportunitiesPage />}
+          {current.route === 'content' && <ContentPage />}
           {current.route === 'roadmap' && <RoadmapPage />}
           {current.route === 'alerts' && <AlertsPage />}
+          {current.route === 'reports' && <ReportsPage />}
           {current.route === 'settings' && <SettingsPage />}
-          {!['overview', 'movers', 'opportunities', 'roadmap', 'alerts', 'settings'].includes(current.route) && (
-            <ComingSoon label={current.label} />
-          )}
+          {!['overview', 'movers', 'opportunities', 'content', 'roadmap', 'alerts', 'reports', 'settings'].includes(
+            current.route
+          ) && <ComingSoon label={current.label} />}
         </main>
       </div>
     </QueryClientProvider>

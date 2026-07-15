@@ -8,20 +8,23 @@
 
 namespace SEODirector\Alerts;
 
-use SEODirector\Alerts\Channels\EmailChannel;
+use SEODirector\Alerts\Channels\AlertChannelInterface;
 use SEODirector\Data\Repository\AlertsRepository;
+use SEODirector\License\FeatureGate;
 
 defined( 'ABSPATH' ) || exit;
 
 final class AlertEngine {
 
 	/**
-	 * @param AlertRuleInterface[] $rules
+	 * @param AlertRuleInterface[]    $rules
+	 * @param AlertChannelInterface[] $channels
 	 */
 	public function __construct(
 		private array $rules,
 		private AlertsRepository $alerts,
-		private EmailChannel $email,
+		private array $channels,
+		private FeatureGate $gate,
 	) {}
 
 	public function evaluate(): void {
@@ -71,7 +74,33 @@ final class AlertEngine {
 		}
 
 		if ( [] !== $new_alerts ) {
-			$this->email->send_digest( $new_alerts );
+			$this->dispatch( $new_alerts );
+		}
+	}
+
+	/**
+	 * Send the digest to every enabled channel, gating PRO channels.
+	 *
+	 * @param array<int, array{rule: string, severity: string, message: string}> $alerts
+	 */
+	private function dispatch( array $alerts ): void {
+		$pro_ok = $this->gate->allows( 'alert_channels' );
+
+		/**
+		 * Filters the alert channels (extension point).
+		 *
+		 * @param AlertChannelInterface[] $channels
+		 */
+		$channels = apply_filters( 'sda_alert_channels', $this->channels );
+
+		foreach ( $channels as $channel ) {
+			if ( ! $channel->is_enabled() ) {
+				continue;
+			}
+			if ( $channel->requires_pro() && ! $pro_ok ) {
+				continue;
+			}
+			$channel->send_digest( $alerts );
 		}
 	}
 }

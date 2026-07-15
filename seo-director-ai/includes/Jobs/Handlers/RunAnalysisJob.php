@@ -32,6 +32,9 @@ final class RunAnalysisJob extends AbstractChunkedJob {
 	/**
 	 * @param OpportunityDetectorInterface[] $detectors
 	 */
+	/** Detectors always available (Starter). */
+	private const CORE_DETECTORS = [ 'striking_distance', 'low_ctr', 'near_top' ];
+
 	public function __construct(
 		JobStateRepository $state,
 		private array $detectors,
@@ -43,6 +46,9 @@ final class RunAnalysisJob extends AbstractChunkedJob {
 		private PropertiesRepository $properties,
 		private TrendAnalyzer $trend,
 		private AlertEngine $alert_engine,
+		private \SEODirector\License\FeatureGate $gate,
+		private \SEODirector\Analysis\Cannibalization\ClusterAnalyzer $cannibalization,
+		private \SEODirector\Analysis\InternalLinks\LinkGraphBuilder $links,
 	) {
 		parent::__construct( $state );
 	}
@@ -85,10 +91,21 @@ final class RunAnalysisJob extends AbstractChunkedJob {
 		 */
 		$detectors = apply_filters( 'sda_opportunity_detectors', $this->detectors );
 
+		// PRO unlocks the full detector set; Starter runs the core three.
+		$all_detectors = $this->gate->allows( 'all_detectors' );
+
 		foreach ( $detectors as $detector ) {
+			if ( ! $all_detectors && ! in_array( $detector->slug(), self::CORE_DETECTORS, true ) ) {
+				continue;
+			}
 			$input    = 'low_ctr' === $detector->slug() ? $page_rows : $query_rows;
 			$findings = $detector->detect( $input );
 			$this->opportunities->sync_detector( $detector->slug(), $findings );
+		}
+
+		// Cannibalization is PRO-only and uses the page×query sample.
+		if ( $all_detectors ) {
+			$this->cannibalization->scan( $property['id'] );
 		}
 	}
 
@@ -123,7 +140,7 @@ final class RunAnalysisJob extends AbstractChunkedJob {
 				'cwv_status_counts'     => $this->cwv_counts(),
 				'indexation_ratio'      => null, // Coverage ingestion arrives in a later phase.
 				'freshness_ratio'       => null,
-				'internal_link_ratio'   => null,
+				'internal_link_ratio'   => $this->gate->allows( 'all_detectors' ) ? $this->links->internal_link_ratio( $property['id'] ) : null,
 				'clicks_weekly_slope'   => $this->trend->weekly_relative_slope( $clicks ),
 				'sessions_weekly_slope' => $this->sessions_slope(),
 			]

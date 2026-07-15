@@ -20,20 +20,39 @@ use SEODirector\Ai\SchemaValidator;
 use SEODirector\Ai\TokenBudget;
 use SEODirector\Alerts\AlertEngine;
 use SEODirector\Alerts\Channels\EmailChannel;
+use SEODirector\Alerts\Channels\SlackChannel;
+use SEODirector\Alerts\Channels\TelegramChannel;
+use SEODirector\Alerts\Channels\WebhookChannel;
 use SEODirector\Alerts\Rules\CwvRegressionRule;
 use SEODirector\Alerts\Rules\KeywordLossRule;
 use SEODirector\Alerts\Rules\TrafficDropRule;
+use SEODirector\Analysis\Cannibalization\ClusterAnalyzer;
 use SEODirector\Analysis\ChangepointDetector;
 use SEODirector\Analysis\DeclineDetector;
 use SEODirector\Analysis\ExpectedCtrCurve;
 use SEODirector\Analysis\GrowthDetector;
 use SEODirector\Analysis\HealthScore\HealthScoreCalculator;
+use SEODirector\Analysis\InternalLinks\LinkGraphBuilder;
+use SEODirector\Analysis\OpportunityDetector\FaqDetector;
 use SEODirector\Analysis\OpportunityDetector\LowCtrDetector;
 use SEODirector\Analysis\OpportunityDetector\NearTopDetector;
+use SEODirector\Analysis\OpportunityDetector\SchemaDetector;
+use SEODirector\Analysis\OpportunityDetector\SnippetDetector;
 use SEODirector\Analysis\OpportunityDetector\StrikingDistanceDetector;
 use SEODirector\Analysis\RootCause\CauseCandidateEngine;
 use SEODirector\Analysis\RootCause\CoreUpdateCalendar;
 use SEODirector\Analysis\TrendAnalyzer;
+use SEODirector\Content\ContentStrategist;
+use SEODirector\License\FeatureGate;
+use SEODirector\License\GracePeriodHandler;
+use SEODirector\License\LicenseManager;
+use SEODirector\License\LicenseRepository;
+use SEODirector\Reports\ReportBuilder;
+use SEODirector\Reports\ReportGenerator;
+use SEODirector\Reports\ReportScheduler;
+use SEODirector\Reports\Renderers\CsvRenderer;
+use SEODirector\Reports\Renderers\HtmlRenderer;
+use SEODirector\Data\Repository\ReportsRepository;
 use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\Ga4Repository;
@@ -174,8 +193,56 @@ final class Plugin {
 		$c->set( TaskRepository::class, static fn() => new TaskRepository() );
 		$c->set( RateLimiter::class, static fn() => new RateLimiter() );
 
+		// Licensing.
+		$c->set( GracePeriodHandler::class, static fn() => new GracePeriodHandler() );
+		$c->set( LicenseRepository::class, static fn( Container $c ) => new LicenseRepository( $c->get( TokenVault::class ) ) );
+		$c->set(
+			LicenseManager::class,
+			static fn( Container $c ) => new LicenseManager(
+				$c->get( LicenseRepository::class ),
+				$c->get( RetryingHttpClient::class ),
+				$c->get( GracePeriodHandler::class ),
+				$c->get( Settings::class )
+			)
+		);
+		$c->set( FeatureGate::class, static fn( Container $c ) => new FeatureGate( $c->get( LicenseManager::class ) ) );
+
+		// Reports.
+		$c->set( ReportsRepository::class, static fn() => new ReportsRepository() );
+		$c->set( CsvRenderer::class, static fn() => new CsvRenderer() );
+		$c->set( HtmlRenderer::class, static fn() => new HtmlRenderer() );
+		$c->set(
+			ReportBuilder::class,
+			static fn( Container $c ) => new ReportBuilder(
+				$c->get( PropertiesRepository::class ),
+				$c->get( GscRepository::class ),
+				$c->get( HealthScoreRepository::class ),
+				$c->get( MoversRepository::class ),
+				$c->get( OpportunitiesRepository::class ),
+				$c->get( AlertsRepository::class ),
+				$c->get( InsightRepository::class ),
+				$c->get( GrowthDetector::class ),
+				$c->get( DeclineDetector::class )
+			)
+		);
+		$c->set(
+			ReportGenerator::class,
+			static fn( Container $c ) => new ReportGenerator(
+				$c->get( ReportBuilder::class ),
+				[ 'html' => $c->get( HtmlRenderer::class ), 'csv' => $c->get( CsvRenderer::class ) ],
+				$c->get( ReportsRepository::class ),
+				$c->get( FeatureGate::class )
+			)
+		);
+		$c->set(
+			ReportScheduler::class,
+			static fn( Container $c ) => new ReportScheduler( $c->get( ReportGenerator::class ), $c->get( Settings::class ), $c->get( FeatureGate::class ) )
+		);
+
 		// Root cause + roadmap.
 		$c->set( CoreUpdateCalendar::class, static fn() => new CoreUpdateCalendar() );
+		$c->set( ClusterAnalyzer::class, static fn( Container $c ) => new ClusterAnalyzer( $c->get( OpportunitiesRepository::class ) ) );
+		$c->set( LinkGraphBuilder::class, static fn( Container $c ) => new LinkGraphBuilder( $c->get( UrlCanonicalizer::class ) ) );
 		$c->set( CauseCandidateEngine::class, static fn( Container $c ) => new CauseCandidateEngine( $c->get( CoreUpdateCalendar::class ) ) );
 		$c->set( RoadmapGenerator::class, static fn( Container $c ) => new RoadmapGenerator( $c->get( OpportunitiesRepository::class ), $c->get( TaskRepository::class ) ) );
 
@@ -211,6 +278,10 @@ final class Plugin {
 			)
 		);
 		$c->set(
+			ContentStrategist::class,
+			static fn( Container $c ) => new ContentStrategist( $c->get( InsightService::class ), $c->get( PropertiesRepository::class ) )
+		);
+		$c->set(
 			WeeklyIntelligence::class,
 			static fn( Container $c ) => new WeeklyIntelligence(
 				$c->get( RoadmapGenerator::class ),
@@ -223,6 +294,9 @@ final class Plugin {
 
 		// Alerts.
 		$c->set( EmailChannel::class, static fn( Container $c ) => new EmailChannel( $c->get( Settings::class ) ) );
+		$c->set( WebhookChannel::class, static fn( Container $c ) => new WebhookChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
+		$c->set( SlackChannel::class, static fn( Container $c ) => new SlackChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
+		$c->set( TelegramChannel::class, static fn( Container $c ) => new TelegramChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
 		$c->set(
 			AlertEngine::class,
 			static fn( Container $c ) => new AlertEngine(
@@ -232,7 +306,13 @@ final class Plugin {
 					new CwvRegressionRule(),
 				],
 				$c->get( AlertsRepository::class ),
-				$c->get( EmailChannel::class )
+				[
+					$c->get( EmailChannel::class ),
+					$c->get( WebhookChannel::class ),
+					$c->get( SlackChannel::class ),
+					$c->get( TelegramChannel::class ),
+				],
+				$c->get( FeatureGate::class )
 			)
 		);
 
@@ -245,6 +325,9 @@ final class Plugin {
 					new StrikingDistanceDetector( $c->get( ExpectedCtrCurve::class ) ),
 					new LowCtrDetector( $c->get( ExpectedCtrCurve::class ) ),
 					new NearTopDetector( $c->get( ExpectedCtrCurve::class ) ),
+					new FaqDetector( $c->get( ExpectedCtrCurve::class ) ),
+					new SnippetDetector(),
+					new SchemaDetector(),
 				],
 				$c->get( MoversRepository::class ),
 				$c->get( OpportunitiesRepository::class ),
@@ -253,7 +336,10 @@ final class Plugin {
 				$c->get( GscRepository::class ),
 				$c->get( PropertiesRepository::class ),
 				$c->get( TrendAnalyzer::class ),
-				$c->get( AlertEngine::class )
+				$c->get( AlertEngine::class ),
+				$c->get( FeatureGate::class ),
+				$c->get( ClusterAnalyzer::class ),
+				$c->get( LinkGraphBuilder::class )
 			)
 		);
 		$c->set(
@@ -314,6 +400,13 @@ final class Plugin {
 
 		add_action( Scheduler::HOOK_PREFIX . 'daily_sync', static fn() => $c->get( DailySyncCoordinator::class )->run_daily() );
 		add_action( Scheduler::HOOK_PREFIX . 'weekly_pipeline', static fn() => $c->get( DailySyncCoordinator::class )->run_weekly() );
+
+		// Daily license re-verification against the licensing server (fail-soft, cached).
+		add_action( Scheduler::HOOK_PREFIX . 'license_check', static fn() => $c->get( LicenseManager::class )->verify() );
+
+		// Scheduled report delivery is evaluated on the daily tick; the scheduler
+		// itself decides whether today matches the configured report day/time.
+		add_action( Scheduler::HOOK_PREFIX . 'daily_sync', static fn() => $c->get( ReportScheduler::class )->maybe_run() );
 
 		// Every completed data sync triggers a fresh analysis pass; the hourly
 		// schedule re-evaluates alerts between syncs.

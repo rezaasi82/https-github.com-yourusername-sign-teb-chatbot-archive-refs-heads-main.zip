@@ -23,7 +23,7 @@ final class PromptLibrary {
 	/**
 	 * Build an envelope for one insight type.
 	 *
-	 * @param 'root_cause'|'growth'|'decline'|'summary_weekly'|'summary_monthly' $type
+	 * @param 'root_cause'|'growth'|'decline'|'summary_weekly'|'summary_monthly'|'content_meta'|'content_gap' $type
 	 * @param array<string, mixed>                                              $evidence
 	 * @param array<string, mixed>                                              $site_context niche, goals…
 	 */
@@ -70,6 +70,42 @@ final class PromptLibrary {
 					],
 				],
 				1200,
+			],
+			'content_meta' => [
+				'content_meta.v1',
+				'Write an optimized SEO meta title (≤60 chars) and meta description (≤155 chars) for the page, using its top queries naturally. Do not keyword-stuff.',
+				[
+					'type'       => 'object',
+					'required'   => [ 'title', 'description' ],
+					'properties' => [
+						'title'       => [ 'type' => 'string' ],
+						'description' => [ 'type' => 'string' ],
+					],
+				],
+				400,
+			],
+			'content_gap' => [
+				'content_gap.v1',
+				'Given queries the site earns impressions for but has no strong dedicated page, propose content topics that would capture them. Group related queries.',
+				[
+					'type'       => 'object',
+					'required'   => [ 'topics' ],
+					'properties' => [
+						'topics' => [
+							'type'  => 'array',
+							'items' => [
+								'type'       => 'object',
+								'required'   => [ 'title', 'rationale' ],
+								'properties' => [
+									'title'     => [ 'type' => 'string' ],
+									'rationale' => [ 'type' => 'string' ],
+									'format'    => [ 'type' => 'string' ],
+								],
+							],
+						],
+					],
+				],
+				900,
 			],
 			'growth', 'decline' => [
 				$type . '.v1',
