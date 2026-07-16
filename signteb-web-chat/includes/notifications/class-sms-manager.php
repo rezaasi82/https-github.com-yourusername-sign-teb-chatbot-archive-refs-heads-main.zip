@@ -84,11 +84,52 @@ class SWC_Sms_Manager
     }
 
     /**
-     * Send a message through the active gateway.
+     * Send a free-text message through the active gateway.
      *
      * @return array{ok:bool,error?:string,code?:int}
      */
     public function send(string $to, string $text): array
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return ['ok' => false, 'error' => __('متن پیام خالی است.', 'signteb-web-chat')];
+        }
+        return $this->dispatch(static fn(SWC_Sms_Provider_Interface $p) => $p->send($to, $text));
+    }
+
+    /**
+     * Send one of the stored templates to a lead. When the template has a
+     * pattern/service-line code and the panel supports it, the message is sent
+     * via the verified-line API (ordered variables); otherwise the rendered
+     * text is sent normally.
+     *
+     * @param array<string,string> $vars placeholder => value
+     * @return array{ok:bool,error?:string,code?:int}
+     */
+    public function send_lead(string $to, string $template_key, array $vars): array
+    {
+        $tpl_text = $this->template_text($template_key);
+        $code     = $this->template_code($template_key);
+
+        return $this->dispatch(function (SWC_Sms_Provider_Interface $p) use ($to, $tpl_text, $code, $vars) {
+            if ($code !== '' && $p->supports_pattern()) {
+                return $p->send_pattern($to, $code, $this->ordered_params($tpl_text, $vars));
+            }
+            $text = trim($this->render($tpl_text, $vars));
+            if ($text === '') {
+                return ['ok' => false, 'error' => __('متن پیام خالی است.', 'signteb-web-chat')];
+            }
+            return $p->send($to, $text);
+        });
+    }
+
+    /**
+     * Shared guard + provider resolution + audit around any send call.
+     *
+     * @param callable(SWC_Sms_Provider_Interface):array $call
+     * @return array{ok:bool,error?:string,code?:int}
+     */
+    private function dispatch(callable $call): array
     {
         if (! (new SWC_License_Manager())->allows('sms')) {
             return ['ok' => false, 'error' => __('ارسال پیامک نیازمند لایسنس فعال است.', 'signteb-web-chat')];
@@ -100,13 +141,28 @@ class SWC_Sms_Manager
         if ($provider === null) {
             return ['ok' => false, 'error' => __('سرویس پیامک نامعتبر است.', 'signteb-web-chat')];
         }
-        $text = trim($text);
-        if ($text === '') {
-            return ['ok' => false, 'error' => __('متن پیام خالی است.', 'signteb-web-chat')];
-        }
-        $result = $provider->send($to, $text);
+        $result = $call($provider);
         SWC_Audit_Log::record('sms_send', ['object' => $provider->id(), 'severity' => ! empty($result['ok']) ? 'info' : 'warning']);
         return $result;
+    }
+
+    /**
+     * Values of the placeholders that appear in a template, in first-appearance
+     * order — the order pattern/service-line APIs expect the variables.
+     *
+     * @param array<string,string> $vars
+     * @return array<string,string>
+     */
+    private function ordered_params(string $text, array $vars): array
+    {
+        preg_match_all('/\{([a-z_]+)\}/', $text, $m);
+        $out = [];
+        foreach ($m[1] as $key) {
+            if (isset($vars[$key]) && ! isset($out[$key])) {
+                $out[$key] = (string) $vars[$key];
+            }
+        }
+        return $out;
     }
 
     /* -------------------- credentials (encrypted) -------------------- */
@@ -195,6 +251,14 @@ class SWC_Sms_Manager
     {
         $all = $this->templates();
         return $all[$key]['text'] ?? '';
+    }
+
+    /** Pattern / service-line code the clinic registered for this template. */
+    public function template_code(string $key): string
+    {
+        $codes = $this->settings->get('sms_template_codes', []);
+        $codes = is_array($codes) ? $codes : [];
+        return trim((string) ($codes[$key] ?? ''));
     }
 
     /**

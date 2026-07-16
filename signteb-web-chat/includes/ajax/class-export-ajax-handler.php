@@ -66,9 +66,8 @@ class SWC_Export_Ajax_Handler
             wp_send_json(['ok' => false, 'error' => 'not_found'], 404);
         }
 
-        $sms  = new SWC_Sms_Manager();
-        $text = $sms->render($sms->template_text($tpl_key), $sms->vars_for_lead($c));
-        wp_send_json($sms->send($to, $text));
+        $sms = new SWC_Sms_Manager();
+        wp_send_json($sms->send_lead($to, $tpl_key, $sms->vars_for_lead($c)));
     }
 
     private function guard(): void

@@ -23,6 +23,46 @@ class SWC_Sms_Smsir extends SWC_Sms_Provider_Base
         return 'اس‌ام‌اس دات آی‌آر (SMS.ir)';
     }
 
+    public function supports_pattern(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Verify send — templateId + named parameters. Parameter names use the
+     * upper-cased placeholder key (NAME, PHONE, …); define them the same way in
+     * the SMS.ir template.
+     */
+    public function send_pattern(string $to, string $code, array $params): array
+    {
+        $key = $this->api_key();
+        $to  = $this->normalize($to);
+        if ($key === '' || $to === '' || $code === '') {
+            return ['ok' => false, 'error' => __('کلید API، شماره یا کد الگو تنظیم نشده است.', 'signteb-web-chat')];
+        }
+
+        $parameters = [];
+        $i = 1;
+        foreach ($params as $name => $val) {
+            $pname = is_string($name) ? strtoupper($name) : ('PARAM' . $i);
+            $parameters[] = ['name' => $pname, 'value' => (string) $val];
+            $i++;
+        }
+
+        $r = $this->http('https://api.sms.ir/v1/send/verify', [
+            'method'  => 'POST',
+            'headers' => ['X-API-KEY' => $key, 'Accept' => 'application/json', 'Content-Type' => 'application/json'],
+            'body'    => wp_json_encode(['mobile' => $to, 'templateId' => (int) $code, 'parameters' => $parameters]),
+        ]);
+        $data   = json_decode($r['body'], true);
+        $status = is_array($data) ? (int) ($data['status'] ?? 0) : 0;
+        if ($status === 1) {
+            return ['ok' => true, 'code' => 200];
+        }
+        $msg = is_array($data) ? (string) ($data['message'] ?? '') : '';
+        return ['ok' => false, 'code' => $r['code'], 'error' => $msg !== '' ? $msg : ($r['error'] ?? __('ارسال ناموفق بود.', 'signteb-web-chat'))];
+    }
+
     public function send(string $to, string $text): array
     {
         $key = $this->api_key();

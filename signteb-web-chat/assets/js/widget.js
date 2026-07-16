@@ -432,11 +432,18 @@
 		var delay = parseInt(root.dataset.teaserDelay, 10);
 		if (isNaN(delay)) { delay = 3; }
 
-		var timer = setTimeout(function () {
+		function reveal() {
 			if (!panel.hidden) { return; } // already chatting
 			teaser.hidden = false;
 			root.classList.add('swc-teaser-on');
-		}, delay * 1000);
+		}
+
+		var timer = setTimeout(reveal, delay * 1000);
+
+		// Also surface it the moment the visitor hovers the chat icon.
+		if (launcher) {
+			launcher.addEventListener('mouseenter', reveal);
+		}
 
 		function dismiss(persist) {
 			clearTimeout(timer);

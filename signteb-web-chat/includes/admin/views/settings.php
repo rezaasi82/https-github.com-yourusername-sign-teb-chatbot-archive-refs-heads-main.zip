@@ -318,11 +318,19 @@ if (! defined('ABSPATH')) {
 
         <h3><?php esc_html_e('قالب‌های پیام (قابل ویرایش)', 'signteb-web-chat'); ?></h3>
         <p class="description"><?php esc_html_e('متغیرهای قابل استفاده: {name} {phone} {score} {status} {clinic} {summary}', 'signteb-web-chat'); ?></p>
+        <p class="description"><?php esc_html_e('«کد الگو» را فقط اگر از خط خدماتی/سرویس ویژه پنل استفاده می‌کنید پر کنید (کد پترن ثبت‌شده در پنل). در این حالت، مقادیرِ متغیرها به‌ترتیبی که در متن آمده‌اند به الگو ارسال می‌شوند. اگر خالی باشد، متن به‌صورت عادی ارسال می‌شود.', 'signteb-web-chat'); ?></p>
+        <?php $tpl_codes = (array) $s->get('sms_template_codes', []); ?>
         <table class="form-table" role="presentation">
             <?php foreach ($sms->templates() as $tkey => $tpl) : ?>
                 <tr>
                     <th><?php echo esc_html($tpl['label']); ?></th>
-                    <td><textarea name="sms_templates[<?php echo esc_attr($tkey); ?>]" rows="2" class="large-text"><?php echo esc_textarea($tpl['text']); ?></textarea></td>
+                    <td>
+                        <textarea name="sms_templates[<?php echo esc_attr($tkey); ?>]" rows="2" class="large-text"><?php echo esc_textarea($tpl['text']); ?></textarea>
+                        <label class="swc-tpl-code">
+                            <span><?php esc_html_e('کد الگو (خط خدماتی):', 'signteb-web-chat'); ?></span>
+                            <input type="text" name="sms_template_codes[<?php echo esc_attr($tkey); ?>]" value="<?php echo esc_attr((string) ($tpl_codes[$tkey] ?? '')); ?>" class="regular-text" placeholder="<?php esc_attr_e('مثلاً 100xxx یا شناسه الگو', 'signteb-web-chat'); ?>">
+                        </label>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </table>

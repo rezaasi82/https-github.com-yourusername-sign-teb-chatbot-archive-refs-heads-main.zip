@@ -22,6 +22,11 @@ class SWC_Sms_Kavenegar extends SWC_Sms_Provider_Base
         return 'کاوه‌نگار (Kavenegar)';
     }
 
+    public function supports_pattern(): bool
+    {
+        return true;
+    }
+
     public function send(string $to, string $text): array
     {
         $key = $this->api_key();
@@ -36,8 +41,49 @@ class SWC_Sms_Kavenegar extends SWC_Sms_Provider_Base
             $body['sender'] = $this->sender();
         }
 
-        $r = $this->http($url, ['method' => 'POST', 'body' => $body]);
-        $data = json_decode($r['body'], true);
+        return $this->parse($this->http($url, ['method' => 'POST', 'body' => $body]));
+    }
+
+    /**
+     * Verify Lookup — send an approved pattern (service line). Values map to
+     * token, token2, token3 (Kavenegar rejects spaces here, so they become a
+     * ZWNJ), then token10 / token20 which do accept spaces.
+     */
+    public function send_pattern(string $to, string $code, array $params): array
+    {
+        $key = $this->api_key();
+        $to  = $this->normalize($to);
+        if ($key === '' || $to === '' || $code === '') {
+            return ['ok' => false, 'error' => __('کلید API، شماره یا کد الگو تنظیم نشده است.', 'signteb-web-chat')];
+        }
+
+        $slots = ['token', 'token2', 'token3', 'token10', 'token20'];
+        $body  = ['receptor' => $to, 'template' => $code];
+        $i = 0;
+        foreach (array_values($params) as $val) {
+            if (! isset($slots[$i])) {
+                break;
+            }
+            $val = trim(preg_replace('/\s+/u', ' ', (string) $val));
+            // token / token2 / token3 disallow spaces; token10 / token20 allow.
+            if ($i < 3) {
+                $val = str_replace(' ', '‌', $val); // ZWNJ keeps Persian readable
+            }
+            $body[$slots[$i]] = $val !== '' ? $val : '-';
+            $i++;
+        }
+
+        $url = 'https://api.kavenegar.com/v1/' . rawurlencode($key) . '/verify/lookup.json';
+        return $this->parse($this->http($url, ['method' => 'POST', 'body' => $body]));
+    }
+
+    /**
+     * @param array{ok:bool,code:int,body:string,error?:string} $r
+     * @return array{ok:bool,error?:string,code?:int}
+     */
+    private function parse(array $r): array
+    {
+        $data   = json_decode($r['body'], true);
         $status = is_array($data) ? (int) ($data['return']['status'] ?? 0) : 0;
         if ($status === 200) {
             return ['ok' => true, 'code' => 200];

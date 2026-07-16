@@ -23,6 +23,40 @@ class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
         return 'ملی‌پیامک (MeliPayamak)';
     }
 
+    public function supports_pattern(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Shared service line (BaseServiceNumber): the approved template is chosen
+     * by bodyId; variable parts are joined with ';' in the order the template
+     * expects them.
+     */
+    public function send_pattern(string $to, string $code, array $params): array
+    {
+        $user = $this->api_key();
+        $pass = $this->api_secret();
+        $to   = $this->normalize($to);
+        if ($user === '' || $pass === '' || $to === '' || $code === '') {
+            return ['ok' => false, 'error' => __('نام کاربری/رمز، شماره یا کد الگو تنظیم نشده است.', 'signteb-web-chat')];
+        }
+
+        $text = implode(';', array_map(static fn($v) => str_replace(';', '،', (string) $v), array_values($params)));
+        $r = $this->http('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
+            'method' => 'POST',
+            'body'   => ['username' => $user, 'password' => $pass, 'text' => $text, 'to' => $to, 'bodyId' => $code],
+        ]);
+        $data = json_decode($r['body'], true);
+        // A numeric recId in Value (and RetStatus 1) means success.
+        $ret  = is_array($data) ? (int) ($data['RetStatus'] ?? 0) : 0;
+        if ($ret === 1) {
+            return ['ok' => true, 'code' => 200];
+        }
+        $msg = is_array($data) ? (string) ($data['StrRetStatus'] ?? '') : '';
+        return ['ok' => false, 'code' => $r['code'], 'error' => $msg !== '' && $msg !== 'Ok' ? $msg : ($r['error'] ?? __('ارسال ناموفق بود.', 'signteb-web-chat'))];
+    }
+
     public function send(string $to, string $text): array
     {
         $user = $this->api_key();

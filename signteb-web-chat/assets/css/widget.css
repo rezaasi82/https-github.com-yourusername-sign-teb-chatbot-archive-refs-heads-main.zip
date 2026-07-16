@@ -360,6 +360,7 @@ body.swc-body-lock {
 }
 
 /* ---------- teaser greeting bubble ---------- */
+.swc-teaser[hidden] { display: none !important; }
 .swc-teaser {
 	position: absolute;
 	inset-block-end: 74px;

@@ -14,6 +14,18 @@ abstract class SWC_Sms_Provider_Base implements SWC_Sms_Provider_Interface
 {
     protected SWC_Settings $settings;
 
+    /** Most panels support pattern SMS; individual providers override. */
+    public function supports_pattern(): bool
+    {
+        return false;
+    }
+
+    /** Default: no pattern support — the manager falls back to text send. */
+    public function send_pattern(string $to, string $code, array $params): array
+    {
+        return ['ok' => false, 'error' => __('این سرویس از ارسال الگو پشتیبانی نمی‌کند.', 'signteb-web-chat')];
+    }
+
     public function __construct(?SWC_Settings $settings = null)
     {
         $this->settings = $settings ?? new SWC_Settings();

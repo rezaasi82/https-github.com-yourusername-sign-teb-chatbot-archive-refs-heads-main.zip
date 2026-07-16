@@ -254,3 +254,23 @@
 .swc-refer-ml-label { color: #50596b; font-size: 12px; }
 .swc-refer-template { min-width: 150px; }
 .swc-sms-custom { margin: 8px 0 4px; padding: 4px 14px; background: #f6f7f9; border: 1px solid #e4e7ec; border-radius: 6px; }
+
+/* ---------- pistachio-green save toast ---------- */
+.swc-saved-toast {
+	display: flex; align-items: center; gap: 10px;
+	margin: 14px 0 6px; padding: 13px 18px;
+	background: linear-gradient(135deg, #b6d99b, #93c572);
+	color: #1c3b12; font-weight: 600; font-size: 14px;
+	border: 1px solid #7fb85e; border-radius: 12px;
+	box-shadow: 0 8px 24px rgba(124, 179, 94, 0.35);
+	animation: swc-toast-in .35s ease both, swc-toast-out .5s ease 4s forwards;
+}
+.swc-saved-ico {
+	display: inline-flex; align-items: center; justify-content: center;
+	width: 24px; height: 24px; border-radius: 50%;
+	background: #4e8a2c; color: #fff; font-size: 14px; font-weight: 800;
+}
+@keyframes swc-toast-in  { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes swc-toast-out { to { opacity: 0; transform: translateY(-8px); visibility: hidden; } }
+.swc-tpl-code { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.swc-tpl-code span { color: #50596b; font-size: 12px; white-space: nowrap; }

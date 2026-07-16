@@ -150,6 +150,15 @@ class SWC_Settings_Page
         }
         $update['sms_templates'] = $tpls;
 
+        // Optional pattern / service-line code per template.
+        $codes = [];
+        if (isset($in['sms_template_codes']) && is_array($in['sms_template_codes'])) {
+            foreach ($in['sms_template_codes'] as $key => $code) {
+                $codes[sanitize_key($key)] = sanitize_text_field((string) $code);
+            }
+        }
+        $update['sms_template_codes'] = $codes;
+
         update_option(SWC_Settings::OPTION, array_merge($existing, $update));
 
         // Activation code (API key) + optional second credential — encrypted,
@@ -200,7 +209,16 @@ class SWC_Settings_Page
 
         echo '<div class="wrap swc-admin" dir="rtl">';
         echo '<h1>' . esc_html__('Medora AI — دستیار هوشمند جذب بیمار', 'signteb-web-chat') . '</h1>';
-        settings_errors('swc');
+
+        // Pistachio-green success toast after a save (auto-dismisses via CSS).
+        if (isset($_GET['updated']) && $_GET['updated'] === '1') {
+            echo '<div class="swc-saved-toast" role="status">'
+                . '<span class="swc-saved-ico" aria-hidden="true">✓</span>'
+                . '<span>' . esc_html__('تغییرات با موفقیت ذخیره شد.', 'signteb-web-chat') . '</span>'
+                . '</div>';
+        } else {
+            settings_errors('swc');
+        }
         $this->render_tab_nav($tab);
 
         if (in_array($tab, ['provider', 'clinic', 'appearance', 'integrations', 'license'], true)) {
