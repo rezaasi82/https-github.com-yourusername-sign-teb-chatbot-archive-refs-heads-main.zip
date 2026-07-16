@@ -99,6 +99,7 @@ class SWC_Settings_Page
             $update['offhours_message'] = sanitize_textarea_field($in['offhours_message'] ?? '');
             $update['teaser_message']   = sanitize_textarea_field($in['teaser_message'] ?? '');
             $update['teaser_delay']     = max(0, min(120, (int) ($in['teaser_delay'] ?? 3)));
+            $update['teaser_sound']     = isset($in['teaser_sound']) ? 1 : 0;
         }
 
         update_option(SWC_Settings::OPTION, array_merge($existing, $update));
@@ -130,6 +131,8 @@ class SWC_Settings_Page
             'sms_enabled'       => isset($in['sms_enabled']) ? 1 : 0,
             'sms_provider'      => sanitize_key($in['sms_provider'] ?? 'kavenegar'),
             'sms_sender'        => sanitize_text_field($in['sms_sender'] ?? ''),
+            'sms_optout'        => sanitize_text_field($in['sms_optout'] ?? ''),
+            'sms_staff_numbers' => sanitize_textarea_field($in['sms_staff_numbers'] ?? ''),
             'sms_custom_url'    => esc_url_raw($in['sms_custom_url'] ?? ''),
             'sms_custom_method' => in_array(strtoupper((string) ($in['sms_custom_method'] ?? 'POST')), ['GET', 'POST', 'PUT'], true) ? strtoupper((string) $in['sms_custom_method']) : 'POST',
             'sms_custom_headers' => sanitize_textarea_field($in['sms_custom_headers'] ?? ''),

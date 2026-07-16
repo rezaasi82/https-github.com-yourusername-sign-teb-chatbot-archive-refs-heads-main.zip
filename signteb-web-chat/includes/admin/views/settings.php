@@ -211,6 +211,13 @@ if (! defined('ABSPATH')) {
                 <th><?php esc_html_e('تأخیر نمایش Teaser (ثانیه)', 'signteb-web-chat'); ?></th>
                 <td><input type="number" name="teaser_delay" min="0" max="120" value="<?php echo esc_attr((string) (int) $s->get('teaser_delay', 3)); ?>" class="small-text"><p class="description"><?php esc_html_e('چند ثانیه بعد از باز شدن صفحه، پیام دعوت‌کننده نمایش داده شود.', 'signteb-web-chat'); ?></p></td>
             </tr>
+            <tr>
+                <th><?php esc_html_e('صدای اعلان', 'signteb-web-chat'); ?></th>
+                <td>
+                    <label><input type="checkbox" name="teaser_sound" value="1" <?php checked($s->get('teaser_sound', 1), 1); ?>> <?php esc_html_e('پخش یک صدای کوتاه و جذاب هنگام نمایش پیام دعوت‌کننده', 'signteb-web-chat'); ?></label>
+                    <p class="description"><?php esc_html_e('به دلیل سیاست مرورگرها، صدا فقط پس از اولین تعامل بازدیدکننده با صفحه (حرکت ماوس/اسکرول/کلیک) پخش می‌شود.', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
         </table>
 
     <?php elseif ($tab === 'integrations') : ?>
@@ -273,7 +280,7 @@ if (! defined('ABSPATH')) {
                             <option value="<?php echo esc_attr($pid); ?>" <?php selected($sms_active, $pid); ?>><?php echo esc_html($plabel); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <p class="description swc-sms-hint" data-for="melipayamak"><?php esc_html_e('ملی‌پیامک: نام کاربری را در «کد فعال‌سازی» و رمز عبور را در فیلد دوم وارد کنید.', 'signteb-web-chat'); ?></p>
+                    <p class="description swc-sms-hint" data-for="melipayamak"><?php esc_html_e('ملی‌پیامک: از توکن API کنسول (console.melipayamak.com) استفاده کنید و آن را در «کد فعال‌سازی» وارد کنید.', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
             <tr>
@@ -287,6 +294,20 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('شماره فرستنده (خط)', 'signteb-web-chat'); ?></th>
                 <td><input type="text" name="sms_sender" value="<?php echo esc_attr($s->get('sms_sender')); ?>" class="regular-text" placeholder="10008663 / +1..."></td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('متن لغو (خط خدماتی)', 'signteb-web-chat'); ?></th>
+                <td>
+                    <input type="text" name="sms_optout" value="<?php echo esc_attr($s->get('sms_optout')); ?>" class="large-text" placeholder="لغو ۱۱ / لغو11 https://example.com">
+                    <p class="description"><?php esc_html_e('طبق مقررات، پیامک خط خدماتی باید متن لغو داشته باشد. این متن با متغیر {optout} به انتهای قالب‌ها اضافه می‌شود.', 'signteb-web-chat'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('شماره همکاران (دریافت ارجاع)', 'signteb-web-chat'); ?></th>
+                <td>
+                    <textarea name="sms_staff_numbers" rows="3" class="large-text" placeholder="دکتر رضایی,09121112233&#10;پذیرش,09124445566"><?php echo esc_textarea($s->get('sms_staff_numbers')); ?></textarea>
+                    <p class="description"><?php esc_html_e('هر خط یک همکار: «نام,شماره» یا فقط شماره. این شماره‌ها در صفحه‌ی هر لید برای ارجاع سریع پیامکی نمایش داده می‌شوند.', 'signteb-web-chat'); ?></p>
+                </td>
             </tr>
         </table>
 

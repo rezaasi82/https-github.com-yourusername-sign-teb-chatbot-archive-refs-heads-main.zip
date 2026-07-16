@@ -1,8 +1,11 @@
 <?php
 /**
- * MeliPayamak (ملی‌پیامک) — classic REST SendSMS endpoint.
- * Auth: username + password from the panel (username in the "activation code"
- * field, password in the secondary field).
+ * MeliPayamak (ملی‌پیامک) — official console token API (github.com/Melipayamak).
+ *
+ * Auth: a single API key (the token from console.melipayamak.com), entered in
+ * the "activation code" field — no username/password needed.
+ *   - free text : POST /api/send/simple/{key}   { from, to, text }
+ *   - pattern   : POST /api/send/shared/{key}    { bodyId, to, args[] }
  *
  * @package SignTeb_Web_Chat
  */
@@ -13,6 +16,8 @@ if (! defined('ABSPATH')) {
 
 class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
 {
+    private const BASE = 'https://console.melipayamak.com/api/send';
+
     public function id(): string
     {
         return 'melipayamak';
@@ -28,61 +33,56 @@ class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
         return true;
     }
 
+    public function send(string $to, string $text): array
+    {
+        $key = $this->api_key();
+        $to  = $this->normalize($to);
+        if ($key === '' || $to === '') {
+            return ['ok' => false, 'error' => __('توکن API یا شماره مقصد تنظیم نشده است.', 'signteb-web-chat')];
+        }
+
+        $r = $this->http(self::BASE . '/simple/' . rawurlencode($key), [
+            'method'  => 'POST',
+            'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+            'body'    => wp_json_encode(['from' => $this->sender(), 'to' => $to, 'text' => $text]),
+        ]);
+        return $this->parse($r);
+    }
+
     /**
-     * Shared service line (BaseServiceNumber): the approved template is chosen
-     * by bodyId; variable parts are joined with ';' in the order the template
-     * expects them.
+     * Shared service line: the approved pattern is chosen by bodyId; variable
+     * parts go into args[] in the order the template expects.
      */
     public function send_pattern(string $to, string $code, array $params): array
     {
-        $user = $this->api_key();
-        $pass = $this->api_secret();
-        $to   = $this->normalize($to);
-        if ($user === '' || $pass === '' || $to === '' || $code === '') {
-            return ['ok' => false, 'error' => __('نام کاربری/رمز، شماره یا کد الگو تنظیم نشده است.', 'signteb-web-chat')];
+        $key = $this->api_key();
+        $to  = $this->normalize($to);
+        if ($key === '' || $to === '' || $code === '') {
+            return ['ok' => false, 'error' => __('توکن API، شماره یا کد الگو تنظیم نشده است.', 'signteb-web-chat')];
         }
 
-        $text = implode(';', array_map(static fn($v) => str_replace(';', '،', (string) $v), array_values($params)));
-        $r = $this->http('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
-            'method' => 'POST',
-            'body'   => ['username' => $user, 'password' => $pass, 'text' => $text, 'to' => $to, 'bodyId' => $code],
+        $r = $this->http(self::BASE . '/shared/' . rawurlencode($key), [
+            'method'  => 'POST',
+            'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+            'body'    => wp_json_encode(['bodyId' => (int) $code, 'to' => $to, 'args' => array_values(array_map('strval', $params))]),
         ]);
-        $data = json_decode($r['body'], true);
-        // A numeric recId in Value (and RetStatus 1) means success.
-        $ret  = is_array($data) ? (int) ($data['RetStatus'] ?? 0) : 0;
-        if ($ret === 1) {
-            return ['ok' => true, 'code' => 200];
-        }
-        $msg = is_array($data) ? (string) ($data['StrRetStatus'] ?? '') : '';
-        return ['ok' => false, 'code' => $r['code'], 'error' => $msg !== '' && $msg !== 'Ok' ? $msg : ($r['error'] ?? __('ارسال ناموفق بود.', 'signteb-web-chat'))];
+        return $this->parse($r);
     }
 
-    public function send(string $to, string $text): array
+    /**
+     * Console API returns { recId, status }. A positive recId means queued/sent.
+     *
+     * @param array{ok:bool,code:int,body:string,error?:string} $r
+     * @return array{ok:bool,error?:string,code?:int}
+     */
+    private function parse(array $r): array
     {
-        $user = $this->api_key();
-        $pass = $this->api_secret();
-        $to   = $this->normalize($to);
-        if ($user === '' || $pass === '' || $to === '') {
-            return ['ok' => false, 'error' => __('نام کاربری/رمز یا شماره مقصد تنظیم نشده است.', 'signteb-web-chat')];
-        }
-
-        $r = $this->http('https://rest.payamak-panel.com/api/SendSMS/SendSMS', [
-            'method' => 'POST',
-            'body'   => [
-                'username' => $user,
-                'password' => $pass,
-                'to'       => $to,
-                'from'     => $this->sender(),
-                'text'     => $text,
-                'isflash'  => 'false',
-            ],
-        ]);
         $data = json_decode($r['body'], true);
-        $ret  = is_array($data) ? (int) ($data['RetStatus'] ?? 0) : 0;
-        if ($ret === 1) {
+        $rec  = is_array($data) ? ($data['recId'] ?? 0) : 0;
+        if (is_numeric($rec) && (int) $rec > 0) {
             return ['ok' => true, 'code' => 200];
         }
-        $msg = is_array($data) ? (string) ($data['StrRetStatus'] ?? '') : '';
-        return ['ok' => false, 'code' => $r['code'], 'error' => $msg !== '' && $msg !== 'Ok' ? $msg : ($r['error'] ?? __('ارسال ناموفق بود.', 'signteb-web-chat'))];
+        $msg = is_array($data) ? (string) ($data['status'] ?? '') : '';
+        return ['ok' => false, 'code' => $r['code'], 'error' => $msg !== '' ? $msg : ($r['error'] ?? __('ارسال ناموفق بود.', 'signteb-web-chat'))];
     }
 }

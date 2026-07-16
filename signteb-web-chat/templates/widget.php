@@ -22,6 +22,7 @@ $channels = $config['channels'];
      style="--swc-bg: <?php echo esc_attr($config['widget_color']); ?>; --swc-accent: <?php echo esc_attr($config['accent_color']); ?>;"
      data-inline="<?php echo $config['inline'] ? '1' : '0'; ?>"
      data-teaser-delay="<?php echo (int) $config['teaser_delay']; ?>"
+     data-teaser-sound="<?php echo $config['teaser_sound'] ? '1' : '0'; ?>"
      data-booking-url="<?php echo esc_url($config['booking_url']); ?>"
      data-whatsapp="<?php echo esc_attr($config['whatsapp']); ?>"
      data-phone="<?php echo esc_attr($config['phone']); ?>"

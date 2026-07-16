@@ -140,6 +140,7 @@ class SWC_Widget
             'offhours'      => (string) $s->get('offhours_message', ''),
             'teaser'        => (string) $s->get('teaser_message', ''),
             'teaser_delay'  => max(0, (int) $s->get('teaser_delay', 3)),
+            'teaser_sound'  => (int) $s->get('teaser_sound', 1) === 1,
             'inline'        => $inline,
             'quick_replies' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $s->get('quick_replies', ''))))),
             'within_hours'  => $this->within_business_hours(),

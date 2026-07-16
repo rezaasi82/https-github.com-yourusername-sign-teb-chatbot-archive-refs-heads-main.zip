@@ -158,9 +158,12 @@ class SWC_Sms_Manager
         preg_match_all('/\{([a-z_]+)\}/', $text, $m);
         $out = [];
         foreach ($m[1] as $key) {
-            if (isset($vars[$key]) && ! isset($out[$key])) {
-                $out[$key] = (string) $vars[$key];
+            // The opt-out sentence is baked into the approved panel pattern, so
+            // it is never a dynamic parameter.
+            if ($key === 'optout' || ! isset($vars[$key]) || isset($out[$key])) {
+                continue;
             }
+            $out[$key] = (string) $vars[$key];
         }
         return $out;
     }
@@ -212,19 +215,19 @@ class SWC_Sms_Manager
         return [
             'welcome'  => [
                 'label' => __('خوش‌آمد به لید', 'signteb-web-chat'),
-                'text'  => __('{name} عزیز، از تماس شما با {clinic} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. 🌿', 'signteb-web-chat'),
+                'text'  => __('{name} عزیز، از تماس شما با {clinic} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. 🌿 {optout}', 'signteb-web-chat'),
             ],
             'referral' => [
                 'label' => __('ارجاع لید به همکار', 'signteb-web-chat'),
-                'text'  => __('لید جدید در {clinic}: {name} - {phone} - امتیاز: {score}. لطفاً پیگیری کنید.', 'signteb-web-chat'),
+                'text'  => __('لید جدید در {clinic}: {name} - {phone} - امتیاز: {score}. لطفاً پیگیری کنید. {optout}', 'signteb-web-chat'),
             ],
             'reminder' => [
                 'label' => __('یادآوری پیگیری', 'signteb-web-chat'),
-                'text'  => __('{name} عزیز، جهت تکمیل مشاوره و رزرو نوبت با {clinic} در ارتباط باشید. منتظر شما هستیم.', 'signteb-web-chat'),
+                'text'  => __('{name} عزیز، جهت تکمیل مشاوره و رزرو نوبت با {clinic} در ارتباط باشید. منتظر شما هستیم. {optout}', 'signteb-web-chat'),
             ],
             'custom'   => [
                 'label' => __('پیام سفارشی', 'signteb-web-chat'),
-                'text'  => __('{name} عزیز، {clinic} در خدمت شماست.', 'signteb-web-chat'),
+                'text'  => __('{name} عزیز، {clinic} در خدمت شماست. {optout}', 'signteb-web-chat'),
             ],
         ];
     }
@@ -290,7 +293,39 @@ class SWC_Sms_Manager
             'status'  => SWC_Lead_CRM::label((string) ($c->lead_status ?? 'new')),
             'clinic'  => (string) $this->settings->get('clinic_name', get_bloginfo('name')),
             'summary' => trim((string) ($c->summary ?? '')),
+            'optout'  => $this->optout_text(),
         ];
+    }
+
+    /** The opt-out sentence appended to service-line SMS (regulatory). */
+    public function optout_text(): string
+    {
+        return trim((string) $this->settings->get('sms_optout', ''));
+    }
+
+    /**
+     * Saved staff / colleague numbers for quick referral. One per line,
+     * "Name,09xxxxxxxxx" or just the number.
+     *
+     * @return array<int,array{name:string,phone:string}>
+     */
+    public function staff_numbers(): array
+    {
+        $raw = (string) $this->settings->get('sms_staff_numbers', '');
+        $out = [];
+        foreach (preg_split('/\r\n|\r|\n/', $raw) as $line) {
+            $line = trim($line);
+            if ($line === '') {
+                continue;
+            }
+            $parts = array_map('trim', explode(',', $line, 2));
+            if (count($parts) === 2 && $parts[1] !== '') {
+                $out[] = ['name' => $parts[0], 'phone' => $parts[1]];
+            } else {
+                $out[] = ['name' => '', 'phone' => $parts[0]];
+            }
+        }
+        return $out;
     }
 
     /* -------------------- messenger deep-links -------------------- */

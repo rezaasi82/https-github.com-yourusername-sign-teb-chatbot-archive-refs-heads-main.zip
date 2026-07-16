@@ -102,6 +102,18 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
                 <button type="button" class="button swc-refer-mail"><?php esc_html_e('ارجاع با ایمیل', 'signteb-web-chat'); ?></button>
             </div>
 
+            <?php $staff = $sms_mgr->staff_numbers(); ?>
+            <?php if (! empty($staff)) : ?>
+                <div class="swc-refer-row">
+                    <select class="swc-refer-staff">
+                        <option value=""><?php esc_html_e('انتخاب همکار…', 'signteb-web-chat'); ?></option>
+                        <?php foreach ($staff as $st) : ?>
+                            <option value="<?php echo esc_attr($st['phone']); ?>"><?php echo esc_html(($st['name'] !== '' ? $st['name'] . ' — ' : '') . $st['phone']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="description"><?php esc_html_e('یا شماره را دستی وارد کنید', 'signteb-web-chat'); ?></span>
+                </div>
+            <?php endif; ?>
             <div class="swc-refer-row">
                 <input type="tel" class="swc-refer-phone" placeholder="<?php esc_attr_e('موبایل مقصد', 'signteb-web-chat'); ?>" inputmode="tel" value="<?php echo esc_attr($conversation->patient_phone ?? ''); ?>">
                 <?php if ($sms_ready) : ?>

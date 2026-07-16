@@ -20,6 +20,60 @@
 	if (!roots.length) { return; }
 	Array.prototype.forEach.call(roots, initWidget);
 
+	/* ---------- notification chime (Web Audio, no asset) ---------- */
+	// Browsers block audio until the visitor interacts with the page, so a
+	// chime requested before any gesture is queued and flushed on first input.
+	var audioCtx = null, audioReady = false, pendingChime = false;
+
+	function ensureAudio() {
+		try {
+			var AC = window.AudioContext || window.webkitAudioContext;
+			if (!AC) { return; }
+			if (!audioCtx) { audioCtx = new AC(); }
+			if (audioCtx.state === 'suspended' && audioCtx.resume) { audioCtx.resume(); }
+			audioReady = audioCtx.state === 'running';
+		} catch (e) {}
+	}
+
+	function actuallyChime() {
+		if (!audioCtx) { return; }
+		try {
+			var now = audioCtx.currentTime;
+			// A soft two-note arpeggio (E5 → A5): pleasant, brief, non-intrusive.
+			[[659.25, 0], [880.0, 0.13]].forEach(function (pair) {
+				var osc = audioCtx.createOscillator();
+				var gain = audioCtx.createGain();
+				osc.type = 'sine';
+				osc.frequency.value = pair[0];
+				var t = now + pair[1];
+				gain.gain.setValueAtTime(0.0001, t);
+				gain.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
+				gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.34);
+				osc.connect(gain);
+				gain.connect(audioCtx.destination);
+				osc.start(t);
+				osc.stop(t + 0.4);
+			});
+		} catch (e) {}
+	}
+
+	function playChime() {
+		ensureAudio();
+		if (audioReady) { actuallyChime(); } else { pendingChime = true; }
+	}
+
+	function onGesture() {
+		ensureAudio();
+		if (!audioReady) { return; }
+		if (pendingChime) { pendingChime = false; actuallyChime(); }
+		['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (e) {
+			window.removeEventListener(e, onGesture);
+		});
+	}
+	['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (e) {
+		window.addEventListener(e, onGesture, { passive: true });
+	});
+
 	function initWidget(root) {
 
 	var isRtl = (root.getAttribute('dir') || 'rtl') === 'rtl';
@@ -432,10 +486,14 @@
 		var delay = parseInt(root.dataset.teaserDelay, 10);
 		if (isNaN(delay)) { delay = 3; }
 
+		var soundOn = root.dataset.teaserSound === '1';
+		var chimed = false;
+
 		function reveal() {
 			if (!panel.hidden) { return; } // already chatting
 			teaser.hidden = false;
 			root.classList.add('swc-teaser-on');
+			if (soundOn && !chimed) { chimed = true; playChime(); }
 		}
 
 		var timer = setTimeout(reveal, delay * 1000);

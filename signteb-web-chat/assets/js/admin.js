@@ -128,7 +128,8 @@
 		var syncProvider = function () {
 			var v = smsProvider.value;
 			if (customBox) { customBox.style.display = v === 'custom' ? '' : 'none'; }
-			if (secretRow) { secretRow.style.display = v === 'melipayamak' ? '' : 'none'; }
+			// The secondary credential field is no longer needed by any panel.
+			if (secretRow) { secretRow.style.display = 'none'; }
 			if (meliHint) { meliHint.style.display = v === 'melipayamak' ? '' : 'none'; }
 		};
 		smsProvider.addEventListener('change', syncProvider);
@@ -186,6 +187,15 @@
 					refResult.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 					mailBtn.disabled = false;
 				}).catch(function () { refResult.textContent = '✕'; mailBtn.disabled = false; });
+			});
+		}
+
+		// Pick a saved colleague number into the destination field.
+		var staffSel = refer.querySelector('.swc-refer-staff');
+		var phoneField = refer.querySelector('.swc-refer-phone');
+		if (staffSel && phoneField) {
+			staffSel.addEventListener('change', function () {
+				if (staffSel.value) { phoneField.value = staffSel.value; }
 			});
 		}
 
