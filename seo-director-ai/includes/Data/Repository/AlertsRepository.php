@@ -121,6 +121,64 @@ final class AlertsRepository {
 		);
 	}
 
+	/**
+	 * Active critical/high alerts that have not yet been escalated, for the
+	 * SLA policy to evaluate.
+	 *
+	 * @return array<int, array{id:int, severity:string, entity_label:string, message:string, raised_at:string, escalated_at:?string}>
+	 */
+	public function active_escalatable(): array {
+		global $wpdb;
+
+		$table = Schema::table( 'alerts' );
+		$rows  = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$wpdb->prepare(
+				"SELECT id, severity, entity_label, message, raised_at, escalated_at
+				FROM {$table}
+				WHERE site_id = %d AND status = 'active' AND escalated_at IS NULL
+					AND severity IN ('critical', 'high')", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				get_current_blog_id()
+			),
+			ARRAY_A
+		);
+
+		return array_map(
+			static fn( array $r ) => [
+				'id'           => (int) $r['id'],
+				'severity'     => (string) $r['severity'],
+				'entity_label' => (string) $r['entity_label'],
+				'message'      => (string) $r['message'],
+				'raised_at'    => (string) $r['raised_at'],
+				'escalated_at' => $r['escalated_at'] ? (string) $r['escalated_at'] : null,
+			],
+			$rows ?: []
+		);
+	}
+
+	/**
+	 * Stamp alerts as escalated so they are not escalated again.
+	 *
+	 * @param int[] $ids
+	 */
+	public function mark_escalated( array $ids ): void {
+		global $wpdb;
+
+		$ids = array_values( array_filter( array_map( 'intval', $ids ) ) );
+		if ( [] === $ids ) {
+			return;
+		}
+
+		$table        = Schema::table( 'alerts' );
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
+		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				"UPDATE {$table} SET escalated_at = %s WHERE site_id = %d AND id IN ({$placeholders})",
+				array_merge( [ gmdate( 'Y-m-d H:i:s' ), get_current_blog_id() ], $ids )
+			)
+		);
+	}
+
 	public function set_status( int $id, string $status ): bool {
 		global $wpdb;
 

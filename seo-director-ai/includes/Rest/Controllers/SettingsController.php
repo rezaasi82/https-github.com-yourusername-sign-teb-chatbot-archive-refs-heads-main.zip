@@ -48,7 +48,13 @@ final class SettingsController extends AbstractController {
 	}
 
 	/** Never echoed back to the SPA; exposed only as a boolean "is set" flag. */
-	private const SECRET_KEYS = [ 'agency_pair_key', 'license_shared_secret' ];
+	private const SECRET_KEYS = [
+		'agency_pair_key',
+		'license_shared_secret',
+		'jira_token',
+		'trello_token',
+		'serp_api_key',
+	];
 
 	public function get_settings(): \WP_REST_Response {
 		$all         = $this->settings->all();

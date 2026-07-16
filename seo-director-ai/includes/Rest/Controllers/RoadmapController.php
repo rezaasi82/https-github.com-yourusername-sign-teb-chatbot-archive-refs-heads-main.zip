@@ -11,6 +11,7 @@ namespace SEODirector\Rest\Controllers;
 
 use SEODirector\Core\Capabilities;
 use SEODirector\Data\Repository\TaskRepository;
+use SEODirector\Integrations\TaskSync\TaskSyncDispatcher;
 use SEODirector\Roadmap\RoadmapGenerator;
 
 defined( 'ABSPATH' ) || exit;
@@ -20,6 +21,7 @@ final class RoadmapController extends AbstractController {
 	public function __construct(
 		private TaskRepository $tasks,
 		private RoadmapGenerator $generator,
+		private TaskSyncDispatcher $task_sync,
 	) {}
 
 	public function register_routes(): void {
@@ -42,6 +44,19 @@ final class RoadmapController extends AbstractController {
 			[
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'generate' ],
+				'permission_callback' => $this->require_cap( Capabilities::MANAGE ),
+				'args'                => [
+					'scope' => [ 'type' => 'string', 'default' => 'monthly', 'enum' => [ 'weekly', 'monthly', 'quarterly' ] ],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/roadmap/sync',
+			[
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'sync' ],
 				'permission_callback' => $this->require_cap( Capabilities::MANAGE ),
 				'args'                => [
 					'scope' => [ 'type' => 'string', 'default' => 'monthly', 'enum' => [ 'weekly', 'monthly', 'quarterly' ] ],
@@ -74,6 +89,12 @@ final class RoadmapController extends AbstractController {
 		$this->generator->generate( $scope );
 
 		return rest_ensure_response( [ 'items' => $this->tasks->list( $scope ), 'scope' => $scope ] );
+	}
+
+	public function sync( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+		$result = $this->task_sync->push_scope( (string) $request->get_param( 'scope' ) );
+
+		return is_wp_error( $result ) ? $result : rest_ensure_response( $result );
 	}
 
 	public function update_task( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {

@@ -23,6 +23,7 @@ final class InsightService {
 		private InsightCache $cache,
 		private InsightRepository $insights,
 		private Settings $settings,
+		private BrandVoice $brand_voice,
 	) {}
 
 	public function is_available(): bool {
@@ -89,8 +90,9 @@ final class InsightService {
 	 */
 	private function site_context(): array {
 		return [
-			'niche' => $this->settings->get( 'site_niche', '' ),
-			'goals' => $this->settings->get( 'site_goals', '' ),
+			'niche'       => $this->settings->get( 'site_niche', '' ),
+			'goals'       => $this->settings->get( 'site_goals', '' ),
+			'brand_voice' => $this->brand_voice->directive(),
 		];
 	}
 }

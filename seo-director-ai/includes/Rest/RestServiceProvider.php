@@ -81,7 +81,11 @@ final class RestServiceProvider {
 			),
 			new OpportunitiesController( $c->get( OpportunitiesRepository::class ) ),
 			new AlertsController( $c->get( AlertsRepository::class ) ),
-			new RoadmapController( $c->get( TaskRepository::class ), $c->get( RoadmapGenerator::class ) ),
+			new RoadmapController(
+				$c->get( TaskRepository::class ),
+				$c->get( RoadmapGenerator::class ),
+				$c->get( \SEODirector\Integrations\TaskSync\TaskSyncDispatcher::class )
+			),
 			new InsightsController(
 				$c->get( InsightService::class ),
 				$c->get( MoversRepository::class ),

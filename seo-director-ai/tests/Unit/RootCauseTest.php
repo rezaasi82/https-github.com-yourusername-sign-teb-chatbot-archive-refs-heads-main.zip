@@ -9,6 +9,17 @@ use PHPUnit\Framework\TestCase;
 use SEODirector\Analysis\MoverRow;
 use SEODirector\Analysis\RootCause\CauseCandidateEngine;
 use SEODirector\Analysis\RootCause\CoreUpdateCalendar;
+use SEODirector\Analysis\RootCause\SerpProviderInterface;
+
+final class FakeSerpProvider implements SerpProviderInterface {
+
+	/** @param array{features: string[], top_domains: string[]}|null $context */
+	public function __construct( private ?array $context ) {}
+
+	public function serp_context( string $query ): ?array {
+		return $this->context;
+	}
+}
 
 final class RootCauseTest extends TestCase {
 
@@ -63,5 +74,26 @@ final class RootCauseTest extends TestCase {
 
 	public function test_calendar_returns_null_when_far(): void {
 		$this->assertNull( ( new CoreUpdateCalendar() )->near( '2026-01-01' ) );
+	}
+
+	public function test_serp_features_add_candidate_for_queries(): void {
+		$serp   = new FakeSerpProvider( [ 'features' => [ 'AI overview', 'Ads' ], 'top_domains' => [ 'x.com' ] ] );
+		$engine = new CauseCandidateEngine( new CoreUpdateCalendar(), $serp );
+
+		$packet = $engine->build( $this->row(), null, [ 'serp_query' => 'best crm' ] );
+
+		$this->assertContains( 'serp_features', array_column( $packet['candidates'], 'cause' ) );
+		$this->assertSame( [ 'AI overview', 'Ads' ], $packet['serp']['features'] );
+	}
+
+	public function test_serp_not_called_without_query_flag(): void {
+		$serp   = new FakeSerpProvider( [ 'features' => [ 'Ads' ], 'top_domains' => [] ] );
+		$engine = new CauseCandidateEngine( new CoreUpdateCalendar(), $serp );
+
+		// No serp_query flag (e.g. a page entity) → no SERP candidate, null context.
+		$packet = $engine->build( $this->row(), null );
+
+		$this->assertNotContains( 'serp_features', array_column( $packet['candidates'], 'cause' ) );
+		$this->assertNull( $packet['serp'] );
 	}
 }

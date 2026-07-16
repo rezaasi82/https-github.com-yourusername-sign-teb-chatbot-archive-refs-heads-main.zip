@@ -475,6 +475,146 @@ function ClientModeCard() {
   );
 }
 
+const BRAND_VOICE_TONES = ['professional', 'friendly', 'authoritative', 'playful', 'concise', 'technical'];
+
+function EnterpriseCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+  const { data: licenseData } = useQuery({ queryKey: ['license'], queryFn: api.licenseStatus });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+  const f = licenseData?.features ?? {};
+  const s = data.settings;
+  const secretSet = data.secrets_set ?? {};
+  const anyEnterprise = f.brand_voice || f.sla_alerting || f.task_sync || f.serp_enrichment;
+
+  const provider = (s.task_sync_provider as string) ?? '';
+
+  return (
+    <div className="sda-card">
+      <h2>Enterprise</h2>
+      <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 10px' }}>
+        {anyEnterprise ? 'Advanced controls for Enterprise accounts.' : 'These controls require an Enterprise license.'}
+      </p>
+
+      <div style={{ display: 'grid', gap: 16, opacity: anyEnterprise ? 1 : 0.6 }}>
+        <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
+          <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>Brand voice</legend>
+          <div style={{ display: 'grid', gap: 8 }}>
+            <select
+              className="sda-input"
+              defaultValue={(s.brand_voice_tone as string) ?? ''}
+              disabled={!f.brand_voice}
+              onChange={(e) => save.mutate({ brand_voice_tone: e.target.value })}
+            >
+              <option value="">Default tone</option>
+              {BRAND_VOICE_TONES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+            <input
+              className="sda-input"
+              placeholder="Audience (e.g. B2B founders)"
+              defaultValue={(s.brand_voice_audience as string) ?? ''}
+              disabled={!f.brand_voice}
+              onBlur={(e) => save.mutate({ brand_voice_audience: e.target.value })}
+            />
+            <textarea
+              className="sda-input"
+              style={{ minHeight: 56 }}
+              placeholder="Style notes"
+              defaultValue={(s.brand_voice_notes as string) ?? ''}
+              disabled={!f.brand_voice}
+              onBlur={(e) => save.mutate({ brand_voice_notes: e.target.value })}
+            />
+            <input
+              className="sda-input"
+              placeholder="Words to avoid (comma-separated)"
+              defaultValue={(s.brand_voice_avoid as string) ?? ''}
+              disabled={!f.brand_voice}
+              onBlur={(e) => save.mutate({ brand_voice_avoid: e.target.value })}
+            />
+          </div>
+        </fieldset>
+
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          SLA escalation — hours a critical alert may stay open
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            type="number"
+            min={1}
+            max={168}
+            defaultValue={(s.sla_escalation_hours as number) ?? 24}
+            disabled={!f.sla_alerting}
+            onBlur={(e) => save.mutate({ sla_escalation_hours: Number(e.target.value) })}
+          />
+        </label>
+
+        <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
+          <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>Task sync</legend>
+          <div style={{ display: 'grid', gap: 8 }}>
+            <select
+              className="sda-input"
+              defaultValue={provider}
+              disabled={!f.task_sync}
+              onChange={(e) => save.mutate({ task_sync_provider: e.target.value })}
+            >
+              <option value="">Off</option>
+              <option value="jira">Jira</option>
+              <option value="trello">Trello</option>
+            </select>
+            {provider === 'jira' && (
+              <>
+                <input className="sda-input" placeholder="Jira base URL" defaultValue={(s.jira_base_url as string) ?? ''} disabled={!f.task_sync} onBlur={(e) => save.mutate({ jira_base_url: e.target.value })} />
+                <input className="sda-input" placeholder="Account email" defaultValue={(s.jira_email as string) ?? ''} disabled={!f.task_sync} onBlur={(e) => save.mutate({ jira_email: e.target.value })} />
+                <input className="sda-input" type="password" placeholder={secretSet.jira_token ? 'API token saved — replace…' : 'API token'} disabled={!f.task_sync} onBlur={(e) => e.target.value && save.mutate({ jira_token: e.target.value })} />
+                <input className="sda-input" placeholder="Project key (e.g. SEO)" defaultValue={(s.jira_project_key as string) ?? ''} disabled={!f.task_sync} onBlur={(e) => save.mutate({ jira_project_key: e.target.value })} />
+              </>
+            )}
+            {provider === 'trello' && (
+              <>
+                <input className="sda-input" placeholder="Trello key" defaultValue={(s.trello_key as string) ?? ''} disabled={!f.task_sync} onBlur={(e) => save.mutate({ trello_key: e.target.value })} />
+                <input className="sda-input" type="password" placeholder={secretSet.trello_token ? 'Token saved — replace…' : 'Token'} disabled={!f.task_sync} onBlur={(e) => e.target.value && save.mutate({ trello_token: e.target.value })} />
+                <input className="sda-input" placeholder="List ID" defaultValue={(s.trello_list_id as string) ?? ''} disabled={!f.task_sync} onBlur={(e) => save.mutate({ trello_list_id: e.target.value })} />
+              </>
+            )}
+          </div>
+        </fieldset>
+
+        <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
+          <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>SERP enrichment (root cause)</legend>
+          <div style={{ display: 'grid', gap: 8 }}>
+            <select
+              className="sda-input"
+              defaultValue={(s.serp_provider as string) ?? ''}
+              disabled={!f.serp_enrichment}
+              onChange={(e) => save.mutate({ serp_provider: e.target.value })}
+            >
+              <option value="">Off</option>
+              <option value="serpapi">SerpApi</option>
+            </select>
+            <input
+              className="sda-input"
+              type="password"
+              placeholder={secretSet.serp_api_key ? 'API key saved — replace…' : 'SerpApi API key'}
+              disabled={!f.serp_enrichment}
+              onBlur={(e) => e.target.value && save.mutate({ serp_api_key: e.target.value })}
+            />
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  );
+}
+
 export function SettingsPage() {
   const { data, isLoading, error } = useQuery({ queryKey: ['connections'], queryFn: api.connections });
 
@@ -505,6 +645,7 @@ export function SettingsPage() {
       <AlertChannelsCard />
       <WhiteLabelCard />
       <ClientModeCard />
+      <EnterpriseCard />
     </div>
   );
 }

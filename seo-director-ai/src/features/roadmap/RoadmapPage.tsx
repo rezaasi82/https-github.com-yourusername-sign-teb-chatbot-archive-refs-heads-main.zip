@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, boot, RoadmapTask } from '../../api/client';
+import { useLicense } from '../../app/license';
 
 type Scope = 'weekly' | 'monthly' | 'quarterly';
 const COLUMNS: Array<{ status: RoadmapTask['status']; label: string }> = [
@@ -55,11 +56,16 @@ function TaskCard({ task, scope }: { task: RoadmapTask; scope: Scope }) {
 export function RoadmapPage() {
   const [scope, setScope] = useState<Scope>('monthly');
   const queryClient = useQueryClient();
+  const { allows } = useLicense();
   const { data, isLoading, error } = useQuery({ queryKey: ['roadmap', scope], queryFn: () => api.roadmap(scope) });
 
   const generate = useMutation({
     mutationFn: () => api.generateRoadmap(scope),
     onSuccess: (next) => queryClient.setQueryData(['roadmap', scope], next),
+  });
+
+  const sync = useMutation({
+    mutationFn: () => api.syncRoadmap(scope),
   });
 
   const grouped = (status: RoadmapTask['status']) => (data?.items ?? []).filter((t) => t.status === status);
@@ -75,11 +81,28 @@ export function RoadmapPage() {
           ))}
         </div>
         {boot().canManage && (
-          <button type="button" className="sda-btn" onClick={() => generate.mutate()} disabled={generate.isPending}>
-            {generate.isPending ? 'Generating…' : '✦ Regenerate from opportunities'}
-          </button>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+            {allows('task_sync') && (
+              <button type="button" className="sda-btn" onClick={() => sync.mutate()} disabled={sync.isPending}>
+                {sync.isPending
+                  ? 'Syncing…'
+                  : sync.data
+                    ? `Synced ${sync.data.pushed} → ${sync.data.provider}`
+                    : '⇪ Sync to task tool'}
+              </button>
+            )}
+            <button type="button" className="sda-btn" onClick={() => generate.mutate()} disabled={generate.isPending}>
+              {generate.isPending ? 'Generating…' : '✦ Regenerate from opportunities'}
+            </button>
+          </div>
         )}
       </div>
+      {sync.error != null && (
+        <div className="sda-card sda-empty" style={{ marginBlockEnd: 12 }}>
+          <strong>Task sync failed</strong>
+          {(sync.error as Error).message}
+        </div>
+      )}
 
       {isLoading && <div className="sda-skeleton" style={{ height: 240 }} />}
       {error != null && (

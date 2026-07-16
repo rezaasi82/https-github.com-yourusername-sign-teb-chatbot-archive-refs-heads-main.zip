@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.6.0
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,13 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.7.0 =
+* Enterprise: brand-voice profiles (tone, audience, style notes, words to avoid) injected into every AI generation, so explanations and copy match your house style.
+* Enterprise: SLA alerting — critical/high alerts left open past a configurable threshold escalate once to all channels.
+* Enterprise: task sync — push roadmap tasks to Jira or Trello with one click; idempotent so re-syncing never duplicates.
+* Enterprise: SERP-enriched root cause — an optional SerpApi lookup adds SERP-feature causes (AI overview, ads, snippets) to declining-query analysis.
+* New Enterprise settings panel and a per-feature upsell for locked capabilities.
 
 = 0.6.0 =
 * Lite build: a free WordPress.org edition (GSC overview + health score only), gated by the SDA_LITE build flag, with an in-dashboard upgrade funnel to the paid plans.

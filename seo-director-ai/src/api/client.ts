@@ -311,6 +311,11 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ scope }),
     }),
+  syncRoadmap: (scope: string) =>
+    request<{ pushed: number; skipped: number; provider: string }>('/roadmap/sync', {
+      method: 'POST',
+      body: JSON.stringify({ scope }),
+    }),
   updateTask: (id: number, status: string, scope: string) =>
     request<{ items: RoadmapTask[]; scope: string }>(`/roadmap/tasks/${id}`, {
       method: 'PATCH',

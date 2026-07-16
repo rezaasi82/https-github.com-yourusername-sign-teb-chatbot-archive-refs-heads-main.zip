@@ -55,4 +55,11 @@ final class Upgrader {
 		Activator::create_tables();
 		Capabilities::add(); // Ensure manage_sda_clients exists on upgrade.
 	}
+
+	/**
+	 * Adds alerts.escalated_at (Enterprise SLA alerting). dbDelta additive.
+	 */
+	private function upgrade_to_3(): void {
+		Activator::create_tables();
+	}
 }

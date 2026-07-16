@@ -16,7 +16,10 @@ defined( 'ABSPATH' ) || exit;
 
 final class CauseCandidateEngine {
 
-	public function __construct( private CoreUpdateCalendar $updates ) {}
+	public function __construct(
+		private CoreUpdateCalendar $updates,
+		private ?SerpProviderInterface $serp = null,
+	) {}
 
 	/**
 	 * @param MoverRow            $row       The declining entity's two-window aggregates.
@@ -95,6 +98,25 @@ final class CauseCandidateEngine {
 			];
 		}
 
+		// SERP enrichment (Enterprise): a live lookup can reveal SERP features
+		// (AI overview, featured snippet, ads) that siphon clicks even when the
+		// organic position is stable. The provider is null unless configured.
+		$serp = null;
+		if ( null !== $this->serp && ! empty( $flags['serp_query'] ) ) {
+			$serp = $this->serp->serp_context( (string) $flags['serp_query'] );
+		}
+
+		if ( null !== $serp && [] !== ( $serp['features'] ?? [] ) ) {
+			$candidates[] = [
+				'cause'    => 'serp_features',
+				'evidence' => sprintf(
+					'SERP now shows features (%s) that can absorb clicks above the organic result.',
+					implode( ', ', array_slice( $serp['features'], 0, 5 ) )
+				),
+				'strength' => ( null !== $ctr_change && $ctr_change <= -15 ) ? 'strong' : 'moderate',
+			];
+		}
+
 		if ( [] === $candidates ) {
 			$candidates[] = [
 				'cause'    => 'content_decay',
@@ -112,6 +134,7 @@ final class CauseCandidateEngine {
 			'ctr_change_pct'  => $ctr_change,
 			'impr_change_pct' => $impr_change,
 			'drop_date'       => $drop_date,
+			'serp'            => $serp,
 			'candidates'      => $candidates,
 		];
 	}

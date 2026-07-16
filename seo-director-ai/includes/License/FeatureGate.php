@@ -48,6 +48,10 @@ final class FeatureGate {
 			'saas_hub',
 			'pooled_ai_keys',
 			'custom_reports',
+			'brand_voice',          // brand-voice profile injected into AI prompts
+			'task_sync',            // push roadmap tasks to Jira / Trello
+			'serp_enrichment',      // SERP-API-enriched root cause
+			'sla_alerting',         // escalate unresolved critical alerts
 		],
 	];
 

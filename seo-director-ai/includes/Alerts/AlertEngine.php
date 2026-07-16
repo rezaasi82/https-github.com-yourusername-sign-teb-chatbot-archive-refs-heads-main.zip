@@ -11,6 +11,7 @@ namespace SEODirector\Alerts;
 use SEODirector\Alerts\Channels\AlertChannelInterface;
 use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\License\FeatureGate;
+use SEODirector\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,6 +26,8 @@ final class AlertEngine {
 		private AlertsRepository $alerts,
 		private array $channels,
 		private FeatureGate $gate,
+		private EscalationPolicy $escalation,
+		private Settings $settings,
 	) {}
 
 	public function evaluate(): void {
@@ -76,6 +79,49 @@ final class AlertEngine {
 		if ( [] !== $new_alerts ) {
 			$this->dispatch( $new_alerts );
 		}
+
+		$this->escalate();
+	}
+
+	/**
+	 * SLA escalation (Enterprise): re-notify for critical/high alerts that have
+	 * stayed open past the configured threshold, exactly once each.
+	 */
+	public function escalate(): void {
+		if ( ! $this->gate->allows( 'sla_alerting' ) ) {
+			return;
+		}
+
+		$threshold = (int) $this->settings->get( 'sla_escalation_hours', 24 );
+		$breaches  = $this->escalation->breaches( $this->alerts->active_escalatable(), $threshold, time() );
+
+		if ( [] === $breaches ) {
+			return;
+		}
+
+		$digest = array_map(
+			static fn( array $a ) => [
+				'rule'     => 'sla_breach',
+				'severity' => (string) $a['severity'],
+				'message'  => sprintf(
+					/* translators: 1: hours open, 2: alert message. */
+					__( 'SLA breach (open %1$d h): %2$s', 'seo-director-ai' ),
+					$threshold,
+					(string) $a['message']
+				),
+			],
+			$breaches
+		);
+
+		$this->dispatch( $digest );
+		$this->alerts->mark_escalated( array_column( $breaches, 'id' ) );
+
+		/**
+		 * Fires after alerts are escalated past SLA.
+		 *
+		 * @param array<int, array<string, mixed>> $breaches Escalated alert rows.
+		 */
+		do_action( 'sda_alerts_escalated', $breaches );
 	}
 
 	/**

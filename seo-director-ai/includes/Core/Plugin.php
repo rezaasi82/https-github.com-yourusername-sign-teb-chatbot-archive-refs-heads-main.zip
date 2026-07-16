@@ -13,6 +13,7 @@ use SEODirector\Agency\ClientAccess;
 use SEODirector\Agency\SiteConnector;
 use SEODirector\Agency\SnapshotBuilder;
 use SEODirector\Agency\WhiteLabel;
+use SEODirector\Ai\BrandVoice;
 use SEODirector\Ai\InsightCache;
 use SEODirector\Ai\InsightService;
 use SEODirector\Ai\ProviderRouter;
@@ -23,6 +24,7 @@ use SEODirector\Ai\Providers\OpenAiProvider;
 use SEODirector\Ai\SchemaValidator;
 use SEODirector\Ai\TokenBudget;
 use SEODirector\Alerts\AlertEngine;
+use SEODirector\Alerts\EscalationPolicy;
 use SEODirector\Alerts\Channels\EmailChannel;
 use SEODirector\Alerts\Channels\SlackChannel;
 use SEODirector\Alerts\Channels\TelegramChannel;
@@ -45,6 +47,7 @@ use SEODirector\Analysis\OpportunityDetector\SnippetDetector;
 use SEODirector\Analysis\OpportunityDetector\StrikingDistanceDetector;
 use SEODirector\Analysis\RootCause\CauseCandidateEngine;
 use SEODirector\Analysis\RootCause\CoreUpdateCalendar;
+use SEODirector\Integrations\Serp\SerpApiProvider;
 use SEODirector\Analysis\TrendAnalyzer;
 use SEODirector\Content\ContentStrategist;
 use SEODirector\License\FeatureGate;
@@ -80,6 +83,9 @@ use SEODirector\Integrations\Google\QuotaManager;
 use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Integrations\Google\TokenVault;
 use SEODirector\Integrations\Http\RetryingHttpClient;
+use SEODirector\Integrations\TaskSync\JiraConnector;
+use SEODirector\Integrations\TaskSync\TaskSyncDispatcher;
+use SEODirector\Integrations\TaskSync\TrelloConnector;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
 use SEODirector\Jobs\Handlers\HubPushJob;
 use SEODirector\Jobs\Handlers\RunAnalysisJob;
@@ -273,14 +279,32 @@ final class Plugin {
 		$c->set( CoreUpdateCalendar::class, static fn() => new CoreUpdateCalendar() );
 		$c->set( ClusterAnalyzer::class, static fn( Container $c ) => new ClusterAnalyzer( $c->get( OpportunitiesRepository::class ) ) );
 		$c->set( LinkGraphBuilder::class, static fn( Container $c ) => new LinkGraphBuilder( $c->get( UrlCanonicalizer::class ) ) );
-		$c->set( CauseCandidateEngine::class, static fn( Container $c ) => new CauseCandidateEngine( $c->get( CoreUpdateCalendar::class ) ) );
+		$c->set( SerpApiProvider::class, static fn( Container $c ) => new SerpApiProvider( $c->get( Settings::class ), $c->get( FeatureGate::class ), $c->get( RetryingHttpClient::class ) ) );
+		$c->set( CauseCandidateEngine::class, static fn( Container $c ) => new CauseCandidateEngine( $c->get( CoreUpdateCalendar::class ), $c->get( SerpApiProvider::class ) ) );
 		$c->set( RoadmapGenerator::class, static fn( Container $c ) => new RoadmapGenerator( $c->get( OpportunitiesRepository::class ), $c->get( TaskRepository::class ) ) );
+
+		// Enterprise: task sync (Jira / Trello).
+		$c->set( JiraConnector::class, static fn( Container $c ) => new JiraConnector( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
+		$c->set( TrelloConnector::class, static fn( Container $c ) => new TrelloConnector( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
+		$c->set(
+			TaskSyncDispatcher::class,
+			static fn( Container $c ) => new TaskSyncDispatcher(
+				[
+					'jira'   => $c->get( JiraConnector::class ),
+					'trello' => $c->get( TrelloConnector::class ),
+				],
+				$c->get( TaskRepository::class ),
+				$c->get( Settings::class ),
+				$c->get( FeatureGate::class )
+			)
+		);
 
 		// AI layer.
 		$c->set( SchemaValidator::class, static fn() => new SchemaValidator() );
 		$c->set( PromptLibrary::class, static fn() => new PromptLibrary() );
 		$c->set( TokenBudget::class, static fn( Container $c ) => new TokenBudget( $c->get( Settings::class ) ) );
 		$c->set( InsightCache::class, static fn( Container $c ) => new InsightCache( $c->get( InsightRepository::class ) ) );
+		$c->set( BrandVoice::class, static fn( Container $c ) => new BrandVoice( $c->get( Settings::class ), $c->get( FeatureGate::class ) ) );
 		$c->set( ClaudeProvider::class, static fn( Container $c ) => new ClaudeProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
 		$c->set( OpenAiProvider::class, static fn( Container $c ) => new OpenAiProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
 		$c->set( GeminiProvider::class, static fn( Container $c ) => new GeminiProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
@@ -304,7 +328,8 @@ final class Plugin {
 				$c->get( PromptLibrary::class ),
 				$c->get( InsightCache::class ),
 				$c->get( InsightRepository::class ),
-				$c->get( Settings::class )
+				$c->get( Settings::class ),
+				$c->get( BrandVoice::class )
 			)
 		);
 		$c->set(
@@ -323,6 +348,7 @@ final class Plugin {
 		);
 
 		// Alerts.
+		$c->set( EscalationPolicy::class, static fn() => new EscalationPolicy() );
 		$c->set( EmailChannel::class, static fn( Container $c ) => new EmailChannel( $c->get( Settings::class ) ) );
 		$c->set( WebhookChannel::class, static fn( Container $c ) => new WebhookChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
 		$c->set( SlackChannel::class, static fn( Container $c ) => new SlackChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
@@ -342,7 +368,9 @@ final class Plugin {
 					$c->get( SlackChannel::class ),
 					$c->get( TelegramChannel::class ),
 				],
-				$c->get( FeatureGate::class )
+				$c->get( FeatureGate::class ),
+				$c->get( EscalationPolicy::class ),
+				$c->get( Settings::class )
 			)
 		);
 

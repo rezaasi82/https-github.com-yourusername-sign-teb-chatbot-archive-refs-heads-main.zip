@@ -302,6 +302,7 @@ final class Schema {
 			data LONGTEXT NULL,
 			raised_at DATETIME NOT NULL,
 			resolved_at DATETIME NULL,
+			escalated_at DATETIME NULL,
 			PRIMARY KEY  (id),
 			UNIQUE KEY uq_active (site_id, fingerprint, status),
 			KEY idx_status (site_id, status, severity, raised_at)

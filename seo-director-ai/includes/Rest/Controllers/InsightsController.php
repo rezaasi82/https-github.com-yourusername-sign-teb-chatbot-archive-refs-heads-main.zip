@@ -78,9 +78,11 @@ final class InsightsController extends AbstractController {
 		$kind = (string) $request->get_param( 'kind' );
 
 		if ( 'root_cause' === $kind ) {
-			$series   = $this->daily_series( $entity, $property['id'], $hash );
-			$drop     = $this->changepoints->detect( $series );
-			$evidence = $this->causes->build( $row, $drop['date'] ?? null );
+			$series = $this->daily_series( $entity, $property['id'], $hash );
+			$drop   = $this->changepoints->detect( $series );
+			// SERP enrichment only applies to query entities.
+			$flags    = 'query' === $entity ? [ 'serp_query' => $row->label ] : [];
+			$evidence = $this->causes->build( $row, $drop['date'] ?? null, $flags );
 		} else {
 			$evidence = 'growth' === $kind
 				? ( $this->growth->detect( [ $row ], 1 )[0] ?? [] )

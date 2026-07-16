@@ -78,6 +78,25 @@ final class Activator {
 			'brand_primary_color'   => '',
 			'brand_hide_powered_by' => false,
 			'brand_string_overrides' => '',
+			// Enterprise: brand-voice profile.
+			'brand_voice_tone'      => '',
+			'brand_voice_audience'  => '',
+			'brand_voice_notes'     => '',
+			'brand_voice_avoid'     => '',
+			// Enterprise: SLA escalation (hours a critical alert may stay open).
+			'sla_escalation_hours'  => 24,
+			// Enterprise: task sync (Jira / Trello).
+			'task_sync_provider'    => '',
+			'jira_base_url'         => '',
+			'jira_email'            => '',
+			'jira_token'            => '',
+			'jira_project_key'      => '',
+			'trello_key'            => '',
+			'trello_token'          => '',
+			'trello_list_id'        => '',
+			// Enterprise: SERP enrichment for root cause.
+			'serp_provider'         => '',
+			'serp_api_key'          => '',
 			'delete_data_on_uninstall' => false,
 		];
 	}

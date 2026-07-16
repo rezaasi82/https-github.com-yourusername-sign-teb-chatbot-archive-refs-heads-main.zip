@@ -146,6 +146,10 @@ final class PromptLibrary {
 		if ( ! empty( $site_context['goals'] ) ) {
 			$parts[] = 'Goals: ' . sanitize_text_field( (string) $site_context['goals'] ) . '.';
 		}
+		if ( ! empty( $site_context['brand_voice'] ) ) {
+			// Already a fully-formed directive string from BrandVoice.
+			$parts[] = sanitize_text_field( (string) $site_context['brand_voice'] );
+		}
 
 		return implode( ' ', $parts );
 	}
