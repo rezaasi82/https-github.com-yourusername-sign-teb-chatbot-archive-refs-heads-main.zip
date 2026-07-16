@@ -304,10 +304,10 @@ class SWC_Sms_Manager
     }
 
     /**
-     * Saved staff / colleague numbers for quick referral. One per line,
-     * "Name,09xxxxxxxxx" or just the number.
+     * Saved staff / colleagues for quick referral. One per line:
+     * "Name,09xxxxxxxxx,email@example.com" — email optional, or just a number.
      *
-     * @return array<int,array{name:string,phone:string}>
+     * @return array<int,array{name:string,phone:string,email:string}>
      */
     public function staff_numbers(): array
     {
@@ -318,12 +318,16 @@ class SWC_Sms_Manager
             if ($line === '') {
                 continue;
             }
-            $parts = array_map('trim', explode(',', $line, 2));
-            if (count($parts) === 2 && $parts[1] !== '') {
-                $out[] = ['name' => $parts[0], 'phone' => $parts[1]];
-            } else {
-                $out[] = ['name' => '', 'phone' => $parts[0]];
+            $parts = array_map('trim', explode(',', $line, 3));
+            if (count($parts) === 1) {
+                $out[] = ['name' => '', 'phone' => $parts[0], 'email' => ''];
+                continue;
             }
+            $out[] = [
+                'name'  => $parts[0],
+                'phone' => $parts[1] ?? '',
+                'email' => is_email($parts[2] ?? '') ? $parts[2] : '',
+            ];
         }
         return $out;
     }

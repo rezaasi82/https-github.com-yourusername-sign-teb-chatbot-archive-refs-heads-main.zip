@@ -305,8 +305,8 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('شماره همکاران (دریافت ارجاع)', 'signteb-web-chat'); ?></th>
                 <td>
-                    <textarea name="sms_staff_numbers" rows="3" class="large-text" placeholder="دکتر رضایی,09121112233&#10;پذیرش,09124445566"><?php echo esc_textarea($s->get('sms_staff_numbers')); ?></textarea>
-                    <p class="description"><?php esc_html_e('هر خط یک همکار: «نام,شماره» یا فقط شماره. این شماره‌ها در صفحه‌ی هر لید برای ارجاع سریع پیامکی نمایش داده می‌شوند.', 'signteb-web-chat'); ?></p>
+                    <textarea name="sms_staff_numbers" rows="3" class="large-text" placeholder="دکتر رضایی,09121112233,dr.rezaei@example.com&#10;پذیرش,09124445566"><?php echo esc_textarea($s->get('sms_staff_numbers')); ?></textarea>
+                    <p class="description"><?php esc_html_e('هر خط یک همکار: «نام,شماره,ایمیل» (ایمیل اختیاری). در صفحه‌ی هر لید، با انتخاب همکار شماره و ایمیل مقصد خودکار پر می‌شود.', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
         </table>

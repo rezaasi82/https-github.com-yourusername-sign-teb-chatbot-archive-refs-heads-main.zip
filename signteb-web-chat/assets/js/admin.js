@@ -190,12 +190,17 @@
 			});
 		}
 
-		// Pick a saved colleague number into the destination field.
+		// Picking a saved colleague fills both destinations (phone + email).
 		var staffSel = refer.querySelector('.swc-refer-staff');
 		var phoneField = refer.querySelector('.swc-refer-phone');
-		if (staffSel && phoneField) {
+		var emailField = refer.querySelector('.swc-refer-email');
+		if (staffSel) {
 			staffSel.addEventListener('change', function () {
-				if (staffSel.value) { phoneField.value = staffSel.value; }
+				var opt = staffSel.options[staffSel.selectedIndex];
+				if (!opt || !staffSel.value) { return; }
+				if (phoneField) { phoneField.value = staffSel.value; }
+				var mail = opt.getAttribute('data-email') || '';
+				if (emailField && mail) { emailField.value = mail; }
 			});
 		}
 

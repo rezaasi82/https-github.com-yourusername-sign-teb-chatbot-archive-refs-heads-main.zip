@@ -97,10 +97,6 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
         ?>
         <div class="swc-refer" data-lead="<?php echo esc_attr($conversation->id); ?>" data-text="<?php echo esc_attr($ref_text); ?>">
             <div class="swc-crm-title"><?php esc_html_e('ارجاع لید به همکار', 'signteb-web-chat'); ?></div>
-            <div class="swc-refer-row">
-                <input type="email" class="swc-refer-email" placeholder="<?php esc_attr_e('ایمیل همکار', 'signteb-web-chat'); ?>">
-                <button type="button" class="button swc-refer-mail"><?php esc_html_e('ارجاع با ایمیل', 'signteb-web-chat'); ?></button>
-            </div>
 
             <?php $staff = $sms_mgr->staff_numbers(); ?>
             <?php if (! empty($staff)) : ?>
@@ -108,12 +104,19 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
                     <select class="swc-refer-staff">
                         <option value=""><?php esc_html_e('انتخاب همکار…', 'signteb-web-chat'); ?></option>
                         <?php foreach ($staff as $st) : ?>
-                            <option value="<?php echo esc_attr($st['phone']); ?>"><?php echo esc_html(($st['name'] !== '' ? $st['name'] . ' — ' : '') . $st['phone']); ?></option>
+                            <option value="<?php echo esc_attr($st['phone']); ?>" data-email="<?php echo esc_attr($st['email']); ?>">
+                                <?php echo esc_html(($st['name'] !== '' ? $st['name'] . ' — ' : '') . $st['phone'] . ($st['email'] !== '' ? ' · ' . $st['email'] : '')); ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
-                    <span class="description"><?php esc_html_e('یا شماره را دستی وارد کنید', 'signteb-web-chat'); ?></span>
+                    <span class="description"><?php esc_html_e('انتخاب همکار، شماره و ایمیل مقصد را به‌طور خودکار پر می‌کند.', 'signteb-web-chat'); ?></span>
                 </div>
             <?php endif; ?>
+
+            <div class="swc-refer-row">
+                <input type="email" class="swc-refer-email" placeholder="<?php esc_attr_e('ایمیل همکار', 'signteb-web-chat'); ?>">
+                <button type="button" class="button swc-refer-mail"><?php esc_html_e('ارجاع با ایمیل', 'signteb-web-chat'); ?></button>
+            </div>
             <div class="swc-refer-row">
                 <input type="tel" class="swc-refer-phone" placeholder="<?php esc_attr_e('موبایل مقصد', 'signteb-web-chat'); ?>" inputmode="tel" value="<?php echo esc_attr($conversation->patient_phone ?? ''); ?>">
                 <?php if ($sms_ready) : ?>
