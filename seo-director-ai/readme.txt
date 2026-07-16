@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,13 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.6.0 =
+* Lite build: a free WordPress.org edition (GSC overview + health score only), gated by the SDA_LITE build flag, with an in-dashboard upgrade funnel to the paid plans.
+* Upgrade funnel: locked features now show a clear upsell in place of the screen, plus an edition badge with an upgrade link in the toolbar.
+* Performance: the admin app is code-split per screen, cutting the initial bundle by ~20% — the rest load on navigation.
+* i18n: full translation template at languages/seo-director-ai.pot, regenerated with bin/make-pot.php.
+* Hardening: settings API secret redaction, "silence is golden" directory stubs, client-role cleanup on uninstall, and a documented security review (docs/08-security-hardening.md).
 
 = 0.5.0 =
 * Agency Hub: pair client sites over HMAC-signed snapshot push, with a sites grid showing each client's health, 28-day traffic, and active alerts at a glance. Pairing keys are shown once and stored encrypted.

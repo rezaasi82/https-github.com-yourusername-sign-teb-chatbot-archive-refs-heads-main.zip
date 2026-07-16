@@ -60,9 +60,16 @@ final class LicenseController extends AbstractController {
 	public function status(): \WP_REST_Response {
 		return rest_ensure_response(
 			[
-				'license'  => $this->license->status(),
-				'features' => $this->gate->snapshot(),
-				'edition'  => $this->gate->effective_edition(),
+				'license'     => $this->license->status(),
+				'features'    => $this->gate->snapshot(),
+				'edition'     => $this->gate->effective_edition(),
+				'is_lite'     => $this->gate->is_lite(),
+				/**
+				 * Filters the upgrade destination used by the funnel UI.
+				 *
+				 * @param string $url Marketing/pricing URL.
+				 */
+				'upgrade_url' => apply_filters( 'sda_upgrade_url', 'https://seodirector.app/pricing' ),
 			]
 		);
 	}

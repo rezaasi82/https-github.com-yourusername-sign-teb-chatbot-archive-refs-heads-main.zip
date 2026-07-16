@@ -184,6 +184,8 @@ export interface LicenseStatusResponse {
   license: LicenseState;
   features: Record<string, boolean>;
   edition: string;
+  is_lite: boolean;
+  upgrade_url: string;
 }
 
 export interface MetaSuggestion {

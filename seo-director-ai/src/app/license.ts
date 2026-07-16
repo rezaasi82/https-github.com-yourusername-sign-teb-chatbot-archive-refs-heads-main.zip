@@ -18,6 +18,8 @@ export function useLicense() {
     ...query,
     edition: query.data?.edition ?? 'starter',
     license: query.data?.license ?? null,
+    isLite: query.data?.is_lite ?? false,
+    upgradeUrl: query.data?.upgrade_url ?? 'https://seodirector.app/pricing',
     features,
     allows: (feature: string): boolean => Boolean(features[feature]),
   };

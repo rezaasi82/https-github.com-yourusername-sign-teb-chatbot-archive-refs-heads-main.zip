@@ -49,3 +49,6 @@ foreach ( $sda_tables as $sda_table ) {
 foreach ( [ 'sda_settings', 'sda_db_version', 'sda_installed_at', 'sda_activation_redirect', 'sda_vault_salt', 'sda_upgrading' ] as $sda_option ) {
 	delete_option( $sda_option );
 }
+
+// Drop the agency client role so no custom capabilities linger after removal.
+remove_role( 'sda_client' );

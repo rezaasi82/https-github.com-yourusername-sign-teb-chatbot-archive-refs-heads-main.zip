@@ -1,41 +1,71 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect, type ComponentType } from 'react';
 import { boot } from '../api/client';
-import { AgencyPage } from '../features/agency/AgencyPage';
-import { AlertsPage } from '../features/alerts/AlertsPage';
-import { ContentPage } from '../features/content/ContentPage';
-import { WinnersLosersPage } from '../features/movers/WinnersLosersPage';
-import { OpportunitiesPage } from '../features/opportunities/OpportunitiesPage';
-import { OverviewPage } from '../features/overview/OverviewPage';
-import { ReportsPage } from '../features/reports/ReportsPage';
-import { RoadmapPage } from '../features/roadmap/RoadmapPage';
-import { SettingsPage } from '../features/settings/SettingsPage';
+import { EditionBadge, UpgradeBanner } from '../components/ui/UpgradeBanner';
+import { useLicense } from './license';
 import { useHashRoute } from './router';
 import { useTheme } from './theme';
+
+// Route pages are code-split: each becomes its own chunk, so the initial load
+// only ships the shell + overview and the rest arrive on navigation.
+const OverviewPage = lazy(() => import('../features/overview/OverviewPage').then((m) => ({ default: m.OverviewPage })));
+const WinnersLosersPage = lazy(() => import('../features/movers/WinnersLosersPage').then((m) => ({ default: m.WinnersLosersPage })));
+const OpportunitiesPage = lazy(() => import('../features/opportunities/OpportunitiesPage').then((m) => ({ default: m.OpportunitiesPage })));
+const ContentPage = lazy(() => import('../features/content/ContentPage').then((m) => ({ default: m.ContentPage })));
+const RoadmapPage = lazy(() => import('../features/roadmap/RoadmapPage').then((m) => ({ default: m.RoadmapPage })));
+const AlertsPage = lazy(() => import('../features/alerts/AlertsPage').then((m) => ({ default: m.AlertsPage })));
+const ReportsPage = lazy(() => import('../features/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })));
+const AgencyPage = lazy(() => import('../features/agency/AgencyPage').then((m) => ({ default: m.AgencyPage })));
+const SettingsPage = lazy(() => import('../features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 60_000, refetchOnWindowFocus: false } },
 });
 
-const NAV: Array<{ route: string; label: string }> = [
-  { route: 'overview', label: 'Overview' },
-  { route: 'movers', label: 'Winners & Losers' },
-  { route: 'opportunities', label: 'Opportunities' },
-  { route: 'content', label: 'Content' },
-  { route: 'roadmap', label: 'Roadmap' },
-  { route: 'alerts', label: 'Alerts' },
-  { route: 'reports', label: 'Reports' },
+interface NavItem {
+  route: string;
+  label: string;
+  page: ComponentType;
+  // Feature the edition must unlock; undefined = always available.
+  feature?: string;
+  // Edition to advertise in the upsell when the feature is locked.
+  requires?: string;
+}
+
+const NAV: NavItem[] = [
+  { route: 'overview', label: 'Overview', page: OverviewPage },
+  { route: 'movers', label: 'Winners & Losers', page: WinnersLosersPage, feature: 'movers', requires: 'starter' },
+  { route: 'opportunities', label: 'Opportunities', page: OpportunitiesPage, feature: 'core_detectors', requires: 'starter' },
+  { route: 'content', label: 'Content', page: ContentPage, feature: 'content_strategist', requires: 'pro' },
+  { route: 'roadmap', label: 'Roadmap', page: RoadmapPage, feature: 'roadmap_monthly', requires: 'starter' },
+  { route: 'alerts', label: 'Alerts', page: AlertsPage, feature: 'alerts_email', requires: 'starter' },
+  { route: 'reports', label: 'Reports', page: ReportsPage, feature: 'reports_pdf', requires: 'starter' },
   // Agency hub is only shown to users who can manage clients.
-  ...(boot().canManageClients ? [{ route: 'agency', label: 'Agency' }] : []),
-  { route: 'settings', label: 'Settings' },
+  ...(boot().canManageClients
+    ? [{ route: 'agency', label: 'Agency', page: AgencyPage, feature: 'agency_hub', requires: 'agency' } as NavItem]
+    : []),
+  { route: 'settings', label: 'Settings', page: SettingsPage },
 ];
 
-function ComingSoon({ label }: { label: string }) {
+function PageFallback() {
+  return <div className="sda-card sda-skeleton" style={{ height: 240 }} />;
+}
+
+function RouteView({ item }: { item: NavItem }) {
+  const { allows, isLoading } = useLicense();
+  const Page = item.page;
+
+  // Gate by feature. While the license snapshot loads, don't flash the upsell.
+  if (item.feature && !isLoading && !allows(item.feature)) {
+    return (
+      <UpgradeBanner title={`${item.label} is not available on your plan`} requires={item.requires ?? 'pro'} />
+    );
+  }
+
   return (
-    <div className="sda-card sda-empty">
-      <strong>{label}</strong>
-      This screen ships in an upcoming phase.
-    </div>
+    <Suspense fallback={<PageFallback />}>
+      <Page />
+    </Suspense>
   );
 }
 
@@ -76,33 +106,15 @@ export function App() {
         <main className="sda-main">
           <div className="sda-topbar">
             <h1>{current.label}</h1>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <EditionBadge />
               <span style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>{boot().siteName}</span>
               <button type="button" className="sda-btn" onClick={toggleTheme} aria-label="Toggle theme">
                 {theme === 'dark' ? '☀' : '☾'}
               </button>
             </div>
           </div>
-          {current.route === 'overview' && <OverviewPage />}
-          {current.route === 'movers' && <WinnersLosersPage />}
-          {current.route === 'opportunities' && <OpportunitiesPage />}
-          {current.route === 'content' && <ContentPage />}
-          {current.route === 'roadmap' && <RoadmapPage />}
-          {current.route === 'alerts' && <AlertsPage />}
-          {current.route === 'reports' && <ReportsPage />}
-          {current.route === 'agency' && <AgencyPage />}
-          {current.route === 'settings' && <SettingsPage />}
-          {![
-            'overview',
-            'movers',
-            'opportunities',
-            'content',
-            'roadmap',
-            'alerts',
-            'reports',
-            'agency',
-            'settings',
-          ].includes(current.route) && <ComingSoon label={current.label} />}
+          <RouteView item={current} />
         </main>
       </div>
     </QueryClientProvider>

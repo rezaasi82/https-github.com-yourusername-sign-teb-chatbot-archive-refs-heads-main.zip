@@ -14,11 +14,14 @@ defined( 'ABSPATH' ) || exit;
 
 final class FeatureGate {
 
-	/** Features unlocked per edition (cumulative). */
+	/** Features unlocked per edition (cumulative, lowest tier first). */
 	private const MATRIX = [
+		'lite'       => [
+			'overview',             // GSC overview + health score — the free WordPress.org build
+			'health_score',
+		],
 		'starter'    => [
 			'core_detectors',       // striking-distance, low-CTR, near-top
-			'health_score',
 			'movers',
 			'alerts_email',
 			'ai_explain',
@@ -48,8 +51,8 @@ final class FeatureGate {
 		],
 	];
 
-	/** Ordering for cumulative unlock. */
-	private const RANK = [ 'starter' => 0, 'pro' => 1, 'agency' => 2, 'enterprise' => 3 ];
+	/** Ordering for cumulative unlock. Lite sits below starter as the free floor. */
+	private const RANK = [ 'lite' => -1, 'starter' => 0, 'pro' => 1, 'agency' => 2, 'enterprise' => 3 ];
 
 	public function __construct( private LicenseManager $license ) {}
 
@@ -70,9 +73,23 @@ final class FeatureGate {
 	}
 
 	/**
-	 * Effective edition after grace/lock resolution. Starter is always the floor.
+	 * Whether this is the free WordPress.org "Lite" build. When the SDA_LITE
+	 * constant is defined and true the plugin is hard-limited to the Lite tier
+	 * regardless of any license state.
+	 */
+	public function is_lite(): bool {
+		return defined( 'SDA_LITE' ) && SDA_LITE;
+	}
+
+	/**
+	 * Effective edition after grace/lock resolution. Lite build wins outright;
+	 * otherwise starter is the floor.
 	 */
 	public function effective_edition(): string {
+		if ( $this->is_lite() ) {
+			return 'lite';
+		}
+
 		$status  = $this->license->status();
 		$edition = $status['edition'];
 
