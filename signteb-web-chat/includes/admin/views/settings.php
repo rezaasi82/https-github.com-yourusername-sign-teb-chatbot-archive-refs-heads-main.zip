@@ -284,8 +284,11 @@ if (! defined('ABSPATH')) {
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e('کد فعال‌سازی / کلید API', 'signteb-web-chat'); ?></th>
-                <td><input type="password" name="sms_key" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::key() !== '' ? '••••••••' : esc_attr__('کلید دریافتی از پنل', 'signteb-web-chat'); ?>"></td>
+                <th><?php esc_html_e('APIKey (کد فعال‌سازی وب‌سرویس)', 'signteb-web-chat'); ?></th>
+                <td>
+                    <input type="password" name="sms_key" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::key() !== '' ? '•••••••• (ذخیره شده)' : esc_attr__('APIKey دریافتی از پنل پیامکی', 'signteb-web-chat'); ?>">
+                    <p class="description"><?php esc_html_e('همان کلید وب‌سرویس که پنل پیامکی در بخش «وب‌سرویس/توسعه‌دهندگان» می‌دهد. رمزنگاری‌شده ذخیره می‌شود و فقط با وارد کردن مقدار جدید تغییر می‌کند.', 'signteb-web-chat'); ?></p>
+                </td>
             </tr>
             <tr class="swc-sms-secret-row">
                 <th><?php esc_html_e('رمز عبور (فقط ملی‌پیامک)', 'signteb-web-chat'); ?></th>

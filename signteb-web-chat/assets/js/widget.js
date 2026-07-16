@@ -493,10 +493,18 @@
 			if (!panel.hidden) { return; } // already chatting
 			teaser.hidden = false;
 			root.classList.add('swc-teaser-on');
+			// Remember that this visitor has seen the bubble, so the automatic
+			// open happens once per browser — not again on every page view.
+			store('swc_teaser_shown', '1');
 			if (soundOn && !chimed) { chimed = true; playChime(); }
 		}
 
-		var timer = setTimeout(reveal, delay * 1000);
+		// Auto-open only on the visitor's first page; hovering the icon can
+		// still bring the bubble back intentionally on later pages.
+		var timer = null;
+		if (load('swc_teaser_shown') !== '1') {
+			timer = setTimeout(reveal, delay * 1000);
+		}
 
 		// Also surface it the moment the visitor hovers the chat icon.
 		if (launcher) {
