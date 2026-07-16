@@ -3,7 +3,7 @@
  * Plugin Name:       SEO Director AI
  * Plugin URI:        https://seodirector.app
  * Description:       AI-powered SEO management platform that monitors, analyzes, prioritizes, explains, and recommends actions — a virtual SEO Director inside WordPress.
- * Version:           0.4.0
+ * Version:           0.5.0
  * Requires at least: 6.4
  * Requires PHP:      8.2
  * Author:            SEO Director
@@ -18,8 +18,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SDA_VERSION', '0.4.0' );
-define( 'SDA_DB_VERSION', '1' );
+define( 'SDA_VERSION', '0.5.0' );
+define( 'SDA_DB_VERSION', '2' );
 define( 'SDA_PLUGIN_FILE', __FILE__ );
 define( 'SDA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SDA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,13 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.5.0 =
+* Agency Hub: pair client sites over HMAC-signed snapshot push, with a sites grid showing each client's health, 28-day traffic, and active alerts at a glance. Pairing keys are shown once and stored encrypted.
+* Client mode: a daily job pushes a compact, sanitized snapshot to the configured hub; no-op unless a hub URL and pairing key are set.
+* White-label engine: brand name, logo, primary color, "powered by" toggle, and terminology overrides for reselling agencies (Agency license).
+* Client read-only role (SEO Client) for giving clients dashboard/report access without settings control.
+* Security: settings API no longer echoes secret fields (pairing key, license secret) — only a "which secrets are set" flag; snapshot ingest is replay-protected and whitelisted.
 
 = 0.4.0 =
 * Licensing engine: self-service activation/deactivation, editions (Starter/Pro/Agency/Enterprise), FeatureGate, 14-day grace period, and 21-day server-outage tolerance — Pro features pause after grace but data always stays readable.

@@ -350,6 +350,7 @@ final class Schema {
 			client_name VARCHAR(190) NOT NULL,
 			site_url VARCHAR(300) NOT NULL,
 			pair_key_hash CHAR(64) NOT NULL,
+			pair_key_cipher LONGTEXT NULL,
 			status VARCHAR(20) NOT NULL DEFAULT 'pending',
 			last_seen_at DATETIME NULL,
 			snapshot LONGTEXT NULL,

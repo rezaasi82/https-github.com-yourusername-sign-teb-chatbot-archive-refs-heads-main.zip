@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { boot } from '../api/client';
+import { AgencyPage } from '../features/agency/AgencyPage';
 import { AlertsPage } from '../features/alerts/AlertsPage';
 import { ContentPage } from '../features/content/ContentPage';
 import { WinnersLosersPage } from '../features/movers/WinnersLosersPage';
@@ -24,6 +25,8 @@ const NAV: Array<{ route: string; label: string }> = [
   { route: 'roadmap', label: 'Roadmap' },
   { route: 'alerts', label: 'Alerts' },
   { route: 'reports', label: 'Reports' },
+  // Agency hub is only shown to users who can manage clients.
+  ...(boot().canManageClients ? [{ route: 'agency', label: 'Agency' }] : []),
   { route: 'settings', label: 'Settings' },
 ];
 
@@ -44,13 +47,26 @@ export function App() {
     document.getElementById('sda-root')?.setAttribute('data-theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    const color = boot().branding.primary_color;
+    if (color) {
+      document.getElementById('sda-root')?.style.setProperty('--sda-primary', color);
+    }
+  }, []);
+
   const current = NAV.find((n) => route.startsWith(n.route)) ?? NAV[0];
 
   return (
     <QueryClientProvider client={queryClient}>
       <div className="sda-shell">
-        <nav className="sda-sidebar" aria-label="SEO Director">
-          <div className="sda-sidebar__brand">SEO Director AI</div>
+        <nav className="sda-sidebar" aria-label={boot().branding.name}>
+          <div className="sda-sidebar__brand">
+            {boot().branding.logo_url ? (
+              <img src={boot().branding.logo_url} alt={boot().branding.name} style={{ maxWidth: '100%', maxHeight: 40 }} />
+            ) : (
+              boot().branding.name
+            )}
+          </div>
           {NAV.map((item) => (
             <a key={item.route} href={`#/${item.route}`} className={item.route === current.route ? 'is-active' : ''}>
               {item.label}
@@ -74,10 +90,19 @@ export function App() {
           {current.route === 'roadmap' && <RoadmapPage />}
           {current.route === 'alerts' && <AlertsPage />}
           {current.route === 'reports' && <ReportsPage />}
+          {current.route === 'agency' && <AgencyPage />}
           {current.route === 'settings' && <SettingsPage />}
-          {!['overview', 'movers', 'opportunities', 'content', 'roadmap', 'alerts', 'reports', 'settings'].includes(
-            current.route
-          ) && <ComingSoon label={current.label} />}
+          {![
+            'overview',
+            'movers',
+            'opportunities',
+            'content',
+            'roadmap',
+            'alerts',
+            'reports',
+            'agency',
+            'settings',
+          ].includes(current.route) && <ComingSoon label={current.label} />}
         </main>
       </div>
     </QueryClientProvider>

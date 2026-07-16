@@ -83,6 +83,13 @@ final class Settings {
 			'alert_telegram_token' => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'alert_telegram_chat'  => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'license_shared_secret' => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'agency_hub_url'        => static fn( $v ) => esc_url_raw( (string) $v ),
+			'agency_pair_key'       => static fn( $v ) => preg_replace( '/[^a-f0-9]/', '', strtolower( (string) $v ) ),
+			'brand_name'            => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'brand_logo_url'        => static fn( $v ) => esc_url_raw( (string) $v ),
+			'brand_primary_color'   => static fn( $v ) => preg_match( '/^#[0-9a-fA-F]{3,8}$/', (string) $v ) ? (string) $v : '',
+			'brand_hide_powered_by' => static fn( $v ) => (bool) $v,
+			'brand_string_overrides' => static fn( $v ) => sanitize_textarea_field( (string) $v ),
 			'delete_data_on_uninstall' => static fn( $v ) => (bool) $v,
 		];
 	}

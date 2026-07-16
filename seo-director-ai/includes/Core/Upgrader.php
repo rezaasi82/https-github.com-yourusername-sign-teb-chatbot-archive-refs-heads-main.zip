@@ -46,4 +46,13 @@ final class Upgrader {
 	private function upgrade_to_1(): void {
 		Activator::create_tables();
 	}
+
+	/**
+	 * Adds the agency_sites.pair_key_cipher column (Agency module). dbDelta
+	 * against the canonical schema applies the additive change idempotently.
+	 */
+	private function upgrade_to_2(): void {
+		Activator::create_tables();
+		Capabilities::add(); // Ensure manage_sda_clients exists on upgrade.
+	}
 }

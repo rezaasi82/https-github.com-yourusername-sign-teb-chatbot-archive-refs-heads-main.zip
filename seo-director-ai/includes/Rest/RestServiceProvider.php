@@ -7,6 +7,7 @@
 
 namespace SEODirector\Rest;
 
+use SEODirector\Agency\SiteConnector;
 use SEODirector\Ai\InsightService;
 use SEODirector\Ai\TokenBudget;
 use SEODirector\Analysis\ChangepointDetector;
@@ -14,6 +15,7 @@ use SEODirector\Analysis\DeclineDetector;
 use SEODirector\Analysis\GrowthDetector;
 use SEODirector\Analysis\RootCause\CauseCandidateEngine;
 use SEODirector\Core\Container;
+use SEODirector\Data\Repository\AgencySitesRepository;
 use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\GscRepository;
@@ -34,8 +36,10 @@ use SEODirector\License\FeatureGate;
 use SEODirector\License\LicenseManager;
 use SEODirector\Reports\ReportGenerator;
 use SEODirector\Data\Repository\ReportsRepository;
+use SEODirector\Rest\Controllers\AgencyController;
 use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
+use SEODirector\Rest\Controllers\HubIngestController;
 use SEODirector\Rest\Controllers\ContentController;
 use SEODirector\Rest\Controllers\InsightsController;
 use SEODirector\Rest\Controllers\LicenseController;
@@ -120,6 +124,16 @@ final class RestServiceProvider {
 			new ReportsController(
 				$c->get( ReportsRepository::class ),
 				$c->get( ReportGenerator::class )
+			),
+			new AgencyController(
+				$c->get( AgencySitesRepository::class ),
+				$c->get( FeatureGate::class )
+			),
+			new HubIngestController(
+				$c->get( AgencySitesRepository::class ),
+				$c->get( SiteConnector::class ),
+				$c->get( FeatureGate::class ),
+				$c->get( RateLimiter::class )
 			),
 		];
 

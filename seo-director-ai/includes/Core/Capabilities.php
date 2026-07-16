@@ -28,6 +28,9 @@ final class Capabilities {
 		if ( $editor ) {
 			$editor->add_cap( self::VIEW_REPORTS );
 		}
+
+		// Agency client read-only role.
+		\SEODirector\Agency\ClientAccess::add();
 	}
 
 	public static function remove(): void {
@@ -40,5 +43,7 @@ final class Capabilities {
 			$role->remove_cap( self::VIEW_REPORTS );
 			$role->remove_cap( self::MANAGE_CLIENTS );
 		}
+
+		\SEODirector\Agency\ClientAccess::remove();
 	}
 }

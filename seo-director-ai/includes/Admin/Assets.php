@@ -8,13 +8,17 @@
 
 namespace SEODirector\Admin;
 
+use SEODirector\Agency\WhiteLabel;
 use SEODirector\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Assets {
 
-	public function __construct( private Settings $settings ) {}
+	public function __construct(
+		private Settings $settings,
+		private WhiteLabel $white_label,
+	) {}
 
 	public function enqueue( string $hook_suffix ): void {
 		if ( ! str_contains( $hook_suffix, AdminMenu::SLUG ) ) {
@@ -59,8 +63,10 @@ final class Assets {
 					'locale'    => get_user_locale(),
 					'isRtl'     => is_rtl(),
 					'canManage' => current_user_can( \SEODirector\Core\Capabilities::MANAGE ),
+					'canManageClients' => current_user_can( \SEODirector\Core\Capabilities::MANAGE_CLIENTS ),
 					'version'   => SDA_VERSION,
 					'siteName'  => get_bloginfo( 'name' ),
+					'branding'  => $this->white_label->boot_payload(),
 				]
 			);
 		}

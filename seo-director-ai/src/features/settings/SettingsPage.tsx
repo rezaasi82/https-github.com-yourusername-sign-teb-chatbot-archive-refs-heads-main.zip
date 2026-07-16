@@ -352,6 +352,129 @@ function AiProviderCard() {
   );
 }
 
+function WhiteLabelCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+  const { data: licenseData } = useQuery({ queryKey: ['license'], queryFn: api.licenseStatus });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+  const allowed = Boolean(licenseData?.features?.white_label);
+
+  return (
+    <div className="sda-card">
+      <h2>White label</h2>
+      <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
+        Rebrand the dashboard for your clients. {allowed ? '' : 'Requires an Agency license.'}
+      </p>
+      <div style={{ display: 'grid', gap: 10, opacity: allowed ? 1 : 0.6 }}>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Brand name (replaces “SEO Director AI”)
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            defaultValue={(data.settings.brand_name as string) ?? ''}
+            placeholder="Acme SEO"
+            disabled={!allowed}
+            onBlur={(e) => save.mutate({ brand_name: e.target.value })}
+          />
+        </label>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Logo URL
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            defaultValue={(data.settings.brand_logo_url as string) ?? ''}
+            placeholder="https://…/logo.svg"
+            disabled={!allowed}
+            onBlur={(e) => save.mutate({ brand_logo_url: e.target.value })}
+          />
+        </label>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Primary color
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            type="text"
+            defaultValue={(data.settings.brand_primary_color as string) ?? ''}
+            placeholder="#2563eb"
+            disabled={!allowed}
+            onBlur={(e) => save.mutate({ brand_primary_color: e.target.value })}
+          />
+        </label>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)', display: 'flex', gap: 8, alignItems: 'center' }}>
+          <input
+            type="checkbox"
+            defaultChecked={Boolean(data.settings.brand_hide_powered_by)}
+            disabled={!allowed}
+            onChange={(e) => save.mutate({ brand_hide_powered_by: e.target.checked })}
+          />
+          Hide “powered by” footer
+        </label>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Terminology overrides (one <code>key=value</code> per line)
+          <textarea
+            className="sda-input"
+            style={{ marginBlockStart: 4, minHeight: 72, fontFamily: 'monospace' }}
+            defaultValue={(data.settings.brand_string_overrides as string) ?? ''}
+            placeholder={'provider=Consultant\nbooking=Session'}
+            disabled={!allowed}
+            onBlur={(e) => save.mutate({ brand_string_overrides: e.target.value })}
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
+
+function ClientModeCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+  const keySet = Boolean(data.secrets_set?.agency_pair_key);
+
+  return (
+    <div className="sda-card">
+      <h2>Agency (client mode)</h2>
+      <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
+        Push this site’s daily snapshot to an agency hub. Paste the ingest URL and pairing key your agency generated.
+      </p>
+      <div style={{ display: 'grid', gap: 10 }}>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Hub ingest URL
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            defaultValue={(data.settings.agency_hub_url as string) ?? ''}
+            placeholder="https://agency.com/wp-json/sda/v1/hub/ingest"
+            onBlur={(e) => save.mutate({ agency_hub_url: e.target.value })}
+          />
+        </label>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          Pairing key {keySet && <span className="sda-badge sda-badge--ok">saved ✓</span>}
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4, fontFamily: 'monospace' }}
+            type="password"
+            placeholder={keySet ? 'Replace key…' : 'Paste pairing key'}
+            onBlur={(e) => e.target.value && save.mutate({ agency_pair_key: e.target.value })}
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
+
 export function SettingsPage() {
   const { data, isLoading, error } = useQuery({ queryKey: ['connections'], queryFn: api.connections });
 
@@ -380,6 +503,8 @@ export function SettingsPage() {
       <AiProviderCard />
       <LicenseCard />
       <AlertChannelsCard />
+      <WhiteLabelCard />
+      <ClientModeCard />
     </div>
   );
 }

@@ -2,14 +2,24 @@
  * Typed REST client for sda/v1. All requests carry the WP REST nonce.
  */
 
+export interface Branding {
+  active: boolean;
+  name: string;
+  logo_url: string;
+  primary_color: string;
+  hide_powered_by: boolean;
+}
+
 export interface BootData {
   restUrl: string;
   nonce: string;
   locale: string;
   isRtl: boolean;
   canManage: boolean;
+  canManageClients: boolean;
   version: string;
   siteName: string;
+  branding: Branding;
 }
 
 declare global {
@@ -200,6 +210,40 @@ export interface ReportRow {
   created_at: string;
 }
 
+export interface AgencySnapshot {
+  site_name: string;
+  site_url: string;
+  generated_at: string;
+  plugin_version: string;
+  health: { score: number; band: string; delta: number | null } | null;
+  alerts: { critical: number; high: number; total: number };
+  opportunities: number;
+  traffic: { clicks: number; change_pct: number | null } | null;
+}
+
+export interface AgencySite {
+  id: number;
+  client_name: string;
+  site_url: string;
+  status: 'pending' | 'active';
+  last_seen_at: string | null;
+  snapshot: AgencySnapshot | null;
+  created_at: string;
+}
+
+export interface PairResult {
+  items: AgencySite[];
+  pair_key: string;
+  ingest_url: string;
+  hub_url: string;
+}
+
+export interface SettingsResponse {
+  settings: Record<string, unknown>;
+  secrets_set: Record<string, boolean>;
+  ai: { available: boolean; meter: AiMeter };
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const { restUrl, nonce } = boot();
   const response = await fetch(`${restUrl}${path}`, {
@@ -221,10 +265,9 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export const api = {
   overview: () => request<OverviewResponse>('/overview'),
-  settings: () =>
-    request<{ settings: Record<string, unknown>; ai: { available: boolean; meter: AiMeter } }>('/settings'),
+  settings: () => request<SettingsResponse>('/settings'),
   updateSettings: (settings: Record<string, unknown>) =>
-    request<{ settings: Record<string, unknown>; ai: { available: boolean; meter: AiMeter } }>('/settings', {
+    request<SettingsResponse>('/settings', {
       method: 'POST',
       body: JSON.stringify({ settings }),
     }),
@@ -293,4 +336,11 @@ export const api = {
     const { restUrl, nonce } = boot();
     return `${restUrl}/reports/${id}/download?format=${format}&_wpnonce=${encodeURIComponent(nonce)}`;
   },
+  agencySites: () => request<{ items: AgencySite[] }>('/agency/sites'),
+  pairSite: (clientName: string, siteUrl: string) =>
+    request<PairResult>('/agency/sites/pair', {
+      method: 'POST',
+      body: JSON.stringify({ client_name: clientName, site_url: siteUrl }),
+    }),
+  unpairSite: (id: number) => request<{ items: AgencySite[] }>(`/agency/sites/${id}`, { method: 'DELETE' }),
 };

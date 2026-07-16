@@ -9,6 +9,10 @@ namespace SEODirector\Core;
 
 use SEODirector\Admin\AdminMenu;
 use SEODirector\Admin\Assets;
+use SEODirector\Agency\ClientAccess;
+use SEODirector\Agency\SiteConnector;
+use SEODirector\Agency\SnapshotBuilder;
+use SEODirector\Agency\WhiteLabel;
 use SEODirector\Ai\InsightCache;
 use SEODirector\Ai\InsightService;
 use SEODirector\Ai\ProviderRouter;
@@ -53,6 +57,7 @@ use SEODirector\Reports\ReportScheduler;
 use SEODirector\Reports\Renderers\CsvRenderer;
 use SEODirector\Reports\Renderers\HtmlRenderer;
 use SEODirector\Data\Repository\ReportsRepository;
+use SEODirector\Data\Repository\AgencySitesRepository;
 use SEODirector\Data\Repository\AlertsRepository;
 use SEODirector\Data\Repository\ConnectionsRepository;
 use SEODirector\Data\Repository\Ga4Repository;
@@ -76,6 +81,7 @@ use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Integrations\Google\TokenVault;
 use SEODirector\Integrations\Http\RetryingHttpClient;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
+use SEODirector\Jobs\Handlers\HubPushJob;
 use SEODirector\Jobs\Handlers\RunAnalysisJob;
 use SEODirector\Jobs\Handlers\RunPsiAuditJob;
 use SEODirector\Jobs\Handlers\WeeklyIntelligence;
@@ -237,6 +243,30 @@ final class Plugin {
 		$c->set(
 			ReportScheduler::class,
 			static fn( Container $c ) => new ReportScheduler( $c->get( ReportGenerator::class ), $c->get( Settings::class ), $c->get( FeatureGate::class ) )
+		);
+
+		// Agency (hub + client + white-label).
+		$c->set( SiteConnector::class, static fn() => new SiteConnector() );
+		$c->set( AgencySitesRepository::class, static fn( Container $c ) => new AgencySitesRepository( $c->get( TokenVault::class ) ) );
+		$c->set( WhiteLabel::class, static fn( Container $c ) => new WhiteLabel( $c->get( Settings::class ), $c->get( FeatureGate::class ) ) );
+		$c->set(
+			SnapshotBuilder::class,
+			static fn( Container $c ) => new SnapshotBuilder(
+				$c->get( HealthScoreRepository::class ),
+				$c->get( AlertsRepository::class ),
+				$c->get( OpportunitiesRepository::class ),
+				$c->get( GscRepository::class ),
+				$c->get( PropertiesRepository::class )
+			)
+		);
+		$c->set(
+			HubPushJob::class,
+			static fn( Container $c ) => new HubPushJob(
+				$c->get( SnapshotBuilder::class ),
+				$c->get( SiteConnector::class ),
+				$c->get( RetryingHttpClient::class ),
+				$c->get( Settings::class )
+			)
 		);
 
 		// Root cause + roadmap.
@@ -408,6 +438,10 @@ final class Plugin {
 		// itself decides whether today matches the configured report day/time.
 		add_action( Scheduler::HOOK_PREFIX . 'daily_sync', static fn() => $c->get( ReportScheduler::class )->maybe_run() );
 
+		// Client sites push a snapshot to their agency hub once a day (no-op
+		// unless a hub URL + pairing key are configured).
+		add_action( Scheduler::HOOK_PREFIX . 'daily_sync', static fn() => $c->get( HubPushJob::class )->run() );
+
 		// Every completed data sync triggers a fresh analysis pass; the hourly
 		// schedule re-evaluates alerts between syncs.
 		add_action( 'sda_sync_completed', static fn() => Scheduler::enqueue_next_chunk( RunAnalysisJob::NAME ) );
@@ -419,7 +453,10 @@ final class Plugin {
 		$c->set( Scheduler::class, static fn( Container $c ) => new Scheduler( $c->get( JobStateRepository::class ) ) );
 		$c->set( RestServiceProvider::class, static fn( Container $c ) => new RestServiceProvider( $c ) );
 		$c->set( AdminMenu::class, static fn() => new AdminMenu() );
-		$c->set( Assets::class, static fn( Container $c ) => new Assets( $c->get( Settings::class ) ) );
+		$c->set( Assets::class, static fn( Container $c ) => new Assets( $c->get( Settings::class ), $c->get( WhiteLabel::class ) ) );
+
+		// White-label overrides (menu label, brand string, terminology) — cheap when inactive.
+		$c->get( WhiteLabel::class )->register();
 
 		/**
 		 * Allows add-ons to register or override container services.

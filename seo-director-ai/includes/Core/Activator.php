@@ -70,6 +70,14 @@ final class Activator {
 			'alert_telegram_token' => '',
 			'alert_telegram_chat'  => '',
 			'license_shared_secret' => '',
+			// Agency: client-mode push target + branding (white-label).
+			'agency_hub_url'        => '',
+			'agency_pair_key'       => '',
+			'brand_name'            => '',
+			'brand_logo_url'        => '',
+			'brand_primary_color'   => '',
+			'brand_hide_powered_by' => false,
+			'brand_string_overrides' => '',
 			'delete_data_on_uninstall' => false,
 		];
 	}
