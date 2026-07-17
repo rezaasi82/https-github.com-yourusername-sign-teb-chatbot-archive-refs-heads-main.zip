@@ -91,6 +91,8 @@ use SEODirector\Jobs\Handlers\HubPushJob;
 use SEODirector\Jobs\Handlers\RunAnalysisJob;
 use SEODirector\Jobs\Handlers\RunPsiAuditJob;
 use SEODirector\Jobs\Handlers\WeeklyIntelligence;
+use SEODirector\Onboarding\DemoDataProvider;
+use SEODirector\Onboarding\SetupStatus;
 use SEODirector\Roadmap\RoadmapGenerator;
 use SEODirector\Support\RateLimiter;
 use SEODirector\Jobs\Handlers\SyncGa4Job;
@@ -204,6 +206,10 @@ final class Plugin {
 		$c->set( InsightRepository::class, static fn() => new InsightRepository() );
 		$c->set( TaskRepository::class, static fn() => new TaskRepository() );
 		$c->set( RateLimiter::class, static fn() => new RateLimiter() );
+
+		// Onboarding / demo mode.
+		$c->set( DemoDataProvider::class, static fn() => new DemoDataProvider() );
+		$c->set( SetupStatus::class, static fn() => new SetupStatus() );
 
 		// Licensing.
 		$c->set( GracePeriodHandler::class, static fn() => new GracePeriodHandler() );

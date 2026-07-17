@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../../api/client';
+import { api, type SetupStatus } from '../../api/client';
 import { TrafficChart } from '../../components/charts/TrafficChart';
 import { DETECTOR_LABELS, RULE_LABELS, severityColor } from '../../components/ui/labels';
 import { ScoreDial } from '../../components/ui/ScoreDial';
@@ -9,6 +9,53 @@ function ConnectionBadge({ label, connected }: { label: string; connected: boole
     <span className={`sda-badge ${connected ? 'sda-badge--ok' : 'sda-badge--off'}`}>
       {label} {connected ? '✓' : '—'}
     </span>
+  );
+}
+
+function DemoBanner() {
+  return (
+    <div
+      className="sda-card"
+      style={{ marginBlockEnd: 16, borderInlineStart: '3px solid var(--sda-primary)', background: 'var(--sda-primary-soft)' }}
+    >
+      <strong>You’re viewing sample data</strong>
+      <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--sda-text-muted)' }}>
+        This is a preview so you can see what SEO Director AI does. Connect Google Search Console in{' '}
+        <a href="#/settings">Settings</a> to replace it with your site’s real numbers.
+      </p>
+    </div>
+  );
+}
+
+function SetupChecklist({ setup }: { setup: SetupStatus }) {
+  const doneCount = setup.steps.filter((s) => s.done).length;
+
+  return (
+    <div className="sda-card" style={{ marginBlockEnd: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+        <h2 style={{ margin: 0 }}>Get set up</h2>
+        <span style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          {doneCount} / {setup.steps.length} done
+        </span>
+      </div>
+      <ul style={{ margin: '10px 0 0', padding: 0, listStyle: 'none', display: 'grid', gap: 6 }}>
+        {setup.steps.map((step) => (
+          <li key={step.key} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 14 }}>
+            <span aria-hidden style={{ color: step.done ? 'var(--sda-positive)' : 'var(--sda-text-muted)' }}>
+              {step.done ? '✓' : '○'}
+            </span>
+            <span style={{ color: step.done ? 'var(--sda-text-muted)' : 'var(--sda-text)', textDecoration: step.done ? 'line-through' : 'none' }}>
+              {step.label}
+            </span>
+            {!step.done && step.key !== 'sync' && (
+              <a href="#/settings" style={{ fontSize: 12 }}>
+                Set up ▸
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -38,9 +85,14 @@ export function OverviewPage() {
   }
 
   const anyConnected = data.connections.gsc || data.connections.ga4;
+  const setup = data.meta.setup;
+  const showChecklist = setup != null && !setup.complete;
 
   return (
     <>
+      {data.meta.demo && <DemoBanner />}
+      {showChecklist && <SetupChecklist setup={setup} />}
+
       <div className="sda-card" style={{ marginBlockEnd: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <ConnectionBadge label="Search Console" connected={data.connections.gsc} />
         <ConnectionBadge label="Analytics 4" connected={data.connections.ga4} />

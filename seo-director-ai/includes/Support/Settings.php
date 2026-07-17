@@ -105,6 +105,7 @@ final class Settings {
 			'trello_list_id'        => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'serp_provider'         => static fn( $v ) => in_array( $v, [ '', 'serpapi' ], true ) ? $v : '',
 			'serp_api_key'          => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'demo_mode'             => static fn( $v ) => in_array( $v, [ 'auto', 'off' ], true ) ? $v : 'auto',
 			'delete_data_on_uninstall' => static fn( $v ) => (bool) $v,
 		];
 	}

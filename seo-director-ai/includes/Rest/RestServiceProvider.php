@@ -71,7 +71,10 @@ final class RestServiceProvider {
 				$c->get( HealthScoreRepository::class ),
 				$c->get( OpportunitiesRepository::class ),
 				$c->get( AlertsRepository::class ),
-				$c->get( InsightRepository::class )
+				$c->get( InsightRepository::class ),
+				$c->get( \SEODirector\Onboarding\DemoDataProvider::class ),
+				$c->get( \SEODirector\Onboarding\SetupStatus::class ),
+				$c->get( Settings::class )
 			),
 			new MoversController(
 				$c->get( MoversRepository::class ),

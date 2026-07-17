@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.7.0
+Stable tag: 0.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,11 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.8.0 =
+* Onboarding: a fresh install now shows a clearly-labelled sample dashboard (health, traffic, opportunities, risks) instead of empty panels, so buyers see the plugin's value immediately. Sample data disappears automatically after the first real sync.
+* Setup checklist on the dashboard tracks connecting Google, choosing a property, adding an AI provider, and the first sync.
+* New demo_mode setting (auto | off) to control the sample-data experience.
 
 = 0.7.0 =
 * Enterprise: brand-voice profiles (tone, audience, style notes, words to avoid) injected into every AI generation, so explanations and copy match your house style.

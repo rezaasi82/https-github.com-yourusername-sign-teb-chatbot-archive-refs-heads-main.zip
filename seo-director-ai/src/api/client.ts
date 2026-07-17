@@ -148,7 +148,24 @@ export interface OverviewResponse {
   opportunities: Opportunity[];
   risks: Alert[];
   summaries: { weekly: string | null; monthly: string | null };
-  meta: { plugin_version: string; backfill: { status: string; date: string | null } | null };
+  meta: {
+    plugin_version: string;
+    backfill: { status: string; date: string | null } | null;
+    demo?: boolean;
+    setup?: SetupStatus;
+  };
+}
+
+export interface SetupStep {
+  key: string;
+  label: string;
+  done: boolean;
+}
+
+export interface SetupStatus {
+  steps: SetupStep[];
+  complete: boolean;
+  has_data: boolean;
 }
 
 export interface SyncState {

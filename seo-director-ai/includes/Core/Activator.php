@@ -97,6 +97,8 @@ final class Activator {
 			// Enterprise: SERP enrichment for root cause.
 			'serp_provider'         => '',
 			'serp_api_key'          => '',
+			// Onboarding: show sample data until the first real sync lands.
+			'demo_mode'             => 'auto', // auto | off
 			'delete_data_on_uninstall' => false,
 		];
 	}

@@ -18,6 +18,9 @@ use SEODirector\Data\Repository\JobStateRepository;
 use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
 use SEODirector\Jobs\Handlers\SyncGscJob;
+use SEODirector\Onboarding\DemoDataProvider;
+use SEODirector\Onboarding\SetupStatus;
+use SEODirector\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -32,6 +35,9 @@ final class OverviewController extends AbstractController {
 		private OpportunitiesRepository $opportunities,
 		private AlertsRepository $alerts,
 		private InsightRepository $insights,
+		private DemoDataProvider $demo,
+		private SetupStatus $setup,
+		private Settings $settings,
 	) {}
 
 	public function register_routes(): void {
@@ -59,14 +65,42 @@ final class OverviewController extends AbstractController {
 			$series = $this->gsc->daily_totals_series( $gsc_property['id'], $from, $to );
 		}
 
+		$ai_ready   = (bool) array_intersect( [ 'openai', 'claude', 'gemini' ], $connected );
+		$has_synced = 'done' === ( $this->job_state->get( SyncGscJob::NAME )['status'] ?? '' ) && [] !== $series;
+		$setup      = $this->setup->build( $google_ok, null !== $gsc_property, $ai_ready, $has_synced );
+
+		// Demo mode: until real data has landed, fill the panels with a clearly
+		// labelled sample so the dashboard is never empty on a fresh install.
+		$demo = 'off' !== (string) $this->settings->get( 'demo_mode', 'auto' ) && ! $has_synced;
+
+		$connections = [
+			'gsc' => $google_ok && null !== $gsc_property,
+			'ga4' => $google_ok && null !== $ga4_property,
+			'psi' => in_array( 'psi', $connected, true ),
+			'ai'  => $ai_ready,
+		];
+
+		$meta = [
+			'plugin_version' => SDA_VERSION,
+			'backfill'       => $this->backfill_state(),
+			'demo'           => $demo,
+			'setup'          => $setup,
+		];
+
+		if ( $demo ) {
+			$sample = $this->demo->overview();
+
+			return rest_ensure_response(
+				array_merge(
+					$sample,
+					[ 'connections' => $connections, 'meta' => $meta ]
+				)
+			);
+		}
+
 		return rest_ensure_response(
 			[
-				'connections'   => [
-					'gsc' => $google_ok && null !== $gsc_property,
-					'ga4' => $google_ok && null !== $ga4_property,
-					'psi' => in_array( 'psi', $connected, true ),
-					'ai'  => (bool) array_intersect( [ 'openai', 'claude', 'gemini' ], $connected ),
-				],
+				'connections'   => $connections,
 				'health'        => $this->health_scores->latest(),
 				'traffic'       => [
 					'series'  => $series,
@@ -78,10 +112,7 @@ final class OverviewController extends AbstractController {
 					'weekly'  => $this->insights->latest_site( 'summary_weekly' )['summary'] ?? null,
 					'monthly' => $this->insights->latest_site( 'summary_monthly' )['summary'] ?? null,
 				],
-				'meta'          => [
-					'plugin_version' => SDA_VERSION,
-					'backfill'       => $this->backfill_state(),
-				],
+				'meta'          => $meta,
 			]
 		);
 	}

@@ -31,5 +31,11 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 	}
 }
 
+if ( ! function_exists( '__' ) ) {
+	function __( $text, $domain = 'default' ) { // phpcs:ignore
+		return $text;
+	}
+}
+
 require SDA_PLUGIN_DIR . 'includes/Core/Autoloader.php';
 \SEODirector\Core\Autoloader::register();
