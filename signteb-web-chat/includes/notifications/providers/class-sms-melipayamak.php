@@ -47,6 +47,39 @@ class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
         return $this->api_secret() !== '';
     }
 
+    /**
+     * Credential check without sending an SMS. Legacy mode calls GetCredit
+     * (the documented health-check); token mode has no free probe, so it only
+     * reports the detected configuration.
+     *
+     * @return array{ok:bool,detail:string}
+     */
+    public function check(): array
+    {
+        if ($this->api_key() === '') {
+            return ['ok' => false, 'detail' => __('هیچ APIKey/نام کاربری ذخیره نشده است.', 'signteb-web-chat')];
+        }
+
+        if ($this->is_legacy()) {
+            $r = $this->http(self::LEGACY . '/GetCredit', [
+                'method' => 'POST',
+                'body'   => ['username' => $this->api_key(), 'password' => $this->api_secret()],
+            ]);
+            if (! empty($r['error'])) {
+                return ['ok' => false, 'detail' => sprintf(__('سرور سایت به پنل دسترسی ندارد: %s', 'signteb-web-chat'), $r['error'])];
+            }
+            $data = json_decode($r['body'], true);
+            $ret  = is_array($data) ? (int) ($data['RetStatus'] ?? 0) : 0;
+            if ($ret === 1) {
+                return ['ok' => true, 'detail' => sprintf(__('حالت نام‌کاربری/رمز ✓ — اعتبار پنل: %s', 'signteb-web-chat'), (string) ($data['Value'] ?? '?'))];
+            }
+            $msg = is_array($data) ? (string) ($data['StrRetStatus'] ?? '') : ('HTTP ' . $r['code']);
+            return ['ok' => false, 'detail' => sprintf(__('پنل اتصال را رد کرد (GetCredit): %s — نام کاربری/رمز وب‌سرویس را بررسی کنید. توجه: برخی پنل‌ها «رمز وب‌سرویس» جدا از رمز ورود دارند و ممکن است لازم باشد IP سرور سایت در پنل مجاز شود.', 'signteb-web-chat'), $msg)];
+        }
+
+        return ['ok' => true, 'detail' => __('حالت توکن کنسول شناسایی شد (رمز خالی است). برای آزمون واقعی، «ارسال پیامک تست» را بزنید.', 'signteb-web-chat')];
+    }
+
     public function send(string $to, string $text): array
     {
         $key = $this->api_key();

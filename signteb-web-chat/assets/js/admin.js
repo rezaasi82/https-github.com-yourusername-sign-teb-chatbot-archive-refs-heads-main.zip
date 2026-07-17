@@ -135,6 +135,23 @@
 		smsProvider.addEventListener('change', syncProvider);
 		syncProvider();
 	}
+	// SMS connection diagnosis — shows stored config + the panel's raw verdict.
+	var smsDiagBtn = document.querySelector('.swc-sms-diag-btn');
+	if (smsDiagBtn) {
+		smsDiagBtn.addEventListener('click', function () {
+			var out = document.querySelector('.swc-sms-diag-out');
+			smsDiagBtn.disabled = true;
+			if (out) { out.style.display = ''; out.textContent = A.strings.working; }
+			post('swc_sms_diag', {}).then(function (res) {
+				if (out) {
+					out.textContent = (res && res.report) ? res.report : A.strings.failed;
+					out.style.borderColor = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				smsDiagBtn.disabled = false;
+			}).catch(function () { if (out) { out.textContent = A.strings.failed; } smsDiagBtn.disabled = false; });
+		});
+	}
+
 	var smsTestBtn = document.querySelector('.swc-sms-test-btn');
 	if (smsTestBtn) {
 		smsTestBtn.addEventListener('click', function () {

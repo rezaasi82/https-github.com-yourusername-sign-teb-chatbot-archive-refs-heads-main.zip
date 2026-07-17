@@ -335,6 +335,11 @@ if (! defined('ABSPATH')) {
         </div>
 
         <table class="form-table" role="presentation">
+            <tr><th><?php esc_html_e('بررسی اتصال', 'signteb-web-chat'); ?></th><td>
+                <button type="button" class="button swc-sms-diag-btn"><?php esc_html_e('بررسی اتصال پنل (بدون ارسال پیامک)', 'signteb-web-chat'); ?></button>
+                <pre class="swc-sms-diag-out" style="display:none"></pre>
+                <p class="description"><?php esc_html_e('وضعیت تنظیمات ذخیره‌شده و پاسخ مستقیم پنل را نشان می‌دهد — اگر مشکلی هست، دقیقاً معلوم می‌شود کجاست.', 'signteb-web-chat'); ?></p>
+            </td></tr>
             <tr><th><?php esc_html_e('تست ارسال', 'signteb-web-chat'); ?></th><td>
                 <input type="tel" class="regular-text swc-sms-test-to" placeholder="<?php esc_attr_e('شماره موبایل برای تست', 'signteb-web-chat'); ?>">
                 <button type="button" class="button swc-sms-test-btn"><?php esc_html_e('ارسال پیامک تست', 'signteb-web-chat'); ?></button>

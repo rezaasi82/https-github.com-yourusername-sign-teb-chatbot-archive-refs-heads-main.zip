@@ -29,6 +29,31 @@ class SWC_Sms_Smsir extends SWC_Sms_Provider_Base
     }
 
     /**
+     * Credential check via the credit endpoint — no SMS is sent.
+     *
+     * @return array{ok:bool,detail:string}
+     */
+    public function check(): array
+    {
+        $key = $this->api_key();
+        if ($key === '') {
+            return ['ok' => false, 'detail' => __('هیچ APIKey ذخیره نشده است.', 'signteb-web-chat')];
+        }
+        $r = $this->http('https://api.sms.ir/v1/credit', [
+            'method'  => 'GET',
+            'headers' => ['X-API-KEY' => $key, 'Accept' => 'application/json'],
+        ]);
+        if (! empty($r['error'])) {
+            return ['ok' => false, 'detail' => sprintf(__('سرور سایت به پنل دسترسی ندارد: %s', 'signteb-web-chat'), $r['error'])];
+        }
+        $data = json_decode($r['body'], true);
+        if ((int) ($data['status'] ?? 0) === 1) {
+            return ['ok' => true, 'detail' => sprintf(__('اتصال برقرار ✓ — اعتبار: %s', 'signteb-web-chat'), (string) ($data['data'] ?? '?'))];
+        }
+        return ['ok' => false, 'detail' => sprintf(__('پنل اتصال را رد کرد: %s', 'signteb-web-chat'), (string) ($data['message'] ?? ('HTTP ' . $r['code'])))];
+    }
+
+    /**
      * Verify send — templateId + named parameters. Parameter names use the
      * upper-cased placeholder key (NAME, PHONE, …); define them the same way in
      * the SMS.ir template.

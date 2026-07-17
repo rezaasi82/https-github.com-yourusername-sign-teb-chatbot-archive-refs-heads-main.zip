@@ -168,6 +168,41 @@ class SWC_Sms_Manager
         return $out;
     }
 
+    /**
+     * Full connection diagnosis for the settings screen. Reports the stored
+     * configuration plus (when the provider supports it) a live credential
+     * check against the panel — without sending any SMS.
+     *
+     * @return array{ok:bool,lines:array<int,string>}
+     */
+    public function diagnose(): array
+    {
+        $lines   = [];
+        $lines[] = sprintf(__('سرویس انتخاب‌شده: %s', 'signteb-web-chat'), $this->providers()[$this->active_id()] ?? $this->active_id());
+        $lines[] = sprintf(__('فعال‌سازی: %s', 'signteb-web-chat'), $this->is_enabled() ? '✓' : __('✗ (تیک «فعال‌سازی» را بزنید)', 'signteb-web-chat'));
+        $lines[] = sprintf(__('APIKey ذخیره شده: %s', 'signteb-web-chat'), self::key() !== '' ? '✓' : '✗');
+        $lines[] = sprintf(__('رمز عبور ذخیره شده: %s', 'signteb-web-chat'), self::secret() !== '' ? __('✓ (حالت نام‌کاربری/رمز)', 'signteb-web-chat') : __('— (حالت توکن)', 'signteb-web-chat'));
+        $lines[] = sprintf(__('شماره فرستنده: %s', 'signteb-web-chat'), trim((string) $this->settings->get('sms_sender', '')) !== '' ? $this->settings->get('sms_sender') : __('خالی (برای خط اشتراکی درست است)', 'signteb-web-chat'));
+
+        $codes = array_filter(array_map([$this, 'template_code'], array_keys(self::default_templates())));
+        $lines[] = sprintf(__('کد الگو تنظیم‌شده: %d قالب', 'signteb-web-chat'), count($codes));
+
+        if (! (new SWC_License_Manager())->allows('sms')) {
+            $lines[] = __('⚠ لایسنس اجازه ارسال پیامک نمی‌دهد.', 'signteb-web-chat');
+            return ['ok' => false, 'lines' => $lines];
+        }
+
+        $provider = $this->active();
+        if ($provider !== null && method_exists($provider, 'check')) {
+            $check   = $provider->check();
+            $lines[] = ($check['ok'] ? '✅ ' : '❌ ') . $check['detail'];
+            return ['ok' => (bool) $check['ok'], 'lines' => $lines];
+        }
+
+        $lines[] = __('این سرویس بررسی زنده ندارد؛ با «ارسال پیامک تست» امتحان کنید.', 'signteb-web-chat');
+        return ['ok' => $this->is_configured(), 'lines' => $lines];
+    }
+
     /* -------------------- credentials (encrypted) -------------------- */
 
     public static function key(): string

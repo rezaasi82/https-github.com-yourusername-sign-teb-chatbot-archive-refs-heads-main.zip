@@ -26,8 +26,20 @@ class SWC_Export_Ajax_Handler
         add_action('wp_ajax_swc_test_webhook', [$this, 'test_webhook']);
         add_action('wp_ajax_swc_test_gsheet', [$this, 'test_gsheet']);
         add_action('wp_ajax_swc_test_sms', [$this, 'test_sms']);
+        add_action('wp_ajax_swc_sms_diag', [$this, 'sms_diag']);
         add_action('wp_ajax_swc_send_sms', [$this, 'send_sms']);
         add_action('wp_ajax_swc_export_bulk', [$this, 'bulk']);
+    }
+
+    /**
+     * Connection diagnosis for the SMS panel (credential check, no SMS sent).
+     */
+    public function sms_diag(): void
+    {
+        SWC_Json_Guard::arm();
+        $this->guard();
+        $diag = (new SWC_Sms_Manager())->diagnose();
+        wp_send_json(['ok' => $diag['ok'], 'report' => implode("\n", $diag['lines'])]);
     }
 
     /**
