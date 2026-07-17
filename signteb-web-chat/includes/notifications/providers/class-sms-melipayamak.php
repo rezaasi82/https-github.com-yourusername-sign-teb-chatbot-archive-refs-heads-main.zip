@@ -40,6 +40,11 @@ class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
         if ($key === '' || $to === '') {
             return ['ok' => false, 'error' => __('توکن API یا شماره مقصد تنظیم نشده است.', 'signteb-web-chat')];
         }
+        // Free-text needs a dedicated line; shared service lines send only via
+        // the pattern (bodyId) path where the panel picks the line itself.
+        if ($this->sender() === '') {
+            return ['ok' => false, 'error' => __('برای ارسال متن آزاد، شماره خط اختصاصی لازم است. با خط خدماتی اشتراکی، «کد الگو» را برای قالب تنظیم کنید تا از مسیر الگویی ارسال شود.', 'signteb-web-chat')];
+        }
 
         $r = $this->http(self::BASE . '/simple/' . rawurlencode($key), [
             'method'  => 'POST',

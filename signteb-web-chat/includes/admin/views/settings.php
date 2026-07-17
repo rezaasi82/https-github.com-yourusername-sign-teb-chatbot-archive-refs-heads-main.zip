@@ -295,8 +295,11 @@ if (! defined('ABSPATH')) {
                 <td><input type="password" name="sms_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::secret() !== '' ? '••••••••' : ''; ?>"></td>
             </tr>
             <tr>
-                <th><?php esc_html_e('شماره فرستنده (خط)', 'signteb-web-chat'); ?></th>
-                <td><input type="text" name="sms_sender" value="<?php echo esc_attr($s->get('sms_sender')); ?>" class="regular-text" placeholder="10008663 / +1..."></td>
+                <th><?php esc_html_e('شماره فرستنده (خط) — اختیاری', 'signteb-web-chat'); ?></th>
+                <td>
+                    <input type="text" name="sms_sender" value="<?php echo esc_attr($s->get('sms_sender')); ?>" class="regular-text" placeholder="10008663 / +1...">
+                    <p class="description"><?php esc_html_e('اگر از خط خدماتی اشتراکی استفاده می‌کنید این فیلد را خالی بگذارید — در ارسال الگویی (کد الگو)، خود پنل خط را انتخاب می‌کند و تغییر شماره خط هیچ مشکلی ایجاد نمی‌کند. این شماره فقط برای ارسال متن آزاد با خط اختصاصی لازم است.', 'signteb-web-chat'); ?></p>
+                </td>
             </tr>
             <tr>
                 <th><?php esc_html_e('متن لغو (خط خدماتی)', 'signteb-web-chat'); ?></th>

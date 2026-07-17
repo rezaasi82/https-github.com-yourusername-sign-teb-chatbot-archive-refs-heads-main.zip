@@ -31,7 +31,9 @@ class SWC_Export_Ajax_Handler
     }
 
     /**
-     * Send a one-off test SMS through the configured panel.
+     * Send a one-off test SMS through the configured panel. When the welcome
+     * template carries a pattern code, the test uses the pattern path too, so
+     * shared-service-line setups (no dedicated sender) can be tested for real.
      */
     public function test_sms(): void
     {
@@ -41,9 +43,22 @@ class SWC_Export_Ajax_Handler
         if ($to === '') {
             wp_send_json(['ok' => false, 'error' => __('شماره مقصد را وارد کنید.', 'signteb-web-chat')], 400);
         }
+
+        $sms = new SWC_Sms_Manager();
+        if ($sms->template_code('welcome') !== '') {
+            $sample = (object) [
+                'patient_name'  => __('کاربر آزمایشی', 'signteb-web-chat'),
+                'patient_phone' => $to,
+                'lead_score'    => 'warm',
+                'lead_status'   => 'new',
+                'summary'       => '',
+            ];
+            wp_send_json($sms->send_lead($to, 'welcome', $sms->vars_for_lead($sample)));
+        }
+
         $clinic = (string) (new SWC_Settings())->get('clinic_name', get_bloginfo('name'));
         $text   = sprintf(__('پیام آزمایشی از %s (Medora AI).', 'signteb-web-chat'), $clinic);
-        wp_send_json((new SWC_Sms_Manager())->send($to, $text));
+        wp_send_json($sms->send($to, $text));
     }
 
     /**
