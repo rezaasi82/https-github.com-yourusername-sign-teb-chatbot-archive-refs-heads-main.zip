@@ -60,7 +60,8 @@ final class WebhookChannel implements AlertChannelInterface {
 	 * Block SSRF: HTTPS only, valid public host, no private/loopback IPs.
 	 */
 	private function is_safe_url( string $url ): bool {
-		if ( ! wp_http_validate_url( $url ) ) {
+		// HTTPS only, and a well-formed URL WordPress is willing to request.
+		if ( ! str_starts_with( $url, 'https://' ) || ! wp_http_validate_url( $url ) ) {
 			return false;
 		}
 
@@ -69,15 +70,14 @@ final class WebhookChannel implements AlertChannelInterface {
 			return false;
 		}
 
-		$ip = gethostbyname( $host );
-		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) === false && filter_var( $host, FILTER_VALIDATE_IP ) === false ) {
-			// gethostbyname returns the host unchanged on failure; if it resolved to
-			// a private range, reject.
-			if ( filter_var( $ip, FILTER_VALIDATE_IP ) !== false ) {
-				return false;
-			}
+		// Resolve to an IP. A literal-IP host is used as-is; a name is resolved
+		// (gethostbyname returns the name unchanged on failure).
+		$ip = filter_var( $host, FILTER_VALIDATE_IP ) ? $host : gethostbyname( $host );
+		if ( false === filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			return false; // Unresolvable → refuse rather than guess.
 		}
 
-		return str_starts_with( $url, 'https://' );
+		// Reject loopback, private, and reserved ranges (SSRF guard).
+		return false !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
 	}
 }
