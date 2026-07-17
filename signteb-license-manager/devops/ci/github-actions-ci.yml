@@ -1,0 +1,58 @@
+# Copy to .github/workflows/slm-ci.yml when SLM moves to its own repository.
+name: SLM CI
+
+on:
+  push:
+    paths: ['signteb-license-manager/**']
+  pull_request:
+    paths: ['signteb-license-manager/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: signteb-license-manager/backend
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: slm_test
+          MYSQL_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping" --health-interval=5s --health-retries=10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, redis, intl, zip, bcmath
+          coverage: none
+      - run: composer install --prefer-dist --no-progress
+      - name: Code style (Pint)
+        run: composer lint
+      - name: Static analysis (PHPStan)
+        run: composer analyse
+      - name: Tests (Pest)
+        run: composer test
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: slm_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          REDIS_HOST: 127.0.0.1
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build & push image
+        run: echo "docker build -f signteb-license-manager/devops/Dockerfile … && docker push …"
+      - name: Deploy (zero-downtime)
+        run: echo "ssh deploy@license.signteb.com 'cd /srv/slm && ./deploy.sh'"

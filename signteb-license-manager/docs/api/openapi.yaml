@@ -1,0 +1,256 @@
+openapi: 3.1.0
+info:
+  title: SignTeb License Manager API
+  version: 1.0.0
+  description: |
+    Licensing, update-delivery and AI service API for all SignTeb products
+    (MEDORA AI, SignBot, SignTeb SEO Dashboard, QRCODR, …).
+
+    **Response signing** — every successful `/plugin/*` response is wrapped in an
+    envelope `{data, timestamp, signature}` where `signature =
+    HMAC-SHA256(json(data) + "|" + timestamp, product_signing_secret)`. The SDK
+    must verify before trusting the payload.
+
+    **Rate limits** — public endpoints: 30 req/min/IP; validate: 12 req/min/license;
+    AI: 60 req/min/license. Exceeding returns `429` with `Retry-After`.
+  contact:
+    name: SignTeb
+    url: https://signteb.com
+servers:
+  - url: https://license.signteb.com/api
+paths:
+  /v1/plugin/activate:
+    post:
+      summary: Activate a license on a domain
+      operationId: activateLicense
+      tags: [Plugin Licensing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [license_key, domain, product]
+              properties:
+                license_key: { type: string, example: MED-7KQ2-9XWM-4RTZ }
+                domain: { type: string, example: clinic-example.ae }
+                product: { type: string, example: medora-ai }
+                site_url: { type: string, format: uri }
+                sdk_version: { type: string, example: 1.0.0 }
+                wp_version: { type: string, example: 6.7.1 }
+                php_version: { type: string, example: 8.3.10 }
+                fingerprint: { type: string, description: SHA-256 device fingerprint }
+      responses:
+        '200':
+          description: Activated (idempotent for already-active domains)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SignedValidation' }
+        '404': { $ref: '#/components/responses/InvalidLicense' }
+        '422':
+          description: Activation limit reached or illegal state
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: activation_limit_reached, message: "Activation limit of 1 site(s) reached." }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /v1/plugin/validate:
+    post:
+      summary: Validate a license for a domain (SDK heartbeat)
+      operationId: validateLicense
+      tags: [Plugin Licensing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [license_key, domain, product]
+              properties:
+                license_key: { type: string }
+                domain: { type: string }
+                product: { type: string }
+      responses:
+        '200':
+          description: Signed validation result (valid may be false)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SignedValidation' }
+        '404': { $ref: '#/components/responses/InvalidLicense' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /v1/plugin/deactivate:
+    post:
+      summary: Deactivate a license on a domain (frees the activation slot)
+      operationId: deactivateLicense
+      tags: [Plugin Licensing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [license_key, domain, product]
+              properties:
+                license_key: { type: string }
+                domain: { type: string }
+                product: { type: string }
+      responses:
+        '200':
+          description: Deactivated (idempotent)
+        '404': { $ref: '#/components/responses/InvalidLicense' }
+  /v1/plugin/check-update:
+    get:
+      summary: Check for a newer product version
+      operationId: checkUpdate
+      tags: [Updates]
+      parameters:
+        - { name: license_key, in: query, required: true, schema: { type: string } }
+        - { name: domain, in: query, required: true, schema: { type: string } }
+        - { name: product, in: query, required: true, schema: { type: string } }
+        - { name: version, in: query, required: true, schema: { type: string }, example: 1.2.0 }
+        - { name: channel, in: query, schema: { type: string, enum: [stable, beta], default: stable } }
+      responses:
+        '200':
+          description: Signed update manifest
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      update_available: { type: boolean }
+                      version: { type: string }
+                      release_notes: { type: string }
+                      requires_php: { type: string }
+                      requires_wp: { type: string }
+                      sha256: { type: string, description: SHA-256 of the package zip }
+                      download_url: { type: string, format: uri, description: Signed URL, expires in 5 minutes }
+                  timestamp: { type: integer }
+                  signature: { type: string }
+  /v1/plugin/download:
+    get:
+      summary: Download a release artifact (signed URL from check-update)
+      operationId: downloadRelease
+      tags: [Updates]
+      parameters:
+        - { name: version_id, in: query, required: true, schema: { type: integer } }
+        - { name: license_key, in: query, required: true, schema: { type: string } }
+        - { name: signature, in: query, required: true, schema: { type: string } }
+        - { name: expires, in: query, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: The plugin zip
+          content:
+            application/zip:
+              schema: { type: string, format: binary }
+        '403': { description: Signature expired/invalid, or license not usable }
+  /v1/ai/chat:
+    post:
+      summary: MEDORA AI chat completion (proxied, quota-metered)
+      operationId: aiChat
+      tags: [MEDORA AI]
+      security: [{ licenseKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [messages]
+              properties:
+                messages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role: { type: string, enum: [user, assistant, system] }
+                      content: { type: string }
+                lead_context: { type: object, description: Optional visitor/lead metadata for scoring }
+      responses:
+        '200':
+          description: AI response with usage accounting
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply: { type: string }
+                  tokens_used: { type: integer }
+                  tokens_remaining: { type: integer }
+        '402': { description: Plan has no AI entitlement }
+        '429':
+          description: Monthly token quota exceeded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: { type: string, example: quota_exceeded }
+                  resets_at: { type: string, format: date-time }
+  /v1/ai/usage:
+    get:
+      summary: Current-period AI usage for a license
+      operationId: aiUsage
+      tags: [MEDORA AI]
+      security: [{ licenseKey: [] }]
+      responses:
+        '200':
+          description: Usage summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  period: { type: string, example: 2026-07 }
+                  tokens_used: { type: integer }
+                  tokens_limit: { type: integer, nullable: true }
+                  resets_at: { type: string, format: date-time }
+components:
+  securitySchemes:
+    licenseKey:
+      type: apiKey
+      in: header
+      name: X-SLM-License
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+        message: { type: string }
+    Validation:
+      type: object
+      properties:
+        valid: { type: boolean }
+        status: { type: string, enum: [pending, active, grace, expired, suspended, revoked] }
+        grace: { type: boolean, description: True while in the soft-lock renewal window }
+        reason: { type: string, nullable: true, example: domain_not_activated }
+        expires_at: { type: string, format: date-time, nullable: true }
+        grace_ends_at: { type: string, format: date-time, nullable: true }
+        activations_used: { type: integer }
+        activation_limit: { type: integer }
+        product: { type: string }
+        plan: { type: string, nullable: true }
+    SignedValidation:
+      type: object
+      properties:
+        data: { $ref: '#/components/schemas/Validation' }
+        timestamp: { type: integer, description: Unix epoch seconds }
+        signature: { type: string, description: HMAC-SHA256 over json(data)|timestamp }
+  responses:
+    InvalidLicense:
+      description: License key not found for this product
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: invalid_license, message: License key not found for this product. }
+    RateLimited:
+      description: Too many requests
+      headers:
+        Retry-After:
+          schema: { type: integer }
