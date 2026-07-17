@@ -364,8 +364,11 @@ body.swc-body-lock {
 .swc-teaser {
 	position: absolute;
 	inset-block-end: 74px;
-	inset-inline-end: 4px;
-	max-width: 240px;
+	inset-inline-end: 0;
+	/* Fixed width: the 62px launcher is the containing block, so a
+	   shrink-to-fit bubble would collapse into a one-word column. */
+	width: 232px;
+	max-width: calc(100vw - 48px);
 	display: flex;
 	align-items: flex-start;
 	gap: 8px;

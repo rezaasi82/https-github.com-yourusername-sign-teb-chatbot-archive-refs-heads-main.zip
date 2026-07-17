@@ -128,8 +128,8 @@
 		var syncProvider = function () {
 			var v = smsProvider.value;
 			if (customBox) { customBox.style.display = v === 'custom' ? '' : 'none'; }
-			// The secondary credential field is no longer needed by any panel.
-			if (secretRow) { secretRow.style.display = 'none'; }
+			// MeliPayamak accepts the classic username/password pair too.
+			if (secretRow) { secretRow.style.display = v === 'melipayamak' ? '' : 'none'; }
 			if (meliHint) { meliHint.style.display = v === 'melipayamak' ? '' : 'none'; }
 		};
 		smsProvider.addEventListener('change', syncProvider);

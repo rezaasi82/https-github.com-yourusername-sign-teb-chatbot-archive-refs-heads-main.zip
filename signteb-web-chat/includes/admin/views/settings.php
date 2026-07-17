@@ -280,7 +280,7 @@ if (! defined('ABSPATH')) {
                             <option value="<?php echo esc_attr($pid); ?>" <?php selected($sms_active, $pid); ?>><?php echo esc_html($plabel); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <p class="description swc-sms-hint" data-for="melipayamak"><?php esc_html_e('ملی‌پیامک: از توکن API کنسول (console.melipayamak.com) استفاده کنید و آن را در «کد فعال‌سازی» وارد کنید.', 'signteb-web-chat'); ?></p>
+                    <p class="description swc-sms-hint" data-for="melipayamak"><?php esc_html_e('ملی‌پیامک: یا توکن کنسول (console.melipayamak.com) را در APIKey وارد کنید و رمز را خالی بگذارید، یا نام کاربری را در APIKey و رمز عبور پنل را در فیلد رمز وارد کنید (وب‌سرویس قدیمی).', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
             <tr>
@@ -291,7 +291,7 @@ if (! defined('ABSPATH')) {
                 </td>
             </tr>
             <tr class="swc-sms-secret-row">
-                <th><?php esc_html_e('رمز عبور (فقط ملی‌پیامک)', 'signteb-web-chat'); ?></th>
+                <th><?php esc_html_e('رمز عبور (ملی‌پیامک — حالت نام‌کاربری/رمز)', 'signteb-web-chat'); ?></th>
                 <td><input type="password" name="sms_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::secret() !== '' ? '••••••••' : ''; ?>"></td>
             </tr>
             <tr>

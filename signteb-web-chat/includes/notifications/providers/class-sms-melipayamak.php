@@ -1,11 +1,18 @@
 <?php
 /**
- * MeliPayamak (ملی‌پیامک) — official console token API (github.com/Melipayamak).
+ * MeliPayamak (ملی‌پیامک) — supports BOTH auth styles, auto-detected:
  *
- * Auth: a single API key (the token from console.melipayamak.com), entered in
- * the "activation code" field — no username/password needed.
- *   - free text : POST /api/send/simple/{key}   { from, to, text }
- *   - pattern   : POST /api/send/shared/{key}    { bodyId, to, args[] }
+ *  - Legacy REST (username + password): username in the APIKey field and the
+ *    password in the secondary field →
+ *      free text : rest.payamak-panel.com/api/SendSMS/SendSMS
+ *      pattern   : rest.payamak-panel.com/api/SendSMS/BaseServiceNumber
+ *
+ *  - Console token (github.com/Melipayamak): a single token from
+ *    console.melipayamak.com in the APIKey field, secondary field empty →
+ *      free text : console.melipayamak.com/api/send/simple/{token}
+ *      pattern   : console.melipayamak.com/api/send/shared/{token}
+ *
+ * The password field being filled selects legacy mode; otherwise token mode.
  *
  * @package SignTeb_Web_Chat
  */
@@ -16,7 +23,8 @@ if (! defined('ABSPATH')) {
 
 class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
 {
-    private const BASE = 'https://console.melipayamak.com/api/send';
+    private const CONSOLE = 'https://console.melipayamak.com/api/send';
+    private const LEGACY  = 'https://rest.payamak-panel.com/api/SendSMS';
 
     public function id(): string
     {
@@ -33,54 +41,103 @@ class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
         return true;
     }
 
+    /** Password present = the classic username/password web service. */
+    private function is_legacy(): bool
+    {
+        return $this->api_secret() !== '';
+    }
+
     public function send(string $to, string $text): array
     {
         $key = $this->api_key();
         $to  = $this->normalize($to);
         if ($key === '' || $to === '') {
-            return ['ok' => false, 'error' => __('توکن API یا شماره مقصد تنظیم نشده است.', 'signteb-web-chat')];
+            return ['ok' => false, 'error' => __('APIKey (یا نام کاربری) و شماره مقصد لازم است.', 'signteb-web-chat')];
         }
-        // Free-text needs a dedicated line; shared service lines send only via
-        // the pattern (bodyId) path where the panel picks the line itself.
+
+        if ($this->is_legacy()) {
+            if ($this->sender() === '') {
+                return ['ok' => false, 'error' => __('برای ارسال متن آزاد، شماره خط لازم است. با خط خدماتی اشتراکی، «کد الگو» را برای قالب تنظیم کنید.', 'signteb-web-chat')];
+            }
+            $r = $this->http(self::LEGACY . '/SendSMS', [
+                'method' => 'POST',
+                'body'   => [
+                    'username' => $key,
+                    'password' => $this->api_secret(),
+                    'to'       => $to,
+                    'from'     => $this->sender(),
+                    'text'     => $text,
+                    'isflash'  => 'false',
+                ],
+            ]);
+            return $this->parse_legacy($r);
+        }
+
         if ($this->sender() === '') {
             return ['ok' => false, 'error' => __('برای ارسال متن آزاد، شماره خط اختصاصی لازم است. با خط خدماتی اشتراکی، «کد الگو» را برای قالب تنظیم کنید تا از مسیر الگویی ارسال شود.', 'signteb-web-chat')];
         }
-
-        $r = $this->http(self::BASE . '/simple/' . rawurlencode($key), [
+        $r = $this->http(self::CONSOLE . '/simple/' . rawurlencode($key), [
             'method'  => 'POST',
             'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
             'body'    => wp_json_encode(['from' => $this->sender(), 'to' => $to, 'text' => $text]),
         ]);
-        return $this->parse($r);
+        return $this->parse_console($r);
     }
 
     /**
-     * Shared service line: the approved pattern is chosen by bodyId; variable
-     * parts go into args[] in the order the template expects.
+     * Shared service line pattern: bodyId + ordered variables. Works in both
+     * auth modes; the panel picks the sending line itself.
      */
     public function send_pattern(string $to, string $code, array $params): array
     {
         $key = $this->api_key();
         $to  = $this->normalize($to);
         if ($key === '' || $to === '' || $code === '') {
-            return ['ok' => false, 'error' => __('توکن API، شماره یا کد الگو تنظیم نشده است.', 'signteb-web-chat')];
+            return ['ok' => false, 'error' => __('APIKey (یا نام کاربری)، شماره یا کد الگو تنظیم نشده است.', 'signteb-web-chat')];
         }
 
-        $r = $this->http(self::BASE . '/shared/' . rawurlencode($key), [
+        if ($this->is_legacy()) {
+            $text = implode(';', array_map(static fn($v) => str_replace(';', '،', (string) $v), array_values($params)));
+            $r = $this->http(self::LEGACY . '/BaseServiceNumber', [
+                'method' => 'POST',
+                'body'   => ['username' => $key, 'password' => $this->api_secret(), 'text' => $text, 'to' => $to, 'bodyId' => $code],
+            ]);
+            return $this->parse_legacy($r);
+        }
+
+        $r = $this->http(self::CONSOLE . '/shared/' . rawurlencode($key), [
             'method'  => 'POST',
             'headers' => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
             'body'    => wp_json_encode(['bodyId' => (int) $code, 'to' => $to, 'args' => array_values(array_map('strval', $params))]),
         ]);
-        return $this->parse($r);
+        return $this->parse_console($r);
     }
 
     /**
-     * Console API returns { recId, status }. A positive recId means queued/sent.
+     * Legacy API: RetStatus 1 (or a long numeric recId in Value) = success.
      *
      * @param array{ok:bool,code:int,body:string,error?:string} $r
      * @return array{ok:bool,error?:string,code?:int}
      */
-    private function parse(array $r): array
+    private function parse_legacy(array $r): array
+    {
+        $data = json_decode($r['body'], true);
+        $ret  = is_array($data) ? (int) ($data['RetStatus'] ?? 0) : 0;
+        $val  = is_array($data) ? (string) ($data['Value'] ?? '') : '';
+        if ($ret === 1 || (is_numeric($val) && strlen($val) > 6)) {
+            return ['ok' => true, 'code' => 200];
+        }
+        $msg = is_array($data) ? (string) ($data['StrRetStatus'] ?? '') : '';
+        return ['ok' => false, 'code' => $r['code'], 'error' => $msg !== '' && $msg !== 'Ok' ? $msg : ($r['error'] ?? __('ارسال ناموفق بود.', 'signteb-web-chat'))];
+    }
+
+    /**
+     * Console API: a positive recId = queued/sent.
+     *
+     * @param array{ok:bool,code:int,body:string,error?:string} $r
+     * @return array{ok:bool,error?:string,code?:int}
+     */
+    private function parse_console(array $r): array
     {
         $data = json_decode($r['body'], true);
         $rec  = is_array($data) ? ($data['recId'] ?? 0) : 0;
