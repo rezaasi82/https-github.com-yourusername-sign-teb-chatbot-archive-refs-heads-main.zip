@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.8.1
+Stable tag: 0.8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,10 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.8.2 =
+* Fix: the admin dashboard rendered blank on real (subdirectory) WordPress installs. The code-split per-route chunks resolved against the site root and 404'd, and because every route was lazy-loaded the whole screen stayed empty. The admin app now ships as a single bundle (with a relative asset base), so there are no separate chunk requests to misresolve.
+* Added a top-level error boundary: if the app ever fails to start, it now shows the error message instead of a blank screen, so problems can be diagnosed in the field.
 
 = 0.8.1 =
 * Added GapGPT (gapgpt.app) as an AI provider — an OpenAI-compatible gateway that is easier to pay for and reach from Iran, so users there can enable AI features without a VPN or foreign card. Selectable as the preferred provider and joins the automatic fallback chain.
