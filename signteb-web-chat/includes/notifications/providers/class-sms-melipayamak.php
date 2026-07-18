@@ -48,33 +48,80 @@ class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
     }
 
     /**
-     * Credential check without sending an SMS. Legacy mode calls GetCredit
-     * (the documented health-check); token mode has no free probe, so it only
-     * reports the detected configuration.
+     * The panel's webservice APIKey is a UUID; usernames (mobile numbers)
+     * never look like this. Used to detect swapped fields.
+     */
+    private function looks_like_webservice_key(string $v): bool
+    {
+        return (bool) preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $v);
+    }
+
+    /**
+     * Raw GetCredit probe.
+     *
+     * @return array{ok:bool,credit:string,msg:string,neterr:string}
+     */
+    private function get_credit(string $user, string $pass): array
+    {
+        $r = $this->http(self::LEGACY . '/GetCredit', [
+            'method' => 'POST',
+            'body'   => ['username' => $user, 'password' => $pass],
+        ]);
+        if (! empty($r['error'])) {
+            return ['ok' => false, 'credit' => '', 'msg' => '', 'neterr' => $r['error']];
+        }
+        $data = json_decode($r['body'], true);
+        $ret  = is_array($data) ? (int) ($data['RetStatus'] ?? 0) : 0;
+        return [
+            'ok'     => $ret === 1,
+            'credit' => is_array($data) ? (string) ($data['Value'] ?? '?') : '?',
+            'msg'    => is_array($data) ? (string) ($data['StrRetStatus'] ?? ('HTTP ' . $r['code'])) : ('HTTP ' . $r['code']),
+            'neterr' => '',
+        ];
+    }
+
+    /**
+     * Credential check without sending an SMS. Detects swapped fields (the
+     * panel's webservice APIKey pasted as username) and repairs them
+     * automatically when the swapped pair actually authenticates.
      *
      * @return array{ok:bool,detail:string}
      */
     public function check(): array
     {
-        if ($this->api_key() === '') {
+        $key    = $this->api_key();
+        $secret = $this->api_secret();
+        if ($key === '') {
             return ['ok' => false, 'detail' => __('هیچ APIKey/نام کاربری ذخیره نشده است.', 'signteb-web-chat')];
         }
 
+        // Webservice APIKey (UUID) stored alone: it belongs in the password
+        // parameter, next to the panel username — not in console-token mode.
+        if (! $this->is_legacy() && $this->looks_like_webservice_key($key)) {
+            return ['ok' => false, 'detail' => __('این کد «APIKey وب‌سرویس» ملی‌پیامک است، نه توکن کنسول. نام کاربری پنل (معمولاً شماره موبایل) را در فیلد APIKey و همین کد را در فیلد «رمز عبور» وارد کنید و ذخیره کنید.', 'signteb-web-chat')];
+        }
+
         if ($this->is_legacy()) {
-            $r = $this->http(self::LEGACY . '/GetCredit', [
-                'method' => 'POST',
-                'body'   => ['username' => $this->api_key(), 'password' => $this->api_secret()],
-            ]);
-            if (! empty($r['error'])) {
-                return ['ok' => false, 'detail' => sprintf(__('سرور سایت به پنل دسترسی ندارد: %s', 'signteb-web-chat'), $r['error'])];
+            $probe = $this->get_credit($key, $secret);
+            if ($probe['neterr'] !== '') {
+                return ['ok' => false, 'detail' => sprintf(__('سرور سایت به پنل دسترسی ندارد: %s', 'signteb-web-chat'), $probe['neterr'])];
             }
-            $data = json_decode($r['body'], true);
-            $ret  = is_array($data) ? (int) ($data['RetStatus'] ?? 0) : 0;
-            if ($ret === 1) {
-                return ['ok' => true, 'detail' => sprintf(__('حالت نام‌کاربری/رمز ✓ — اعتبار پنل: %s', 'signteb-web-chat'), (string) ($data['Value'] ?? '?'))];
+            if ($probe['ok']) {
+                return ['ok' => true, 'detail' => sprintf(__('حالت نام‌کاربری/رمز ✓ — اعتبار پنل: %s', 'signteb-web-chat'), $probe['credit'])];
             }
-            $msg = is_array($data) ? (string) ($data['StrRetStatus'] ?? '') : ('HTTP ' . $r['code']);
-            return ['ok' => false, 'detail' => sprintf(__('پنل اتصال را رد کرد (GetCredit): %s — نام کاربری/رمز وب‌سرویس را بررسی کنید. توجه: برخی پنل‌ها «رمز وب‌سرویس» جدا از رمز ورود دارند و ممکن است لازم باشد IP سرور سایت در پنل مجاز شود.', 'signteb-web-chat'), $msg)];
+
+            // Rejected — if the UUID sits in the username slot, try swapped and
+            // self-repair when the swap authenticates.
+            if ($this->looks_like_webservice_key($key) && ! $this->looks_like_webservice_key($secret)) {
+                $swapped = $this->get_credit($secret, $key);
+                if ($swapped['ok']) {
+                    SWC_Sms_Manager::save_key($secret);
+                    SWC_Sms_Manager::save_secret($key);
+                    return ['ok' => true, 'detail' => sprintf(__('جای دو فیلد برعکس بود؛ به‌طور خودکار اصلاح و ذخیره شد ✓ — اعتبار پنل: %s', 'signteb-web-chat'), $swapped['credit'])];
+                }
+            }
+
+            return ['ok' => false, 'detail' => sprintf(__('پنل اتصال را رد کرد (GetCredit): %s — چیدمان درست: نام کاربری پنل در فیلد APIKey، و «APIKey وب‌سرویس» (کد UUID از تنظیمات وبسرویس پنل) در فیلد رمز عبور. اگر باز رد شد، وب‌سرویس را در پنل فعال و در صورت نیاز IP سرور سایت را مجاز کنید.', 'signteb-web-chat'), $probe['msg'])];
         }
 
         return ['ok' => true, 'detail' => __('حالت توکن کنسول شناسایی شد (رمز خالی است). برای آزمون واقعی، «ارسال پیامک تست» را بزنید.', 'signteb-web-chat')];

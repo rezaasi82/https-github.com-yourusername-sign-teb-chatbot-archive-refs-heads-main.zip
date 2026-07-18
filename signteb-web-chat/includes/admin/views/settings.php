@@ -280,7 +280,7 @@ if (! defined('ABSPATH')) {
                             <option value="<?php echo esc_attr($pid); ?>" <?php selected($sms_active, $pid); ?>><?php echo esc_html($plabel); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <p class="description swc-sms-hint" data-for="melipayamak"><?php esc_html_e('ملی‌پیامک: یا توکن کنسول (console.melipayamak.com) را در APIKey وارد کنید و رمز را خالی بگذارید، یا نام کاربری را در APIKey و رمز عبور پنل را در فیلد رمز وارد کنید (وب‌سرویس قدیمی).', 'signteb-web-chat'); ?></p>
+                    <p class="description swc-sms-hint" data-for="melipayamak"><?php esc_html_e('ملی‌پیامک: نام کاربری پنل (معمولاً شماره موبایل) را در فیلد APIKey و «APIKey وب‌سرویس» (کد مانند xxxxxxxx-xxxx-… از بخش تنظیمات وبسرویس پنل) را در فیلد «رمز عبور» وارد کنید — طبق راهنمای خود پنل، این کد جایگزین رمز عبور می‌شود. (اگر از توکن کنسول جدید استفاده می‌کنید، آن را در APIKey بگذارید و رمز را خالی کنید.)', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
             <tr>
