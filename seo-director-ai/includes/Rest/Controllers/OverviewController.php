@@ -65,7 +65,7 @@ final class OverviewController extends AbstractController {
 			$series = $this->gsc->daily_totals_series( $gsc_property['id'], $from, $to );
 		}
 
-		$ai_ready   = (bool) array_intersect( [ 'openai', 'claude', 'gemini' ], $connected );
+		$ai_ready   = (bool) array_intersect( [ 'openai', 'claude', 'gemini', 'gapgpt' ], $connected );
 		$has_synced = 'done' === ( $this->job_state->get( SyncGscJob::NAME )['status'] ?? '' ) && [] !== $series;
 		$setup      = $this->setup->build( $google_ok, null !== $gsc_property, $ai_ready, $has_synced );
 

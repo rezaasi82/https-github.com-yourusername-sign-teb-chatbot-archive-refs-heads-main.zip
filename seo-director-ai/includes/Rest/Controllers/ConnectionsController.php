@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class ConnectionsController extends AbstractController {
 
-	private const KEY_SERVICES = [ 'psi', 'openai', 'claude', 'gemini' ];
+	private const KEY_SERVICES = [ 'psi', 'openai', 'claude', 'gemini', 'gapgpt' ];
 
 	public function __construct(
 		private ConnectionsRepository $connections,

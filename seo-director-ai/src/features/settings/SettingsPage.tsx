@@ -318,6 +318,7 @@ function AiProviderCard() {
             <option value="claude">Anthropic Claude</option>
             <option value="openai">OpenAI</option>
             <option value="gemini">Google Gemini</option>
+            <option value="gapgpt">GapGPT (گپ‌جی‌پی‌تی)</option>
           </select>
         </label>
 
@@ -640,6 +641,7 @@ export function SettingsPage() {
       <KeyCard state={data} service="claude" title="AI — Anthropic Claude" hint="sk-ant-…" />
       <KeyCard state={data} service="openai" title="AI — OpenAI" hint="sk-…" />
       <KeyCard state={data} service="gemini" title="AI — Google Gemini" hint="API key" />
+      <KeyCard state={data} service="gapgpt" title="AI — GapGPT (گپ‌جی‌پی‌تی)" hint="sk-… (gapgpt.app)" />
       <AiProviderCard />
       <LicenseCard />
       <AlertChannelsCard />

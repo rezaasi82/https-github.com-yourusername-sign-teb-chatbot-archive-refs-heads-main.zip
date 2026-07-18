@@ -65,12 +65,13 @@ final class Settings {
 	 */
 	private function sanitizers(): array {
 		return [
-			'ai_provider'          => static fn( $v ) => in_array( $v, [ '', 'openai', 'claude', 'gemini' ], true ) ? $v : '',
+			'ai_provider'          => static fn( $v ) => in_array( $v, [ '', 'openai', 'claude', 'gemini', 'gapgpt' ], true ) ? $v : '',
 			'ai_auto_explain'      => static fn( $v ) => (bool) $v,
 			'ai_monthly_token_cap' => static fn( $v ) => max( 0, (int) $v ),
 			'ai_model_claude'      => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'ai_model_openai'      => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'ai_model_gemini'      => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'ai_model_gapgpt'      => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'site_niche'           => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'site_goals'           => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'gsc_query_rows_cap'   => static fn( $v ) => min( 25000, max( 100, (int) $v ) ),

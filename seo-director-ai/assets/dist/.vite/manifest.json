@@ -3,68 +3,68 @@
     "file": "assets/labels-kS5R8hT8.js",
     "name": "labels"
   },
-  "_useMutation-CHQ3FyV1.js": {
-    "file": "assets/useMutation-CHQ3FyV1.js",
+  "_useMutation-DzBVjc_G.js": {
+    "file": "assets/useMutation-DzBVjc_G.js",
     "name": "useMutation",
     "imports": [
       "src/main.tsx"
     ]
   },
   "src/features/agency/AgencyPage.tsx": {
-    "file": "assets/AgencyPage-C9m4rc9_.js",
+    "file": "assets/AgencyPage-DCz0p2-Y.js",
     "name": "AgencyPage",
     "src": "src/features/agency/AgencyPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
-      "_useMutation-CHQ3FyV1.js"
+      "_useMutation-DzBVjc_G.js"
     ]
   },
   "src/features/alerts/AlertsPage.tsx": {
-    "file": "assets/AlertsPage-CG8aHfrq.js",
+    "file": "assets/AlertsPage-nla1i0O5.js",
     "name": "AlertsPage",
     "src": "src/features/alerts/AlertsPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
-      "_useMutation-CHQ3FyV1.js",
+      "_useMutation-DzBVjc_G.js",
       "_labels-kS5R8hT8.js"
     ]
   },
   "src/features/content/ContentPage.tsx": {
-    "file": "assets/ContentPage-DibQFEfD.js",
+    "file": "assets/ContentPage-CsqxEWFu.js",
     "name": "ContentPage",
     "src": "src/features/content/ContentPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
-      "_useMutation-CHQ3FyV1.js"
+      "_useMutation-DzBVjc_G.js"
     ]
   },
   "src/features/movers/WinnersLosersPage.tsx": {
-    "file": "assets/WinnersLosersPage-r-5Geh8U.js",
+    "file": "assets/WinnersLosersPage-D9aebqhS.js",
     "name": "WinnersLosersPage",
     "src": "src/features/movers/WinnersLosersPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
       "_labels-kS5R8hT8.js",
-      "_useMutation-CHQ3FyV1.js"
+      "_useMutation-DzBVjc_G.js"
     ]
   },
   "src/features/opportunities/OpportunitiesPage.tsx": {
-    "file": "assets/OpportunitiesPage-OeFgNYEP.js",
+    "file": "assets/OpportunitiesPage-DX-izYDW.js",
     "name": "OpportunitiesPage",
     "src": "src/features/opportunities/OpportunitiesPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
-      "_useMutation-CHQ3FyV1.js",
+      "_useMutation-DzBVjc_G.js",
       "_labels-kS5R8hT8.js"
     ]
   },
   "src/features/overview/OverviewPage.tsx": {
-    "file": "assets/OverviewPage-7Kt_lsGY.js",
+    "file": "assets/OverviewPage-GZQad9-y.js",
     "name": "OverviewPage",
     "src": "src/features/overview/OverviewPage.tsx",
     "isDynamicEntry": true,
@@ -74,37 +74,37 @@
     ]
   },
   "src/features/reports/ReportsPage.tsx": {
-    "file": "assets/ReportsPage-Cns38t3N.js",
+    "file": "assets/ReportsPage-DmHypC4I.js",
     "name": "ReportsPage",
     "src": "src/features/reports/ReportsPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
-      "_useMutation-CHQ3FyV1.js"
+      "_useMutation-DzBVjc_G.js"
     ]
   },
   "src/features/roadmap/RoadmapPage.tsx": {
-    "file": "assets/RoadmapPage-DEIFys9H.js",
+    "file": "assets/RoadmapPage-BAvP1pvy.js",
     "name": "RoadmapPage",
     "src": "src/features/roadmap/RoadmapPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
-      "_useMutation-CHQ3FyV1.js"
+      "_useMutation-DzBVjc_G.js"
     ]
   },
   "src/features/settings/SettingsPage.tsx": {
-    "file": "assets/SettingsPage-CcEPBrNz.js",
+    "file": "assets/SettingsPage-DLj0NAso.js",
     "name": "SettingsPage",
     "src": "src/features/settings/SettingsPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "src/main.tsx",
-      "_useMutation-CHQ3FyV1.js"
+      "_useMutation-DzBVjc_G.js"
     ]
   },
   "src/main.tsx": {
-    "file": "assets/main-C6CZW_rv.js",
+    "file": "assets/main-C05eM54-.js",
     "name": "main",
     "src": "src/main.tsx",
     "isEntry": true,

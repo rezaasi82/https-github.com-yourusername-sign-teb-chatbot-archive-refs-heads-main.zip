@@ -19,6 +19,7 @@ use SEODirector\Ai\InsightService;
 use SEODirector\Ai\ProviderRouter;
 use SEODirector\Ai\PromptLibrary;
 use SEODirector\Ai\Providers\ClaudeProvider;
+use SEODirector\Ai\Providers\GapGptProvider;
 use SEODirector\Ai\Providers\GeminiProvider;
 use SEODirector\Ai\Providers\OpenAiProvider;
 use SEODirector\Ai\SchemaValidator;
@@ -314,6 +315,7 @@ final class Plugin {
 		$c->set( ClaudeProvider::class, static fn( Container $c ) => new ClaudeProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
 		$c->set( OpenAiProvider::class, static fn( Container $c ) => new OpenAiProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
 		$c->set( GeminiProvider::class, static fn( Container $c ) => new GeminiProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
+		$c->set( GapGptProvider::class, static fn( Container $c ) => new GapGptProvider( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ), $c->get( Settings::class ) ) );
 		$c->set(
 			ProviderRouter::class,
 			static fn( Container $c ) => new ProviderRouter(
@@ -321,6 +323,7 @@ final class Plugin {
 					'claude' => $c->get( ClaudeProvider::class ),
 					'openai' => $c->get( OpenAiProvider::class ),
 					'gemini' => $c->get( GeminiProvider::class ),
+					'gapgpt' => $c->get( GapGptProvider::class ),
 				],
 				$c->get( SchemaValidator::class ),
 				$c->get( TokenBudget::class ),

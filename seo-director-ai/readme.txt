@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.8.0
+Stable tag: 0.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,7 @@ Most SEO plugins show data. SEO Director AI explains what happened, why it happe
 This plugin connects to the following external services, only after you explicitly connect them:
 
 * Google Search Console API, Google Analytics Data API, and PageSpeed Insights API — to fetch your own site's performance data (Google's terms: https://policies.google.com/terms)
-* Your chosen AI provider (OpenAI, Anthropic Claude, or Google Gemini) — to generate explanations and recommendations from aggregated metrics you choose to analyze
+* Your chosen AI provider (OpenAI, Anthropic Claude, Google Gemini, or GapGPT) — to generate explanations and recommendations from aggregated metrics you choose to analyze
 * The SEO Director license server — for license activation and update delivery
 
 No data is sent anywhere until you connect a service. Disconnecting stops all traffic to that service.
@@ -41,6 +41,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.8.1 =
+* Added GapGPT (gapgpt.app) as an AI provider — an OpenAI-compatible gateway that is easier to pay for and reach from Iran, so users there can enable AI features without a VPN or foreign card. Selectable as the preferred provider and joins the automatic fallback chain.
 
 = 0.8.0 =
 * Onboarding: a fresh install now shows a clearly-labelled sample dashboard (health, traffic, opportunities, risks) instead of empty panels, so buyers see the plugin's value immediately. Sample data disappears automatically after the first real sync.

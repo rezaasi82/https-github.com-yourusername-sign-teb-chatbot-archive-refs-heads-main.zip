@@ -58,6 +58,7 @@ final class Activator {
 			'ai_model_claude'      => 'claude-sonnet-5',
 			'ai_model_openai'      => 'gpt-4.1-mini',
 			'ai_model_gemini'      => 'gemini-2.0-flash',
+			'ai_model_gapgpt'      => 'gpt-4o-mini',
 			'site_niche'           => '',
 			'site_goals'           => '',
 			'gsc_query_rows_cap'   => 5000,
