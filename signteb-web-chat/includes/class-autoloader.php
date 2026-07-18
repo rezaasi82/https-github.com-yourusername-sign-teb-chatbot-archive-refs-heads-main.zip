@@ -103,10 +103,6 @@ class SWC_Autoloader
         'SWC_Chat_Ajax_Handler'       => 'ajax/class-chat-ajax-handler.php',
         'SWC_Export_Ajax_Handler'     => 'ajax/class-export-ajax-handler.php',
 
-        // License / trial / updates.
-        'SWC_License_Manager'         => 'license/class-license-manager.php',
-        'SWC_Updater'                 => 'license/class-updater.php',
-
         // Frontend.
         'SWC_Widget'                  => 'frontend/class-widget.php',
         'SWC_Chat_Shortcode'          => 'frontend/class-chat-shortcode.php',

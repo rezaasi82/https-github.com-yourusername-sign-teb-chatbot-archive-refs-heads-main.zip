@@ -36,10 +36,6 @@ class SWC_Widget
         if (is_admin() || is_feed() || is_robots()) {
             return false;
         }
-        // Hard license lock hides the widget (conversation data is preserved).
-        if ((new SWC_License_Manager())->is_locked()) {
-            return false;
-        }
         return (bool) apply_filters('swc_should_render', true);
     }
 
@@ -108,9 +104,9 @@ class SWC_Widget
      */
     public function render_inline(): string
     {
-        // Same gates as the floating widget, minus the "is this a normal page"
+        // Same gate as the floating widget, minus the "is this a normal page"
         // checks — a shortcode is only reached on a rendered page anyway.
-        if (! $this->settings->is_enabled() || (new SWC_License_Manager())->is_locked()) {
+        if (! $this->settings->is_enabled()) {
             return '';
         }
         $this->enqueue_assets();

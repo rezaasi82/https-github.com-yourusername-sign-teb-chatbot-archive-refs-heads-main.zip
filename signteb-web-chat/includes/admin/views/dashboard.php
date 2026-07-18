@@ -8,7 +8,6 @@
  * @var array<string,int>   $daily_c   Daily click counts.
  * @var array<int,object>   $top
  * @var array<string,int>   $demand   Most-requested services.
- * @var SWC_License_Manager $license
  *
  * @package SignTeb_Web_Chat
  */

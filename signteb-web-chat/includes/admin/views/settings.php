@@ -1,9 +1,8 @@
 <?php
 /**
- * Tabbed settings content (provider | clinic | appearance | license).
+ * Tabbed settings content (provider | clinic | appearance | integrations).
  *
  * @var SWC_Settings        $s
- * @var SWC_License_Manager $license
  * @var string              $tab
  *
  * @package SignTeb_Web_Chat
@@ -261,7 +260,6 @@ if (! defined('ABSPATH')) {
             <tr><th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="cloud_enabled" value="1" <?php checked($s->get('cloud_enabled', 0), 1); ?>> <?php esc_html_e('ارسال heartbeat روزانه به Medora Cloud', 'signteb-web-chat'); ?></label></td></tr>
             <tr><th><?php esc_html_e('آدرس Cloud', 'signteb-web-chat'); ?></th><td><input type="url" name="cloud_endpoint" value="<?php echo esc_attr($s->get('cloud_endpoint')); ?>" class="large-text" placeholder="https://cloud.medora.ai/v1/heartbeat"></td></tr>
             <tr><th><?php esc_html_e('کلید امنیتی', 'signteb-web-chat'); ?></th><td><input type="password" name="cloud_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo (new SWC_Cloud_Client())->secret() !== '' ? '••••••••' : ''; ?>"></td></tr>
-            <tr><th><?php esc_html_e('آدرس فید به‌روزرسانی', 'signteb-web-chat'); ?></th><td><input type="url" name="update_feed_url" value="<?php echo esc_attr($s->get('update_feed_url')); ?>" class="large-text" placeholder="https://cloud.medora.ai/v1/update/latest"><p class="description"><?php esc_html_e('خالی = به‌صورت خودکار از آدرس Cloud استخراج می‌شود.', 'signteb-web-chat'); ?></p></td></tr>
         </table>
 
         <?php $sms = new SWC_Sms_Manager(); $sms_active = $sms->active_id(); ?>
@@ -405,36 +403,6 @@ if (! defined('ABSPATH')) {
             <?php endforeach; ?>
         </table>
 
-    <?php elseif ($tab === 'license') : ?>
-        <?php
-        $info    = $license->info();
-        $state   = $license->state();
-        $labels  = ['active' => __('فعال', 'signteb-web-chat'), 'grace' => __('مهلت تمدید', 'signteb-web-chat'), 'locked' => __('منقضی/معلق', 'signteb-web-chat'), 'trial' => __('نسخه آزمایشی', 'signteb-web-chat')];
-        $colors  = ['active' => '#1a7f37', 'grace' => '#8a6d1b', 'locked' => '#d63638', 'trial' => '#50607a'];
-        $days    = $license->days_left();
-        ?>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th><?php esc_html_e('وضعیت', 'signteb-web-chat'); ?></th>
-                <td>
-                    <strong style="color:<?php echo esc_attr($colors[$state] ?? '#50607a'); ?>"><?php echo esc_html($labels[$state] ?? $state); ?></strong>
-                    <?php if ($state === 'trial') : ?>
-                        — <?php printf(esc_html__('%d پیام باقی‌مانده از %d', 'signteb-web-chat'), (int) $license->trial_remaining(), (int) $license->trial_limit()); ?>
-                    <?php else : ?>
-                        · <?php esc_html_e('پلن:', 'signteb-web-chat'); ?> <?php echo esc_html($license->plan()); ?>
-                        <?php if ($days !== null) : ?> · <?php printf(esc_html__('%d روز باقی‌مانده', 'signteb-web-chat'), (int) $days); ?><?php endif; ?>
-                    <?php endif; ?>
-                    <p class="description"><?php esc_html_e('اعتبارسنجی روزانه از Medora Cloud انجام می‌شود. ذخیره‌ی این فرم بلافاصله یک بررسی مجدد اجرا می‌کند.', 'signteb-web-chat'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th><?php esc_html_e('کلید لایسنس', 'signteb-web-chat'); ?></th>
-                <td>
-                    <input type="text" name="license_key" value="<?php echo esc_attr($info['key']); ?>" class="regular-text" placeholder="XXXX-XXXX-XXXX">
-                    <p class="description"><?php esc_html_e('پس از پایان نسخه آزمایشی، کلید لایسنس سالانه را وارد کنید.', 'signteb-web-chat'); ?></p>
-                </td>
-            </tr>
-        </table>
     <?php endif; ?>
 
     <p class="submit">

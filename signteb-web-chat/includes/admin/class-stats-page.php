@@ -32,7 +32,6 @@ class SWC_Stats_Page
             (new SWC_System_Prompt_Builder($settings))->services()
         );
         $demand  = $repo->service_demand($services, 30);
-        $license = new SWC_License_Manager();
 
         include SWC_DIR . 'includes/admin/views/dashboard.php';
     }

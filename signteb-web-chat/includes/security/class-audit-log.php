@@ -2,7 +2,7 @@
 /**
  * SWC_Audit_Log — security & admin event trail.
  *
- * Records who did what (settings changes, license activation, exports, branch
+ * Records who did what (settings changes, exports, branch
  * edits, denied/locked-out attempts, integrity anomalies) with IP and time.
  * Self-registering: hooks existing plugin actions and adds an admin viewer.
  *
@@ -24,9 +24,6 @@ class SWC_Audit_Log
         add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
 
         // Hook existing plugin events into the trail.
-        add_action('swc_license_status_changed', static function ($status): void {
-            self::record('license_change', ['object' => (string) $status, 'severity' => 'info']);
-        });
         add_action('swc_pdf_generated', static function ($lead_id): void {
             self::record('export_pdf', ['object' => 'lead#' . (int) $lead_id, 'severity' => 'info']);
         });

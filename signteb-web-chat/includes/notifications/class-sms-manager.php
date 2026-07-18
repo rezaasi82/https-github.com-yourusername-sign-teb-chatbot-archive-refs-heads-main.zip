@@ -70,7 +70,6 @@ class SWC_Sms_Manager
 
     /**
      * Whether a real gateway send is possible (enabled + credentials present).
-     * The soft license lock also disables sending (a premium capability).
      */
     public function is_configured(): bool
     {
@@ -144,9 +143,6 @@ class SWC_Sms_Manager
      */
     private function dispatch(callable $call): array
     {
-        if (! (new SWC_License_Manager())->allows('sms')) {
-            return ['ok' => false, 'error' => __('ارسال پیامک نیازمند لایسنس فعال است.', 'signteb-web-chat')];
-        }
         if (! $this->is_configured()) {
             return ['ok' => false, 'error' => __('پنل پیامک پیکربندی نشده است.', 'signteb-web-chat')];
         }
@@ -204,11 +200,6 @@ class SWC_Sms_Manager
 
         $codes = array_filter(array_map([$this, 'template_code'], array_keys(self::default_templates())));
         $lines[] = sprintf(__('کد الگو تنظیم‌شده: %d قالب', 'signteb-web-chat'), count($codes));
-
-        if (! (new SWC_License_Manager())->allows('sms')) {
-            $lines[] = __('⚠ لایسنس اجازه ارسال پیامک نمی‌دهد.', 'signteb-web-chat');
-            return ['ok' => false, 'lines' => $lines];
-        }
 
         $provider = $this->active();
         if ($provider !== null && method_exists($provider, 'check')) {

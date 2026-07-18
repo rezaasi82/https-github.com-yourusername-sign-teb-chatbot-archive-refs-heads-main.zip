@@ -15,7 +15,7 @@ if (! defined('ABSPATH')) {
 
 class SWC_Settings_Page
 {
-    private const TABS = ['provider', 'clinic', 'appearance', 'integrations', 'conversations', 'stats', 'license'];
+    private const TABS = ['provider', 'clinic', 'appearance', 'integrations', 'conversations', 'stats'];
 
     public function current_tab(): string
     {
@@ -35,11 +35,6 @@ class SWC_Settings_Page
 
         $in  = wp_unslash($_POST);
         $tab = isset($in['tab']) && in_array($in['tab'], self::TABS, true) ? $in['tab'] : 'provider';
-
-        if ($tab === 'license') {
-            (new SWC_License_Manager())->activate((string) ($in['license_key'] ?? ''));
-            $this->finish($tab);
-        }
 
         if ($tab === 'integrations') {
             $this->save_integrations($in);
@@ -126,7 +121,6 @@ class SWC_Settings_Page
             'gsheet_name'      => sanitize_text_field($in['gsheet_name'] ?? 'Leads'),
             'cloud_enabled'    => isset($in['cloud_enabled']) ? 1 : 0,
             'cloud_endpoint'   => esc_url_raw($in['cloud_endpoint'] ?? ''),
-            'update_feed_url'  => esc_url_raw($in['update_feed_url'] ?? ''),
             // SMS / messaging.
             'sms_enabled'       => isset($in['sms_enabled']) ? 1 : 0,
             'sms_provider'      => sanitize_key($in['sms_provider'] ?? 'kavenegar'),
@@ -193,7 +187,7 @@ class SWC_Settings_Page
 
     private function finish(string $tab): void
     {
-        SWC_Audit_Log::record('settings_saved', ['object' => $tab, 'severity' => $tab === 'license' ? 'warning' : 'info']);
+        SWC_Audit_Log::record('settings_saved', ['object' => $tab, 'severity' => 'info']);
         add_settings_error('swc', 'saved', __('تنظیمات ذخیره شد.', 'signteb-web-chat'), 'updated');
         set_transient('settings_errors', get_settings_errors(), 30);
         wp_safe_redirect(admin_url('admin.php?page=swc-chat&tab=' . $tab . '&updated=1'));
@@ -208,7 +202,6 @@ class SWC_Settings_Page
 
         $tab     = $this->current_tab();
         $s       = new SWC_Settings();
-        $license = new SWC_License_Manager();
 
         echo '<div class="wrap swc-admin" dir="rtl">';
         echo '<h1>' . esc_html__('Medora AI — دستیار هوشمند جذب بیمار', 'signteb-web-chat') . '</h1>';
@@ -224,7 +217,7 @@ class SWC_Settings_Page
         }
         $this->render_tab_nav($tab);
 
-        if (in_array($tab, ['provider', 'clinic', 'appearance', 'integrations', 'license'], true)) {
+        if (in_array($tab, ['provider', 'clinic', 'appearance', 'integrations'], true)) {
             include SWC_DIR . 'includes/admin/views/settings.php';
         } elseif ($tab === 'conversations') {
             (new SWC_Conversations_Page())->render_inner();
@@ -244,7 +237,6 @@ class SWC_Settings_Page
             'integrations'  => __('اتصال‌ها و خروجی', 'signteb-web-chat'),
             'conversations' => __('لیدها و مکالمات', 'signteb-web-chat'),
             'stats'         => __('آمار', 'signteb-web-chat'),
-            'license'       => __('لایسنس', 'signteb-web-chat'),
         ];
         echo '<h2 class="nav-tab-wrapper">';
         foreach ($labels as $slug => $label) {

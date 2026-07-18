@@ -100,7 +100,6 @@ class SWC_Cloud_Client
      */
     private function telemetry(): array
     {
-        $license = new SWC_License_Manager();
         return [
             'domain'         => hash('sha256', strtolower((string) (wp_parse_url(home_url(), PHP_URL_HOST) ?: ''))),
             'plugin_version' => defined('SWC_VERSION') ? SWC_VERSION : '',
@@ -109,7 +108,6 @@ class SWC_Cloud_Client
             'locale'         => get_locale(),
             'timezone'       => wp_timezone_string(),
             'counts'         => $this->counts(),
-            'license'        => ['status' => $license->info()['status'], 'active' => $license->is_active()],
             'time'           => current_time('mysql'),
         ];
     }

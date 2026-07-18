@@ -3,7 +3,7 @@
  * SWC_AI_Manager — the conversation engine.
  *
  * The single entry point used by both the REST controller and the admin-ajax
- * handler. Coordinates the license/trial gate, rate limiting, the safety
+ * handler. Coordinates rate limiting, the safety
  * layer, the dynamic system prompt, the swappable AI provider, persistence,
  * and CTA/lead detection. Every failure path returns a structured fallback
  * rather than an error.
@@ -27,7 +27,6 @@ class SWC_AI_Manager
     private SWC_Provider_Factory $providers;
     private SWC_Conversation_Repository $conversations;
     private SWC_Message_Repository $messages;
-    private SWC_License_Manager $license;
 
     public function __construct()
     {
@@ -41,7 +40,6 @@ class SWC_AI_Manager
         $this->providers     = new SWC_Provider_Factory($this->settings);
         $this->conversations = new SWC_Conversation_Repository();
         $this->messages      = new SWC_Message_Repository();
-        $this->license       = new SWC_License_Manager();
     }
 
     /**
@@ -54,14 +52,6 @@ class SWC_AI_Manager
     {
         if (! $this->settings->is_enabled()) {
             return ['ok' => false, 'code' => 'disabled', 'error' => __('چت‌بات غیرفعال است.', 'signteb-web-chat')];
-        }
-
-        if (! $this->license->can_send()) {
-            return [
-                'ok'    => false,
-                'code'  => 'trial_expired',
-                'error' => __('نسخه آزمایشی به پایان رسیده است. برای ادامه، لطفاً لایسنس را فعال کنید.', 'signteb-web-chat'),
-            ];
         }
 
         $message = trim((string) $req['message']);
@@ -151,7 +141,6 @@ class SWC_AI_Manager
         }
 
         $this->messages->add($conversation_id, 'assistant', $reply, false, $result['tokens'] ?? null);
-        $this->license->record_usage();
 
         // --- AI lead scoring + auto-summary (heuristic, no extra API call) ---
         $score = $this->score_and_summarize($conversation_id, $cta, $known_name, (string) ($conversation->patient_phone ?? $patient_phone));

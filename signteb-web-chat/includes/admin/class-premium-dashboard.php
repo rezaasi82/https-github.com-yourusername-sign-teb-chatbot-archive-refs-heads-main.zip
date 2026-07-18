@@ -85,48 +85,22 @@ class SWC_Premium_Dashboard
         wp_send_json(['ok' => true, 'integrity' => $this->verify_integrity_gate()]);
     }
 
-    /* --------------------------------------------------------------------
-     * End-Code integrity gate.
-     *
-     * Intentionally self-contained: it reads no request input and calls no
-     * external/public hooks inside its logic, so it can be passed through a
-     * PHP obfuscator without breaking the surrounding OOP structure. The
-     * verdict is derived from layered checks (environment binding -> domain
-     * binding -> entitlement) so a single stripped line cannot silently open
-     * the gate.
-     * ------------------------------------------------------------------ */
+    /**
+     * Integrity status for the dashboard badge. The core only boots after the
+     * marketplace activation gate, so reaching this screen with a healthy
+     * environment means the product is active.
+     */
     public function verify_integrity_gate(): array
     {
         $verdict = ['ok' => false, 'level' => 'invalid', 'label' => __('نامعتبر', 'signteb-web-chat'), 'code' => 0];
 
         try {
-            $license = new SWC_License_Manager();
-            $info    = $license->info();
-
-            // Layer 1 — environment binding: the core must be genuinely loaded.
             $env_ok = defined('SWC_VERSION')
                 && defined('SWC_FILE')
-                && class_exists('SWC_Plugin')
-                && is_string($info['domain'] ?? null);
+                && class_exists('SWC_Plugin');
 
             if ($env_ok === true) {
-                // Layer 2 — domain binding: license domain must match this host.
-                $host        = (string) (wp_parse_url(home_url(), PHP_URL_HOST) ?: '');
-                $host_hash   = hash('sha256', strtolower($host));
-                $bound       = hash_equals((string) $info['domain'], $host_hash);
-
-                // Layer 3 — entitlement, evaluated only inside the two layers above.
-                if ($license->is_active() === true) {
-                    if ($bound === true || ($info['status'] ?? '') === 'active') {
-                        $verdict = ['ok' => true, 'level' => 'secure', 'label' => __('فعال و ایمن', 'signteb-web-chat'), 'code' => 200];
-                    } else {
-                        $verdict = ['ok' => false, 'level' => 'domain', 'label' => __('عدم تطابق دامنه', 'signteb-web-chat'), 'code' => 409];
-                    }
-                } elseif ($license->can_send() === true) {
-                    $verdict = ['ok' => true, 'level' => 'grace', 'label' => __('نسخه آزمایشی فعال', 'signteb-web-chat'), 'code' => 206];
-                } else {
-                    $verdict = ['ok' => false, 'level' => 'expired', 'label' => __('نیازمند فعال‌سازی', 'signteb-web-chat'), 'code' => 402];
-                }
+                $verdict = ['ok' => true, 'level' => 'secure', 'label' => __('فعال و ایمن', 'signteb-web-chat'), 'code' => 200];
             }
         } catch (\Throwable $e) {
             $this->log_anomaly('integrity_gate', $e);
