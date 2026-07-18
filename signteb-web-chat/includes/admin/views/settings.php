@@ -349,18 +349,37 @@ if (! defined('ABSPATH')) {
         </table>
 
         <h3><?php esc_html_e('قالب‌های پیام (قابل ویرایش)', 'signteb-web-chat'); ?></h3>
-        <p class="description"><?php esc_html_e('متغیرهای قابل استفاده: {name} {phone} {score} {status} {clinic} {summary}', 'signteb-web-chat'); ?></p>
-        <p class="description"><?php esc_html_e('«کد الگو» را فقط اگر از خط خدماتی/سرویس ویژه پنل استفاده می‌کنید پر کنید (کد پترن ثبت‌شده در پنل). در این حالت، مقادیرِ متغیرها به‌ترتیبی که در متن آمده‌اند به الگو ارسال می‌شوند. اگر خالی باشد، متن به‌صورت عادی ارسال می‌شود.', 'signteb-web-chat'); ?></p>
-        <?php $tpl_codes = (array) $s->get('sms_template_codes', []); ?>
+        <p class="description"><?php esc_html_e('متن را دقیقاً مطابق الگوی تأییدشده‌ی پنل بنویسید — با جای‌گذاری عددی {0} {1} {2} (فرمت مورد تأیید ملی‌پیامک). معنی هر شماره زیر هر قالب نوشته شده است. جای‌گذاری نامی ({name} {clinic} …) هم پشتیبانی می‌شود.', 'signteb-web-chat'); ?></p>
+        <p class="description"><?php esc_html_e('«کد الگو» کدِ خصوصی پترن ثبت‌شده در پنل شماست — پیش‌فرض ندارد و همراه افزونه منتشر نمی‌شود؛ فقط رمزگذاری‌نشده در دیتابیس همین سایت می‌ماند. اگر خالی باشد، پیام به‌صورت متن عادی ارسال می‌شود.', 'signteb-web-chat'); ?></p>
+        <?php
+        $tpl_codes  = (array) $s->get('sms_template_codes', []);
+        $var_labels = [
+            'name'    => __('نام بیمار', 'signteb-web-chat'),
+            'phone'   => __('موبایل بیمار', 'signteb-web-chat'),
+            'score'   => __('امتیاز لید', 'signteb-web-chat'),
+            'status'  => __('وضعیت', 'signteb-web-chat'),
+            'clinic'  => __('نام کلینیک', 'signteb-web-chat'),
+            'summary' => __('خلاصه گفتگو', 'signteb-web-chat'),
+        ];
+        ?>
         <table class="form-table" role="presentation">
             <?php foreach ($sms->templates() as $tkey => $tpl) : ?>
                 <tr>
                     <th><?php echo esc_html($tpl['label']); ?></th>
                     <td>
                         <textarea name="sms_templates[<?php echo esc_attr($tkey); ?>]" rows="2" class="large-text"><?php echo esc_textarea($tpl['text']); ?></textarea>
+                        <p class="description">
+                            <?php
+                            $legend = [];
+                            foreach ($sms->template_vars($tkey) as $i => $vname) {
+                                $legend[] = '{' . $i . '} = ' . ($var_labels[$vname] ?? $vname);
+                            }
+                            echo esc_html(implode(' · ', $legend));
+                            ?>
+                        </p>
                         <label class="swc-tpl-code">
                             <span><?php esc_html_e('کد الگو (خط خدماتی):', 'signteb-web-chat'); ?></span>
-                            <input type="text" name="sms_template_codes[<?php echo esc_attr($tkey); ?>]" value="<?php echo esc_attr((string) ($tpl_codes[$tkey] ?? '')); ?>" class="regular-text" placeholder="<?php esc_attr_e('مثلاً 100xxx یا شناسه الگو', 'signteb-web-chat'); ?>">
+                            <input type="text" name="sms_template_codes[<?php echo esc_attr($tkey); ?>]" value="<?php echo esc_attr((string) ($tpl_codes[$tkey] ?? '')); ?>" class="regular-text" placeholder="<?php esc_attr_e('کد پترن پنل شما', 'signteb-web-chat'); ?>" autocomplete="off">
                         </label>
                     </td>
                 </tr>

@@ -110,17 +110,30 @@ class SWC_Sms_Manager
     {
         $tpl_text = $this->template_text($template_key);
         $code     = $this->template_code($template_key);
+        $order    = $this->template_vars($template_key);
 
-        return $this->dispatch(function (SWC_Sms_Provider_Interface $p) use ($to, $tpl_text, $code, $vars) {
+        return $this->dispatch(function (SWC_Sms_Provider_Interface $p) use ($to, $tpl_text, $code, $vars, $order) {
             if ($code !== '' && $p->supports_pattern()) {
-                return $p->send_pattern($to, $code, $this->ordered_params($tpl_text, $vars));
+                return $p->send_pattern($to, $code, $this->ordered_params($tpl_text, $vars, $order));
             }
-            $text = trim($this->render($tpl_text, $vars));
+            $text = trim($this->render($tpl_text, $vars, $order));
             if ($text === '') {
                 return ['ok' => false, 'error' => __('متن پیام خالی است.', 'signteb-web-chat')];
             }
             return $p->send($to, $text);
         });
+    }
+
+    /**
+     * Canonical variable order for a template's numbered placeholders —
+     * {0} means the first entry, {1} the second, …
+     *
+     * @return array<int,string>
+     */
+    public function template_vars(string $key): array
+    {
+        $defaults = self::default_templates();
+        return $defaults[$key]['vars'] ?? ['name', 'clinic'];
     }
 
     /**
@@ -153,14 +166,19 @@ class SWC_Sms_Manager
      * @param array<string,string> $vars
      * @return array<string,string>
      */
-    private function ordered_params(string $text, array $vars): array
+    private function ordered_params(string $text, array $vars, array $order = []): array
     {
-        preg_match_all('/\{([a-z_]+)\}/', $text, $m);
+        preg_match_all('/\{([a-z_]+|\d+)\}/', $text, $m);
         $out = [];
         foreach ($m[1] as $key) {
+            // Numbered placeholders (the MeliPayamak-approved style) map to the
+            // template's canonical variable order: {0} = first, {1} = second…
+            if (ctype_digit($key)) {
+                $key = $order[(int) $key] ?? '';
+            }
             // The opt-out sentence is baked into the approved panel pattern, so
             // it is never a dynamic parameter.
-            if ($key === 'optout' || ! isset($vars[$key]) || isset($out[$key])) {
+            if ($key === '' || $key === 'optout' || ! isset($vars[$key]) || isset($out[$key])) {
                 continue;
             }
             $out[$key] = (string) $vars[$key];
@@ -247,22 +265,29 @@ class SWC_Sms_Manager
      */
     public static function default_templates(): array
     {
+        // Texts follow the MeliPayamak-approved pattern style: numbered
+        // placeholders {0} {1} {2}. `vars` defines what each number means for
+        // that template (the order the panel pattern expects its variables).
         return [
             'welcome'  => [
                 'label' => __('خوش‌آمد به لید', 'signteb-web-chat'),
-                'text'  => __('{name} عزیز، از تماس شما با {clinic} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. 🌿 {optout}', 'signteb-web-chat'),
+                'text'  => __('{0} عزیز، از تماس شما با {1} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. 🌿 {optout}', 'signteb-web-chat'),
+                'vars'  => ['name', 'clinic'],
             ],
             'referral' => [
                 'label' => __('ارجاع لید به همکار', 'signteb-web-chat'),
-                'text'  => __('لید جدید در {clinic}: {name} - {phone} - امتیاز: {score}. لطفاً پیگیری کنید. {optout}', 'signteb-web-chat'),
+                'text'  => __('لید جدید در سایت : نام {0} -شماره {1} - امتیاز: {2}. لطفاً پیگیری کنید. {optout}', 'signteb-web-chat'),
+                'vars'  => ['name', 'phone', 'score'],
             ],
             'reminder' => [
                 'label' => __('یادآوری پیگیری', 'signteb-web-chat'),
-                'text'  => __('{name} عزیز، جهت تکمیل مشاوره و رزرو نوبت با {clinic} در ارتباط باشید. منتظر شما هستیم. {optout}', 'signteb-web-chat'),
+                'text'  => __('{0} عزیز، جهت تکمیل مشاوره و رزرو نوبت با {1} در ارتباط باشید. منتظر شما هستیم. {optout}', 'signteb-web-chat'),
+                'vars'  => ['name', 'clinic'],
             ],
             'custom'   => [
                 'label' => __('پیام سفارشی', 'signteb-web-chat'),
-                'text'  => __('{name} عزیز، {clinic} در خدمت شماست. {optout}', 'signteb-web-chat'),
+                'text'  => __('{0} عزیز، {1} در خدمت شماست. {optout}', 'signteb-web-chat'),
+                'vars'  => ['name', 'clinic'],
             ],
         ];
     }
@@ -300,15 +325,20 @@ class SWC_Sms_Manager
     }
 
     /**
-     * Substitute {name} {phone} {score} {status} {clinic} {summary} in a body.
+     * Substitute placeholders in a body — both named ({name} {clinic} …) and
+     * the panel-approved numbered style ({0} {1} …, resolved via $order).
      *
      * @param array<string,string> $vars
+     * @param array<int,string>    $order canonical variable order for {0}{1}…
      */
-    public function render(string $text, array $vars): string
+    public function render(string $text, array $vars, array $order = []): string
     {
         $repl = [];
         foreach ($vars as $k => $v) {
             $repl['{' . $k . '}'] = (string) $v;
+        }
+        foreach ($order as $i => $name) {
+            $repl['{' . $i . '}'] = (string) ($vars[$name] ?? '');
         }
         return strtr($text, $repl);
     }
