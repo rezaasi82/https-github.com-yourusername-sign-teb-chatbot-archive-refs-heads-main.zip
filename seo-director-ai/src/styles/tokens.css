@@ -238,3 +238,55 @@
     background-position: -200% 0;
   }
 }
+
+/* Responsive shell — below WP's 782px admin breakpoint the fixed sidebar
+   collapses into a sticky, horizontally scrollable nav strip, matching the
+   mobile screen designs. Cards already reflow via auto-fit grids. */
+@media (max-width: 782px) {
+  .sda-shell {
+    flex-direction: column;
+  }
+
+  .sda-sidebar {
+    width: auto;
+    padding: 6px 8px;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--sda-border);
+  }
+
+  .sda-sidebar__brand {
+    display: none;
+  }
+
+  .sda-sidebar a {
+    white-space: nowrap;
+    padding: 8px 12px;
+    border-inline-start: 0;
+    border-block-end: 3px solid transparent;
+  }
+
+  .sda-sidebar a.is-active {
+    border-inline-start-color: transparent;
+    border-block-end-color: var(--sda-primary);
+  }
+
+  .sda-main {
+    padding: 16px;
+  }
+
+  .sda-topbar h1 {
+    font-size: 18px;
+  }
+
+  /* Kanban / 3-up grids stack on narrow screens. */
+  .sda-grid[style*='repeat(3'] {
+    grid-template-columns: 1fr !important;
+  }
+}
