@@ -322,6 +322,27 @@ function AiProviderCard() {
           </select>
         </label>
 
+        {provider === 'gapgpt' && (
+          <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+            GapGPT model
+            <select
+              className="sda-input"
+              style={{ marginBlockStart: 4 }}
+              value={(data.settings.ai_model_gapgpt as string) ?? 'gpt-4o-mini'}
+              onChange={(e) => save.mutate({ ai_model_gapgpt: e.target.value })}
+            >
+              <option value="gpt-4o-mini">gpt-4o-mini (ارزان و سریع)</option>
+              <option value="gpt-4o">gpt-4o</option>
+              <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+              <option value="gpt-4.1">gpt-4.1</option>
+              <option value="o4-mini">o4-mini</option>
+              <option value="claude-3-5-sonnet">claude-3-5-sonnet</option>
+              <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+              <option value="deepseek-chat">deepseek-chat</option>
+            </select>
+          </label>
+        )}
+
         <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
           Monthly token cap (0 = unlimited)
           <input
