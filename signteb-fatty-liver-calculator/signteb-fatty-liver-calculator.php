@@ -5,7 +5,7 @@
  * Description:       Advanced clinical screening tool utilizing the Fatty Liver Index (FLI)
  *                    and lifestyle metrics. Premium standalone medical widget with lead
  *                    generation, dynamic CTA, and real-time BMI/FLI calculation.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            SignTeb
  * Author URI:        https://signteb.com
  * Text Domain:       signteb-liver-calc
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SIGNTEB_LIVER_VERSION', '1.0.0' );
+define( 'SIGNTEB_LIVER_VERSION', '1.1.0' );
 define( 'SIGNTEB_LIVER_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'SIGNTEB_LIVER_URL',     plugin_dir_url( __FILE__ ) );
 define( 'SIGNTEB_LIVER_TABLE',   'signteb_liver_leads' );
@@ -92,11 +92,6 @@ final class SignTeb_Fatty_Liver_Calculator {
             'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap',
             [], null );
 
-        /* Chart.js v4 */
-        wp_enqueue_script( 'chartjs',
-            'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
-            [], '4.4.0', true );
-
         /* Plugin CSS */
         wp_enqueue_style( 'signteb-liver-calc',
             SIGNTEB_LIVER_URL . 'assets/css/signteb-calculator.css',
@@ -105,7 +100,7 @@ final class SignTeb_Fatty_Liver_Calculator {
         /* Plugin JS */
         wp_enqueue_script( 'signteb-liver-calc',
             SIGNTEB_LIVER_URL . 'assets/js/signteb-calculator.js',
-            [ 'jquery', 'chartjs' ], SIGNTEB_LIVER_VERSION, true );
+            [ 'jquery' ], SIGNTEB_LIVER_VERSION, true );
 
         /* Pass data to JS */
         global $wpdb;

@@ -776,7 +776,8 @@
 #signteb-calc-wrapper .st-gauge-wrap {
   display: grid; justify-items: center; align-items: end; margin: 0 auto;
 }
-#signteb-calc-wrapper .st-gauge-wrap > canvas {
+#signteb-calc-wrapper .st-gauge-wrap > canvas,
+#signteb-calc-wrapper .st-gauge-svg {
   grid-area: 1 / 1; display: block; max-width: 100%; height: auto;
 }
 #signteb-calc-wrapper .st-gauge-center {
@@ -1044,28 +1045,61 @@
 }
 #signteb-calc-wrapper .st-foot-link:hover { color: rgba(255,255,255,.7); }
 
-/* ── WHATSAPP FLOATING ────────────────────────────────────────── */
+/* ── SIGNTEB CONNECT HUB — floating (VIP) ─────────────────────── */
 #st-wa-cta {
-  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
-  animation: stBounce 2.4s ease-in-out infinite;
+  position: fixed; bottom: 1.4rem; left: 1.4rem; z-index: 9999;
+  display: flex; flex-direction: column; align-items: flex-start; gap: .6rem;
 }
-@keyframes stBounce {
-  0%,100% { transform: translateY(0); }
-  45%     { transform: translateY(-6px); }
+#st-wa-cta .st-hub-items {
+  display: none; flex-direction: column; gap: .5rem;
 }
-#signteb-calc-wrapper .st-wa-btn {
-  display: flex; align-items: center; gap: .55rem;
+#st-wa-cta.st-hub-open .st-hub-items { display: flex; }
+#signteb-calc-wrapper .st-hub-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .7rem 1.1rem; color: #fff; text-decoration: none;
+  border-radius: 100px; font-family: inherit;
+  font-size: .84rem; font-weight: 800; white-space: nowrap;
+  animation: stHubItem .3s ease-out both;
+}
+#signteb-calc-wrapper .st-hub-item:hover { color: #fff; text-decoration: none; transform: translateY(-2px); }
+#signteb-calc-wrapper .st-hub-wa {
   background: linear-gradient(135deg, #25d366, #128c7e);
-  color: #fff; text-decoration: none;
-  padding: .75rem 1.25rem; border-radius: 100px;
-  font-family: inherit; font-size: .82rem; font-weight: 700;
-  box-shadow: 0 6px 24px rgba(37,211,102,.4);
-  transition: var(--tr); white-space: nowrap;
+  box-shadow: 0 10px 28px rgba(37,211,102,.42), inset 0 1px 0 rgba(255,255,255,.25);
 }
-#signteb-calc-wrapper .st-wa-btn:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 36px rgba(37,211,102,.52);
-  color: #fff; text-decoration: none;
+#signteb-calc-wrapper .st-hub-tel {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  box-shadow: 0 10px 28px rgba(8,145,178,.42), inset 0 1px 0 rgba(255,255,255,.25);
+  animation-delay: .05s;
+}
+#signteb-calc-wrapper .st-hub-toggle {
+  position: relative; width: 60px; height: 60px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: linear-gradient(135deg, #0c2340, #134a72);
+  box-shadow: 0 12px 30px rgba(12,35,64,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; transition: transform .25s;
+}
+#signteb-calc-wrapper .st-hub-toggle:hover { transform: scale(1.06); }
+#signteb-calc-wrapper .st-hub-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid rgba(8,145,178,.5);
+  animation: stRing 2s ease-out infinite;
+}
+#signteb-calc-wrapper .st-hub-plus { transition: transform .25s; }
+#st-wa-cta.st-hub-open .st-hub-plus { transform: rotate(135deg); }
+@keyframes stHubItem {
+  from { opacity: 0; transform: translateY(12px) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes stRing {
+  0%   { transform: scale(.8);  opacity: .55; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+/* ── LAB PLAUSIBILITY WARNING (soft, non-blocking) ────────────── */
+#signteb-calc-wrapper .st-field-warn {
+  display: block; min-height: 0; margin-top: .25rem;
+  font-size: .7rem; color: #b45309; font-weight: 600; line-height: 1.6;
 }
 
 /* ── RESPONSIVE ───────────────────────────────────────────────── */

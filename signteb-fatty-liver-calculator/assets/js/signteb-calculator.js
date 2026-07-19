@@ -9,7 +9,7 @@
  *  - AJAX     : Server communication
  *  - EVENTS   : Event delegation setup
  *
- * Dependencies: jQuery (WP core), Chart.js v4, signTebConfig (wp_localize_script)
+ * Dependencies: jQuery (WP core), signTebConfig (wp_localize_script)
  */
 (function ($) {
   'use strict';
@@ -20,7 +20,6 @@
   var STATE = {
     activeTab   : 'clinical',  // 'clinical' | 'lifestyle'
     calcData    : null,        // collected form data (set before gate opens)
-    gaugeChart  : null,        // Chart.js instance
     submitted   : false,       // prevent duplicate AJAX calls
     otpSent     : false,       // OTP verification: code has been dispatched
   };
@@ -237,12 +236,24 @@
       var bmi   = parseFloat(data.bmi) || 0;
       var cat   = ENGINE.bmiCategory(bmi);
 
-      // Header card
-      $('#st-result-header-card').css('--st-result-color', color);
+      // Header card — VIP severity glass: tint hero by grade
+      var rgbMap  = { 0: '16,185,129', 1: '245,158,11', 2: '249,115,22', 3: '220,38,38'  };
+      var deepMap = { 0: '5,150,105',  1: '180,120,10', 2: '200,80,15',  3: '159,18,57'  };
+      var rgb  = rgbMap[gi.grade_num]  || '245,158,11';
+      var deep = deepMap[gi.grade_num] || '180,120,10';
+      $('#st-result-header-card')
+        .css('--st-result-color', color)
+        .css({
+          background: 'linear-gradient(135deg, rgba(' + rgb + ',.24) 0%, rgba(' + deep + ',.10) 55%, rgba(255,255,255,.88) 100%)',
+          borderColor: 'rgba(' + rgb + ',.4)',
+        });
       $('#st-result-name').text(data.name);
       $('#st-result-badge')
         .text('Grade ' + gi.grade_num + ' — ' + gi.label_en)
-        .css({ background: color, color: '#fff', borderRadius: '100px' });
+        .css({
+          background: color, color: '#fff', borderRadius: '100px',
+          boxShadow: '0 8px 22px rgba(' + rgb + ',.4)',
+        });
       $('#st-result-desc').text(gi.desc);
 
       // Stats
@@ -290,53 +301,32 @@
       }, 900);
     },
 
-    /* ── Semi-circle gauge (Chart.js doughnut) ──────────────────────────── */
+    /* ── Semi-circle gauge (pure SVG arc — VIP redesign, no Chart.js) ───── */
     _renderGauge: function (pct, color) {
-      var ctx = document.getElementById('st-gauge-chart');
-      if (!ctx) return;
-
-      if (STATE.gaugeChart) {
-        STATE.gaugeChart.destroy();
-        STATE.gaugeChart = null;
-      }
+      var fill = document.getElementById('st-gauge-fill');
+      if (!fill) return;
 
       pct = Math.min(100, Math.max(0, pct));
-      var remaining = 100 - pct;
+      var LEN = 276.5; // arc path length of "M16 104 A 88 88 0 0 1 192 104"
 
-      STATE.gaugeChart = new Chart(ctx, {
-        type : 'doughnut',
-        data : {
-          datasets: [{
-            data           : [pct, remaining],
-            backgroundColor: [color, 'rgba(255,255,255,0.07)'],
-            borderWidth    : 0,
-            borderRadius   : [4, 0],
-            circumference  : 180,
-            rotation       : 270,  // starts at 9 o'clock
-          }]
-        },
-        options: {
-          responsive         : true,
-          maintainAspectRatio: true,
-          cutout             : '72%',
-          plugins            : {
-            legend : { display: false },
-            tooltip: { enabled: false },
-          },
-          animation: {
-            animateRotate: true,
-            duration     : 1600,
-            easing       : 'easeInOutQuart',
-            onProgress   : function (anim) {
-              var prog = anim.currentStep / anim.numSteps;
-              $('#st-gauge-pct').text(toFa(Math.round(pct * prog)) + '%');
-            },
-            onComplete: function () {
-              $('#st-gauge-pct').text(toFa(Math.round(pct)) + '%');
-            },
-          },
-        },
-      });
+      // Reset to empty without transition, force reflow, then animate.
+      fill.style.transition = 'none';
+      fill.setAttribute('stroke', color);
+      fill.setAttribute('stroke-dashoffset', LEN);
+      void fill.getBoundingClientRect();
+      fill.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
+      fill.setAttribute('stroke-dashoffset', (LEN * (1 - pct / 100)).toFixed(1));
+
+      // Count-up readout synced with the arc animation.
+      var dur = 1400, t0 = null;
+      function frame(ts) {
+        if (!t0) t0 = ts;
+        var p     = Math.min((ts - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        $('#st-gauge-pct').text(toFa(Math.round(pct * eased)) + '%');
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
     },
 
     /* ── Render recommendation panels ──────────────────────────────────── */
@@ -410,8 +400,33 @@
       return true;
     },
 
+    /**
+     * Soft plausibility warning: value is inside the hard [min,max] range but
+     * outside the clinically-common window → warn without blocking submit.
+     */
+    _warn: function (selector, min, max, msg) {
+      var $el    = $(selector);
+      var $field = $el.closest('.st-field');
+      if (!$field.length) return;
+      var $w = $field.find('.st-field-warn');
+      if (!$w.length) $w = $('<span class="st-field-warn"></span>').appendTo($field);
+      var val = parseFloat($el.val());
+      $w.text((!isNaN(val) && (val < min || val > max)) ? msg : '');
+    },
+
+    /** Lab-value plausibility checks (FLI inputs: TG, GGT, waist) */
+    plausibility: function () {
+      VALIDATE._warn('#st-triglycerides', 30, 1000,
+        'مقدار تری‌گلیسرید غیرمعمول است — لطفاً با برگه آزمایش مطابقت دهید.');
+      VALIDATE._warn('#st-ggt', 5, 500,
+        'مقدار GGT غیرمعمول است — لطفاً با برگه آزمایش مطابقت دهید.');
+      VALIDATE._warn('#st-waist', 50, 180,
+        'دور کمر واردشده غیرمعمول است — اندازه‌گیری را بازبینی کنید.');
+    },
+
     clinical: function () {
       var ok = true;
+      VALIDATE.plausibility();
       ok = VALIDATE._num('#st-age',           10,  120,  'سن')           && ok;
       ok = VALIDATE._num('#st-height',        100, 250,  'قد (cm)')       && ok;
       ok = VALIDATE._num('#st-weight',        20,  500,  'وزن (kg)')      && ok;
@@ -698,7 +713,8 @@
 
   function handleRecalc() {
     $('#st-results').hide();
-    $('#st-wa-cta').hide();
+    $('#st-wa-cta').hide().removeClass('st-hub-open');
+    $('#st-hub-toggle').attr('aria-expanded', 'false');
     STATE.calcData  = null;
     STATE.submitted = false;
     STATE.otpSent   = false;
@@ -781,9 +797,18 @@
       UI.updateBmi('ls');
     });
 
-    /* ── Live FLI preview ──────────────────────────────────────────────── */
+    /* ── Live FLI preview + lab plausibility warnings ──────────────────── */
     $doc.on('input', '#st-triglycerides, #st-ggt, #st-waist',
-      debounce(UI.updateFliPreview, 380));
+      debounce(function () {
+        UI.updateFliPreview();
+        VALIDATE.plausibility();
+      }, 380));
+
+    /* ── Connect hub toggle ────────────────────────────────────────────── */
+    $doc.on('click', '#st-hub-toggle', function () {
+      var open = $('#st-wa-cta').toggleClass('st-hub-open').hasClass('st-hub-open');
+      $(this).attr('aria-expanded', open ? 'true' : 'false');
+    });
 
     /* ── Option card selection (lifestyle) ─────────────────────────────── */
     $doc.on('click', '.st-opt', function () {
