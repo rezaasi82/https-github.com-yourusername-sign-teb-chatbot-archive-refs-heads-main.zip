@@ -1,0 +1,187 @@
+# SignTeb Fatty Liver Calculator — English (US) Translation
+# Copyright (C) 2024 SignTeb
+# This file is distributed under the GPL v2+.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SignTeb Fatty Liver Calculator 1.0.0\n"
+"Report-Msgid-Bugs-To: reza.asi1982@gmail.com\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: SignTeb Team <reza.asi1982@gmail.com>\n"
+"Language-Team: English (US)\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "SignTeb Liver Leads"
+msgstr "SignTeb Liver Leads"
+
+msgid "Liver Leads"
+msgstr "Liver Leads"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "License"
+msgstr "License"
+
+msgid "License 🔑"
+msgstr "License 🔑"
+
+msgid "Export CSV"
+msgstr "Export CSV"
+
+msgid "Personal (1 site)"
+msgstr "Personal (1 site)"
+
+msgid "Business (5 sites)"
+msgstr "Business (5 sites)"
+
+msgid "Agency (unlimited)"
+msgstr "Agency (unlimited)"
+
+msgid "White-Label"
+msgstr "White-Label"
+
+msgid "Not licensed"
+msgstr "Not licensed"
+
+msgid "License Active"
+msgstr "License Active"
+
+msgid "Not Licensed"
+msgstr "Not Licensed"
+
+msgid "Plan:"
+msgstr "Plan:"
+
+msgid "Expires:"
+msgstr "Expires:"
+
+msgid "Domain:"
+msgstr "Domain:"
+
+msgid "Enter your license key below to unlock all features."
+msgstr "Enter your license key below to unlock all features."
+
+msgid "Activate License"
+msgstr "Activate License"
+
+msgid "License Key"
+msgstr "License Key"
+
+msgid "Enter the key you received after purchase."
+msgstr "Enter the key you received after purchase."
+
+msgid "Deactivate License"
+msgstr "Deactivate License"
+
+msgid "Deactivate This Site"
+msgstr "Deactivate This Site"
+
+msgid "Are you sure you want to deactivate?"
+msgstr "Are you sure you want to deactivate?"
+
+msgid "Deactivating releases this site's seat so you can use the key on another domain."
+msgstr "Deactivating releases this site's seat so you can use the license on another domain."
+
+msgid "License Plans"
+msgstr "License Plans"
+
+msgid "Sites"
+msgstr "Sites"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "License expired."
+msgstr "License expired."
+
+msgid "Invalid license key."
+msgstr "Invalid license key."
+
+msgid "No active license found."
+msgstr "No active license found."
+
+msgid "License deactivated."
+msgstr "License deactivated."
+
+msgid "Fatty Liver Grade Calculator"
+msgstr "Fatty Liver Grade Calculator"
+
+msgid "Clinical Screening"
+msgstr "Clinical Screening"
+
+msgid "Lifestyle Screening"
+msgstr "Lifestyle Screening"
+
+msgid "Patient Basic Information"
+msgstr "Patient Basic Information"
+
+msgid "Age"
+msgstr "Age"
+
+msgid "Gender"
+msgstr "Gender"
+
+msgid "Male"
+msgstr "Male"
+
+msgid "Female"
+msgstr "Female"
+
+msgid "Height"
+msgstr "Height"
+
+msgid "Weight"
+msgstr "Weight"
+
+msgid "Waist Circumference"
+msgstr "Waist Circumference"
+
+msgid "Laboratory Values"
+msgstr "Laboratory Values"
+
+msgid "Triglycerides"
+msgstr "Triglycerides"
+
+msgid "Full Name"
+msgstr "Full Name"
+
+msgid "Mobile Number"
+msgstr "Mobile Number"
+
+msgid "Results are ready!"
+msgstr "Results are ready!"
+
+msgid "View Full Results — Free"
+msgstr "View Full Results — Free"
+
+msgid "Your information is confidential and will never be shared with third parties."
+msgstr "Your information is confidential and will never be shared with third parties."
+
+msgid "Personalized Recommendations"
+msgstr "Personalized Recommendations"
+
+msgid "Recalculate"
+msgstr "Recalculate"
+
+msgid "Consult with a Medical Specialist"
+msgstr "Consult with a Medical Specialist"
+
+msgid "Your license expires on"
+msgstr "Your license expires on"
+
+msgid "No valid license detected. The calculator shortcode is disabled."
+msgstr "No valid license detected. The calculator shortcode is disabled."
+
+msgid "Activate license →"
+msgstr "Activate license →"
+
+msgid "License server error (HTTP %d)."
+msgstr "License server error (HTTP %d)."
+
+msgid "Purchase at %s"
+msgstr "Purchase at %s"

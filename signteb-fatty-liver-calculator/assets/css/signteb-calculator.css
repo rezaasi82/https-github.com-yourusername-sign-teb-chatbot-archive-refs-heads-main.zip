@@ -1,0 +1,1123 @@
+/* ════════════════════════════════════════════════════════════════
+   SignTeb Fatty Liver Calculator — v1.0.0
+   Standalone commercial plugin widget.
+   All rules scoped to #signteb-calc-wrapper — zero theme bleed.
+   ════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────────── */
+#signteb-calc-wrapper {
+  --st-navy:      #0c2340;
+  --st-navy-dk:   #07152a;
+  --st-teal:      #0891b2;
+  --st-teal-dk:   #0e7490;
+  --st-teal-lt:   #e0f2fe;
+  --st-teal-glow: rgba(8,145,178,.18);
+  --st-green:     #10b981;
+  --st-green-lt:  #d1fae5;
+  --st-amber:     #f59e0b;
+  --st-orange:    #f97316;
+  --st-red:       #dc2626;
+  --st-wa:        #25d366;
+  --st-white:     #ffffff;
+  --st-bg:        #f8fafc;
+  --st-card-bg:   rgba(255,255,255,.88);
+  --st-card-bd:   rgba(203,213,225,.5);
+  --st-card-sh:   0 2px 16px rgba(8,145,178,.07), 0 1px 3px rgba(0,0,0,.05);
+  --st-card-sh-h: 0 6px 24px rgba(8,145,178,.13), 0 2px 6px rgba(0,0,0,.07);
+  --st-input-bg:  rgba(255,255,255,.92);
+  --st-input-bd:  rgba(148,163,184,.4);
+  --st-text-1:    #0f172a;
+  --st-text-2:    #475569;
+  --st-text-3:    #94a3b8;
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  18px;
+  --r-xl:  24px;
+  --tr: all .22s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Root wrapper ─────────────────────────────────────────────── */
+#signteb-calc-wrapper {
+  font-family: 'Vazirmatn', 'Segoe UI', system-ui, sans-serif;
+  direction: rtl;
+  background: linear-gradient(148deg, #dbeafe 0%, #e0f2fe 45%, #d1fae5 100%);
+  color: var(--st-text-1);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  position: relative;
+}
+#signteb-calc-wrapper::before,
+#signteb-calc-wrapper::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(55px);
+}
+#signteb-calc-wrapper::before {
+  width: 500px; height: 500px;
+  top: -20%; right: -10%;
+  background: rgba(8,145,178,.09);
+}
+#signteb-calc-wrapper::after {
+  width: 400px; height: 400px;
+  bottom: -15%; left: -8%;
+  background: rgba(16,185,129,.07);
+}
+
+/* ── PLUGIN TOP BAR ─────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-topbar {
+  position: relative; z-index: 2;
+  background: linear-gradient(90deg, #0c2340 0%, #0f3057 100%);
+  padding: .6rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+#signteb-calc-wrapper .st-topbar-brand {
+  display: flex; align-items: center; gap: .5rem;
+}
+#signteb-calc-wrapper .st-topbar-mark {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--st-teal);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+#signteb-calc-wrapper .st-topbar-name {
+  font-size: 12.5px; font-weight: 700;
+  color: #fff; letter-spacing: .02em;
+}
+#signteb-calc-wrapper .st-topbar-sep { color: rgba(255,255,255,.22); font-size: 11px; }
+#signteb-calc-wrapper .st-topbar-tool {
+  font-size: 11px; color: rgba(255,255,255,.6);
+}
+#signteb-calc-wrapper .st-topbar-right {
+  display: flex; align-items: center; gap: .6rem;
+}
+#signteb-calc-wrapper .st-topbar-ver {
+  background: rgba(255,255,255,.09);
+  border: 0.5px solid rgba(255,255,255,.15);
+  border-radius: 100px;
+  padding: 2px 8px;
+  font-size: 10px; color: rgba(255,255,255,.55);
+}
+#signteb-calc-wrapper .st-topbar-secure {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10.5px; color: rgba(255,255,255,.45);
+}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-hero {
+  position: relative; z-index: 1;
+  padding: 1.75rem 1.5rem 1.25rem;
+  display: grid; grid-template-columns: 1fr auto; gap: 1.25rem;
+  align-items: start;
+  border-bottom: 1px solid rgba(203,213,225,.4);
+}
+#signteb-calc-wrapper .st-hero-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #E1F5EE; color: #0F6E56;
+  border: 0.5px solid #9FE1CB;
+  border-radius: 100px; padding: 3px 9px;
+  font-size: 10.5px; font-weight: 600;
+  margin-bottom: .6rem;
+}
+#signteb-calc-wrapper .st-hero-title {
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+  font-weight: 800; color: var(--st-navy);
+  margin: 0 0 .35rem; line-height: 1.2;
+}
+#signteb-calc-wrapper .st-hero-sub {
+  font-size: 12.5px; color: var(--st-text-2);
+  display: flex; align-items: center; gap: .4rem;
+  margin-bottom: .625rem; flex-wrap: wrap;
+}
+#signteb-calc-wrapper .st-hero-chips {
+  display: flex; gap: .4rem; flex-wrap: wrap;
+}
+#signteb-calc-wrapper .st-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,.7);
+  border: 0.5px solid rgba(203,213,225,.5);
+  border-radius: 100px; padding: 2.5px 8px;
+  font-size: 11px; color: var(--st-text-2);
+  backdrop-filter: blur(8px);
+}
+#signteb-calc-wrapper .st-chip-green { color: #0F6E56; }
+#signteb-calc-wrapper .st-hero-stats {
+  display: flex; flex-direction: column; gap: .4rem;
+}
+#signteb-calc-wrapper .st-hero-stat {
+  background: rgba(255,255,255,.75);
+  border: 0.5px solid rgba(203,213,225,.5);
+  border-radius: var(--r-lg); padding: .625rem 1rem;
+  text-align: center; min-width: 95px;
+  backdrop-filter: blur(10px);
+}
+#signteb-calc-wrapper .st-hero-stat-val {
+  font-size: 17px; font-weight: 700; color: var(--st-teal);
+}
+#signteb-calc-wrapper .st-green { color: #1D9E75; }
+#signteb-calc-wrapper .st-hero-stat-lbl {
+  font-size: 10.5px; color: var(--st-text-3); margin-top: 1px;
+}
+
+/* ── TABS ─────────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-tabs-wrap {
+  position: relative; z-index: 1;
+  padding: .875rem 1.5rem 0;
+}
+#signteb-calc-wrapper .st-tabs {
+  display: flex; gap: .4rem;
+  background: rgba(255,255,255,.65);
+  border: 0.5px solid rgba(203,213,225,.5);
+  backdrop-filter: blur(12px);
+  border-radius: var(--r-lg); padding: .3rem;
+}
+#signteb-calc-wrapper .st-tab-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: .45rem;
+  flex-wrap: wrap; padding: .65rem .875rem;
+  background: transparent; border: none;
+  border-radius: var(--r-md);
+  color: var(--st-text-2); font-family: inherit;
+  font-size: .82rem; font-weight: 500;
+  cursor: pointer; transition: var(--tr); text-align: center;
+}
+#signteb-calc-wrapper .st-tab-btn:hover {
+  background: rgba(8,145,178,.06); color: var(--st-teal-dk);
+}
+#signteb-calc-wrapper .st-tab-btn.active {
+  background: var(--st-teal); color: #fff; font-weight: 700;
+  box-shadow: 0 3px 14px rgba(8,145,178,.3);
+}
+#signteb-calc-wrapper .st-tab-label { font-size: .82rem; }
+#signteb-calc-wrapper .st-tab-sub {
+  font-size: .6rem; font-weight: 600;
+  background: rgba(0,0,0,.09); padding: 1px 5px;
+  border-radius: 100px;
+}
+#signteb-calc-wrapper .st-tab-btn.active .st-tab-sub {
+  background: rgba(255,255,255,.2);
+}
+
+/* ── TAB PANES ────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-tab-pane { display: none; }
+#signteb-calc-wrapper .st-tab-pane.active {
+  display: block;
+  animation: stIn .3s ease-out;
+}
+@keyframes stIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FORM WRAP ────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-form-wrap {
+  max-width: 860px; margin: 0 auto;
+  padding: .875rem 1.5rem 1.25rem;
+  position: relative; z-index: 1;
+}
+
+/* ── CARDS ────────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-card {
+  background: var(--st-card-bg);
+  border: 0.5px solid var(--st-card-bd);
+  border-radius: var(--r-lg);
+  padding: 1.125rem;
+  margin-bottom: .875rem;
+  box-shadow: var(--st-card-sh);
+  backdrop-filter: blur(16px);
+  transition: box-shadow .22s, border-color .22s;
+}
+#signteb-calc-wrapper .st-card:hover {
+  box-shadow: var(--st-card-sh-h);
+  border-color: rgba(8,145,178,.2);
+}
+#signteb-calc-wrapper .st-card-flex {
+  display: flex; flex-direction: column;
+}
+#signteb-calc-wrapper .st-card-hd {
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: .875rem; padding-bottom: .625rem;
+  border-bottom: 0.5px solid rgba(203,213,225,.4);
+}
+#signteb-calc-wrapper .st-card-ico {
+  width: 30px; height: 30px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+#signteb-calc-wrapper .st-ico-blue   { background: #EFF6FF; }
+#signteb-calc-wrapper .st-ico-teal   { background: #E1F5EE; }
+#signteb-calc-wrapper .st-ico-violet { background: #F5F3FF; }
+#signteb-calc-wrapper .st-ico-green  { background: #F0FDF4; }
+#signteb-calc-wrapper .st-ico-red    { background: #FFF1F2; }
+#signteb-calc-wrapper .st-card-title {
+  font-size: .875rem; font-weight: 700; color: var(--st-navy); flex: 1;
+}
+#signteb-calc-wrapper .st-card-badge {
+  margin-right: auto;
+  background: #EFF6FF; color: #185FA5;
+  border: 0.5px solid #BFDBFE;
+  border-radius: 100px; padding: 2px 8px;
+  font-size: 10.5px; font-weight: 600;
+}
+
+/* ── GRID LAYOUT ──────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-row-2 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: .875rem; margin-bottom: .875rem;
+}
+#signteb-calc-wrapper .st-row-2 .st-card { margin-bottom: 0; }
+#signteb-calc-wrapper .st-grid-2 {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .625rem;
+}
+
+/* ── FIELDS ───────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-field {
+  display: flex; flex-direction: column; gap: .28rem;
+}
+#signteb-calc-wrapper .st-lbl {
+  font-size: .75rem; font-weight: 700; color: var(--st-text-2);
+  display: flex; align-items: center; gap: .25rem;
+}
+#signteb-calc-wrapper .st-req { color: var(--st-red); font-size: .7rem; }
+#signteb-calc-wrapper .st-field-err {
+  font-size: .68rem; color: var(--st-red); min-height: .9em; display: block;
+}
+
+#signteb-calc-wrapper .st-input-wrap { position: relative; }
+/* Numeric fields: keep digits LTR & right-aligned, reserve space for the unit
+   so the typed number never overlaps the cm/kg/سال label. */
+#signteb-calc-wrapper .st-input-wrap .st-input {
+  direction: ltr;
+  text-align: right;
+  padding-left: 2.6rem;
+  padding-right: .8rem;
+}
+#signteb-calc-wrapper .st-unit {
+  position: absolute; left: .6rem; top: 50%; transform: translateY(-50%);
+  font-size: .68rem; color: var(--st-text-3); pointer-events: none;
+  font-weight: 600;
+}
+
+#signteb-calc-wrapper .st-input {
+  width: 100%; box-sizing: border-box;
+  padding: .58rem .8rem;
+  background: var(--st-input-bg);
+  border: 1px solid var(--st-input-bd);
+  border-radius: var(--r-md);
+  color: var(--st-text-1);
+  font-family: inherit; font-size: .92rem;
+  direction: ltr; text-align: left;
+  transition: var(--tr);
+  outline: none;
+  -webkit-appearance: none; appearance: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04) inset;
+}
+#signteb-calc-wrapper .st-input::placeholder { color: var(--st-text-3); }
+#signteb-calc-wrapper .st-input:focus {
+  border-color: var(--st-teal);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--st-teal-glow), 0 1px 3px rgba(0,0,0,.04) inset;
+}
+#signteb-calc-wrapper .st-input.st-err {
+  border-color: var(--st-red);
+  box-shadow: 0 0 0 3px rgba(220,38,38,.13);
+}
+#signteb-calc-wrapper .st-input::-webkit-inner-spin-button,
+#signteb-calc-wrapper .st-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+#signteb-calc-wrapper .st-select {
+  padding-right: .8rem; padding-left: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M5 7L0 0h10z' fill='%2394a3b8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left .65rem center;
+  cursor: pointer; direction: rtl; text-align: right;
+}
+#signteb-calc-wrapper .st-select option { background: #fff; }
+
+/* ── BMI BOX ──────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-bmi-box {
+  background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(8,145,178,.05));
+  border: 0.5px solid rgba(16,185,129,.25);
+  border-radius: var(--r-md); padding: .6rem .875rem;
+  margin-top: .6rem;
+}
+#signteb-calc-wrapper .st-bmi-inner {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: .45rem;
+}
+#signteb-calc-wrapper .st-bmi-label { font-size: .7rem; color: #0F6E56; font-weight: 500; }
+#signteb-calc-wrapper .st-bmi-cat   { font-size: .75rem; font-weight: 700; margin-top: .1rem; }
+#signteb-calc-wrapper .st-bmi-val   { font-size: 1.3rem; font-weight: 800; color: var(--st-green); }
+#signteb-calc-wrapper .st-bmi-track {
+  height: 5px; background: rgba(203,213,225,.3);
+  border-radius: 100px; overflow: hidden; margin-bottom: .25rem;
+}
+#signteb-calc-wrapper .st-bmi-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--st-green), var(--st-amber), var(--st-orange), var(--st-red));
+  transition: width .5s ease;
+}
+#signteb-calc-wrapper .st-bmi-scale {
+  display: flex; justify-content: space-between;
+  font-size: .58rem; color: var(--st-text-3);
+}
+
+/* ── WAIST CARD EXTRAS ────────────────────────────────────────── */
+#signteb-calc-wrapper .st-waist-hint {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .72rem; color: var(--st-text-2);
+  background: rgba(8,145,178,.05);
+  border: 0.5px solid rgba(8,145,178,.15);
+  border-radius: var(--r-sm); padding: .42rem .65rem;
+  margin-bottom: .65rem;
+}
+#signteb-calc-wrapper .st-ref-block {
+  margin-top: auto; padding-top: .7rem;
+  display: flex; flex-direction: column; gap: .25rem;
+}
+#signteb-calc-wrapper .st-ref-item {
+  display: flex; align-items: center; gap: .35rem;
+  font-size: .7rem; color: var(--st-text-2);
+}
+#signteb-calc-wrapper .st-ref-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+
+/* ── LAB VALUES ───────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-lab-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  margin-bottom: .75rem;
+}
+#signteb-calc-wrapper .st-lab-wrap {
+  position: relative; display: flex; align-items: center;
+}
+#signteb-calc-wrapper .st-lab-wrap .st-input { flex: 1; padding-left: 4.25rem; }
+#signteb-calc-wrapper .st-lab-unit {
+  position: absolute; left: 0; top: 0; height: 100%;
+  display: flex; align-items: center; padding: 0 .6rem;
+  background: rgba(8,145,178,.07);
+  border-left: 1px solid rgba(8,145,178,.18);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  font-size: .7rem; font-weight: 700; color: #185FA5;
+  font-family: 'Courier New', monospace;
+  pointer-events: none; white-space: nowrap;
+}
+#signteb-calc-wrapper .st-lab-refs {
+  display: flex; gap: .45rem; flex-wrap: wrap; margin-top: .2rem;
+}
+#signteb-calc-wrapper .st-ref-ok   { font-size: .67rem; color: #1D9E75; font-weight: 600; }
+#signteb-calc-wrapper .st-ref-warn { font-size: .67rem; color: #92400e; font-weight: 600; }
+
+/* ── FLI PREVIEW ──────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-fli-box {
+  background: rgba(8,145,178,.05);
+  border: 0.5px solid rgba(8,145,178,.18);
+  border-radius: var(--r-md); padding: .7rem .875rem;
+}
+#signteb-calc-wrapper .st-fli-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: .38rem;
+}
+#signteb-calc-wrapper .st-fli-label-grp {
+  display: flex; align-items: center; gap: .35rem;
+  font-size: .75rem; font-weight: 600; color: #185FA5;
+}
+#signteb-calc-wrapper .st-fli-val-grp { display: flex; align-items: baseline; gap: .15rem; }
+#signteb-calc-wrapper .st-fli-num   { font-size: 1.1rem; font-weight: 700; color: #185FA5; }
+#signteb-calc-wrapper .st-fli-denom { font-size: .72rem; color: var(--st-text-3); }
+#signteb-calc-wrapper .st-fli-track {
+  height: 8px; position: relative;
+  background: rgba(148,163,184,.15);
+  border-radius: 100px; overflow: hidden; margin-bottom: .28rem;
+}
+#signteb-calc-wrapper .st-fli-zones {
+  position: absolute; inset: 0; display: flex;
+}
+#signteb-calc-wrapper .st-fz { height: 100%; }
+#signteb-calc-wrapper .st-fli-fill {
+  position: absolute; top: 0; left: 0; height: 100%;
+  border-radius: 100px; background: var(--st-teal);
+  transition: width .55s cubic-bezier(.4,0,.2,1), background .4s;
+}
+#signteb-calc-wrapper .st-fli-scale {
+  display: flex; justify-content: space-between;
+  font-size: .58rem; color: var(--st-text-3);
+}
+
+/* ── INFO BANNER ──────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-info-banner {
+  display: flex; align-items: flex-start; gap: .5rem;
+  background: rgba(245,158,11,.07);
+  border: 0.5px solid rgba(245,158,11,.28);
+  border-radius: var(--r-md); padding: .7rem .875rem;
+  margin-bottom: .875rem;
+  font-size: .78rem; color: #92400e; line-height: 1.65;
+}
+#signteb-calc-wrapper .st-info-banner strong { font-weight: 700; }
+
+/* ── LIFESTYLE TOGGLE BUTTONS ─────────────────────────────────── */
+#signteb-calc-wrapper .st-tog-group { margin-bottom: 1.125rem; }
+#signteb-calc-wrapper .st-tog-last  { margin-bottom: 0; }
+#signteb-calc-wrapper .st-tog-lbl {
+  font-size: .75rem; font-weight: 700; color: var(--st-text-2);
+  margin-bottom: .45rem;
+  display: flex; align-items: center; gap: .25rem;
+}
+#signteb-calc-wrapper .st-togs-3 {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: .45rem;
+}
+#signteb-calc-wrapper .st-opt {
+  display: flex; flex-direction: column; align-items: center; gap: .22rem;
+  padding: .72rem .4rem;
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(203,213,225,.4);
+  border-radius: var(--r-md);
+  cursor: pointer; font-family: inherit;
+  transition: var(--tr);
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+#signteb-calc-wrapper .st-opt:hover {
+  background: rgba(255,255,255,.95);
+  border-color: rgba(8,145,178,.35);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(8,145,178,.12);
+}
+#signteb-calc-wrapper .st-opt.active {
+  background: rgba(8,145,178,.07);
+  border: 1.5px solid var(--st-teal);
+  box-shadow: 0 0 0 3px var(--st-teal-glow);
+}
+#signteb-calc-wrapper .st-tog-icon  { font-size: 1.3rem; line-height: 1; }
+#signteb-calc-wrapper .st-tog-lbl-t {
+  font-size: .72rem; font-weight: 700; color: var(--st-text-1);
+}
+#signteb-calc-wrapper .st-opt.active .st-tog-lbl-t { color: var(--st-teal-dk); }
+#signteb-calc-wrapper .st-tog-sub {
+  font-size: .6rem; color: var(--st-text-3); text-align: center;
+}
+
+/* ── CTA BUTTON ───────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-cta-btn {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: .6rem;
+  padding: .875rem 1.5rem; margin-top: .875rem;
+  background: linear-gradient(135deg, var(--st-teal) 0%, var(--st-teal-dk) 100%);
+  color: #fff; border: none;
+  border-radius: var(--r-lg);
+  font-family: inherit; font-size: .97rem; font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(8,145,178,.32), 0 2px 6px rgba(0,0,0,.08);
+  transition: var(--tr); position: relative; overflow: hidden;
+}
+#signteb-calc-wrapper .st-cta-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.12), transparent);
+  pointer-events: none;
+}
+#signteb-calc-wrapper .st-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(8,145,178,.42), 0 4px 10px rgba(0,0,0,.1);
+}
+#signteb-calc-wrapper .st-cta-btn:active { transform: translateY(0); }
+#signteb-calc-wrapper .st-cta-btn-green {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 6px 24px rgba(5,150,105,.32);
+}
+#signteb-calc-wrapper .st-cta-btn-green:hover {
+  box-shadow: 0 12px 36px rgba(5,150,105,.42);
+}
+
+/* ── LOADING OVERLAY ──────────────────────────────────────────── */
+#st-loading {
+  display: none;
+  position: fixed; inset: 0; z-index: 9100;
+  background: rgba(224,242,254,.88);
+  backdrop-filter: blur(20px);
+  align-items: center; justify-content: center;
+}
+#st-loading.visible { display: flex; }
+
+#signteb-calc-wrapper .st-loader-card {
+  display: flex; flex-direction: column; align-items: center; gap: .875rem;
+  background: rgba(255,255,255,.95);
+  border: 0.5px solid rgba(8,145,178,.2);
+  border-radius: var(--r-xl); padding: 2.5rem 2rem;
+  box-shadow: 0 16px 50px rgba(8,145,178,.14);
+  text-align: center;
+}
+#signteb-calc-wrapper .st-loader-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+#signteb-calc-wrapper .st-loader-ring::before,
+#signteb-calc-wrapper .st-loader-ring::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+}
+#signteb-calc-wrapper .st-loader-ring::before {
+  border: 2.5px solid rgba(8,145,178,.12);
+}
+#signteb-calc-wrapper .st-loader-ring::after {
+  border: 2.5px solid transparent;
+  border-top-color: var(--st-teal);
+  border-right-color: var(--st-teal);
+  animation: stSpin .8s linear infinite;
+}
+@keyframes stSpin { to { transform: rotate(360deg); } }
+#signteb-calc-wrapper .st-loader-title {
+  font-size: .95rem; font-weight: 700; color: var(--st-navy);
+}
+#signteb-calc-wrapper .st-loader-step {
+  font-size: .75rem; color: var(--st-teal); min-height: 1em;
+}
+#signteb-calc-wrapper .st-loader-dots {
+  display: flex; gap: .35rem;
+}
+#signteb-calc-wrapper .st-loader-dots span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--st-teal);
+  animation: stDot 1.4s ease-in-out infinite;
+}
+#signteb-calc-wrapper .st-loader-dots span:nth-child(2) { animation-delay: .2s; }
+#signteb-calc-wrapper .st-loader-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes stDot {
+  0%,80%,100% { transform: scale(.5); opacity: .35; }
+  40%         { transform: scale(1);  opacity: 1;   }
+}
+
+/* ── LEAD GATE ────────────────────────────────────────────────── */
+#st-gate {
+  display: none;
+  position: fixed; inset: 0; z-index: 9050;
+  align-items: center; justify-content: center; padding: 1rem;
+}
+#st-gate.visible { display: flex; }
+
+#signteb-calc-wrapper .st-gate-bg {
+  position: absolute; inset: 0;
+  background: rgba(224,242,254,.86);
+  backdrop-filter: blur(22px);
+}
+#signteb-calc-wrapper .st-gate-card {
+  position: relative; z-index: 1;
+  background: rgba(255,255,255,.98);
+  border: 0.5px solid rgba(8,145,178,.2);
+  border-radius: var(--r-xl); padding: 2rem 1.75rem 1.625rem;
+  max-width: 440px; width: 100%;
+  box-shadow: 0 4px 20px rgba(8,145,178,.12), 0 20px 55px rgba(8,145,178,.08);
+  animation: stGateIn .38s cubic-bezier(.34,1.4,.64,1);
+}
+@keyframes stGateIn {
+  from { opacity: 0; transform: scale(.93) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+#signteb-calc-wrapper .st-gate-close {
+  position: absolute; top: 1rem; left: 1rem;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(148,163,184,.12);
+  border: 0.5px solid rgba(148,163,184,.25);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--st-text-3); transition: var(--tr);
+}
+#signteb-calc-wrapper .st-gate-close:hover {
+  background: rgba(220,38,38,.08);
+  border-color: rgba(220,38,38,.25);
+  color: var(--st-red);
+}
+#signteb-calc-wrapper .st-gate-lock-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: .35rem;
+  margin-bottom: 1rem;
+}
+#signteb-calc-wrapper .st-gate-lock-ring {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+  border: 1.5px solid rgba(8,145,178,.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--st-teal);
+  box-shadow: 0 3px 14px rgba(8,145,178,.14);
+}
+#signteb-calc-wrapper .st-gate-lock-label {
+  font-size: .65rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--st-teal);
+}
+#signteb-calc-wrapper .st-gate-title {
+  font-size: 1.1rem; font-weight: 800; color: var(--st-navy);
+  text-align: center; margin: 0 0 .35rem;
+}
+#signteb-calc-wrapper .st-gate-sub {
+  font-size: .78rem; color: var(--st-text-2);
+  text-align: center; line-height: 1.7; margin: 0 0 1rem;
+}
+#signteb-calc-wrapper .st-gate-perks {
+  background: #f0fdf4; border: 0.5px solid rgba(16,185,129,.2);
+  border-radius: var(--r-md); padding: .75rem .875rem;
+  margin-bottom: 1.1rem; display: flex; flex-direction: column; gap: .38rem;
+}
+#signteb-calc-wrapper .st-gate-perk {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: .75rem; color: #065f46;
+}
+#signteb-calc-wrapper .st-perk-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--st-green); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .6rem; font-weight: 800; flex-shrink: 0;
+}
+#signteb-calc-wrapper .st-gate-field { margin-bottom: .75rem; }
+#signteb-calc-wrapper .st-gate-lbl {
+  display: block; font-size: .75rem; font-weight: 700;
+  color: var(--st-text-2); margin-bottom: .3rem;
+}
+#signteb-calc-wrapper .st-gate-input { border-color: rgba(148,163,184,.35) !important; }
+#signteb-calc-wrapper .st-gate-phone-row {
+  display: flex; align-items: stretch;
+  border: 1px solid rgba(148,163,184,.35);
+  border-radius: var(--r-md); overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04) inset;
+  transition: var(--tr);
+}
+#signteb-calc-wrapper .st-gate-phone-row:focus-within {
+  border-color: var(--st-teal);
+  box-shadow: 0 0 0 3px var(--st-teal-glow);
+}
+#signteb-calc-wrapper .st-gate-prefix {
+  display: flex; align-items: center; padding: 0 .65rem;
+  background: rgba(8,145,178,.06);
+  border-left: 1px solid rgba(148,163,184,.25);
+  font-size: .72rem; font-weight: 700; color: var(--st-teal-dk);
+  white-space: nowrap;
+}
+#signteb-calc-wrapper .st-gate-phone-input {
+  flex: 1; border: none !important;
+  box-shadow: none !important; border-radius: 0 !important;
+  background: transparent !important;
+}
+#signteb-calc-wrapper .st-gate-server-err {
+  font-size: .72rem; color: var(--st-red);
+  text-align: center; min-height: .9em; margin-bottom: .35rem;
+}
+#signteb-calc-wrapper .st-gate-submit {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .85rem;
+  background: linear-gradient(135deg, var(--st-teal), var(--st-teal-dk));
+  color: #fff; border: none;
+  border-radius: var(--r-md); font-family: inherit;
+  font-size: .9rem; font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(8,145,178,.3);
+  transition: var(--tr);
+}
+#signteb-calc-wrapper .st-gate-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(8,145,178,.4);
+}
+#signteb-calc-wrapper .st-gate-submit:disabled {
+  opacity: .6; cursor: not-allowed; transform: none;
+}
+#signteb-calc-wrapper .st-gate-privacy {
+  display: flex; align-items: center; justify-content: center; gap: .3rem;
+  font-size: .65rem; color: var(--st-text-3); margin-top: .7rem; text-align: center;
+}
+
+/* ── RESULTS ──────────────────────────────────────────────────── */
+#st-results {
+  max-width: 860px; margin: 0 auto;
+  padding: 0 1.5rem 1.25rem;
+  animation: stIn .55s ease-out;
+}
+
+#signteb-calc-wrapper .st-result-hero {
+  position: relative; overflow: hidden;
+  background: rgba(255,255,255,.88);
+  border: 0.5px solid rgba(203,213,225,.5);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: 1.75rem 1.5rem 1.5rem;
+  text-align: center; margin-bottom: 1px;
+  backdrop-filter: blur(16px);
+}
+#signteb-calc-wrapper .st-result-deco {
+  position: absolute; top: -5px; right: -5px;
+  color: var(--st-teal); pointer-events: none;
+}
+#signteb-calc-wrapper .st-result-greeting {
+  font-size: .75rem; color: var(--st-text-2); margin-bottom: .2rem;
+}
+#signteb-calc-wrapper .st-result-name {
+  font-size: 1.5rem; font-weight: 900; color: var(--st-navy); margin: 0 0 .55rem;
+}
+#signteb-calc-wrapper .st-result-badge {
+  display: inline-block; padding: .32rem 1.1rem;
+  border-radius: 100px; font-size: .8rem; font-weight: 700;
+  color: #fff; margin-bottom: .65rem;
+}
+#signteb-calc-wrapper .st-result-desc {
+  font-size: .82rem; color: var(--st-text-2); line-height: 1.8;
+  max-width: 520px; margin: 0 auto;
+}
+
+#signteb-calc-wrapper .st-result-metrics {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: rgba(203,213,225,.3);
+  border-left: 0.5px solid rgba(203,213,225,.5);
+  border-right: 0.5px solid rgba(203,213,225,.5);
+}
+#signteb-calc-wrapper .st-gauge-card {
+  background: rgba(255,255,255,.88); padding: 1.25rem 1.1rem;
+  display: flex; flex-direction: column; align-items: stretch; gap: 1.1rem;
+  backdrop-filter: blur(16px); direction: rtl; text-align: right;
+}
+#signteb-calc-wrapper .st-card-hd { display: flex; align-items: center; gap: .5rem; }
+/* Gauge: canvas + readout share ONE grid cell — no absolute positioning. */
+#signteb-calc-wrapper .st-gauge-wrap {
+  display: grid; justify-items: center; align-items: end; margin: 0 auto;
+}
+#signteb-calc-wrapper .st-gauge-wrap > canvas,
+#signteb-calc-wrapper .st-gauge-svg {
+  grid-area: 1 / 1; display: block; max-width: 100%; height: auto;
+}
+#signteb-calc-wrapper .st-gauge-center {
+  grid-area: 1 / 1; align-self: end; justify-self: center;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding-bottom: 10px; text-align: center; pointer-events: none;
+}
+#signteb-calc-wrapper .st-gauge-pct {
+  font-size: 1.5rem; font-weight: 900; color: var(--st-navy); line-height: 1;
+  /* Keep digits + % together LTR so RTL bidi can't flip the % onto the number */
+  direction: ltr; unicode-bidi: isolate; white-space: nowrap;
+}
+#signteb-calc-wrapper .st-gauge-sub { font-size: .6rem; color: var(--st-text-3); }
+#signteb-calc-wrapper .st-togs.st-err {
+  outline: 1.5px solid rgba(220,38,38,.55); outline-offset: 3px; border-radius: 16px;
+}
+#signteb-calc-wrapper .st-tog-err {
+  display: block; min-height: 1em; margin-top: .4rem;
+  font-size: .72rem; color: #dc2626; font-weight: 600;
+}
+#signteb-calc-wrapper .st-gauge-legend {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: .5rem 1rem; font-size: .7rem; color: var(--st-text-2);
+}
+#signteb-calc-wrapper .st-gauge-legend > span {
+  display: inline-flex; align-items: center; gap: 6px;
+}
+#signteb-calc-wrapper .st-leg-dot {
+  display: inline-block; width: 9px; height: 9px;
+  border-radius: 50%; flex-shrink: 0;
+}
+#signteb-calc-wrapper .st-stat-col {
+  background: rgba(255,255,255,.88);
+  display: grid; grid-template-columns: 1fr;
+  backdrop-filter: blur(16px);
+}
+#signteb-calc-wrapper .st-stat-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 1rem; text-align: center;
+  border-bottom: 0.5px solid rgba(203,213,225,.3);
+}
+#signteb-calc-wrapper .st-stat-card:last-child { border-bottom: none; }
+#signteb-calc-wrapper .st-stat-icon { font-size: 1.1rem; margin-bottom: .25rem; }
+#signteb-calc-wrapper .st-stat-val  { font-size: .95rem; font-weight: 800; color: var(--st-navy); }
+#signteb-calc-wrapper .st-stat-lbl  { font-size: .62rem; color: var(--st-text-3); margin-top: .1rem; }
+
+/* Recommendations */
+#signteb-calc-wrapper .st-recs-wrap {
+  background: rgba(255,255,255,.88);
+  border: 0.5px solid rgba(203,213,225,.5);
+  border-top: none;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  padding: 1.25rem; margin-bottom: .875rem;
+  backdrop-filter: blur(16px);
+}
+#signteb-calc-wrapper .st-recs-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: .75rem; margin-top: 1rem;
+}
+#signteb-calc-wrapper .st-rec-panel {
+  background: rgba(248,250,252,.7);
+  border: 0.5px solid rgba(203,213,225,.3);
+  border-radius: var(--r-md); padding: .875rem .875rem;
+}
+#signteb-calc-wrapper .st-rec-panel h4 {
+  font-size: .78rem; font-weight: 700; color: var(--st-navy);
+  margin: 0 0 .55rem; padding-bottom: .4rem;
+  border-bottom: 0.5px solid rgba(203,213,225,.3);
+}
+#signteb-calc-wrapper .st-rec-panel ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: .38rem;
+}
+#signteb-calc-wrapper .st-rec-panel li {
+  font-size: .73rem; color: var(--st-text-2); line-height: 1.6;
+  padding-right: 1rem; position: relative;
+}
+#signteb-calc-wrapper .st-rec-panel li::before {
+  content: '←'; position: absolute; right: 0;
+  color: var(--st-teal); font-size: .6rem; top: .18rem;
+}
+
+#signteb-calc-wrapper .st-result-footer {
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+  padding: 1rem 0; text-align: center;
+}
+#signteb-calc-wrapper .st-result-disc {
+  font-size: .7rem; color: var(--st-text-3); margin: 0;
+}
+#signteb-calc-wrapper .st-recalc-btn {
+  padding: .45rem 1.25rem;
+  background: rgba(255,255,255,.75);
+  border: 0.5px solid rgba(148,163,184,.3);
+  border-radius: var(--r-md);
+  color: var(--st-text-2); font-family: inherit;
+  font-size: .78rem; font-weight: 600; cursor: pointer; transition: var(--tr);
+}
+#signteb-calc-wrapper .st-recalc-btn:hover {
+  background: #fff; border-color: var(--st-teal); color: var(--st-teal-dk);
+}
+
+/* ── DYNAMIC CTA ──────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-dyn-cta {
+  max-width: 860px; margin: 0 auto;
+  padding: 0 1.5rem .875rem;
+}
+#signteb-calc-wrapper .st-dyn-cta-body {
+  background: rgba(255,255,255,.88);
+  border: 0.5px solid rgba(203,213,225,.5);
+  border-radius: var(--r-lg); padding: 1.25rem 1.25rem;
+  display: grid; grid-template-columns: 1fr auto; gap: 1.25rem;
+  align-items: center; backdrop-filter: blur(16px);
+}
+#signteb-calc-wrapper .st-dyn-cta-tag {
+  display: inline-flex; align-items: center; gap: .35rem;
+  background: rgba(8,145,178,.07); color: var(--st-teal-dk);
+  border: 0.5px solid rgba(8,145,178,.18);
+  border-radius: 100px; padding: 2px 8px;
+  font-size: .68rem; font-weight: 600; margin-bottom: .45rem;
+}
+#signteb-calc-wrapper .st-dyn-cta-title {
+  font-size: .97rem; font-weight: 700; color: var(--st-navy); margin-bottom: .3rem;
+}
+#signteb-calc-wrapper .st-dyn-cta-desc {
+  font-size: .78rem; color: var(--st-text-2); line-height: 1.65; margin-bottom: .5rem;
+}
+#signteb-calc-wrapper .st-dyn-cta-meta {
+  display: flex; gap: .75rem; flex-wrap: wrap;
+}
+#signteb-calc-wrapper .st-dyn-meta-item {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .72rem; color: var(--st-text-2); text-decoration: none;
+  transition: color .15s;
+}
+#signteb-calc-wrapper .st-dyn-meta-item:hover { color: var(--st-teal-dk); }
+#signteb-calc-wrapper .st-dyn-cta-actions {
+  display: flex; flex-direction: column; gap: .4rem; min-width: 130px;
+}
+#signteb-calc-wrapper .st-dyn-btn-primary {
+  display: flex; align-items: center; justify-content: center; gap: .35rem;
+  padding: .6rem .875rem;
+  background: var(--st-teal); color: #fff;
+  border: none; border-radius: var(--r-md);
+  font-family: inherit; font-size: .78rem; font-weight: 700;
+  cursor: pointer; text-decoration: none; transition: var(--tr); white-space: nowrap;
+}
+#signteb-calc-wrapper .st-dyn-btn-primary:hover {
+  background: var(--st-teal-dk); transform: translateY(-1px);
+}
+#signteb-calc-wrapper .st-dyn-btn-wa {
+  display: flex; align-items: center; justify-content: center; gap: .35rem;
+  padding: .5rem .875rem;
+  background: rgba(37,211,102,.1); color: #0F6E56;
+  border: 0.5px solid rgba(37,211,102,.3);
+  border-radius: var(--r-md); font-family: inherit;
+  font-size: .75rem; font-weight: 600; cursor: pointer;
+  text-decoration: none; transition: var(--tr); white-space: nowrap;
+}
+#signteb-calc-wrapper .st-dyn-btn-wa:hover {
+  background: rgba(37,211,102,.18); transform: translateY(-1px);
+}
+
+/* ── ACCORDION ────────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-acc-wrap {
+  max-width: 860px; margin: 0 auto; padding: 0 1.5rem .875rem;
+}
+#signteb-calc-wrapper .st-acc-item {
+  background: rgba(255,255,255,.82);
+  border: 0.5px solid rgba(203,213,225,.5);
+  border-radius: var(--r-lg); margin-bottom: .4rem;
+  backdrop-filter: blur(14px); overflow: hidden;
+}
+#signteb-calc-wrapper .st-acc-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem .875rem; cursor: pointer;
+  background: transparent; border: none; width: 100%;
+  font-family: inherit; transition: background .15s;
+}
+#signteb-calc-wrapper .st-acc-hd:hover { background: rgba(8,145,178,.04); }
+#signteb-calc-wrapper .st-acc-hd-left { display: flex; align-items: center; gap: .45rem; }
+#signteb-calc-wrapper .st-acc-ico {
+  width: 26px; height: 26px; border-radius: var(--r-sm);
+  background: rgba(248,250,252,.9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+#signteb-calc-wrapper .st-acc-title { font-size: .82rem; font-weight: 600; color: var(--st-navy); }
+#signteb-calc-wrapper .st-acc-sub   { font-size: .68rem; color: var(--st-text-3); }
+#signteb-calc-wrapper .st-acc-hd-right { display: flex; align-items: center; gap: .4rem; }
+#signteb-calc-wrapper .st-acc-badge {
+  font-size: .62rem; background: rgba(248,250,252,.9);
+  border: 0.5px solid rgba(203,213,225,.4);
+  border-radius: 100px; padding: 1.5px 6px; color: var(--st-text-3);
+}
+#signteb-calc-wrapper .st-acc-arrow { color: var(--st-text-3); transition: transform .22s; }
+#signteb-calc-wrapper .st-acc-open  { transform: rotate(180deg); }
+#signteb-calc-wrapper .st-acc-body { display: none; border-top: 0.5px solid rgba(203,213,225,.3); }
+/* OTP field */
+#signteb-calc-wrapper .st-otp-input {
+  text-align: center; letter-spacing: .55em; font-weight: 700; font-size: 1.05rem;
+}
+#signteb-calc-wrapper .st-otp-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .5rem; margin-top: .4rem; flex-wrap: wrap;
+}
+#signteb-calc-wrapper #st-otp-sent-to { font-size: .68rem; color: var(--st-text-3); }
+#signteb-calc-wrapper .st-otp-resend {
+  background: none; border: none; padding: 0; cursor: pointer; font-family: inherit;
+  font-size: .72rem; font-weight: 600; color: var(--st-teal-dk);
+}
+#signteb-calc-wrapper .st-otp-resend:disabled { color: var(--st-text-3); cursor: default; }
+#signteb-calc-wrapper .st-acc-body-open { display: block; }
+#signteb-calc-wrapper .st-acc-body p {
+  font-size: .78rem; color: var(--st-text-2); line-height: 1.75;
+  padding: .6rem .875rem;
+}
+
+/* ── DISCLAIMER ───────────────────────────────────────────────── */
+#signteb-calc-wrapper .st-disclaimer {
+  max-width: 860px; margin: 0 auto;
+  padding: 0 1.5rem .875rem;
+  display: flex; align-items: flex-start; gap: .45rem;
+}
+#signteb-calc-wrapper .st-disclaimer > * {
+  background: rgba(251,191,36,.08);
+  border: 0.5px solid rgba(251,191,36,.25);
+  border-radius: var(--r-md); padding: .5rem .75rem;
+  font-size: .72rem; color: #92400e; line-height: 1.6;
+}
+#signteb-calc-wrapper .st-disclaimer {
+  display: block;
+}
+#signteb-calc-wrapper .st-disclaimer {
+  background: rgba(251,191,36,.07);
+  border: 0.5px solid rgba(251,191,36,.22);
+  border-radius: var(--r-md);
+  margin: 0 1.5rem .875rem;
+  padding: .5rem .75rem;
+  font-size: .72rem; color: #92400e; line-height: 1.6;
+  display: flex; align-items: flex-start; gap: .45rem;
+}
+
+/* ── PLUGIN FOOTER BAR ────────────────────────────────────────── */
+#signteb-calc-wrapper .st-plugin-foot {
+  background: rgba(12,35,64,.96);
+  padding: .55rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 1;
+}
+#signteb-calc-wrapper .st-foot-brand {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: 10.5px; color: rgba(255,255,255,.45);
+}
+#signteb-calc-wrapper .st-foot-brand strong { color: rgba(255,255,255,.65); font-weight: 600; }
+#signteb-calc-wrapper .st-foot-mark {
+  width: 18px; height: 18px; border-radius: 5px;
+  background: var(--st-teal);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 7.5px; color: #fff; font-weight: 800; letter-spacing: -.02em;
+}
+#signteb-calc-wrapper .st-foot-links { display: flex; gap: .875rem; }
+#signteb-calc-wrapper .st-foot-link {
+  font-size: 10.5px; color: rgba(255,255,255,.4);
+  text-decoration: none; transition: color .15s;
+}
+#signteb-calc-wrapper .st-foot-link:hover { color: rgba(255,255,255,.7); }
+
+/* ── SIGNTEB CONNECT HUB — floating (VIP) ─────────────────────── */
+#st-wa-cta {
+  position: fixed; bottom: 1.4rem; left: 1.4rem; z-index: 9999;
+  display: flex; flex-direction: column; align-items: flex-start; gap: .6rem;
+}
+#st-wa-cta .st-hub-items {
+  display: none; flex-direction: column; gap: .5rem;
+}
+#st-wa-cta.st-hub-open .st-hub-items { display: flex; }
+#signteb-calc-wrapper .st-hub-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .7rem 1.1rem; color: #fff; text-decoration: none;
+  border-radius: 100px; font-family: inherit;
+  font-size: .84rem; font-weight: 800; white-space: nowrap;
+  animation: stHubItem .3s ease-out both;
+}
+#signteb-calc-wrapper .st-hub-item:hover { color: #fff; text-decoration: none; transform: translateY(-2px); }
+#signteb-calc-wrapper .st-hub-wa {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  box-shadow: 0 10px 28px rgba(37,211,102,.42), inset 0 1px 0 rgba(255,255,255,.25);
+}
+#signteb-calc-wrapper .st-hub-tel {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  box-shadow: 0 10px 28px rgba(8,145,178,.42), inset 0 1px 0 rgba(255,255,255,.25);
+  animation-delay: .05s;
+}
+#signteb-calc-wrapper .st-hub-toggle {
+  position: relative; width: 60px; height: 60px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: linear-gradient(135deg, #0c2340, #134a72);
+  box-shadow: 0 12px 30px rgba(12,35,64,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; transition: transform .25s;
+}
+#signteb-calc-wrapper .st-hub-toggle:hover { transform: scale(1.06); }
+#signteb-calc-wrapper .st-hub-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid rgba(8,145,178,.5);
+  animation: stRing 2s ease-out infinite;
+}
+#signteb-calc-wrapper .st-hub-plus { transition: transform .25s; }
+#st-wa-cta.st-hub-open .st-hub-plus { transform: rotate(135deg); }
+@keyframes stHubItem {
+  from { opacity: 0; transform: translateY(12px) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes stRing {
+  0%   { transform: scale(.8);  opacity: .55; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+/* ── LAB PLAUSIBILITY WARNING (soft, non-blocking) ────────────── */
+#signteb-calc-wrapper .st-field-warn {
+  display: block; min-height: 0; margin-top: .25rem;
+  font-size: .7rem; color: #b45309; font-weight: 600; line-height: 1.6;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  #signteb-calc-wrapper .st-row-2          { grid-template-columns: 1fr; }
+  #signteb-calc-wrapper .st-lab-grid       { grid-template-columns: 1fr; }
+  #signteb-calc-wrapper .st-result-metrics { grid-template-columns: 1fr; }
+  #signteb-calc-wrapper .st-stat-col       { grid-template-columns: repeat(3,1fr); }
+  #signteb-calc-wrapper .st-stat-card      { border-bottom: none; border-left: 0.5px solid rgba(203,213,225,.3); }
+  #signteb-calc-wrapper .st-stat-card:last-child { border-left: none; }
+  #signteb-calc-wrapper .st-recs-grid      { grid-template-columns: 1fr; }
+  #signteb-calc-wrapper .st-dyn-cta-body   { grid-template-columns: 1fr; }
+  #signteb-calc-wrapper .st-dyn-cta-actions{ flex-direction: row; }
+  #signteb-calc-wrapper .st-hero           { grid-template-columns: 1fr; }
+  #signteb-calc-wrapper .st-hero-stats     { flex-direction: row; }
+  #signteb-calc-wrapper .st-gate-card      { padding: 1.75rem 1.25rem 1.5rem; }
+}
+@media (max-width: 480px) {
+  #signteb-calc-wrapper .st-grid-2         { grid-template-columns: 1fr; }
+  #signteb-calc-wrapper .st-togs-3         { grid-template-columns: 1fr 1fr 1fr; }
+}
