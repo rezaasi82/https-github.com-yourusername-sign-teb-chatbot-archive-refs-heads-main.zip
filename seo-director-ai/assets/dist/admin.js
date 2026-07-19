@@ -145,6 +145,7 @@
 					h( AlertList, { items: data.alerts } )
 				)
 			),
+			h( InsightPanel ),
 			h( Card, { title: __( 'Top pages', 'seo-director-ai' ) }, h( TopPagesTable, { rows: data.top_pages } ) )
 		);
 	}
@@ -319,6 +320,173 @@
 		);
 	}
 
+	function InsightPanel() {
+		const [ state, setState ] = useState( 'idle' ); // idle | loading | done | error
+		const [ insight, setInsight ] = useState( null );
+		const [ error, setError ] = useState( '' );
+
+		const explain = () => {
+			setState( 'loading' );
+			setError( '' );
+			apiFetch( { path: 'insights/explain', method: 'POST', data: { scope: 'site' } } )
+				.then( ( r ) => { setInsight( r.insight ); setState( 'done' ); } )
+				.catch( ( e ) => { setError( ( e && e.message ) || __( 'Could not generate insight.', 'seo-director-ai' ) ); setState( 'error' ); } );
+		};
+
+		if ( ! config.canManage ) return null;
+
+		return h( Card, { title: __( 'AI explanation', 'seo-director-ai' ) },
+			state === 'idle' || state === 'error'
+				? h( Fragment, null,
+					h( 'p', { className: 'sda-empty' }, __( 'Ask the AI to explain your recent trend and recommend next actions.', 'seo-director-ai' ) ),
+					error ? h( 'p', { className: 'sda-error' }, error ) : null,
+					h( 'button', { className: 'button', onClick: explain }, __( 'Explain my trend', 'seo-director-ai' ) )
+				)
+				: null,
+			state === 'loading' ? h( 'p', { className: 'sda-loading' }, __( 'Analyzing…', 'seo-director-ai' ) ) : null,
+			state === 'done' && insight ? h( InsightBody, { insight: insight } ) : null
+		);
+	}
+
+	function InsightBody( { insight } ) {
+		return h( 'div', { className: 'sda-insight' },
+			insight.headline ? h( 'h4', null, insight.headline ) : null,
+			insight.explanation ? h( 'p', null, insight.explanation ) : null,
+			insight.causes && insight.causes.length
+				? h( Fragment, null,
+					h( 'h5', null, __( 'Likely causes', 'seo-director-ai' ) ),
+					h( 'ul', { className: 'sda-list' }, insight.causes.map( ( c, i ) =>
+						h( 'li', { key: i, className: 'sda-list__item' },
+							h( 'span', { className: 'sda-badge sda-badge--conf-' + c.confidence }, c.confidence ),
+							h( 'span', { className: 'sda-list__label' }, c.cause )
+						) ) ) )
+				: null,
+			insight.actions && insight.actions.length
+				? h( Fragment, null,
+					h( 'h5', null, __( 'Recommended actions', 'seo-director-ai' ) ),
+					h( 'ul', { className: 'sda-list' }, insight.actions.map( ( a, i ) =>
+						h( 'li', { key: i, className: 'sda-list__item' },
+							h( 'span', { className: 'sda-list__label' }, a.title ),
+							h( 'span', { className: 'sda-list__meta' },
+								__( 'impact', 'seo-director-ai' ) + ': ' + a.impact + ' · ' + __( 'effort', 'seo-director-ai' ) + ': ' + a.effort )
+						) ) ) )
+				: null
+		);
+	}
+
+	function MoversScreen() {
+		const [ dimension, setDimension ] = useState( 'query' );
+		const [ winners, setWinners ] = useState( null );
+		const [ losers, setLosers ] = useState( null );
+
+		useEffect( () => {
+			setWinners( null );
+			setLosers( null );
+			apiFetch( { path: 'winners?dimension=' + dimension } ).then( ( r ) => setWinners( r.winners || [] ) ).catch( () => setWinners( [] ) );
+			apiFetch( { path: 'losers?dimension=' + dimension } ).then( ( r ) => setLosers( r.losers || [] ) ).catch( () => setLosers( [] ) );
+		}, [ dimension ] );
+
+		return h( Fragment, null,
+			h( 'div', { className: 'sda-toolbar' },
+				h( 'label', null, __( 'Dimension:', 'seo-director-ai' ), ' ',
+					h( 'select', { value: dimension, onChange: ( e ) => setDimension( e.target.value ) },
+						h( 'option', { value: 'query' }, __( 'Queries', 'seo-director-ai' ) ),
+						h( 'option', { value: 'page' }, __( 'Pages', 'seo-director-ai' ) )
+					)
+				)
+			),
+			h( 'div', { className: 'sda-grid sda-grid--two' },
+				h( Card, { title: __( 'Winners (week over week)', 'seo-director-ai' ) }, h( MoverTable, { rows: winners, positive: true } ) ),
+				h( Card, { title: __( 'Losers (week over week)', 'seo-director-ai' ) }, h( MoverTable, { rows: losers, positive: false } ) )
+			)
+		);
+	}
+
+	function MoverTable( { rows, positive } ) {
+		if ( rows === null ) return h( 'p', { className: 'sda-loading' }, __( 'Loading…', 'seo-director-ai' ) );
+		if ( ! rows.length ) return h( 'p', { className: 'sda-empty' }, __( 'No movers in this period.', 'seo-director-ai' ) );
+		return h( 'div', { className: 'sda-table-wrap' }, h( 'table', { className: 'sda-table' },
+			h( 'thead', null, h( 'tr', null,
+				h( 'th', null, __( 'Entity', 'seo-director-ai' ) ),
+				h( 'th', null, __( 'Clicks', 'seo-director-ai' ) ),
+				h( 'th', null, 'Δ' ),
+				h( 'th', null, __( 'Position', 'seo-director-ai' ) )
+			) ),
+			h( 'tbody', null, rows.map( ( r, i ) => h( 'tr', { key: i },
+				h( 'td', { className: 'sda-cell-path' },
+					r.is_new ? h( 'span', { className: 'sda-badge sda-badge--sev-low' }, __( 'new', 'seo-director-ai' ) ) : null,
+					r.is_lost ? h( 'span', { className: 'sda-badge sda-badge--sev-critical' }, __( 'lost', 'seo-director-ai' ) ) : null,
+					' ', r.label ),
+				h( 'td', null, fmt( r.clicks ) ),
+				h( 'td', { className: positive ? 'sda-delta-up' : 'sda-delta-down' }, ( r.clicks_delta >= 0 ? '+' : '' ) + fmt( r.clicks_delta ) ),
+				h( 'td', null, r.position || '—' )
+			) ) )
+		) );
+	}
+
+	function RoadmapScreen() {
+		const [ board, setBoard ] = useState( null );
+		const [ busy, setBusy ] = useState( false );
+
+		const load = () => apiFetch( { path: 'roadmap?scope=monthly' } ).then( ( r ) => setBoard( r.board ) );
+		useEffect( () => { load().catch( () => setBoard( { todo: [], in_progress: [], done: [], dismissed: [] } ) ); }, [] );
+
+		const generate = () => {
+			setBusy( true );
+			apiFetch( { path: 'roadmap', method: 'POST', data: { scope: 'monthly' } } )
+				.then( ( r ) => setBoard( r.board ) )
+				.finally( () => setBusy( false ) );
+		};
+
+		const move = ( id, status ) =>
+			apiFetch( { path: 'roadmap/tasks/' + id, method: 'PATCH', data: { status: status } } ).then( load );
+
+		if ( ! board ) return h( 'p', { className: 'sda-loading' }, __( 'Loading…', 'seo-director-ai' ) );
+
+		const columns = [
+			[ 'todo', __( 'To do', 'seo-director-ai' ) ],
+			[ 'in_progress', __( 'In progress', 'seo-director-ai' ) ],
+			[ 'done', __( 'Done', 'seo-director-ai' ) ],
+		];
+		const empty = ! columns.some( ( [ id ] ) => ( board[ id ] || [] ).length );
+
+		return h( Fragment, null,
+			h( 'div', { className: 'sda-toolbar' },
+				config.canManage
+					? h( 'button', { className: 'button button-primary', disabled: busy, onClick: generate },
+						busy ? __( 'Generating…', 'seo-director-ai' ) : __( 'Generate from opportunities', 'seo-director-ai' ) )
+					: null
+			),
+			empty
+				? h( Card, null, h( 'p', { className: 'sda-empty' }, __( 'No tasks yet. Generate a roadmap from your detected opportunities.', 'seo-director-ai' ) ) )
+				: h( 'div', { className: 'sda-kanban' }, columns.map( ( [ id, label ] ) =>
+					h( 'div', { key: id, className: 'sda-kanban__col' },
+						h( 'h4', { className: 'sda-kanban__title' }, label, ' ', h( 'span', { className: 'sda-kanban__count' }, ( board[ id ] || [] ).length ) ),
+						( board[ id ] || [] ).map( ( task ) => h( TaskCard, { key: task.id, task: task, onMove: move } ) )
+					)
+				) )
+		);
+	}
+
+	function TaskCard( { task, onMove } ) {
+		return h( 'div', { className: 'sda-task sda-task--' + task.category },
+			h( 'div', { className: 'sda-task__title' }, task.title ),
+			task.expected_result ? h( 'div', { className: 'sda-task__meta' }, task.expected_result ) : null,
+			h( 'div', { className: 'sda-task__foot' },
+				h( 'span', { className: 'sda-badge sda-badge--' + task.category }, task.category ),
+				config.canManage
+					? h( 'span', { className: 'sda-task__actions' },
+						task.status !== 'in_progress' && task.status !== 'done'
+							? h( 'button', { className: 'button-link', onClick: () => onMove( task.id, 'in_progress' ), title: __( 'Start', 'seo-director-ai' ) }, '▶' ) : null,
+						task.status !== 'done'
+							? h( 'button', { className: 'button-link', onClick: () => onMove( task.id, 'done' ), title: __( 'Done', 'seo-director-ai' ) }, '✓' ) : null,
+						h( 'button', { className: 'button-link sda-danger', onClick: () => onMove( task.id, 'dismissed' ), title: __( 'Dismiss', 'seo-director-ai' ) }, '✕' )
+					)
+					: null
+			)
+		);
+	}
+
 	function VitalsScreen() {
 		const [ data, setData ] = useState( null );
 		const [ queued, setQueued ] = useState( false );
@@ -445,6 +613,8 @@
 
 		const tabs = [
 			[ 'overview', __( 'Overview', 'seo-director-ai' ) ],
+			[ 'movers', __( 'Winners & Losers', 'seo-director-ai' ) ],
+			[ 'roadmap', __( 'Roadmap', 'seo-director-ai' ) ],
 			[ 'vitals', __( 'Web Vitals', 'seo-director-ai' ) ],
 			[ 'connections', __( 'Connections', 'seo-director-ai' ) ],
 			[ 'settings', __( 'Settings', 'seo-director-ai' ) ],
@@ -469,6 +639,8 @@
 					: null
 			),
 			screen === 'overview' ? h( OverviewScreen, { data: overview, onRescan: rescan, goToConnections: () => setScreen( 'connections' ) } ) : null,
+			screen === 'movers' ? h( MoversScreen ) : null,
+			screen === 'roadmap' ? h( RoadmapScreen ) : null,
 			screen === 'vitals' ? h( VitalsScreen ) : null,
 			screen === 'connections' ? h( ConnectionsScreen ) : null,
 			screen === 'settings' ? h( SettingsScreen ) : null

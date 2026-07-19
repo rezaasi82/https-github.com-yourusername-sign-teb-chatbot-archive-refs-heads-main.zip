@@ -16,11 +16,14 @@ use SEODirector\Alerts\Channels\EmailChannel;
 use SEODirector\Alerts\Rules\CwvDegradationRule;
 use SEODirector\Alerts\Rules\TrafficDropRule;
 use SEODirector\Ai\InsightCache;
+use SEODirector\Ai\InsightGenerator;
+use SEODirector\Ai\PromptLibrary;
 use SEODirector\Ai\ProviderRouter;
 use SEODirector\Ai\SchemaValidator;
 use SEODirector\Ai\TokenBudget;
 use SEODirector\Analysis\ChangepointDetector;
 use SEODirector\Analysis\HealthScore\HealthScoreCalculator;
+use SEODirector\Analysis\MoverAnalyzer;
 use SEODirector\Analysis\OpportunityDetector\LowCtrDetector;
 use SEODirector\Analysis\OpportunityDetector\StrikingDistanceDetector;
 use SEODirector\Analysis\TrendAnalyzer;
@@ -32,12 +35,15 @@ use SEODirector\Data\Repository\Ga4DailyRepository;
 use SEODirector\Data\Repository\GscQueryDailyRepository;
 use SEODirector\Data\Repository\HealthScoreRepository;
 use SEODirector\Data\Repository\JobStateRepository;
+use SEODirector\Data\Repository\GscRollupRepository;
 use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
 use SEODirector\Data\Repository\PsiAuditsRepository;
+use SEODirector\Data\Repository\RoadmapTaskRepository;
 use SEODirector\Data\Retention\RetentionPolicy;
 use SEODirector\Data\Rollup\RollupBuilder;
 use SEODirector\Data\UrlCanonicalizer;
+use SEODirector\Roadmap\RoadmapGenerator;
 use SEODirector\Integrations\Google\Analytics4Client;
 use SEODirector\Integrations\Google\OAuthClient;
 use SEODirector\Integrations\Google\PageSpeedClient;
@@ -130,8 +136,10 @@ final class Plugin {
 		$c->set( GscDailyTotalsRepository::class, static fn() => new GscDailyTotalsRepository() );
 		$c->set( GscQueryDailyRepository::class, static fn() => new GscQueryDailyRepository() );
 		$c->set( GscPageDailyRepository::class, static fn() => new GscPageDailyRepository() );
+		$c->set( GscRollupRepository::class, static fn() => new GscRollupRepository() );
 		$c->set( HealthScoreRepository::class, static fn() => new HealthScoreRepository() );
 		$c->set( OpportunitiesRepository::class, static fn() => new OpportunitiesRepository() );
+		$c->set( RoadmapTaskRepository::class, static fn() => new RoadmapTaskRepository() );
 		$c->set( AlertsRepository::class, static fn() => new AlertsRepository() );
 
 		// Google integrations.
@@ -193,9 +201,11 @@ final class Plugin {
 		$c->set( HealthScoreCalculator::class, static fn() => new HealthScoreCalculator() );
 		$c->set( StrikingDistanceDetector::class, static fn() => new StrikingDistanceDetector() );
 		$c->set( LowCtrDetector::class, static fn() => new LowCtrDetector() );
+		$c->set( MoverAnalyzer::class, static fn() => new MoverAnalyzer() );
 
 		// AI layer.
 		$c->set( SchemaValidator::class, static fn() => new SchemaValidator() );
+		$c->set( PromptLibrary::class, static fn() => new PromptLibrary() );
 		$c->set( TokenBudget::class, static fn( $c ) => new TokenBudget( $c->get( Options::class ) ) );
 		$c->set( InsightCache::class, static fn() => new InsightCache() );
 		$c->set(
@@ -205,6 +215,25 @@ final class Plugin {
 				$c->get( RetryingHttpClient::class ),
 				$c->get( ConnectionsRepository::class ),
 				$c->get( SchemaValidator::class )
+			)
+		);
+		$c->set(
+			InsightGenerator::class,
+			static fn( $c ) => new InsightGenerator(
+				$c->get( ProviderRouter::class ),
+				$c->get( PromptLibrary::class ),
+				$c->get( InsightCache::class ),
+				$c->get( TokenBudget::class ),
+				$c->get( Options::class )
+			)
+		);
+
+		// Roadmap.
+		$c->set(
+			RoadmapGenerator::class,
+			static fn( $c ) => new RoadmapGenerator(
+				$c->get( OpportunitiesRepository::class ),
+				$c->get( RoadmapTaskRepository::class )
 			)
 		);
 
