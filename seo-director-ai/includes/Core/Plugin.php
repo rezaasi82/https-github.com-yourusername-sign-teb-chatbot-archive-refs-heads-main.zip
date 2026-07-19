@@ -57,6 +57,9 @@ use SEODirector\Jobs\Handlers\SyncGa4Job;
 use SEODirector\Jobs\Handlers\SyncGscJob;
 use SEODirector\Jobs\Handlers\WeeklyMaintenanceJob;
 use SEODirector\Jobs\Scheduler;
+use SEODirector\Data\Repository\LicenseRepository;
+use SEODirector\License\FeatureGate;
+use SEODirector\License\LicenseManager;
 use SEODirector\Rest\RestServiceProvider;
 
 final class Plugin {
@@ -95,6 +98,9 @@ final class Plugin {
 		/** @var EmailChannel $email_channel */
 		$email_channel = $this->container->get( EmailChannel::class );
 		$email_channel->register();
+
+		// Daily license re-verification (fails soft; grace-aware).
+		add_action( 'sda_license_check', array( $this->container->get( LicenseManager::class ), 'verify' ) );
 
 		if ( is_admin() ) {
 			/** @var AdminMenu $menu */
@@ -236,6 +242,18 @@ final class Plugin {
 				$c->get( RoadmapTaskRepository::class )
 			)
 		);
+
+		// Licensing.
+		$c->set( LicenseRepository::class, static fn( $c ) => new LicenseRepository( $c->get( TokenVault::class ) ) );
+		$c->set(
+			LicenseManager::class,
+			static fn( $c ) => new LicenseManager(
+				$c->get( LicenseRepository::class ),
+				$c->get( RetryingHttpClient::class ),
+				$c->get( Options::class )
+			)
+		);
+		$c->set( FeatureGate::class, static fn( $c ) => new FeatureGate( $c->get( LicenseManager::class ) ) );
 
 		// Jobs.
 		$c->set(

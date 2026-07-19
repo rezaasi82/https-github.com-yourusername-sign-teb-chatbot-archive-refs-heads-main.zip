@@ -15,6 +15,7 @@ final class Deactivator {
 		wp_clear_scheduled_hook( 'sda_daily_sync' );
 		wp_clear_scheduled_hook( 'sda_hourly_alerts' );
 		wp_clear_scheduled_hook( 'sda_weekly_pipeline' );
+		wp_clear_scheduled_hook( 'sda_license_check' );
 		wp_clear_scheduled_hook( 'sda_run_chunk' );
 	}
 }

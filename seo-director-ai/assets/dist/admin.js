@@ -105,7 +105,7 @@
 		);
 	}
 
-	function OverviewScreen( { data, onRescan, goToConnections } ) {
+	function OverviewScreen( { data, onRescan, goToConnections, aiEnabled, goToLicense } ) {
 		if ( ! data ) {
 			return h( 'p', { className: 'sda-loading' }, __( 'Loading…', 'seo-director-ai' ) );
 		}
@@ -145,7 +145,7 @@
 					h( AlertList, { items: data.alerts } )
 				)
 			),
-			h( InsightPanel ),
+			h( InsightPanel, { canUse: aiEnabled, goToLicense: goToLicense } ),
 			h( Card, { title: __( 'Top pages', 'seo-director-ai' ) }, h( TopPagesTable, { rows: data.top_pages } ) )
 		);
 	}
@@ -320,10 +320,19 @@
 		);
 	}
 
-	function InsightPanel() {
+	function InsightPanel( { canUse, goToLicense } ) {
 		const [ state, setState ] = useState( 'idle' ); // idle | loading | done | error
 		const [ insight, setInsight ] = useState( null );
 		const [ error, setError ] = useState( '' );
+
+		if ( ! config.canManage ) return null;
+
+		if ( canUse === false ) {
+			return h( Card, { title: __( 'AI explanation', 'seo-director-ai' ) },
+				h( 'p', { className: 'sda-empty' }, __( 'AI insights are a Pro feature.', 'seo-director-ai' ) ),
+				h( 'button', { className: 'button', onClick: goToLicense }, __( 'Upgrade', 'seo-director-ai' ) )
+			);
+		}
 
 		const explain = () => {
 			setState( 'loading' );
@@ -332,8 +341,6 @@
 				.then( ( r ) => { setInsight( r.insight ); setState( 'done' ); } )
 				.catch( ( e ) => { setError( ( e && e.message ) || __( 'Could not generate insight.', 'seo-director-ai' ) ); setState( 'error' ); } );
 		};
-
-		if ( ! config.canManage ) return null;
 
 		return h( Card, { title: __( 'AI explanation', 'seo-director-ai' ) },
 			state === 'idle' || state === 'error'
@@ -487,6 +494,86 @@
 		);
 	}
 
+	function LicenseScreen( { onChange } ) {
+		const [ data, setData ] = useState( null );
+		const [ key, setKey ] = useState( '' );
+		const [ busy, setBusy ] = useState( false );
+		const [ error, setError ] = useState( '' );
+
+		const load = () => apiFetch( { path: 'license/status' } ).then( ( r ) => { setData( r ); if ( onChange ) onChange( r ); } );
+		useEffect( () => { load().catch( () => setData( { license: { status: 'deactivated', edition: 'free', effective_edition: 'free' } } ) ); }, [] );
+
+		const activate = () => {
+			if ( ! key.trim() ) return;
+			setBusy( true );
+			setError( '' );
+			apiFetch( { path: 'license/activate', method: 'POST', data: { license_key: key.trim() } } )
+				.then( ( r ) => { setData( r ); setKey( '' ); if ( onChange ) onChange( r ); } )
+				.catch( ( e ) => setError( ( e && e.message ) || __( 'Activation failed.', 'seo-director-ai' ) ) )
+				.finally( () => setBusy( false ) );
+		};
+
+		const deactivate = () => {
+			if ( ! window.confirm( __( 'Deactivate this license on this site?', 'seo-director-ai' ) ) ) return;
+			setBusy( true );
+			apiFetch( { path: 'license/deactivate', method: 'POST' } )
+				.then( ( r ) => { setData( r ); if ( onChange ) onChange( r ); } )
+				.finally( () => setBusy( false ) );
+		};
+
+		if ( ! data ) return h( 'p', { className: 'sda-loading' }, __( 'Loading…', 'seo-director-ai' ) );
+
+		const lic = data.license || {};
+		const active = lic.status === 'active' || lic.status === 'grace';
+		const statusClass = lic.status === 'active' ? 'low' : lic.status === 'grace' ? 'medium' : 'high';
+
+		return h( Fragment, null,
+			h( Card, { title: __( 'License', 'seo-director-ai' ) },
+				h( 'div', { className: 'sda-license-status' },
+					h( 'span', { className: 'sda-license-edition' }, ( lic.edition || 'free' ).toUpperCase() ),
+					h( 'span', { className: 'sda-badge sda-badge--sev-' + statusClass }, lic.status )
+				),
+				lic.status === 'grace'
+					? h( 'p', { className: 'sda-grace' }, __( 'Your license expired but you are in the grace period.', 'seo-director-ai' ) +
+						( lic.grace_ends_at ? ' ' + __( 'Ends:', 'seo-director-ai' ) + ' ' + lic.grace_ends_at : '' ) )
+					: null,
+				lic.expires_at ? h( 'p', { className: 'sda-list__meta' }, __( 'Renews / expires:', 'seo-director-ai' ) + ' ' + lic.expires_at ) : null,
+				active
+					? h( 'button', { className: 'button', disabled: busy, onClick: deactivate }, __( 'Deactivate', 'seo-director-ai' ) )
+					: h( 'div', { className: 'sda-form' },
+						h( 'label', { className: 'sda-form__row' },
+							__( 'License key', 'seo-director-ai' ),
+							h( 'input', { type: 'text', className: 'regular-text', value: key, onChange: ( e ) => setKey( e.target.value ), placeholder: 'SDA-XXXX-XXXX-XXXX' } )
+						),
+						error ? h( 'p', { className: 'sda-error' }, error ) : null,
+						h( 'button', { className: 'button button-primary', disabled: busy, onClick: activate },
+							busy ? __( 'Activating…', 'seo-director-ai' ) : __( 'Activate', 'seo-director-ai' ) )
+					)
+			),
+			h( Card, { title: __( 'What your plan includes', 'seo-director-ai' ) },
+				h( CapabilityList, { caps: data.capabilities || {} } )
+			)
+		);
+	}
+
+	function CapabilityList( { caps } ) {
+		const labels = {
+			roadmap: __( 'Editorial roadmap', 'seo-director-ai' ),
+			ai_insights: __( 'AI insights & explanations', 'seo-director-ai' ),
+			advanced_detectors: __( 'Advanced opportunity detectors', 'seo-director-ai' ),
+			reports: __( 'PDF / CSV reports', 'seo-director-ai' ),
+			scheduled_reports: __( 'Scheduled report delivery', 'seo-director-ai' ),
+			agency_hub: __( 'Agency multi-site hub', 'seo-director-ai' ),
+			white_label: __( 'White-label branding', 'seo-director-ai' ),
+		};
+		return h( 'ul', { className: 'sda-list' }, Object.keys( labels ).map( ( slug ) =>
+			h( 'li', { key: slug, className: 'sda-list__item' },
+				h( 'span', { className: 'sda-cap-mark ' + ( caps[ slug ] ? 'is-on' : 'is-off' ) }, caps[ slug ] ? '✓' : '—' ),
+				h( 'span', { className: 'sda-list__label' }, labels[ slug ] )
+			)
+		) );
+	}
+
 	function VitalsScreen() {
 		const [ data, setData ] = useState( null );
 		const [ queued, setQueued ] = useState( false );
@@ -589,6 +676,10 @@
 					__( 'Monthly AI token budget', 'seo-director-ai' ),
 					h( 'input', { type: 'number', value: settings.ai_monthly_budget || 0, onChange: set( 'ai_monthly_budget' ) } )
 				),
+				h( 'label', { className: 'sda-form__row' },
+					__( 'License server URL', 'seo-director-ai' ),
+					h( 'input', { type: 'url', value: settings.license_server || '', onChange: set( 'license_server' ), className: 'regular-text', placeholder: 'https://api.seodirector.app' } )
+				),
 				h( 'p', null,
 					h( 'button', { className: 'button button-primary', onClick: save }, __( 'Save settings', 'seo-director-ai' ) ),
 					saved ? h( 'span', { className: 'sda-saved' }, ' ✓ ' + __( 'Saved', 'seo-director-ai' ) ) : null
@@ -604,9 +695,15 @@
 	function App() {
 		const [ screen, setScreen ] = useState( 'overview' );
 		const [ overview, setOverview ] = useState( null );
+		const [ caps, setCaps ] = useState( {} );
 
 		const loadOverview = () => apiFetch( { path: 'overview' } ).then( setOverview ).catch( () => setOverview( { totals: {}, health: {} } ) );
-		useEffect( () => { loadOverview(); }, [] );
+		useEffect( () => {
+			loadOverview();
+			if ( config.canManage ) {
+				apiFetch( { path: 'license/status' } ).then( ( r ) => setCaps( r.capabilities || {} ) ).catch( () => {} );
+			}
+		}, [] );
 
 		const rescan = () => apiFetch( { path: 'opportunities', method: 'POST' } ).then( loadOverview );
 		const sync = () => apiFetch( { path: 'sync', method: 'POST' } );
@@ -617,6 +714,7 @@
 			[ 'roadmap', __( 'Roadmap', 'seo-director-ai' ) ],
 			[ 'vitals', __( 'Web Vitals', 'seo-director-ai' ) ],
 			[ 'connections', __( 'Connections', 'seo-director-ai' ) ],
+			[ 'license', __( 'License', 'seo-director-ai' ) ],
 			[ 'settings', __( 'Settings', 'seo-director-ai' ) ],
 		];
 
@@ -638,11 +736,18 @@
 					? h( 'button', { className: 'button', onClick: sync, title: __( 'Queue a background data sync', 'seo-director-ai' ) }, __( 'Sync now', 'seo-director-ai' ) )
 					: null
 			),
-			screen === 'overview' ? h( OverviewScreen, { data: overview, onRescan: rescan, goToConnections: () => setScreen( 'connections' ) } ) : null,
+			screen === 'overview' ? h( OverviewScreen, {
+				data: overview,
+				onRescan: rescan,
+				goToConnections: () => setScreen( 'connections' ),
+				aiEnabled: caps.ai_insights,
+				goToLicense: () => setScreen( 'license' ),
+			} ) : null,
 			screen === 'movers' ? h( MoversScreen ) : null,
 			screen === 'roadmap' ? h( RoadmapScreen ) : null,
 			screen === 'vitals' ? h( VitalsScreen ) : null,
 			screen === 'connections' ? h( ConnectionsScreen ) : null,
+			screen === 'license' ? h( LicenseScreen, { onChange: ( r ) => setCaps( r.capabilities || {} ) } ) : null,
 			screen === 'settings' ? h( SettingsScreen ) : null
 		);
 	}

@@ -29,10 +29,13 @@ use SEODirector\Integrations\Google\Analytics4Client;
 use SEODirector\Integrations\Google\OAuthClient;
 use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Jobs\Scheduler;
+use SEODirector\License\FeatureGate;
+use SEODirector\License\LicenseManager;
 use SEODirector\Roadmap\RoadmapGenerator;
 use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
 use SEODirector\Rest\Controllers\InsightsController;
+use SEODirector\Rest\Controllers\LicenseController;
 use SEODirector\Rest\Controllers\MoversController;
 use SEODirector\Rest\Controllers\OpportunitiesController;
 use SEODirector\Rest\Controllers\OverviewController;
@@ -94,12 +97,18 @@ final class RestServiceProvider {
 			$c->get( InsightGenerator::class ),
 			$c->get( PropertiesRepository::class ),
 			$c->get( GscDailyTotalsRepository::class ),
-			$c->get( TrendAnalyzer::class )
+			$c->get( TrendAnalyzer::class ),
+			$c->get( FeatureGate::class )
 		) )->register();
 
 		( new RoadmapController(
 			$c->get( RoadmapTaskRepository::class ),
 			$c->get( RoadmapGenerator::class )
+		) )->register();
+
+		( new LicenseController(
+			$c->get( LicenseManager::class ),
+			$c->get( FeatureGate::class )
 		) )->register();
 
 		( new SettingsController( $c->get( Options::class ) ) )->register();

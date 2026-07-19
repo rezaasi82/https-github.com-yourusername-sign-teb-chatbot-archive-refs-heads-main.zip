@@ -15,6 +15,8 @@ use SEODirector\Ai\InsightGenerator;
 use SEODirector\Analysis\TrendAnalyzer;
 use SEODirector\Data\Repository\GscDailyTotalsRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
+use SEODirector\License\Edition;
+use SEODirector\License\FeatureGate;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -26,6 +28,7 @@ final class InsightsController extends BaseController {
 		private readonly PropertiesRepository $properties,
 		private readonly GscDailyTotalsRepository $totals,
 		private readonly TrendAnalyzer $trend,
+		private readonly FeatureGate $gate,
 	) {}
 
 	public function register(): void {
@@ -48,6 +51,13 @@ final class InsightsController extends BaseController {
 	}
 
 	public function explain( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		if ( ! $this->gate->can( Edition::F_AI_INSIGHTS ) ) {
+			return new WP_Error(
+				'sda_upgrade_required',
+				__( 'AI insights are a Pro feature. Upgrade your license to enable them.', 'seo-director-ai' ),
+				array( 'status' => 403 )
+			);
+		}
 		if ( ! $this->rate_limit( 'explain', 20 ) ) {
 			return new WP_Error( 'sda_rate_limited', __( 'Too many explanation requests — try again shortly.', 'seo-director-ai' ), array( 'status' => 429 ) );
 		}

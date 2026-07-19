@@ -43,6 +43,9 @@ final class Activator {
 			$next = strtotime( 'next saturday 07:00:00' ) - ( (int) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
 			wp_schedule_event( $next, 'weekly', 'sda_weekly_pipeline' );
 		}
+		if ( ! wp_next_scheduled( 'sda_license_check' ) ) {
+			wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'sda_license_check' );
+		}
 	}
 
 	/**

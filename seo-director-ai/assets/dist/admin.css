@@ -442,3 +442,32 @@
 	text-decoration: none;
 	font-size: 13px;
 }
+
+/* License */
+.sda-license-status {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-block-end: 12px;
+}
+
+.sda-license-edition {
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+}
+
+.sda-grace {
+	color: var( --sda-mid );
+	font-size: 13px;
+}
+
+.sda-cap-mark {
+	display: inline-flex;
+	width: 20px;
+	justify-content: center;
+	font-weight: 700;
+}
+
+.sda-cap-mark.is-on { color: var( --sda-good ); }
+.sda-cap-mark.is-off { color: var( --sda-text-soft ); }

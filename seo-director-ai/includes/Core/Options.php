@@ -32,6 +32,7 @@ final class Options {
 			'retention_months'    => static fn( $v ) => min( 48, max( 3, (int) $v ) ),
 			'delete_on_uninstall' => static fn( $v ) => (bool) $v,
 			'google_client_id'    => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'license_server'      => static fn( $v ) => esc_url_raw( (string) $v ),
 		);
 	}
 
