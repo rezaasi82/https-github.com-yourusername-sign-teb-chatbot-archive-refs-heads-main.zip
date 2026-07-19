@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.9.0
+Stable tag: 0.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.9.1 =
+* New "Sync now" button in Settings → Data sync: kicks the Search Console + Analytics sync immediately instead of waiting for the daily cron. Safe to press repeatedly — a sync already in flight is never duplicated. The card shows live per-service status while the sync runs.
 
 = 0.9.0 =
 * Bilingual UI: the dashboard now renders in Persian when the WordPress admin language is Persian, and in English otherwise (shell, overview, alerts, and settings; more screens each release).

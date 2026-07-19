@@ -129,6 +129,14 @@ const FA: Record<string, string> = {
   'No resolved alerts': 'هشدار رفع‌شده‌ای نیست',
   'All monitored conditions are healthy.': 'همهٔ شرایط پایش‌شده سالم هستند.',
   'Ack': 'تأیید',
+  'Data sync': 'همگام‌سازی داده',
+  'Data refreshes automatically once a day. Use this to pull the latest Search Console / Analytics numbers right now.':
+    'داده‌ها روزی یک‌بار خودکار تازه می‌شوند. با این دکمه همین حالا آخرین آمار سرچ‌کنسول / آنالیتیکس را دریافت کنید.',
+  'Sync now': 'همگام‌سازی الان',
+  'Syncing…': 'در حال همگام‌سازی…',
+  'running…': 'در حال اجرا…',
+  'up to date': 'به‌روز',
+  'Select a property first.': 'ابتدا یک پراپرتی انتخاب کنید.',
 };
 
 /** True when the wp-admin locale is Persian (fa_IR, fa_AF, …). */

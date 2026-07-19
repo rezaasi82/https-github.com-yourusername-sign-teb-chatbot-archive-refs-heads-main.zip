@@ -101,6 +101,16 @@ final class ConnectionsController extends AbstractController {
 
 		register_rest_route(
 			self::REST_NAMESPACE,
+			'/connections/sync',
+			[
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'sync_now' ],
+				'permission_callback' => $this->require_cap( Capabilities::MANAGE ),
+			]
+		);
+
+		register_rest_route(
+			self::REST_NAMESPACE,
 			'/connections/(?P<service>[a-z0-9_]+)',
 			[
 				'methods'             => \WP_REST_Server::DELETABLE,
@@ -192,6 +202,20 @@ final class ConnectionsController extends AbstractController {
 		$this->coordinator->start_backfill( $service );
 
 		return $this->get_state();
+	}
+
+	/**
+	 * Kick the daily GSC + GA4 sync chains immediately instead of waiting for
+	 * cron. The coordinator is idempotent — if a chain is already running the
+	 * call is a no-op for that service — so mashing the button is harmless.
+	 */
+	public function sync_now(): \WP_REST_Response {
+		$this->coordinator->run_daily();
+
+		$response = $this->get_state();
+		$response->set_data( array_merge( (array) $response->get_data(), [ 'queued' => true ] ) );
+
+		return $response;
 	}
 
 	public function disconnect( \WP_REST_Request $request ): \WP_REST_Response {

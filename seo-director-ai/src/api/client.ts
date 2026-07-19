@@ -307,6 +307,7 @@ export const api = {
       body: JSON.stringify({ service, property_id: propertyId }),
     }),
   disconnect: (service: string) => request<ConnectionsState>(`/connections/${service}`, { method: 'DELETE' }),
+  syncNow: () => request<ConnectionsState & { queued: boolean }>('/connections/sync', { method: 'POST' }),
   winners: (entity: 'query' | 'page', days: number) =>
     request<{ items: Winner[]; period: unknown }>(`/winners?entity=${entity}&days=${days}`),
   losers: (entity: 'query' | 'page', days: number) =>

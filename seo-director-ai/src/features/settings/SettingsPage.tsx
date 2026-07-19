@@ -645,6 +645,53 @@ function EnterpriseCard() {
   );
 }
 
+function SyncNowCard({ state }: { state: ConnectionsState }) {
+  const queryClient = useQueryClient();
+
+  const sync = useMutation({
+    mutationFn: api.syncNow,
+    onSuccess: (next) => queryClient.setQueryData(['connections'], next),
+  });
+
+  const anyProperty = state.properties.some((p) => p.is_active);
+  const running = Object.values(state.sync).some((s) => s?.status === 'running');
+
+  return (
+    <div className="sda-card">
+      <h2>{t('Data sync')}</h2>
+      <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
+        {t('Data refreshes automatically once a day. Use this to pull the latest Search Console / Analytics numbers right now.')}
+      </p>
+      <div style={{ display: 'grid', gap: 8 }}>
+        {(['gsc', 'ga4'] as const).map((service) => {
+          const s = state.sync[service];
+          if (!s) return null;
+          return (
+            <p key={service} style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: 0 }}>
+              {service === 'gsc' ? t('Search Console') : t('Analytics 4')}: <strong>{s.status === 'running' ? t('running…') : s.status === 'completed' ? t('up to date') : s.status}</strong>
+              {typeof s.cursor?.date === 'string' ? ` · ${s.cursor.date}` : ''}
+            </p>
+          );
+        })}
+        <div>
+          <button
+            type="button"
+            className="sda-btn sda-btn--primary"
+            disabled={!anyProperty || running || sync.isPending}
+            onClick={() => sync.mutate()}
+          >
+            {running || sync.isPending ? t('Syncing…') : t('Sync now')}
+          </button>
+          {!anyProperty && (
+            <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '6px 0 0' }}>{t('Select a property first.')}</p>
+          )}
+        </div>
+        {sync.isError && <p style={{ color: 'var(--sda-negative)', fontSize: 12, margin: 0 }}>{(sync.error as Error).message}</p>}
+      </div>
+    </div>
+  );
+}
+
 function GoogleAdsCard() {
   const queryClient = useQueryClient();
   const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
@@ -716,7 +763,16 @@ function AutoUpdateCard() {
 }
 
 export function SettingsPage() {
-  const { data, isLoading, error } = useQuery({ queryKey: ['connections'], queryFn: api.connections });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['connections'],
+    queryFn: api.connections,
+    // While a sync chain is running, poll so the status line updates live.
+    refetchInterval: (query) => {
+      const state = query.state.data as ConnectionsState | undefined;
+      const running = state != null && Object.values(state.sync).some((s) => s?.status === 'running');
+      return running ? 10_000 : false;
+    },
+  });
 
   if (isLoading) {
     return <div className="sda-card sda-skeleton" style={{ height: 200 }} />;
@@ -736,6 +792,7 @@ export function SettingsPage() {
       <GoogleCard state={data} />
       <PropertyCard state={data} service="gsc" title={t('Search Console Property')} />
       <PropertyCard state={data} service="ga4" title={t('Analytics 4 Property')} />
+      <SyncNowCard state={data} />
       <KeyCard state={data} service="psi" title="PageSpeed Insights" hint="Google API key (optional but recommended)" />
       <KeyCard state={data} service="claude" title="AI — Anthropic Claude" hint="sk-ant-…" />
       <KeyCard state={data} service="openai" title="AI — OpenAI" hint="sk-…" />
