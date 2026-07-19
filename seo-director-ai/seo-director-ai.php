@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       SEO Director AI
- * Plugin URI:        https://seodirector.app
+ * Plugin URI:        https://signteb.com
  * Description:       AI-powered SEO management platform that monitors, analyzes, prioritizes, explains, and recommends actions — a virtual SEO Director inside WordPress.
- * Version:           0.8.2
+ * Version:           0.9.0
  * Requires at least: 6.4
  * Requires PHP:      8.2
- * Author:            SEO Director
- * Author URI:        https://seodirector.app
+ * Author:            Reza Asiabi (رضا آسیابی)
+ * Author URI:        https://signteb.com
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       seo-director-ai
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SDA_VERSION', '0.8.2' );
+define( 'SDA_VERSION', '0.9.0' );
 define( 'SDA_DB_VERSION', '3' );
 define( 'SDA_PLUGIN_FILE', __FILE__ );
 define( 'SDA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );

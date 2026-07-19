@@ -19,10 +19,12 @@ final class QuotaManager {
 
 	/** @var array<string, int> Daily call budgets per API family (filterable). */
 	private const DEFAULT_BUDGETS = [
-		'gsc' => 20000,
-		'ga4' => 20000,
-		'psi' => 400,
-		'ai'  => 2000,
+		'gsc'  => 20000,
+		'ga4'  => 20000,
+		'psi'  => 400,
+		'ai'   => 2000,
+		'gbp'  => 1000,
+		'gads' => 1000,
 	];
 
 	/**

@@ -27,6 +27,7 @@ use SEODirector\Ai\TokenBudget;
 use SEODirector\Alerts\AlertEngine;
 use SEODirector\Alerts\EscalationPolicy;
 use SEODirector\Alerts\Channels\EmailChannel;
+use SEODirector\Alerts\Channels\BaleChannel;
 use SEODirector\Alerts\Channels\SlackChannel;
 use SEODirector\Alerts\Channels\TelegramChannel;
 use SEODirector\Alerts\Channels\WebhookChannel;
@@ -79,7 +80,10 @@ use SEODirector\Data\Rollup\RollupBuilder;
 use SEODirector\Data\UrlCanonicalizer;
 use SEODirector\Integrations\Google\Analytics4Client;
 use SEODirector\Integrations\Google\OAuthClient;
+use SEODirector\Integrations\Google\BusinessProfileClient;
+use SEODirector\Integrations\Google\GoogleAdsClient;
 use SEODirector\Integrations\Google\PageSpeedClient;
+use SEODirector\Integrations\Google\TrendsClient;
 use SEODirector\Integrations\Google\QuotaManager;
 use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Integrations\Google\TokenVault;
@@ -148,6 +152,10 @@ final class Plugin {
 		$rest = $this->container->get( RestServiceProvider::class );
 		add_action( 'rest_api_init', [ $rest, 'register_routes' ] );
 
+		/** @var Updater $updater */
+		$updater = $this->container->get( Updater::class );
+		$updater->register();
+
 		if ( is_admin() ) {
 			/** @var AdminMenu $menu */
 			$menu = $this->container->get( AdminMenu::class );
@@ -190,6 +198,9 @@ final class Plugin {
 		$c->set( SearchConsoleClient::class, static fn( Container $c ) => new SearchConsoleClient( $c->get( OAuthClient::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ) ) );
 		$c->set( Analytics4Client::class, static fn( Container $c ) => new Analytics4Client( $c->get( OAuthClient::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ) ) );
 		$c->set( PageSpeedClient::class, static fn( Container $c ) => new PageSpeedClient( $c->get( ConnectionsRepository::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ) ) );
+		$c->set( TrendsClient::class, static fn( Container $c ) => new TrendsClient( $c->get( RetryingHttpClient::class ) ) );
+		$c->set( BusinessProfileClient::class, static fn( Container $c ) => new BusinessProfileClient( $c->get( OAuthClient::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ) ) );
+		$c->set( GoogleAdsClient::class, static fn( Container $c ) => new GoogleAdsClient( $c->get( OAuthClient::class ), $c->get( Settings::class ), $c->get( RetryingHttpClient::class ), $c->get( QuotaManager::class ) ) );
 
 		// Analysis layer (pure).
 		$c->set( TrendAnalyzer::class, static fn() => new TrendAnalyzer() );
@@ -362,6 +373,7 @@ final class Plugin {
 		$c->set( WebhookChannel::class, static fn( Container $c ) => new WebhookChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
 		$c->set( SlackChannel::class, static fn( Container $c ) => new SlackChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
 		$c->set( TelegramChannel::class, static fn( Container $c ) => new TelegramChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
+		$c->set( BaleChannel::class, static fn( Container $c ) => new BaleChannel( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
 		$c->set(
 			AlertEngine::class,
 			static fn( Container $c ) => new AlertEngine(
@@ -376,6 +388,7 @@ final class Plugin {
 					$c->get( WebhookChannel::class ),
 					$c->get( SlackChannel::class ),
 					$c->get( TelegramChannel::class ),
+					$c->get( BaleChannel::class ),
 				],
 				$c->get( FeatureGate::class ),
 				$c->get( EscalationPolicy::class ),
@@ -490,6 +503,7 @@ final class Plugin {
 		$c->set( Scheduler::class, static fn( Container $c ) => new Scheduler( $c->get( JobStateRepository::class ) ) );
 		$c->set( RestServiceProvider::class, static fn( Container $c ) => new RestServiceProvider( $c ) );
 		$c->set( AdminMenu::class, static fn() => new AdminMenu() );
+		$c->set( Updater::class, static fn( Container $c ) => new Updater( $c->get( Settings::class ) ) );
 		$c->set( Assets::class, static fn( Container $c ) => new Assets( $c->get( Settings::class ), $c->get( WhiteLabel::class ) ) );
 
 		// White-label overrides (menu label, brand string, terminology) — cheap when inactive.

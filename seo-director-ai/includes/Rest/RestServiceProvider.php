@@ -27,8 +27,11 @@ use SEODirector\Data\Repository\OpportunitiesRepository;
 use SEODirector\Data\Repository\PropertiesRepository;
 use SEODirector\Data\Repository\TaskRepository;
 use SEODirector\Integrations\Google\Analytics4Client;
+use SEODirector\Integrations\Google\BusinessProfileClient;
+use SEODirector\Integrations\Google\GoogleAdsClient;
 use SEODirector\Integrations\Google\OAuthClient;
 use SEODirector\Integrations\Google\SearchConsoleClient;
+use SEODirector\Integrations\Google\TrendsClient;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
 use SEODirector\Roadmap\RoadmapGenerator;
 use SEODirector\Content\ContentStrategist;
@@ -40,6 +43,7 @@ use SEODirector\Rest\Controllers\AgencyController;
 use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
 use SEODirector\Rest\Controllers\HubIngestController;
+use SEODirector\Rest\Controllers\IntegrationsController;
 use SEODirector\Rest\Controllers\ContentController;
 use SEODirector\Rest\Controllers\InsightsController;
 use SEODirector\Rest\Controllers\LicenseController;
@@ -141,6 +145,11 @@ final class RestServiceProvider {
 				$c->get( SiteConnector::class ),
 				$c->get( FeatureGate::class ),
 				$c->get( RateLimiter::class )
+			),
+			new IntegrationsController(
+				$c->get( TrendsClient::class ),
+				$c->get( BusinessProfileClient::class ),
+				$c->get( GoogleAdsClient::class )
 			),
 		];
 

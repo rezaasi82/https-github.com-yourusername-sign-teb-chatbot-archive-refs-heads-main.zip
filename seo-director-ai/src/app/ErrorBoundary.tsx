@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { t } from '../i18n';
 
 interface Props {
   children: ReactNode;
@@ -36,12 +37,11 @@ export class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="sda-card" style={{ margin: 24, maxWidth: 720 }}>
         <h2 style={{ textTransform: 'none', fontSize: 15, color: 'var(--sda-negative)' }}>
-          SEO Director AI could not start
+          {t('SEO Director AI could not start')}
         </h2>
         <p style={{ fontSize: 13, color: 'var(--sda-text)' }}>{error.message}</p>
         <p style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
-          Please copy this message (and your browser console output) to support. Reloading the page
-          may help if this was a temporary network error.
+          {t('Please copy this message (and your browser console output) to support. Reloading the page may help if this was a temporary network error.')}
         </p>
         {error.stack ? (
           <pre

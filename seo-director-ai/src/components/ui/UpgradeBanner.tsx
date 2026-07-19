@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLicense } from '../../app/license';
+import { t } from '../../i18n';
 
 const EDITION_LABEL: Record<string, string> = {
   lite: 'Lite',
@@ -20,10 +21,10 @@ export function UpgradeBanner({ title, requires, children }: { title: string; re
     <div className="sda-card sda-empty" style={{ borderInlineStart: '3px solid var(--sda-primary)' }}>
       <strong>{title}</strong>
       <p style={{ margin: '4px 0 12px', color: 'var(--sda-text-muted)' }}>
-        {children ?? <>This is available on the {EDITION_LABEL[requires] ?? requires} plan and above.</>}
+        {children ?? t('This is available on the {plan} plan and above.').replace('{plan}', EDITION_LABEL[requires] ?? requires)}
       </p>
       <a className="sda-btn sda-btn--primary" href={upgradeUrl} target="_blank" rel="noreferrer">
-        Upgrade to {EDITION_LABEL[requires] ?? requires}
+        {t('Upgrade to')} {EDITION_LABEL[requires] ?? requires}
       </a>
     </div>
   );
@@ -44,7 +45,7 @@ export function EditionBadge() {
       </span>
       {canUpsell && (
         <a href={upgradeUrl} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: 'var(--sda-primary)' }}>
-          Upgrade
+          {t('Upgrade')}
         </a>
       )}
     </span>

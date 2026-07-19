@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, boot } from '../../api/client';
 import { RULE_LABELS, severityColor } from '../../components/ui/labels';
+import { t } from '../../i18n';
 
 export function AlertsPage() {
   const [status, setStatus] = useState<'active' | 'resolved'>('active');
@@ -23,7 +24,7 @@ export function AlertsPage() {
         <div style={{ display: 'flex', gap: 8 }}>
           {(['active', 'resolved'] as const).map((s) => (
             <button key={s} type="button" className={`sda-btn ${status === s ? 'sda-btn--primary' : ''}`} onClick={() => setStatus(s)}>
-              {s === 'active' ? 'Active' : 'Resolved'}
+              {s === 'active' ? t('Active') : t('Resolved')}
             </button>
           ))}
         </div>
@@ -41,14 +42,14 @@ export function AlertsPage() {
       {isLoading && <div className="sda-skeleton" style={{ height: 160 }} />}
       {error != null && (
         <div className="sda-empty">
-          <strong>Failed to load</strong>
+          <strong>{t('Failed to load')}</strong>
           {(error as Error).message}
         </div>
       )}
       {data && data.items.length === 0 && (
         <div className="sda-empty">
-          <strong>{status === 'active' ? 'No active alerts' : 'No resolved alerts'}</strong>
-          {status === 'active' ? 'All monitored conditions are healthy.' : ''}
+          <strong>{status === 'active' ? t('No active alerts') : t('No resolved alerts')}</strong>
+          {status === 'active' ? t('All monitored conditions are healthy.') : ''}
         </div>
       )}
 
@@ -78,10 +79,10 @@ export function AlertsPage() {
               {status === 'active' && boot().canManage && (
                 <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                   <button type="button" className="sda-btn" onClick={() => update.mutate({ id: alert.id, next: 'acknowledged' })}>
-                    Ack
+                    {t('Ack')}
                   </button>
                   <button type="button" className="sda-btn" onClick={() => update.mutate({ id: alert.id, next: 'resolved' })}>
-                    Resolve
+                    {t('Resolve')}
                   </button>
                 </div>
               )}

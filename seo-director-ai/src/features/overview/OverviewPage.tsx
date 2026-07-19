@@ -3,6 +3,7 @@ import { api, type SetupStatus } from '../../api/client';
 import { TrafficChart } from '../../components/charts/TrafficChart';
 import { DETECTOR_LABELS, RULE_LABELS, severityColor } from '../../components/ui/labels';
 import { ScoreDial } from '../../components/ui/ScoreDial';
+import { t } from '../../i18n';
 
 function ConnectionBadge({ label, connected }: { label: string; connected: boolean }) {
   return (
@@ -18,10 +19,10 @@ function DemoBanner() {
       className="sda-card"
       style={{ marginBlockEnd: 16, borderInlineStart: '3px solid var(--sda-primary)', background: 'var(--sda-primary-soft)' }}
     >
-      <strong>You’re viewing sample data</strong>
+      <strong>{t('You’re viewing sample data')}</strong>
       <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--sda-text-muted)' }}>
-        This is a preview so you can see what SEO Director AI does. Connect Google Search Console in{' '}
-        <a href="#/settings">Settings</a> to replace it with your site’s real numbers.
+        {t('This is a preview so you can see what SEO Director AI does. Connect Google Search Console in')}{' '}
+        <a href="#/settings">{t('Settings')}</a> {t('to replace it with your site’s real numbers.')}
       </p>
     </div>
   );
@@ -33,9 +34,9 @@ function SetupChecklist({ setup }: { setup: SetupStatus }) {
   return (
     <div className="sda-card" style={{ marginBlockEnd: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-        <h2 style={{ margin: 0 }}>Get set up</h2>
+        <h2 style={{ margin: 0 }}>{t('Get set up')}</h2>
         <span style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
-          {doneCount} / {setup.steps.length} done
+          {doneCount} / {setup.steps.length} {t('done')}
         </span>
       </div>
       <ul style={{ margin: '10px 0 0', padding: 0, listStyle: 'none', display: 'grid', gap: 6 }}>
@@ -49,7 +50,7 @@ function SetupChecklist({ setup }: { setup: SetupStatus }) {
             </span>
             {!step.done && step.key !== 'sync' && (
               <a href="#/settings" style={{ fontSize: 12 }}>
-                Set up ▸
+                {t('Set up ▸')}
               </a>
             )}
           </li>
@@ -78,8 +79,8 @@ export function OverviewPage() {
   if (error || !data) {
     return (
       <div className="sda-card sda-empty">
-        <strong>Could not load the dashboard</strong>
-        {(error as Error)?.message ?? 'Unknown error'}
+        <strong>{t('Could not load the dashboard')}</strong>
+        {(error as Error)?.message ?? t('Unknown error')}
       </div>
     );
   }
@@ -94,21 +95,21 @@ export function OverviewPage() {
       {showChecklist && <SetupChecklist setup={setup} />}
 
       <div className="sda-card" style={{ marginBlockEnd: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <ConnectionBadge label="Search Console" connected={data.connections.gsc} />
-        <ConnectionBadge label="Analytics 4" connected={data.connections.ga4} />
-        <ConnectionBadge label="PageSpeed" connected={data.connections.psi} />
-        <ConnectionBadge label="AI" connected={data.connections.ai} />
+        <ConnectionBadge label={t('Search Console')} connected={data.connections.gsc} />
+        <ConnectionBadge label={t('Analytics 4')} connected={data.connections.ga4} />
+        <ConnectionBadge label={t('PageSpeed')} connected={data.connections.psi} />
+        <ConnectionBadge label={t('AI')} connected={data.connections.ai} />
       </div>
 
       <div className="sda-grid">
         <div className="sda-card">
-          <h2>SEO Health Score</h2>
+          <h2>{t('SEO Health Score')}</h2>
           {data.health ? (
             <ScoreDial health={data.health} />
           ) : (
             <div className="sda-empty">
-              <strong>No score yet</strong>
-              Scores appear after the first analysis pass over synced data.
+              <strong>{t('No score yet')}</strong>
+              {t('Scores appear after the first analysis pass over synced data.')}
             </div>
           )}
         </div>
@@ -119,32 +120,32 @@ export function OverviewPage() {
               <span className="sda-badge" style={{ background: 'var(--sda-primary-soft)', color: 'var(--sda-primary)' }}>
                 ✦ AI
               </span>{' '}
-              Weekly Summary
+              {t('Weekly Summary')}
             </h2>
             <p style={{ fontSize: 14, marginBlockStart: 8 }}>{data.summaries.weekly}</p>
           </div>
         )}
 
         <div className="sda-card" style={{ gridColumn: 'span 2' }}>
-          <h2>Organic Traffic</h2>
+          <h2>{t('Organic Traffic')}</h2>
           {data.traffic.series.length > 0 ? (
             <TrafficChart series={data.traffic.series} />
           ) : (
             <div className="sda-empty">
-              <strong>No traffic data</strong>
+              <strong>{t('No traffic data')}</strong>
               {data.meta.backfill
                 ? `Backfill ${data.meta.backfill.status}${data.meta.backfill.date ? ` — processing ${data.meta.backfill.date}` : ''}. Check back soon.`
                 : anyConnected
-                  ? 'Select a property in Settings to start syncing.'
-                  : 'Connect Google in Settings to begin.'}
+                  ? t('Select a property in Settings to start syncing.')
+                  : t('Connect Google in Settings to begin.')}
             </div>
           )}
         </div>
 
         <div className="sda-card">
-          <h2>Top Opportunities</h2>
+          <h2>{t('Top Opportunities')}</h2>
           {data.opportunities.length === 0 ? (
-            <div className="sda-empty">Opportunities appear after the first analysis run.</div>
+            <div className="sda-empty">{t('Opportunities appear after the first analysis run.')}</div>
           ) : (
             <ol style={{ margin: '8px 0 0', paddingInlineStart: 18, display: 'grid', gap: 6, fontSize: 13 }}>
               {data.opportunities.map((opp) => (
@@ -152,21 +153,21 @@ export function OverviewPage() {
                   <strong style={{ wordBreak: 'break-all' }}>{opp.label}</strong>
                   <br />
                   <small style={{ color: 'var(--sda-text-muted)' }}>
-                    {DETECTOR_LABELS[opp.detector] ?? opp.detector} · +{opp.est_traffic_gain.toLocaleString()} clicks/mo
+                    {DETECTOR_LABELS[opp.detector] ?? opp.detector} · +{opp.est_traffic_gain.toLocaleString()} {t('clicks/mo')}
                   </small>
                 </li>
               ))}
             </ol>
           )}
           <a href="#/opportunities" style={{ fontSize: 12, display: 'inline-block', marginBlockStart: 8 }}>
-            All opportunities ▸
+            {t('All opportunities ▸')}
           </a>
         </div>
 
         <div className="sda-card">
-          <h2>Top Risks</h2>
+          <h2>{t('Top Risks')}</h2>
           {data.risks.length === 0 ? (
-            <div className="sda-empty">No active risks detected.</div>
+            <div className="sda-empty">{t('No active risks detected.')}</div>
           ) : (
             <ul style={{ margin: '8px 0 0', padding: 0, listStyle: 'none', display: 'grid', gap: 6, fontSize: 13 }}>
               {data.risks.map((risk) => (
@@ -182,7 +183,7 @@ export function OverviewPage() {
             </ul>
           )}
           <a href="#/alerts" style={{ fontSize: 12, display: 'inline-block', marginBlockStart: 8 }}>
-            All alerts ▸
+            {t('All alerts ▸')}
           </a>
         </div>
       </div>

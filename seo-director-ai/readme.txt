@@ -1,10 +1,10 @@
 === SEO Director AI ===
-Contributors: seodirector
+Contributors: rezaasiabi
 Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.8.2
+Stable tag: 0.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,6 +15,7 @@ An AI-powered SEO management platform that monitors, analyzes, prioritizes, expl
 Most SEO plugins show data. SEO Director AI explains what happened, why it happened, and what to do next — with prioritized, ROI-ranked action plans.
 
 * Google Search Console, Google Analytics 4, and PageSpeed Insights integration
+* Google Business Profile (local SEO), Google Ads, and Google Trends integrations
 * SEO Health Score with transparent sub-scores
 * Winners & Losers with AI-explained causes and confidence scores
 * Opportunity detection (striking-distance keywords, low-CTR pages, snippets, FAQs, schema, internal links)
@@ -29,7 +30,8 @@ Most SEO plugins show data. SEO Director AI explains what happened, why it happe
 
 This plugin connects to the following external services, only after you explicitly connect them:
 
-* Google Search Console API, Google Analytics Data API, and PageSpeed Insights API — to fetch your own site's performance data (Google's terms: https://policies.google.com/terms)
+* Google Search Console API, Google Analytics Data API, PageSpeed Insights API, Google Business Profile APIs, Google Ads API, and Google Trends — to fetch your own site's and listings' performance data (Google's terms: https://policies.google.com/terms)
+* Alert channels you enable (webhook, Slack, Telegram, Bale/بله) — to deliver alert digests you configured
 * Your chosen AI provider (OpenAI, Anthropic Claude, Google Gemini, or GapGPT) — to generate explanations and recommendations from aggregated metrics you choose to analyze
 * The SEO Director license server — for license activation and update delivery
 
@@ -41,6 +43,13 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.9.0 =
+* Bilingual UI: the dashboard now renders in Persian when the WordPress admin language is Persian, and in English otherwise (shell, overview, alerts, and settings; more screens each release).
+* New alert channel: Bale (بله) messenger — reachable from Iranian hosts without a VPN; configured with a bot token + chat id like Telegram.
+* New integrations: Google Business Profile (accounts, locations, daily local-pack metrics), Google Ads (campaign performance and paid search terms via your developer token), and Google Trends (interest-over-time, no key needed). PageSpeed Insights was already built in.
+* Automatic updates: the plugin now checks the SignTeb update server and can update itself in the background (toggle in Settings).
+* Plugin authorship updated: Reza Asiabi (رضا آسیابی), homepage signteb.com.
 
 = 0.8.2 =
 * Fix: the admin dashboard rendered blank on real (subdirectory) WordPress installs. The code-split per-route chunks resolved against the site root and 404'd, and because every route was lazy-loaded the whole screen stayed empty. The admin app now ships as a single bundle (with a relative asset base), so there are no separate chunk requests to misresolve.

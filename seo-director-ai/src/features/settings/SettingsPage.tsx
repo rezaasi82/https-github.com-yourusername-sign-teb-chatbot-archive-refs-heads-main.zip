@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, boot, ConnectionsState, type LicenseStatusResponse } from '../../api/client';
+import { t } from '../../i18n';
 
 function LicenseCard() {
   const queryClient = useQueryClient();
@@ -32,7 +33,7 @@ function LicenseCard() {
 
   return (
     <div className="sda-card">
-      <h2>License</h2>
+      <h2>{t('License')}</h2>
       <div style={{ display: 'grid', gap: 10, marginBlockStart: 8 }}>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           <span className={`sda-badge ${stateBadge[license.state] ?? 'sda-badge--off'}`}>
@@ -91,6 +92,8 @@ const ALERT_CHANNEL_FIELDS: Array<{ key: string; label: string; placeholder: str
   { key: 'alert_slack_url', label: 'Slack incoming webhook', placeholder: 'https://hooks.slack.com/…' },
   { key: 'alert_telegram_token', label: 'Telegram bot token', placeholder: '123456:ABC…' },
   { key: 'alert_telegram_chat', label: 'Telegram chat ID', placeholder: '-1001234567890' },
+  { key: 'alert_bale_token', label: 'Bale bot token', placeholder: '123456:ABC… (@BotFather در بله)' },
+  { key: 'alert_bale_chat', label: 'Bale chat id', placeholder: '123456789' },
 ];
 
 function AlertChannelsCard() {
@@ -108,16 +111,16 @@ function AlertChannelsCard() {
 
   return (
     <div className="sda-card">
-      <h2>Alert channels</h2>
+      <h2>{t('Alert channels')}</h2>
       <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
-        Email always works. Webhook, Slack and Telegram require a Pro license.
+        {t('Email always works. Webhook, Slack, Telegram and Bale (بله) require a Pro license.')}
       </p>
       <div style={{ display: 'grid', gap: 10 }}>
         {ALERT_CHANNEL_FIELDS.map((field) => {
           const isPro = field.key !== 'alert_email';
           return (
             <label key={field.key} style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
-              {field.label}
+              {t(field.label)}
               {isPro && !proChannels && <span style={{ color: 'var(--sda-warning)' }}> · Pro</span>}
               <input
                 className="sda-input"
@@ -157,13 +160,18 @@ function GoogleCard({ state }: { state: ConnectionsState }) {
 
   return (
     <div className="sda-card">
-      <h2>Google (Search Console + Analytics)</h2>
+      <h2>{t('Google (Search Console + Analytics)')}</h2>
       {connected ? (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBlockStart: 8 }}>
-          <span className="sda-badge sda-badge--ok">Connected ✓</span>
-          <button type="button" className="sda-btn" onClick={() => disconnect.mutate()} disabled={disconnect.isPending}>
-            Disconnect
-          </button>
+        <div style={{ display: 'grid', gap: 8, marginBlockStart: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span className="sda-badge sda-badge--ok">Connected ✓</span>
+            <button type="button" className="sda-btn" onClick={() => disconnect.mutate()} disabled={disconnect.isPending}>
+              {t('Disconnect')}
+            </button>
+          </div>
+          <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: 0 }}>
+            {t('Google Business Profile and Google Ads use the same Google connection — reconnect Google to grant the new permissions.')}
+          </p>
         </div>
       ) : (
         <div style={{ display: 'grid', gap: 8, marginBlockStart: 8 }}>
@@ -219,7 +227,7 @@ function PropertyCard({ state, service, title }: { state: ConnectionsState; serv
 
   return (
     <div className="sda-card">
-      <h2>{title}</h2>
+      <h2>{t(title)}</h2>
       {candidates.length === 0 ? (
         <div className="sda-empty">Connect Google first — properties appear here.</div>
       ) : (
@@ -268,7 +276,7 @@ function KeyCard({ state, service, title, hint }: { state: ConnectionsState; ser
 
   return (
     <div className="sda-card">
-      <h2>{title}</h2>
+      <h2>{t(title)}</h2>
       <div style={{ display: 'flex', gap: 8, marginBlockStart: 8, alignItems: 'center' }}>
         {connected && <span className="sda-badge sda-badge--ok">Saved ✓</span>}
         <input
@@ -304,7 +312,7 @@ function AiProviderCard() {
 
   return (
     <div className="sda-card">
-      <h2>AI Provider</h2>
+      <h2>{t('AI Provider')}</h2>
       <div style={{ display: 'grid', gap: 10, marginBlockStart: 8 }}>
         <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
           Preferred provider (falls back to any other configured one)
@@ -389,7 +397,7 @@ function WhiteLabelCard() {
 
   return (
     <div className="sda-card">
-      <h2>White label</h2>
+      <h2>{t('White label')}</h2>
       <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
         Rebrand the dashboard for your clients. {allowed ? '' : 'Requires an Agency license.'}
       </p>
@@ -467,7 +475,7 @@ function ClientModeCard() {
 
   return (
     <div className="sda-card">
-      <h2>Agency (client mode)</h2>
+      <h2>{t('Agency (client mode)')}</h2>
       <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
         Push this site’s daily snapshot to an agency hub. Paste the ingest URL and pairing key your agency generated.
       </p>
@@ -519,7 +527,7 @@ function EnterpriseCard() {
 
   return (
     <div className="sda-card">
-      <h2>Enterprise</h2>
+      <h2>{t('Enterprise')}</h2>
       <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 10px' }}>
         {anyEnterprise ? 'Advanced controls for Enterprise accounts.' : 'These controls require an Enterprise license.'}
       </p>
@@ -637,6 +645,76 @@ function EnterpriseCard() {
   );
 }
 
+function GoogleAdsCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+
+  return (
+    <div className="sda-card">
+      <h2>{t('Google Ads')}</h2>
+      <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
+        {t('Google Ads needs a developer token and the account’s customer id; it uses the same Google connection above.')}
+      </p>
+      <div style={{ display: 'grid', gap: 10 }}>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          {t('Developer token')}
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            type="password"
+            defaultValue={(data.settings.gads_developer_token as string) ?? ''}
+            placeholder="dev-token…"
+            onBlur={(e) => save.mutate({ gads_developer_token: e.target.value })}
+          />
+        </label>
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          {t('Customer ID')}
+          <input
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            defaultValue={(data.settings.gads_customer_id as string) ?? ''}
+            placeholder="123-456-7890"
+            onBlur={(e) => save.mutate({ gads_customer_id: e.target.value })}
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
+
+function AutoUpdateCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+
+  return (
+    <div className="sda-card">
+      <h2>{t('Automatic updates')}</h2>
+      <label style={{ fontSize: 13, color: 'var(--sda-text)', display: 'flex', gap: 8, alignItems: 'center', marginBlockStart: 8 }}>
+        <input
+          type="checkbox"
+          defaultChecked={Boolean(data.settings.auto_update ?? true)}
+          onChange={(e) => save.mutate({ auto_update: e.target.checked })}
+        />
+        {t('Update automatically when a new version is released')}
+      </label>
+    </div>
+  );
+}
+
 export function SettingsPage() {
   const { data, isLoading, error } = useQuery({ queryKey: ['connections'], queryFn: api.connections });
 
@@ -647,7 +725,7 @@ export function SettingsPage() {
   if (error || !data) {
     return (
       <div className="sda-card sda-empty">
-        <strong>Could not load connection state</strong>
+        <strong>{t('Could not load connection state')}</strong>
         {(error as Error)?.message}
       </div>
     );
@@ -656,14 +734,16 @@ export function SettingsPage() {
   return (
     <div className="sda-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))' }}>
       <GoogleCard state={data} />
-      <PropertyCard state={data} service="gsc" title="Search Console Property" />
-      <PropertyCard state={data} service="ga4" title="Analytics 4 Property" />
+      <PropertyCard state={data} service="gsc" title={t('Search Console Property')} />
+      <PropertyCard state={data} service="ga4" title={t('Analytics 4 Property')} />
       <KeyCard state={data} service="psi" title="PageSpeed Insights" hint="Google API key (optional but recommended)" />
       <KeyCard state={data} service="claude" title="AI — Anthropic Claude" hint="sk-ant-…" />
       <KeyCard state={data} service="openai" title="AI — OpenAI" hint="sk-…" />
       <KeyCard state={data} service="gemini" title="AI — Google Gemini" hint="API key" />
       <KeyCard state={data} service="gapgpt" title="AI — GapGPT (گپ‌جی‌پی‌تی)" hint="sk-… (gapgpt.app)" />
       <AiProviderCard />
+      <GoogleAdsCard />
+      <AutoUpdateCard />
       <LicenseCard />
       <AlertChannelsCard />
       <WhiteLabelCard />

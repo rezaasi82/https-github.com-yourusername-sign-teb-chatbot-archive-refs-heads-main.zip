@@ -24,6 +24,11 @@ final class OAuthClient {
 	public const SCOPES = [
 		'https://www.googleapis.com/auth/webmasters.readonly',
 		'https://www.googleapis.com/auth/analytics.readonly',
+		// Google Business Profile (local pack insights) — read/manage listings.
+		'https://www.googleapis.com/auth/business.manage',
+		// Google Ads (paid vs organic overlap) — used only when a developer
+		// token + customer id are configured in settings.
+		'https://www.googleapis.com/auth/adwords',
 	];
 
 	private const AUTH_URL  = 'https://accounts.google.com/o/oauth2/v2/auth';

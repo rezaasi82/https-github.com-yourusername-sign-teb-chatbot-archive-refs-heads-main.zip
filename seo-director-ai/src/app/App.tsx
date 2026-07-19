@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense, useEffect, type ComponentType } from 'react';
 import { boot } from '../api/client';
+import { t } from '../i18n';
 import { EditionBadge, UpgradeBanner } from '../components/ui/UpgradeBanner';
 import { useLicense } from './license';
 import { useHashRoute } from './router';
@@ -58,7 +59,7 @@ function RouteView({ item }: { item: NavItem }) {
   // Gate by feature. While the license snapshot loads, don't flash the upsell.
   if (item.feature && !isLoading && !allows(item.feature)) {
     return (
-      <UpgradeBanner title={`${item.label} is not available on your plan`} requires={item.requires ?? 'pro'} />
+      <UpgradeBanner title={`${t(item.label)} ${t('is not available on your plan')}`} requires={item.requires ?? 'pro'} />
     );
   }
 
@@ -99,17 +100,17 @@ export function App() {
           </div>
           {NAV.map((item) => (
             <a key={item.route} href={`#/${item.route}`} className={item.route === current.route ? 'is-active' : ''}>
-              {item.label}
+              {t(item.label)}
             </a>
           ))}
         </nav>
         <main className="sda-main">
           <div className="sda-topbar">
-            <h1>{current.label}</h1>
+            <h1>{t(current.label)}</h1>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <EditionBadge />
               <span style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>{boot().siteName}</span>
-              <button type="button" className="sda-btn" onClick={toggleTheme} aria-label="Toggle theme">
+              <button type="button" className="sda-btn" onClick={toggleTheme} aria-label={t('Toggle theme')}>
                 {theme === 'dark' ? '☀' : '☾'}
               </button>
             </div>

@@ -70,6 +70,11 @@ final class Activator {
 			'alert_slack_url'      => '',
 			'alert_telegram_token' => '',
 			'alert_telegram_chat'  => '',
+			'alert_bale_token'     => '',
+			'alert_bale_chat'      => '',
+			'auto_update'          => true,
+			'gads_developer_token' => '',
+			'gads_customer_id'     => '',
 			'license_shared_secret' => '',
 			// Agency: client-mode push target + branding (white-label).
 			'agency_hub_url'        => '',
