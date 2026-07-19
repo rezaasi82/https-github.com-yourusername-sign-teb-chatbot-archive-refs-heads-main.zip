@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #e8f1f9; }
+  #signteb-calc-wrapper *::placeholder { color: #9fb0c4; opacity: 1; }
+  #signteb-calc-wrapper input::-webkit-outer-spin-button,
+  #signteb-calc-wrapper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  #signteb-calc-wrapper input[type=number] { -moz-appearance: textfield; }
+  #signteb-calc-wrapper .st-opt[data-active="true"] {
+    background: rgba(8,145,178,.12) !important;
+    border-color: var(--st-teal) !important;
+    box-shadow: 0 0 0 4px rgba(8,145,178,.16), inset 0 1px 0 rgba(255,255,255,.7) !important;
+  }
+  #signteb-calc-wrapper .st-tab[data-active="true"] {
+    background: linear-gradient(135deg, #0c2340, #134a72) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 26px rgba(12,35,64,.30), inset 0 1px 0 rgba(255,255,255,.18) !important;
+  }
+  #signteb-calc-wrapper .st-tab[data-active="true"] .st-tab-sub { background: rgba(255,255,255,.18) !important; color:#cfe9f3 !important; }
+  @keyframes stSpin { to { transform: rotate(360deg); } }
+  @keyframes stDot { 0%,80%,100%{ transform: scale(.5); opacity:.35 } 40%{ transform: scale(1); opacity:1 } }
+  @keyframes stGateIn { from{ opacity:0; transform: scale(.94) translateY(18px) } to{ opacity:1; transform:none } }
+  @keyframes stResIn { from{ opacity:0; transform: translateY(22px) } to{ opacity:1; transform:none } }
+  @keyframes stFloat { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-7px) } }
+  @keyframes stPaneIn { from{ opacity:0; transform: translateY(8px) } to{ opacity:1; transform:none } }
+  @keyframes stGauge { from{ stroke-dashoffset: 276.5 } to{ stroke-dashoffset: var(--goff) } }
+  @keyframes stHubItem { from{ opacity:0; transform: translateY(12px) scale(.9) } to{ opacity:1; transform:none } }
+  @keyframes stRing { 0%{ transform: scale(.8); opacity:.55 } 100%{ transform: scale(2.1); opacity:0 } }
+</style>
+</helmet>
+
+<div id="signteb-calc-wrapper" dir="rtl" role="main" aria-label="محاسبه‌گر گرید کبد چرب — SignTeb" style="--st-navy:#0c2340;--st-navy-2:#134a72;--st-teal:#0891b2;--st-teal-dk:#0e7490;--st-green:#10b981;--st-amber:#f59e0b;--st-orange:#f97316;--st-red:#dc2626;--st-wa:#25d366;--glass:rgba(255,255,255,.45);--glass-2:rgba(255,255,255,.62);--glass-bd:rgba(255,255,255,.62);--txt1:#0f2238;--txt2:#475a72;--txt3:#8aa0b6;--r-md:16px;--r-lg:22px;--r-xl:28px;font-family:'Vazirmatn',system-ui,sans-serif;direction:rtl;color:var(--txt1);position:relative;max-width:980px;margin:0 auto;padding:18px 14px 60px;min-height:100vh;background:radial-gradient(1100px 620px at 88% -8%, #cfe8fb 0%, rgba(207,232,251,0) 60%),radial-gradient(950px 560px at 6% 14%, #d6f3e6 0%, rgba(214,243,230,0) 55%),radial-gradient(900px 700px at 50% 118%, #e3ddfb 0%, rgba(227,221,251,0) 55%),linear-gradient(160deg,#eef6fc 0%,#e9f3fb 50%,#eaf7f1 100%);overflow:hidden;">
+
+  <!-- ambient glass orbs -->
+  <div aria-hidden="true" style="position:absolute;top:-90px;right:-70px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(8,145,178,.20),rgba(8,145,178,0) 70%);filter:blur(18px);pointer-events:none;z-index:0;"></div>
+  <div aria-hidden="true" style="position:absolute;bottom:40px;left:-90px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.18),rgba(16,185,129,0) 70%);filter:blur(18px);pointer-events:none;z-index:0;"></div>
+
+  <div style="position:relative;z-index:1;">
+
+  <!-- ═══════ TOP BAR ═══════ -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 1.1rem;border-radius:var(--r-lg);background:linear-gradient(100deg,rgba(12,35,64,.92),rgba(19,74,114,.88));backdrop-filter:blur(14px);box-shadow:0 14px 36px rgba(12,35,64,.22),inset 0 1px 0 rgba(255,255,255,.14);margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:.55rem;">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#0891b2,#22d3ee);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(8,145,178,.5);">
+        <svg viewBox="0 0 18 18" fill="none" width="16" height="16"><path d="M1 9 L4.5 9 L6 4.5 L7.5 13.5 L9 7 L10.5 11 L12 8 L13.5 10 L17 9" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span style="font-size:13px;font-weight:800;color:#fff;letter-spacing:.02em;">SignTeb</span>
+      <span style="color:rgba(255,255,255,.22);font-size:12px;">|</span>
+      <span style="font-size:11.5px;color:rgba(255,255,255,.62);">Fatty Liver Calculator — VIP Medical Suite</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:.55rem;">
+      <span style="background:rgba(255,255,255,.10);border:.5px solid rgba(255,255,255,.18);border-radius:100px;padding:3px 10px;font-size:10.5px;color:rgba(255,255,255,.66);">v2.0</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:rgba(255,255,255,.55);">
+        <svg viewBox="0 0 14 14" fill="none" width="11" height="11"><path d="M7 1L2 3v4c0 2.8 2.1 5.4 5 6 2.9-.6 5-3.2 5-6V3L7 1z" stroke="currentColor" stroke-width="1.2"/><path d="M5 7l1.5 1.5L9 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        HIPAA-safe
+      </span>
+    </div>
+  </div>
+
+  <!-- ═══════ HERO ═══════ -->
+  <div style="display:grid;grid-template-columns:1fr auto;gap:1.25rem;align-items:center;padding:1.6rem 1.6rem;border-radius:var(--r-xl);background:var(--glass);backdrop-filter:blur(22px) saturate(140%);border:1px solid var(--glass-bd);box-shadow:0 18px 50px rgba(13,42,72,.12),0 3px 10px rgba(13,42,72,.05),inset 0 1px 0 rgba(255,255,255,.7);margin-bottom:16px;">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.14);color:#0a7a5e;border:1px solid rgba(16,185,129,.35);border-radius:100px;padding:5px 12px;font-size:11px;font-weight:700;margin-bottom:.8rem;backdrop-filter:blur(6px);">
+        <svg viewBox="0 0 14 14" fill="none" width="12" height="12"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 7l1.5 1.5L9.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        ابزار غربالگری بالینی — Bedogni FLI Formula 2006
+      </div>
+      <h1 style="font-size:clamp(1.5rem,3.4vw,2.05rem);font-weight:900;color:var(--st-navy);margin:0 0 .5rem;line-height:1.25;letter-spacing:-.01em;">محاسبه‌گر گرید کبد چرب</h1>
+      <p style="font-size:13.5px;color:var(--txt2);display:flex;align-items:center;gap:.45rem;margin:0 0 .9rem;flex-wrap:wrap;line-height:1.7;">
+        <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><circle cx="7" cy="7" r="5.5" stroke="#0891b2" stroke-width="1.3"/><path d="M7 4.5v3l2 1.5" stroke="#0891b2" stroke-width="1.3" stroke-linecap="round"/></svg>
+        بر اساس شاخص جهانی FLI — اعتبارسنجی‌شده با حساسیت ۸۷٪ و ویژگی ۸۶٪
+      </p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.7);border-radius:100px;padding:5px 11px;font-size:11.5px;color:#0a7a5e;font-weight:600;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(13,42,72,.05);">
+          <svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M2 6l2.5 2.5L10 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>اعتبارسنجی بالینی</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.7);border-radius:100px;padding:5px 11px;font-size:11.5px;color:var(--txt2);font-weight:600;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(13,42,72,.05);">
+          <svg viewBox="0 0 12 12" fill="none" width="10" height="10"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>زیر ۲ دقیقه</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.7);border-radius:100px;padding:5px 11px;font-size:11.5px;color:var(--txt2);font-weight:600;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(13,42,72,.05);">
+          <svg viewBox="0 0 12 12" fill="none" width="10" height="10"><rect x="2" y="5" width="8" height="6" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>بدون ذخیره داده</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.55rem;">
+      <div style="background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.55));border:1px solid rgba(255,255,255,.8);border-radius:var(--r-lg);padding:.85rem 1.15rem;text-align:center;min-width:118px;backdrop-filter:blur(10px);box-shadow:0 6px 18px rgba(13,42,72,.08),inset 0 1px 0 rgba(255,255,255,.8);">
+        <div style="font-size:20px;font-weight:900;color:var(--st-teal);letter-spacing:-.02em;">+۱۲۰۰</div>
+        <div style="font-size:10.5px;color:var(--txt3);margin-top:2px;font-weight:600;">ارزیابی انجام‌شده</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.55));border:1px solid rgba(255,255,255,.8);border-radius:var(--r-lg);padding:.85rem 1.15rem;text-align:center;min-width:118px;backdrop-filter:blur(10px);box-shadow:0 6px 18px rgba(13,42,72,.08),inset 0 1px 0 rgba(255,255,255,.8);">
+        <div style="font-size:20px;font-weight:900;color:var(--st-green);letter-spacing:-.02em;">۴ گرید</div>
+        <div style="font-size:10.5px;color:var(--txt3);margin-top:2px;font-weight:600;">طبقه‌بندی دقیق</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ FORM PHASE ═══════ -->
+  <sc-if value="{{ isForm }}" hint-placeholder-val="{{ true }}">
+  <div style="animation:stPaneIn .35s ease-out;">
+
+    <!-- TABS -->
+    <div style="display:flex;gap:.5rem;background:var(--glass);border:1px solid var(--glass-bd);backdrop-filter:blur(16px);border-radius:var(--r-lg);padding:.4rem;margin-bottom:16px;box-shadow:0 10px 30px rgba(13,42,72,.08),inset 0 1px 0 rgba(255,255,255,.6);">
+      <button class="st-tab" data-active="{{ clinicalActive }}" onClick="{{ onTabClinical }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;padding:.8rem .9rem;background:transparent;border:none;border-radius:var(--r-md);color:var(--txt2);font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .22s;">
+        <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 8h5M8 5.5v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>غربالگری بالینی</span>
+        <span class="st-tab-sub" style="font-size:.62rem;font-weight:700;background:rgba(12,35,64,.08);padding:2px 7px;border-radius:100px;">نیاز به آزمایش</span>
+      </button>
+      <button class="st-tab" data-active="{{ lifestyleActive }}" onClick="{{ onTabLifestyle }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;padding:.8rem .9rem;background:transparent;border:none;border-radius:var(--r-md);color:var(--txt2);font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .22s;">
+        <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><path d="M5 13V8l-2-3h10l-2 3v5M6 13h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>غربالگری سبک زندگی</span>
+        <span class="st-tab-sub" style="font-size:.62rem;font-weight:700;background:rgba(12,35,64,.08);padding:2px 7px;border-radius:100px;">بدون آزمایش</span>
+      </button>
+    </div>
+
+    <!-- ───── CLINICAL PANE ───── -->
+    <sc-if value="{{ clinicalActive }}" hint-placeholder-val="{{ true }}">
+    <div style="animation:stPaneIn .3s ease-out;">
+
+      <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:14px;margin-bottom:14px;">
+
+        <!-- Patient card -->
+        <div style="background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);padding:1.3rem;backdrop-filter:blur(20px) saturate(140%);box-shadow:0 14px 38px rgba(13,42,72,.10),inset 0 1px 0 rgba(255,255,255,.7);">
+          <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid rgba(180,200,220,.35);">
+            <span style="width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.8);"><svg viewBox="0 0 16 16" fill="none" width="15"><circle cx="8" cy="5" r="3" stroke="#185FA5" stroke-width="1.3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#185FA5" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+            <span style="font-size:.95rem;font-weight:800;color:var(--st-navy);">اطلاعات پایه بیمار</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;">
+            <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+              <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">سن <span style="color:var(--st-red);">*</span></label>
+              <input type="number" inputmode="numeric" placeholder="۳۵" onInput="{{ onAge }}" style="width:100%;box-sizing:border-box;padding:.7rem .85rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)">
+            </div>
+            <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+              <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">جنسیت <span style="color:var(--st-red);">*</span></label>
+              <select onChange="{{ onGender }}" style="width:100%;box-sizing:border-box;padding:.7rem 2rem .7rem .85rem;background:rgba(255,255,255,.78) url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M5 7L0 0h10z' fill='%238aa0b6'/%3E%3C/svg%3E&quot;) no-repeat left .8rem center;border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;direction:rtl;text-align:right;">
+                <option value="male">مرد</option>
+                <option value="female">زن</option>
+              </select>
+            </div>
+            <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+              <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">قد <span style="color:var(--st-red);">*</span></label>
+              <div style="position:relative;">
+                <input type="number" inputmode="decimal" placeholder="170" onInput="{{ onHeight }}" style="width:100%;box-sizing:border-box;padding:.7rem .85rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)">
+                <span style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--txt3);font-weight:700;pointer-events:none;">cm</span>
+              </div>
+            </div>
+            <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+              <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">وزن <span style="color:var(--st-red);">*</span></label>
+              <div style="position:relative;">
+                <input type="number" inputmode="decimal" placeholder="75" onInput="{{ onWeight }}" style="width:100%;box-sizing:border-box;padding:.7rem .85rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)">
+                <span style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--txt3);font-weight:700;pointer-events:none;">kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BMI box -->
+          <sc-if value="{{ showBmi }}" hint-placeholder-val="{{ false }}">
+          <div style="background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(8,145,178,.06));border:1px solid rgba(16,185,129,.3);border-radius:var(--r-md);padding:.75rem 1rem;margin-top:.85rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+              <div><div style="font-size:.72rem;color:#0a7a5e;font-weight:600;">BMI — محاسبه خودکار</div><div style="font-size:.8rem;font-weight:800;margin-top:.1rem;color:{{ bmiCatColor }};">{{ bmiCat }}</div></div>
+              <div style="font-size:1.45rem;font-weight:900;color:var(--st-green);letter-spacing:-.02em;">{{ bmiVal }}</div>
+            </div>
+            <div style="height:7px;background:rgba(180,200,220,.3);border-radius:100px;overflow:hidden;"><div style="height:100%;border-radius:100px;background:linear-gradient(90deg,#10b981,#f59e0b,#f97316,#dc2626);transition:width .5s ease;width:{{ bmiBar }};"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--txt3);margin-top:.3rem;"><span>کم‌وزن</span><span>طبیعی</span><span>اضافه‌وزن</span><span>چاقی</span></div>
+          </div>
+          </sc-if>
+        </div>
+
+        <!-- Waist card -->
+        <div style="display:flex;flex-direction:column;background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);padding:1.3rem;backdrop-filter:blur(20px) saturate(140%);box-shadow:0 14px 38px rgba(13,42,72,.10),inset 0 1px 0 rgba(255,255,255,.7);">
+          <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid rgba(180,200,220,.35);">
+            <span style="width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#cffaf0,#e1f5ee);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.8);"><svg viewBox="0 0 16 16" fill="none" width="15"><path d="M2 8h12M2 11h12M2 5h12" stroke="#0F6E56" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+            <span style="font-size:.95rem;font-weight:800;color:var(--st-navy);">دور کمر</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.45rem;font-size:.74rem;color:var(--txt2);background:rgba(8,145,178,.06);border:1px solid rgba(8,145,178,.16);border-radius:12px;padding:.5rem .75rem;margin-bottom:.85rem;">
+            <svg viewBox="0 0 12 12" fill="none" width="12" height="12" style="flex-shrink:0;"><circle cx="6" cy="6" r="4.5" stroke="#0891b2" stroke-width="1.2"/><path d="M6 5v3" stroke="#0891b2" stroke-width="1.3" stroke-linecap="round"/><circle cx="6" cy="4" r=".5" fill="#0891b2"/></svg>
+            اندازه‌گیری در بالاترین نقطه استخوان لگن
+          </div>
+          <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+            <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">دور کمر <span style="color:var(--st-red);">*</span></label>
+            <div style="position:relative;">
+              <input type="number" inputmode="decimal" placeholder="88" onInput="{{ onWaist }}" style="width:100%;box-sizing:border-box;padding:.7rem .85rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)">
+              <span style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--txt3);font-weight:700;pointer-events:none;">cm</span>
+            </div>
+          </div>
+          <div style="margin-top:auto;padding-top:.9rem;display:flex;flex-direction:column;gap:.35rem;">
+            <div style="display:flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--txt2);"><span style="width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0;"></span>مرد: طبیعی &lt; ۹۴ cm</div>
+            <div style="display:flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--txt2);"><span style="width:7px;height:7px;border-radius:50%;background:#534AB7;flex-shrink:0;"></span>زن: طبیعی &lt; ۸۰ cm</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab card -->
+      <div style="background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);padding:1.3rem;backdrop-filter:blur(20px) saturate(140%);box-shadow:0 14px 38px rgba(13,42,72,.10),inset 0 1px 0 rgba(255,255,255,.7);margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid rgba(180,200,220,.35);">
+          <span style="width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#ede9fe,#f5f3ff);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.8);"><svg viewBox="0 0 16 16" fill="none" width="15"><path d="M6 2v6l-2.5 4.5h9L10 8V2M5 2h6" stroke="#534AB7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span style="font-size:.95rem;font-weight:800;color:var(--st-navy);flex:1;">مقادیر آزمایشگاهی</span>
+          <span style="background:#eff6ff;color:#185FA5;border:1px solid #bfdbfe;border-radius:100px;padding:3px 10px;font-size:10.5px;font-weight:700;">آزمایش خون اخیر</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.85rem;">
+          <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+            <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">تری‌گلیسرید <span style="color:var(--st-red);">*</span></label>
+            <div style="position:relative;display:flex;align-items:center;">
+              <input type="number" inputmode="numeric" placeholder="150" onInput="{{ onTg }}" style="flex:1;width:100%;box-sizing:border-box;padding:.7rem .85rem .7rem 4.2rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)">
+              <div style="position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;padding:0 .65rem;background:rgba(8,145,178,.08);border-left:1px solid rgba(8,145,178,.2);border-radius:0 var(--r-md) var(--r-md) 0;font-size:.7rem;font-weight:700;color:#185FA5;font-family:monospace;pointer-events:none;">mg/dL</div>
+            </div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.1rem;"><span style="font-size:.68rem;color:#1D9E75;font-weight:700;">طبیعی: &lt;۱۵۰</span><span style="font-size:.68rem;color:#b45309;font-weight:700;">بالا: &gt;۲۰۰</span></div>
+          </div>
+          <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+            <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">GGT — گاما گلوتامیل ترانسفراز <span style="color:var(--st-red);">*</span></label>
+            <div style="position:relative;display:flex;align-items:center;">
+              <input type="number" inputmode="numeric" placeholder="35" onInput="{{ onGgt }}" style="flex:1;width:100%;box-sizing:border-box;padding:.7rem .85rem .7rem 4.2rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)">
+              <div style="position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;padding:0 .65rem;background:rgba(8,145,178,.08);border-left:1px solid rgba(8,145,178,.2);border-radius:0 var(--r-md) var(--r-md) 0;font-size:.7rem;font-weight:700;color:#185FA5;font-family:monospace;pointer-events:none;">U/L</div>
+            </div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.1rem;"><span style="font-size:.68rem;color:#1D9E75;font-weight:700;">مرد: &lt;۵۵</span><span style="font-size:.68rem;color:#1D9E75;font-weight:700;">زن: &lt;۳۸</span></div>
+          </div>
+        </div>
+
+        <!-- FLI live preview -->
+        <sc-if value="{{ showFli }}" hint-placeholder-val="{{ false }}">
+        <div style="background:rgba(8,145,178,.06);border:1px solid rgba(8,145,178,.2);border-radius:var(--r-md);padding:.85rem 1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.45rem;">
+            <div style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:700;color:#185FA5;"><svg viewBox="0 0 14 14" fill="none" width="13" height="13"><rect x="2" y="9" width="2.5" height="4" rx=".5" fill="#185FA5"/><rect x="5.75" y="6" width="2.5" height="7" rx=".5" fill="#185FA5"/><rect x="9.5" y="3" width="2.5" height="10" rx=".5" fill="#185FA5"/></svg>پیش‌نمایش شاخص FLI</div>
+            <div style="display:flex;align-items:baseline;gap:.15rem;"><span style="font-size:1.25rem;font-weight:900;color:{{ fliColor }};">{{ fliVal }}</span><span style="font-size:.74rem;color:var(--txt3);">/ 100</span></div>
+          </div>
+          <div style="height:9px;position:relative;background:rgba(140,160,180,.16);border-radius:100px;overflow:hidden;margin-bottom:.3rem;">
+            <div style="position:absolute;inset:0;display:flex;"><div style="width:30%;background:rgba(16,185,129,.16);"></div><div style="width:30%;background:rgba(245,158,11,.15);"></div><div style="width:20%;background:rgba(249,115,22,.13);"></div><div style="width:20%;background:rgba(220,38,38,.12);"></div></div>
+            <div style="position:absolute;top:0;left:0;height:100%;border-radius:100px;transition:width .55s cubic-bezier(.4,0,.2,1),background .4s;width:{{ fliBar }};background:{{ fliColor }};"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--txt3);"><span>۰</span><span>۳۰</span><span>۶۰</span><span>۸۰</span><span>۱۰۰</span></div>
+        </div>
+        </sc-if>
+      </div>
+
+      <button onClick="{{ onCalcClinical }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;padding:1.05rem 1.5rem;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:var(--r-lg);font-family:inherit;font-size:1.02rem;font-weight:800;cursor:pointer;box-shadow:0 14px 36px rgba(8,145,178,.34),inset 0 1px 0 rgba(255,255,255,.22);transition:all .22s;" style-hover="transform:translateY(-2px);box-shadow:0 20px 46px rgba(8,145,178,.44),inset 0 1px 0 rgba(255,255,255,.22)">
+        <svg viewBox="0 0 16 16" fill="none" width="16" height="16"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        تحلیل بالینی و محاسبه گرید کبد چرب
+        <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><path d="M10 7H4M7 4l-3 3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    </sc-if>
+
+    <!-- ───── LIFESTYLE PANE ───── -->
+    <sc-if value="{{ lifestyleActive }}" hint-placeholder-val="{{ false }}">
+    <div style="animation:stPaneIn .3s ease-out;">
+      <div style="display:flex;align-items:flex-start;gap:.55rem;background:rgba(245,158,11,.09);border:1px solid rgba(245,158,11,.3);border-radius:var(--r-md);padding:.85rem 1rem;margin-bottom:14px;font-size:.82rem;color:#92400e;line-height:1.7;">
+        <svg viewBox="0 0 14 14" fill="none" width="14" height="14" style="flex-shrink:0;margin-top:2px;"><circle cx="7" cy="7" r="5.5" stroke="#92400e" stroke-width="1.2"/><path d="M7 5v4" stroke="#92400e" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="4" r=".5" fill="#92400e"/></svg>
+        این روش برای کسانی است که آزمایش خون اخیر ندارند. نتیجه یک <strong>تخمین کیفی</strong> از سطح ریسک خواهد بود.
+      </div>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);padding:1.3rem;backdrop-filter:blur(20px) saturate(140%);box-shadow:0 14px 38px rgba(13,42,72,.10),inset 0 1px 0 rgba(255,255,255,.7);margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid rgba(180,200,220,.35);">
+          <span style="width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 16 16" fill="none" width="15"><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#185FA5" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="5" r="3" stroke="#185FA5" stroke-width="1.3"/></svg></span>
+          <span style="font-size:.95rem;font-weight:800;color:var(--st-navy);">اندازه‌های بدنی</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;">
+          <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+            <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">جنسیت <span style="color:var(--st-red);">*</span></label>
+            <select onChange="{{ onLsGender }}" style="width:100%;box-sizing:border-box;padding:.7rem 2rem .7rem .85rem;background:rgba(255,255,255,.78) url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M5 7L0 0h10z' fill='%238aa0b6'/%3E%3C/svg%3E&quot;) no-repeat left .8rem center;border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;direction:rtl;text-align:right;"><option value="male">مرد</option><option value="female">زن</option></select>
+          </div>
+          <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+            <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">قد <span style="color:var(--st-red);">*</span></label>
+            <div style="position:relative;"><input type="number" inputmode="decimal" placeholder="170" onInput="{{ onLsHeight }}" style="width:100%;box-sizing:border-box;padding:.7rem .85rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)"><span style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--txt3);font-weight:700;pointer-events:none;">cm</span></div>
+          </div>
+          <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+            <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">وزن <span style="color:var(--st-red);">*</span></label>
+            <div style="position:relative;"><input type="number" inputmode="decimal" placeholder="75" onInput="{{ onLsWeight }}" style="width:100%;box-sizing:border-box;padding:.7rem .85rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)"><span style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--txt3);font-weight:700;pointer-events:none;">kg</span></div>
+          </div>
+          <div class="st-field" style="display:flex;flex-direction:column;gap:.35rem;">
+            <label style="font-size:.78rem;font-weight:700;color:var(--txt2);">دور کمر <span style="color:var(--st-red);">*</span></label>
+            <div style="position:relative;"><input type="number" inputmode="decimal" placeholder="88" onInput="{{ onLsWaist }}" style="width:100%;box-sizing:border-box;padding:.7rem .85rem;background:rgba(255,255,255,.78);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;direction:ltr;text-align:left;outline:none;transition:all .2s;box-shadow:inset 0 1px 3px rgba(13,42,72,.05);" style-focus="border-color:#0891b2;background:#fff;box-shadow:0 0 0 4px rgba(8,145,178,.15)"><span style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--txt3);font-weight:700;pointer-events:none;">cm</span></div>
+          </div>
+        </div>
+        <sc-if value="{{ showLsBmi }}" hint-placeholder-val="{{ false }}">
+        <div style="background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(8,145,178,.06));border:1px solid rgba(16,185,129,.3);border-radius:var(--r-md);padding:.75rem 1rem;margin-top:.85rem;display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:.72rem;color:#0a7a5e;font-weight:600;">BMI محاسبه‌شده</div><div style="font-size:.8rem;font-weight:800;margin-top:.1rem;color:{{ lsBmiCatColor }};">{{ lsBmiCat }}</div></div>
+          <div style="font-size:1.45rem;font-weight:900;color:var(--st-green);">{{ lsBmiVal }}</div>
+        </div>
+        </sc-if>
+      </div>
+
+      <!-- diabetes -->
+      <div style="background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);padding:1.3rem;backdrop-filter:blur(20px) saturate(140%);box-shadow:0 14px 38px rgba(13,42,72,.10),inset 0 1px 0 rgba(255,255,255,.7);margin-bottom:14px;">
+        <div style="font-size:.8rem;font-weight:800;color:var(--txt2);margin-bottom:.6rem;">وضعیت دیابت نوع ۲ <span style="color:var(--st-red);">*</span></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">
+          <button class="st-opt" data-active="{{ db_0 }}" data-group="diabetes" data-val="0" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.4rem;line-height:1;">✅</span><span style="font-size:.76rem;font-weight:800;color:var(--txt1);">ندارم</span></button>
+          <button class="st-opt" data-active="{{ db_1 }}" data-group="diabetes" data-val="1" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.4rem;line-height:1;">⚠️</span><span style="font-size:.76rem;font-weight:800;color:var(--txt1);">پیش‌دیابت</span></button>
+          <button class="st-opt" data-active="{{ db_2 }}" data-group="diabetes" data-val="2" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.4rem;line-height:1;">🩸</span><span style="font-size:.76rem;font-weight:800;color:var(--txt1);">دیابت نوع ۲</span></button>
+        </div>
+      </div>
+
+      <!-- habits -->
+      <div style="background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);padding:1.3rem;backdrop-filter:blur(20px) saturate(140%);box-shadow:0 14px 38px rgba(13,42,72,.10),inset 0 1px 0 rgba(255,255,255,.7);margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:1.1rem;padding-bottom:.75rem;border-bottom:1px solid rgba(180,200,220,.35);">
+          <span style="width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#dcfce7,#f0fdf4);display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 16 16" fill="none" width="15"><path d="M8 3c0 0-5 2.5-5 6.5 0 2.8 2.2 4.5 5 4.5s5-1.7 5-4.5C13 5.5 8 3 8 3z" stroke="#3B6D11" stroke-width="1.3"/><path d="M8 7v5" stroke="#3B6D11" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+          <span style="font-size:.95rem;font-weight:800;color:var(--st-navy);">عادات سبک زندگی</span>
+        </div>
+
+        <div style="margin-bottom:1.1rem;">
+          <div style="font-size:.8rem;font-weight:800;color:var(--txt2);margin-bottom:.55rem;">فعالیت بدنی هفتگی <span style="color:var(--st-red);">*</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">
+            <button class="st-opt" data-active="{{ ac_0 }}" data-group="activity" data-val="0" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🏅</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">فعال</span><span style="font-size:.6rem;color:var(--txt3);">+۱۵۰ دقیقه</span></button>
+            <button class="st-opt" data-active="{{ ac_1 }}" data-group="activity" data-val="1" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🚶</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">نیمه‌فعال</span><span style="font-size:.6rem;color:var(--txt3);">۶۰–۱۵۰ دقیقه</span></button>
+            <button class="st-opt" data-active="{{ ac_2 }}" data-group="activity" data-val="2" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🛋️</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">کم‌تحرک</span><span style="font-size:.6rem;color:var(--txt3);">زیر ۶۰ دقیقه</span></button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.1rem;">
+          <div style="font-size:.8rem;font-weight:800;color:var(--txt2);margin-bottom:.55rem;">کیفیت رژیم غذایی <span style="color:var(--st-red);">*</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">
+            <button class="st-opt" data-active="{{ di_0 }}" data-group="diet" data-val="0" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🥗</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">سالم</span><span style="font-size:.6rem;color:var(--txt3);">کم‌چرب، سبزیجات</span></button>
+            <button class="st-opt" data-active="{{ di_1 }}" data-group="diet" data-val="1" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🍽️</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">متوسط</span><span style="font-size:.6rem;color:var(--txt3);">ترکیبی</span></button>
+            <button class="st-opt" data-active="{{ di_2 }}" data-group="diet" data-val="2" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🍔</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">ناسالم</span><span style="font-size:.6rem;color:var(--txt3);">پرچرب، فست‌فود</span></button>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:.8rem;font-weight:800;color:var(--txt2);margin-bottom:.55rem;">مصرف الکل <span style="color:var(--st-red);">*</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">
+            <button class="st-opt" data-active="{{ al_0 }}" data-group="alcohol" data-val="0" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🚫</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">هیچ</span></button>
+            <button class="st-opt" data-active="{{ al_1 }}" data-group="alcohol" data-val="1" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">🍷</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">گاهی</span></button>
+            <button class="st-opt" data-active="{{ al_2 }}" data-group="alcohol" data-val="2" onClick="{{ onOpt }}" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.85rem .4rem;background:rgba(255,255,255,.7);border:1.5px solid rgba(180,200,220,.4);border-radius:var(--r-md);cursor:pointer;font-family:inherit;transition:all .2s;"><span style="font-size:1.35rem;line-height:1;">⚠️</span><span style="font-size:.74rem;font-weight:800;color:var(--txt1);">منظم</span></button>
+          </div>
+        </div>
+      </div>
+
+      <button onClick="{{ onCalcLifestyle }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;padding:1.05rem 1.5rem;background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;border-radius:var(--r-lg);font-family:inherit;font-size:1.02rem;font-weight:800;cursor:pointer;box-shadow:0 14px 36px rgba(5,150,105,.34),inset 0 1px 0 rgba(255,255,255,.22);transition:all .22s;" style-hover="transform:translateY(-2px);box-shadow:0 20px 46px rgba(5,150,105,.44),inset 0 1px 0 rgba(255,255,255,.22)">
+        <svg viewBox="0 0 16 16" fill="none" width="16" height="16"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        ارزیابی ریسک و تخمین گرید کبد چرب
+        <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><path d="M10 7H4M7 4l-3 3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    </sc-if>
+
+  </div>
+  </sc-if>
+
+  <!-- ═══════ LOADING ═══════ -->
+  <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;justify-content:center;padding:4rem 1rem;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;background:var(--glass-2);border:1px solid var(--glass-bd);border-radius:var(--r-xl);padding:2.6rem 2.4rem;backdrop-filter:blur(24px) saturate(140%);box-shadow:0 24px 60px rgba(8,145,178,.18),inset 0 1px 0 rgba(255,255,255,.8);text-align:center;animation:stGateIn .4s ease-out;">
+      <div style="width:76px;height:76px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(8,145,178,.14);"></div>
+        <div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:#0891b2;border-right-color:#22d3ee;animation:stSpin .8s linear infinite;"></div>
+        <svg viewBox="0 0 24 24" fill="none" width="26" height="26"><path d="M2 12L6 12L8 5L10 19L12 9L14 14.5L16 11L18 13L22 12" stroke="#0891b2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:1rem;font-weight:800;color:var(--st-navy);">تحلیل داده‌های بالینی</div>
+      <div style="font-size:.8rem;color:var(--st-teal);min-height:1em;font-weight:600;">{{ loaderStep }}</div>
+      <div style="display:flex;gap:.4rem;"><span style="width:7px;height:7px;border-radius:50%;background:#0891b2;animation:stDot 1.4s ease-in-out infinite;"></span><span style="width:7px;height:7px;border-radius:50%;background:#0891b2;animation:stDot 1.4s ease-in-out .2s infinite;"></span><span style="width:7px;height:7px;border-radius:50%;background:#0891b2;animation:stDot 1.4s ease-in-out .4s infinite;"></span></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ═══════ LEAD GATE ═══════ -->
+  <sc-if value="{{ isGate }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;justify-content:center;padding:1.5rem .5rem;">
+    <div style="position:relative;width:100%;max-width:460px;background:var(--glass-2);border:1px solid var(--glass-bd);border-radius:var(--r-xl);padding:2.2rem 1.9rem 1.7rem;backdrop-filter:blur(26px) saturate(150%);box-shadow:0 30px 70px rgba(8,145,178,.18),inset 0 1px 0 rgba(255,255,255,.8);animation:stGateIn .42s cubic-bezier(.34,1.4,.64,1);">
+      <button onClick="{{ onGateClose }}" aria-label="بستن" style="position:absolute;top:1rem;left:1rem;width:30px;height:30px;border-radius:50%;background:rgba(140,160,180,.14);border:1px solid rgba(140,160,180,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt3);transition:all .2s;" style-hover="background:rgba(220,38,38,.1);color:#dc2626">
+        <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><path d="M3 3l8 8M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:.45rem;margin-bottom:1.1rem;">
+        <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#dbeafe,#e0f2fe);border:1.5px solid rgba(8,145,178,.22);display:flex;align-items:center;justify-content:center;color:#0891b2;box-shadow:0 8px 22px rgba(8,145,178,.18),inset 0 1px 0 rgba(255,255,255,.8);">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div style="font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0891b2;">نتایج آماده است</div>
+      </div>
+      <h2 style="font-size:1.2rem;font-weight:900;color:var(--st-navy);text-align:center;margin:0 0 .4rem;">برای دریافت گزارش کامل وارد شوید</h2>
+      <p style="font-size:.82rem;color:var(--txt2);text-align:center;line-height:1.7;margin:0 0 1.1rem;">با ثبت‌نام رایگان، دسترسی فوری به گزارش تخصصی خود را دریافت کنید</p>
+      <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.22);border-radius:var(--r-md);padding:.85rem 1rem;margin-bottom:1.1rem;display:flex;flex-direction:column;gap:.45rem;">
+        <div style="display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:#065f46;"><div style="width:19px;height:19px;border-radius:50%;background:#10b981;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:900;flex-shrink:0;">✓</div>گیج ریسک تعاملی با انیمیشن</div>
+        <div style="display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:#065f46;"><div style="width:19px;height:19px;border-radius:50%;background:#10b981;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:900;flex-shrink:0;">✓</div>برنامه رژیم غذایی اختصاصی</div>
+        <div style="display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:#065f46;"><div style="width:19px;height:19px;border-radius:50%;background:#10b981;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:900;flex-shrink:0;">✓</div>توصیه‌های پزشکی مرحله‌به‌مرحله</div>
+      </div>
+      <div style="margin-bottom:.85rem;">
+        <label style="display:block;font-size:.78rem;font-weight:700;color:var(--txt2);margin-bottom:.35rem;">نام و نام‌خانوادگی <span style="color:var(--st-red);">*</span></label>
+        <input type="text" placeholder="مثلاً: علی رضایی" onInput="{{ onLeadName }}" style="width:100%;box-sizing:border-box;padding:.75rem .9rem;background:rgba(255,255,255,.85);border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);color:var(--txt1);font-family:inherit;font-size:.95rem;outline:none;transition:all .2s;" style-focus="border-color:#0891b2;box-shadow:0 0 0 4px rgba(8,145,178,.15)">
+        <span style="font-size:.7rem;color:var(--st-red);min-height:1em;display:block;margin-top:.2rem;">{{ leadNameErr }}</span>
+      </div>
+      <div style="margin-bottom:.5rem;">
+        <label style="display:block;font-size:.78rem;font-weight:700;color:var(--txt2);margin-bottom:.35rem;">شماره موبایل <span style="color:var(--st-red);">*</span></label>
+        <div style="display:flex;align-items:stretch;border:1.5px solid rgba(160,180,200,.45);border-radius:var(--r-md);overflow:hidden;background:rgba(255,255,255,.85);">
+          <div style="display:flex;align-items:center;padding:0 .75rem;background:rgba(8,145,178,.07);border-left:1px solid rgba(160,180,200,.3);font-size:.74rem;font-weight:800;color:#0e7490;white-space:nowrap;">🇮🇷 +98</div>
+          <input type="tel" dir="ltr" inputmode="tel" placeholder="09XXXXXXXXX" onInput="{{ onLeadPhone }}" value="{{ leadPhone }}" style="flex:1;border:none;outline:none;background:transparent;padding:.75rem .9rem;font-family:inherit;font-size:.95rem;color:var(--txt1);direction:ltr;text-align:left;">
+        </div>
+        <span style="font-size:.7rem;color:var(--st-red);min-height:1em;display:block;margin-top:.2rem;">{{ leadPhoneErr }}</span>
+      </div>
+      <button onClick="{{ onGateSubmit }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.95rem;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;border:none;border-radius:var(--r-md);font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;box-shadow:0 12px 30px rgba(8,145,178,.32),inset 0 1px 0 rgba(255,255,255,.22);transition:all .22s;" style-hover="transform:translateY(-2px);box-shadow:0 18px 40px rgba(8,145,178,.42),inset 0 1px 0 rgba(255,255,255,.22)">
+        <svg viewBox="0 0 22 22" fill="none" width="17" height="17"><rect x="3" y="11" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M7 11V7.5a4 4 0 017.9-.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        مشاهده نتایج کامل — رایگان
+      </button>
+      <p style="display:flex;align-items:center;justify-content:center;gap:.3rem;font-size:.66rem;color:var(--txt3);margin:.75rem 0 0;text-align:center;">
+        <svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M6 1L1.5 3v3c0 2.5 2 4.7 4.5 5.5C8.5 10.7 10.5 8.5 10.5 6V3L6 1z" stroke="currentColor" stroke-width="1.2"/></svg>
+        اطلاعات شما محرمانه است و هرگز با اشخاص ثالث به اشتراک گذاشته نخواهد شد
+      </p>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ═══════ RESULTS ═══════ -->
+  <sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+  <div style="animation:stResIn .55s ease-out;">
+
+    <!-- Result hero — dynamic severity glass -->
+    <div ref="{{ pctRef }}" style="position:relative;overflow:hidden;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:2rem 1.6rem 1.7rem;text-align:center;border:1px solid {{ gradeBorder }};border-bottom:none;backdrop-filter:blur(22px) saturate(150%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7);background:{{ resultBg }};">
+      <div aria-hidden="true" style="position:absolute;top:-10px;right:-10px;color:{{ gradeColor }};opacity:.1;pointer-events:none;"><svg viewBox="0 0 80 80" fill="none" width="96" height="96"><circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="3"/><path d="M8 40L18 40L22 26L26 54L30 38L34 45L38 41L42 43L46 40L72 40" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div style="font-size:.78rem;color:var(--txt2);margin-bottom:.3rem;">گزارش تخصصی برای</div>
+      <h2 style="font-size:1.6rem;font-weight:900;color:var(--st-navy);margin:0 0 .65rem;">{{ resName }}</h2>
+      <span style="display:inline-block;padding:.4rem 1.3rem;border-radius:100px;font-size:.85rem;font-weight:800;color:#fff;margin-bottom:.7rem;background:{{ gradeColor }};box-shadow:0 8px 22px {{ gradeGlow }};">{{ resBadge }}</span>
+      <p style="font-size:.86rem;color:var(--txt2);line-height:1.85;max-width:540px;margin:0 auto;">{{ resDesc }}</p>
+    </div>
+
+    <!-- Gauge + stats -->
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:1px;background:rgba(180,200,220,.3);border-left:1px solid {{ gradeBorder }};border-right:1px solid {{ gradeBorder }};">
+      <div style="background:var(--glass-2);padding:1.4rem 1.2rem;display:flex;flex-direction:column;align-items:stretch;gap:1.1rem;backdrop-filter:blur(20px);direction:rtl;text-align:right;">
+        <!-- title row -->
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#cffaf0,#e1f5ee);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg viewBox="0 0 14 14" fill="none" width="13"><rect x="1" y="8" width="3" height="5" rx=".5" fill="#0F6E56"/><rect x="5.5" y="5" width="3" height="8" rx=".5" fill="#0F6E56"/><rect x="10" y="2" width="3" height="11" rx=".5" fill="#0F6E56"/></svg></span>
+          <span style="font-size:.88rem;font-weight:800;color:var(--st-navy);">سطح ریسک</span>
+        </div>
+        <!-- gauge: arc + centred readout share one grid cell (no absolute positioning) -->
+        <div style="display:grid;justify-items:center;align-items:end;justify-content:center;margin:0 auto;">
+          <svg viewBox="0 0 208 116" width="208" height="116" style="grid-area:1/1;display:block;"><path d="M16 104 A 88 88 0 0 1 192 104" fill="none" stroke="rgba(180,200,220,.3)" stroke-width="15" stroke-linecap="round"/><path d="M16 104 A 88 88 0 0 1 192 104" fill="none" stroke="{{ gradeColor }}" stroke-width="15" stroke-linecap="round" stroke-dasharray="276.5" style="--goff:{{ gaugeOffset }};animation:stGauge 1.4s cubic-bezier(.4,0,.2,1) forwards;"></path></svg>
+          <div style="grid-area:1/1;display:flex;flex-direction:column;align-items:center;gap:2px;padding-bottom:8px;pointer-events:none;">
+            <div class="st-gauge-num" style="font-size:1.7rem;font-weight:900;color:var(--st-navy);line-height:1;direction:ltr;unicode-bidi:isolate;white-space:nowrap;">{{ gaugePct }}%</div>
+            <div style="font-size:.64rem;color:var(--txt3);">ریسک کلی</div>
+          </div>
+        </div>
+        <!-- legend: even row, dot precedes label, fixed gap -->
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1rem;font-size:.7rem;color:var(--txt2);">
+          <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#10b981;flex-shrink:0;"></span>طبیعی</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>خفیف</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#f97316;flex-shrink:0;"></span>متوسط</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#dc2626;flex-shrink:0;"></span>شدید</span>
+        </div>
+      </div>
+      <div style="background:var(--glass-2);display:grid;grid-template-rows:1fr 1fr 1fr;backdrop-filter:blur(20px);">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center;border-bottom:1px solid rgba(180,200,220,.3);"><span style="font-size:1.2rem;margin-bottom:.2rem;">⚖️</span><div style="font-size:1rem;font-weight:900;color:{{ bmiCatColor }};">{{ resBmi }}</div><div style="font-size:.62rem;color:var(--txt3);margin-top:.1rem;">BMI — {{ bmiCat }}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center;border-bottom:1px solid rgba(180,200,220,.3);"><span style="font-size:1.2rem;margin-bottom:.2rem;">📈</span><div style="font-size:1rem;font-weight:900;color:var(--st-navy);">{{ resScore }}</div><div style="font-size:.62rem;color:var(--txt3);margin-top:.1rem;">{{ resScoreLbl }}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center;"><span style="font-size:1.2rem;margin-bottom:.2rem;">🏥</span><div style="font-size:1rem;font-weight:900;color:{{ gradeColor }};">گرید {{ gradeNum }}</div><div style="font-size:.62rem;color:var(--txt3);margin-top:.1rem;">گرید تشخیصی</div></div>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div style="background:var(--glass-2);border:1px solid {{ gradeBorder }};border-top:none;border-radius:0 0 var(--r-xl) var(--r-xl);padding:1.4rem;margin-bottom:14px;backdrop-filter:blur(20px);">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;">
+        <span style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#cffaf0,#e1f5ee);display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 14 14" fill="none" width="13"><path d="M2 3h10v1.5L8 9v4H6V9L2 4.5V3z" stroke="#0F6E56" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
+        <span style="font-size:.92rem;font-weight:800;color:var(--st-navy);">توصیه‌های اختصاصی بر اساس نتایج شما</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.85rem;">
+        <div style="background:rgba(255,255,255,.6);border:1px solid rgba(180,200,220,.35);border-radius:var(--r-md);padding:1rem;">
+          <h4 style="font-size:.82rem;font-weight:800;color:var(--st-navy);margin:0 0 .6rem;padding-bottom:.45rem;border-bottom:1px solid rgba(180,200,220,.35);">🥗 رژیم غذایی توصیه‌شده</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.45rem;">
+            <sc-for list="{{ recDiet }}" as="item" hint-placeholder-count="3"><li style="font-size:.76rem;color:var(--txt2);line-height:1.65;padding-right:1.1rem;position:relative;"><span style="position:absolute;right:0;top:.2rem;color:#0891b2;font-size:.65rem;">←</span>{{ item }}</li></sc-for>
+          </ul>
+        </div>
+        <div style="background:rgba(255,255,255,.6);border:1px solid rgba(180,200,220,.35);border-radius:var(--r-md);padding:1rem;">
+          <h4 style="font-size:.82rem;font-weight:800;color:var(--st-navy);margin:0 0 .6rem;padding-bottom:.45rem;border-bottom:1px solid rgba(180,200,220,.35);">🏃 فعالیت بدنی</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.45rem;">
+            <sc-for list="{{ recActivity }}" as="item" hint-placeholder-count="3"><li style="font-size:.76rem;color:var(--txt2);line-height:1.65;padding-right:1.1rem;position:relative;"><span style="position:absolute;right:0;top:.2rem;color:#0891b2;font-size:.65rem;">←</span>{{ item }}</li></sc-for>
+          </ul>
+        </div>
+        <div style="background:rgba(255,255,255,.6);border:1px solid rgba(180,200,220,.35);border-radius:var(--r-md);padding:1rem;">
+          <h4 style="font-size:.82rem;font-weight:800;color:var(--st-navy);margin:0 0 .6rem;padding-bottom:.45rem;border-bottom:1px solid rgba(180,200,220,.35);">⚕️ توصیه‌های پزشکی</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.45rem;">
+            <sc-for list="{{ recMedical }}" as="item" hint-placeholder-count="3"><li style="font-size:.76rem;color:var(--txt2);line-height:1.65;padding-right:1.1rem;position:relative;"><span style="position:absolute;right:0;top:.2rem;color:#0891b2;font-size:.65rem;">←</span>{{ item }}</li></sc-for>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIP CONVERSION LAYER: FibroScan CTA -->
+    <div style="position:relative;overflow:hidden;border-radius:var(--r-xl);padding:1.6rem 1.6rem;margin-bottom:14px;background:linear-gradient(115deg,rgba(12,35,64,.96),rgba(19,74,114,.92));box-shadow:0 18px 46px rgba(12,35,64,.28),inset 0 1px 0 rgba(255,255,255,.14);">
+      <div aria-hidden="true" style="position:absolute;top:-60px;left:-30px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(8,145,178,.4),transparent 70%);filter:blur(10px);"></div>
+      <div style="position:relative;display:grid;grid-template-columns:1fr auto;gap:1.4rem;align-items:center;">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#a5f3fc;border-radius:100px;padding:4px 11px;font-size:.7rem;font-weight:700;margin-bottom:.7rem;">
+            <svg viewBox="0 0 12 12" fill="none" width="11" height="11"><path d="M6 1L1.5 3v3c0 2.2 2 4.2 4.5 5C8.5 10.2 10.5 8.2 10.5 6V3L6 1z" stroke="currentColor" stroke-width="1.2"/><path d="M4 6l1.5 1.5L8 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {{ clinicName }}
+          </div>
+          <div style="font-size:1.15rem;font-weight:900;color:#fff;margin-bottom:.4rem;line-height:1.4;">گام بعدی: اسکن دقیق کبد با فیبرواسکن</div>
+          <p style="font-size:.84rem;color:rgba(255,255,255,.75);line-height:1.75;margin:0 0 .9rem;max-width:480px;">فیبرواسکن (FibroScan) سفتی و میزان چربی کبد را بدون نمونه‌برداری و در کمتر از ۱۰ دقیقه اندازه‌گیری می‌کند. برای ارزیابی دقیق نتیجه غربالگری خود، نوبت مشاوره تخصصی رزرو کنید.</p>
+          <div style="display:flex;gap:1.1rem;flex-wrap:wrap;">
+            <a href="tel:02100000000" style="display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:rgba(255,255,255,.82);text-decoration:none;"><svg viewBox="0 0 14 14" fill="none" width="13" height="13"><path d="M3 2h3l1.5 3.5-1.5 1c.5 1 1.5 2 2.5 2.5l1-1.5L13 9v3a1 1 0 01-1 1C5 13 1 9 1 3a1 1 0 011-1z" stroke="#22d3ee" stroke-width="1.2"/></svg>{{ phone }}</a>
+            <div style="display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:rgba(255,255,255,.82);"><svg viewBox="0 0 14 14" fill="none" width="13" height="13"><circle cx="7" cy="7" r="5.5" stroke="#22d3ee" stroke-width="1.2"/><path d="M7 4v3l2 1.5" stroke="#22d3ee" stroke-width="1.2" stroke-linecap="round"/></svg>شنبه تا پنجشنبه ۹ تا ۲۰</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.55rem;min-width:170px;">
+          <a href="#" style="display:flex;align-items:center;justify-content:center;gap:.45rem;padding:.85rem 1.2rem;background:linear-gradient(135deg,#0891b2,#22d3ee);color:#fff;border:none;border-radius:var(--r-md);font-family:inherit;font-size:.88rem;font-weight:800;cursor:pointer;text-decoration:none;box-shadow:0 12px 30px rgba(8,145,178,.4),inset 0 1px 0 rgba(255,255,255,.25);transition:all .2s;white-space:nowrap;" style-hover="transform:translateY(-2px);box-shadow:0 18px 40px rgba(8,145,178,.5),inset 0 1px 0 rgba(255,255,255,.25)">
+            <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M9 1v3M1.5 7h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            رزرو نوبت فیبرواسکن
+          </a>
+          <a href="#" style="display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.7rem 1.2rem;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:var(--r-md);font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;" style-hover="background:rgba(255,255,255,.18)">
+            دریافت گزارش PDF
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:.7rem;padding:.5rem 0 1rem;text-align:center;">
+      <p style="font-size:.72rem;color:var(--txt3);margin:0;">⚠️ این نتایج صرفاً جنبه غربالگری دارند و جایگزین معاینه پزشکی تخصصی نمی‌شوند.</p>
+      <button onClick="{{ onRecalc }}" style="padding:.55rem 1.4rem;background:rgba(255,255,255,.7);border:1px solid rgba(160,180,200,.35);border-radius:var(--r-md);color:var(--txt2);font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;" style-hover="background:#fff;border-color:#0891b2;color:#0e7490">↺ محاسبه مجدد</button>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ═══════ ACCORDION ═══════ -->
+  <div style="margin-bottom:14px;display:flex;flex-direction:column;gap:.5rem;">
+    <div style="background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);backdrop-filter:blur(16px);overflow:hidden;box-shadow:0 8px 24px rgba(13,42,72,.06);">
+      <button onClick="{{ onAcc1 }}" style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;cursor:pointer;background:transparent;border:none;width:100%;font-family:inherit;transition:background .15s;" style-hover="background:rgba(8,145,178,.04)">
+        <div style="display:flex;align-items:center;gap:.5rem;"><div style="width:28px;height:28px;border-radius:9px;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;font-size:14px;">🔬</div><div style="text-align:right;"><div style="font-size:.85rem;font-weight:700;color:var(--st-navy);">درباره محاسبه‌گر</div><div style="font-size:.7rem;color:var(--txt3);">فرمول FLI، دقت بالینی و منابع علمی</div></div></div>
+        <div style="display:flex;align-items:center;gap:.45rem;"><span style="font-size:.64rem;background:rgba(255,255,255,.8);border:1px solid rgba(180,200,220,.4);border-radius:100px;padding:2px 8px;color:var(--txt3);">Bedogni 2006</span><svg viewBox="0 0 12 12" fill="none" width="12" height="12" style="color:var(--txt3);transition:transform .22s;transform:rotate({{ acc1Rot }});"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </button>
+      <sc-if value="{{ acc1Open }}" hint-placeholder-val="{{ true }}"><div style="border-top:1px solid rgba(180,200,220,.3);"><p style="font-size:.8rem;color:var(--txt2);line-height:1.8;padding:.75rem 1rem;margin:0;">شاخص FLI بر اساس مقاله Bedogni و همکاران (۲۰۰۶) در مجله BMC Gastroenterology طراحی شده است. این شاخص با حساسیت ۸۷٪ و ویژگی ۸۶٪ وجود کبد چرب را پیش‌بینی می‌کند و شامل چهار متغیر بالینی: تری‌گلیسرید، BMI، GGT و دور کمر است.</p></div></sc-if>
+    </div>
+    <div style="background:var(--glass);border:1px solid var(--glass-bd);border-radius:var(--r-lg);backdrop-filter:blur(16px);overflow:hidden;box-shadow:0 8px 24px rgba(13,42,72,.06);">
+      <button onClick="{{ onAcc2 }}" style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;cursor:pointer;background:transparent;border:none;width:100%;font-family:inherit;transition:background .15s;" style-hover="background:rgba(8,145,178,.04)">
+        <div style="display:flex;align-items:center;gap:.5rem;"><div style="width:28px;height:28px;border-radius:9px;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;font-size:14px;">🔒</div><div style="text-align:right;"><div style="font-size:.85rem;font-weight:700;color:var(--st-navy);">حفظ حریم خصوصی</div><div style="font-size:.7rem;color:var(--txt3);">سیاست استفاده از داده‌ها</div></div></div>
+        <svg viewBox="0 0 12 12" fill="none" width="12" height="12" style="color:var(--txt3);transition:transform .22s;transform:rotate({{ acc2Rot }});"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <sc-if value="{{ acc2Open }}" hint-placeholder-val="{{ false }}"><div style="border-top:1px solid rgba(180,200,220,.3);"><p style="font-size:.8rem;color:var(--txt2);line-height:1.8;padding:.75rem 1rem;margin:0;">اطلاعات بالینی شما صرفاً برای محاسبه شاخص FLI استفاده می‌شود. اطلاعات تماس (نام و موبایل) تنها برای ارسال گزارش ذخیره می‌شود و هرگز با اشخاص ثالث به اشتراک گذاشته نخواهد شد.</p></div></sc-if>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div style="display:flex;align-items:flex-start;gap:.5rem;background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.28);border-radius:var(--r-md);padding:.65rem .9rem;margin-bottom:14px;font-size:.74rem;color:#92400e;line-height:1.65;">
+    <svg viewBox="0 0 14 14" fill="none" width="14" height="14" style="flex-shrink:0;margin-top:2px;"><path d="M7 1L1 13h12L7 1z" stroke="#BA7517" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6v3" stroke="#BA7517" stroke-width="1.3" stroke-linecap="round"/><circle cx="7" cy="11" r=".5" fill="#BA7517"/></svg>
+    این ابزار صرفاً جهت غربالگری اولیه طراحی شده است و جایگزین تشخیص و معاینه توسط پزشک متخصص نمی‌شود.
+  </div>
+
+  <!-- FOOTER -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 1.1rem;border-radius:var(--r-lg);background:linear-gradient(100deg,rgba(12,35,64,.94),rgba(19,74,114,.9));backdrop-filter:blur(10px);">
+    <div style="display:flex;align-items:center;gap:.45rem;font-size:11px;color:rgba(255,255,255,.5);"><div style="width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#0891b2,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:900;">ST</div>Powered by <strong style="color:rgba(255,255,255,.72);font-weight:700;">SignTeb</strong> Medical Plugin Suite</div>
+    <div style="display:flex;gap:1rem;"><a href="https://signteb.com" style="font-size:11px;color:rgba(255,255,255,.45);text-decoration:none;">signteb.com</a><a href="https://signteb.com/support" style="font-size:11px;color:rgba(255,255,255,.45);text-decoration:none;">Support</a></div>
+  </div>
+
+  </div><!-- /z-index layer -->
+
+  <!-- ═══════ SIGNTEB CONNECT HUB — floating ═══════ -->
+  <div style="position:fixed;bottom:22px;left:22px;z-index:9999;display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;">
+    <sc-if value="{{ hubOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:.5rem;">
+      <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;padding:.7rem 1.1rem;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;text-decoration:none;border-radius:100px;font-family:inherit;font-size:.84rem;font-weight:800;box-shadow:0 10px 28px rgba(37,211,102,.42),inset 0 1px 0 rgba(255,255,255,.25);animation:stHubItem .3s ease-out;white-space:nowrap;">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+        مشاوره واتساپ
+      </a>
+      <a href="tel:02100000000" style="display:flex;align-items:center;gap:.6rem;padding:.7rem 1.1rem;background:linear-gradient(135deg,#0891b2,#0e7490);color:#fff;text-decoration:none;border-radius:100px;font-family:inherit;font-size:.84rem;font-weight:800;box-shadow:0 10px 28px rgba(8,145,178,.42),inset 0 1px 0 rgba(255,255,255,.25);animation:stHubItem .3s ease-out .05s both;white-space:nowrap;">
+        <svg viewBox="0 0 14 14" fill="none" width="16" height="16"><path d="M3 2h3l1.5 3.5-1.5 1c.5 1 1.5 2 2.5 2.5l1-1.5L13 9v3a1 1 0 01-1 1C5 13 1 9 1 3a1 1 0 011-1z" stroke="#fff" stroke-width="1.3"/></svg>
+        تماس مستقیم
+      </a>
+    </div>
+    </sc-if>
+    <button onClick="{{ onToggleHub }}" aria-label="ارتباط با کلینیک" style="position:relative;width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#0c2340,#134a72);box-shadow:0 12px 30px rgba(12,35,64,.4),inset 0 1px 0 rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#fff;transition:transform .25s;" style-hover="transform:scale(1.06)">
+      <span aria-hidden="true" style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(8,145,178,.5);animation:stRing 2s ease-out infinite;"></span>
+      <svg viewBox="0 0 24 24" fill="none" width="26" height="26" style="transition:transform .25s;transform:rotate({{ hubRot }});"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:980,&quot;height&quot;:1400},&quot;clinicName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;کلینیک تخصصی گوارش و کبد دکتر حامد زمانی&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;۰۲۱۲۲۸۳۳۰۰۵&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;waNumber&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;989202053013 &quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = {
+    phase: 'form',        // form | loading | gate | results
+    tab: 'clinical',
+    f: { age:'', gender:'male', height:'', weight:'', waist:'', tg:'', ggt:'' },
+    ls: { gender:'male', height:'', weight:'', waist:'', diabetes:'0', activity:'0', diet:'0', alcohol:'0' },
+    lead: { name:'', phone:'' },
+    leadNameErr:'', leadPhoneErr:'',
+    result: null,
+    loaderStep: 'دریافت داده‌های بالینی...',
+    hubOpen: false,
+    acc1Open: true,
+    acc2Open: false,
+  };
+
+  /* ── ENGINE (faithful to plugin) ── */
+  bmi(h,w){ h=+h; w=+w; if(!h||!w||h<=0||w<=0) return 0; var m=h/100; return w/(m*m); }
+  fli(tg,bmi,ggt,waist){ tg=+tg;ggt=+ggt;waist=+waist; if(tg<=0||bmi<=0||ggt<=0||waist<=0) return null;
+    var mmol=tg/88.57; var x=0.953*Math.log(mmol)+0.139*bmi+0.718*Math.log(ggt)+0.053*waist-15.745;
+    var v=(Math.exp(x)/(1+Math.exp(x)))*100; return Math.min(100,Math.max(0,v)); }
+  lifestyleScore(bmi,waist,gender,d,a,di,al){ var s=0;
+    if(bmi>=30)s+=4; else if(bmi>=25)s+=2;
+    if(gender==='male'){ if(waist>102)s+=4; else if(waist>=94)s+=2; } else { if(waist>88)s+=4; else if(waist>=80)s+=2; }
+    s+=Math.min(2,parseInt(d,10)||0); s+=Math.min(2,parseInt(a,10)||0);
+    s+=Math.min(2,parseInt(di,10)||0); s+=Math.min(2,parseInt(al,10)||0); return s; }
+  fliGrade(v){ if(v<30)return 'grade_0'; if(v<60)return 'grade_1'; if(v<80)return 'grade_2'; return 'grade_3'; }
+  lifestyleGrade(s){ if(s<=4)return 'grade_1'; if(s<=9)return 'grade_2'; return 'grade_3'; }
+  bmiCategory(b){ if(b<18.5)return {label:'کم‌وزن',color:'#60a5fa'}; if(b<25)return {label:'طبیعی',color:'#10b981'};
+    if(b<30)return {label:'اضافه‌وزن',color:'#f59e0b'}; if(b<35)return {label:'چاقی درجه ۱',color:'#f97316'}; return {label:'چاقی شدید',color:'#dc2626'}; }
+  gradeColor(g){ return {grade_0:'#10b981',grade_1:'#f59e0b',grade_2:'#f97316',grade_3:'#dc2626'}[g]||'#f59e0b'; }
+  gradeInfo(g){ return {
+    grade_0:{num:0,en:'Normal',fa:'طبیعی',desc:'بر اساس شاخص‌های شما، احتمال کبد چرب پایین است و وضعیت متابولیک شما در محدوده سالم قرار دارد. با حفظ سبک زندگی فعلی، این وضعیت را پایدار نگه دارید.'},
+    grade_1:{num:1,en:'Mild',fa:'خفیف',desc:'نشانه‌هایی از تجمع خفیف چربی در کبد دیده می‌شود. این مرحله با اصلاح سبک زندگی و رژیم غذایی کاملاً قابل بازگشت است.'},
+    grade_2:{num:2,en:'Moderate',fa:'متوسط',desc:'تجمع متوسط چربی در کبد محتمل است. ارزیابی تخصصی، آزمایش‌های تکمیلی و پیگیری منظم پزشکی توصیه می‌شود.'},
+    grade_3:{num:3,en:'Severe',fa:'شدید',desc:'ریسک بالای کبد چرب پیشرفته وجود دارد. مراجعه به متخصص گوارش و کبد و انجام فیبرواسکن در اولویت قرار دارد.'},
+  }[g]; }
+  recs(g){ var R={
+    grade_0:{ diet:['ادامه مصرف سبزیجات و غلات کامل','محدود کردن قند و نوشیدنی‌های شیرین','مصرف منظم آب کافی'],
+      activity:['حفظ +۱۵۰ دقیقه فعالیت هفتگی','ترکیب هوازی و قدرتی','پیاده‌روی روزانه'],
+      medical:['کنترل سالانه شاخص‌های متابولیک','حفظ وزن در محدوده طبیعی','چکاپ دوره‌ای کبد'] },
+    grade_1:{ diet:['کاهش کربوهیدرات تصفیه‌شده','افزایش پروتئین کم‌چرب و سبزیجات','حذف فست‌فود و سرخ‌کردنی'],
+      activity:['افزایش فعالیت به ۱۵۰ دقیقه در هفته','۳۰ دقیقه پیاده‌روی تند روزانه','کاهش زمان نشستن'],
+      medical:['کاهش ۵ تا ۷ درصد وزن بدن','کنترل قند و چربی خون','پیگیری طی ۳ تا ۶ ماه'] },
+    grade_2:{ diet:['رژیم مدیترانه‌ای زیر نظر متخصص تغذیه','حذف کامل قند افزوده','افزایش امگا-۳ و فیبر'],
+      activity:['برنامه ورزشی منظم زیر نظر مربی','ترکیب تمرین هوازی و مقاومتی','هدف کاهش تدریجی وزن'],
+      medical:['مشاوره با متخصص گوارش و کبد','انجام آزمایش‌های عملکرد کبد','بررسی فیبرواسکن برای ارزیابی دقیق'] },
+    grade_3:{ diet:['رژیم درمانی سخت‌گیرانه زیر نظر پزشک','حذف کامل الکل و قند','کنترل دقیق کالری دریافتی'],
+      activity:['فعالیت بدنی تدریجی و کنترل‌شده','شروع با پیاده‌روی سبک روزانه','افزایش تدریجی زیر نظر پزشک'],
+      medical:['مراجعه فوری به متخصص گوارش و کبد','انجام فیبرواسکن و سونوگرافی','پایش منظم و درمان دارویی در صورت نیاز'] },
+  }; return R[g]; }
+
+  /* ── helpers ── */
+  faNum(s){ var m={'0':'۰','1':'۱','2':'۲','3':'۳','4':'۴','5':'۵','6':'۶','7':'۷','8':'۸','9':'۹'}; return String(s).replace(/[0-9]/g,function(d){return m[d];}); }
+
+  setF(k,v){ var f=Object.assign({},this.state.f); f[k]=v; this.setState({f:f}); }
+  setLs(k,v){ var l=Object.assign({},this.state.ls); l[k]=v; this.setState({ls:l}); }
+
+  runLoader(){
+    var steps=['دریافت داده‌های بالینی...','محاسبه شاخص FLI (Bedogni et al.)...','تحلیل ریسک‌فاکتورهای متابولیک...','بررسی معیارهای سبک زندگی...','تهیه گزارش پزشکی اختصاصی...','در حال آماده‌سازی نتایج...'];
+    var i=0; var self=this;
+    this._loaderTimer=setInterval(function(){ if(i<steps.length){ self.setState({loaderStep:steps[i]}); i++; } else { clearInterval(self._loaderTimer); } },520);
+  }
+
+  calculate(tab){
+    // light validation
+    if(tab==='clinical'){
+      var f=this.state.f;
+      if(!(+f.height>0&&+f.weight>0&&+f.waist>0&&+f.tg>0&&+f.ggt>0&&+f.age>0)){ return; }
+    } else {
+      var l=this.state.ls;
+      if(!(+l.height>0&&+l.weight>0&&+l.waist>0)){ return; }
+    }
+    this.setState({phase:'loading',loaderStep:'دریافت داده‌های بالینی...'});
+    this.runLoader();
+    var self=this;
+    clearTimeout(this._toGate);
+    this._toGate=setTimeout(function(){ clearInterval(self._loaderTimer); self.setState({phase:'gate'}); },3100);
+  }
+
+  buildResult(){
+    var tab=this.state.tab;
+    var info, grade, bmi, score, scoreLbl, gaugePct;
+    if(tab==='clinical'){
+      var f=this.state.f; bmi=this.bmi(f.height,f.weight);
+      var fli=this.fli(f.tg,bmi,f.ggt,f.waist)||0;
+      grade=this.fliGrade(fli); score=fli.toFixed(1)+' / 100'; scoreLbl='شاخص FLI'; gaugePct=Math.round(fli);
+    } else {
+      var l=this.state.ls; bmi=this.bmi(l.height,l.weight);
+      var sc=this.lifestyleScore(bmi,+l.waist,l.gender,l.diabetes,l.activity,l.diet,l.alcohol);
+      grade=this.lifestyleGrade(sc); score=sc+' / 16'; scoreLbl='امتیاز سبک‌زندگی'; gaugePct=Math.round(sc/16*100);
+    }
+    info=this.gradeInfo(grade);
+    return { name:this.state.lead.name||'کاربر', grade:grade, info:info, bmi:bmi, score:score, scoreLbl:scoreLbl, gaugePct:gaugePct, recs:this.recs(grade) };
+  }
+
+  submitGate(){
+    var name=(this.state.lead.name||'').trim();
+    var phone=(this.state.lead.phone||'').trim();
+    var ne='', pe='';
+    if(name.length<2) ne='نام کامل را وارد کنید (حداقل ۲ کاراکتر).';
+    if(!/^09\d{9}$/.test(phone)) pe='شماره موبایل معتبر نیست. فرمت: 09XXXXXXXXX';
+    if(ne||pe){ this.setState({leadNameErr:ne,leadPhoneErr:pe}); return; }
+    var res=this.buildResult();
+    this.setState({leadNameErr:'',leadPhoneErr:'',result:res,phase:'results'});
+    var self=this; setTimeout(function(){ self.setState({hubOpen:true}); },900);
+  }
+
+  componentWillUnmount(){ clearInterval(this._loaderTimer); clearTimeout(this._toGate); }
+
+  renderVals(){
+    var s=this.state; var f=s.f; var l=s.ls; var self=this;
+    var v={
+      isForm: s.phase==='form', isLoading: s.phase==='loading', isGate: s.phase==='gate', isResults: s.phase==='results',
+      clinicalActive: s.tab==='clinical', lifestyleActive: s.tab==='lifestyle',
+      loaderStep: s.loaderStep,
+      leadNameErr: s.leadNameErr, leadPhoneErr: s.leadPhoneErr, leadPhone: s.lead.phone,
+      hubOpen: s.hubOpen, hubRot: s.hubOpen?'135deg':'0deg',
+      acc1Open: s.acc1Open, acc2Open: s.acc2Open, acc1Rot: s.acc1Open?'180deg':'0deg', acc2Rot: s.acc2Open?'180deg':'0deg',
+      clinicName: this.props.clinicName ?? 'کلینیک تخصصی گوارش و کبد',
+      phone: this.props.phone ?? '۰۲۱-۱۲۳۴۵۶۷۸',
+      // handlers
+      onTabClinical: ()=>this.setState({tab:'clinical'}),
+      onTabLifestyle: ()=>this.setState({tab:'lifestyle'}),
+      onAge: e=>this.setF('age',e.target.value),
+      onGender: e=>this.setF('gender',e.target.value),
+      onHeight: e=>this.setF('height',e.target.value),
+      onWeight: e=>this.setF('weight',e.target.value),
+      onWaist: e=>this.setF('waist',e.target.value),
+      onTg: e=>this.setF('tg',e.target.value),
+      onGgt: e=>this.setF('ggt',e.target.value),
+      onLsGender: e=>this.setLs('gender',e.target.value),
+      onLsHeight: e=>this.setLs('height',e.target.value),
+      onLsWeight: e=>this.setLs('weight',e.target.value),
+      onLsWaist: e=>this.setLs('waist',e.target.value),
+      onOpt: e=>{ var g=e.currentTarget.dataset.group, val=e.currentTarget.dataset.val; this.setLs(g,val); },
+      onCalcClinical: ()=>this.calculate('clinical'),
+      onCalcLifestyle: ()=>this.calculate('lifestyle'),
+      onLeadName: e=>this.setState({lead:Object.assign({},s.lead,{name:e.target.value})}),
+      onLeadPhone: e=>{ var val=e.target.value.replace(/[^0-9]/g,'').substring(0,11); this.setState({lead:Object.assign({},s.lead,{phone:val})}); },
+      onGateSubmit: ()=>this.submitGate(),
+      onGateClose: ()=>this.setState({phase:'form'}),
+      onRecalc: ()=>this.setState({phase:'form',result:null,hubOpen:false}),
+      onToggleHub: ()=>this.setState({hubOpen:!s.hubOpen}),
+      onAcc1: ()=>this.setState({acc1Open:!s.acc1Open}),
+      onAcc2: ()=>this.setState({acc2Open:!s.acc2Open}),
+      pctRef: this._pctRef || (this._pctRef = React.createRef()),
+      // lifestyle option active flags
+      db_0:l.diabetes==='0', db_1:l.diabetes==='1', db_2:l.diabetes==='2',
+      ac_0:l.activity==='0', ac_1:l.activity==='1', ac_2:l.activity==='2',
+      di_0:l.diet==='0', di_1:l.diet==='1', di_2:l.diet==='2',
+      al_0:l.alcohol==='0', al_1:l.alcohol==='1', al_2:l.alcohol==='2',
+    };
+
+    // BMI live (clinical)
+    var b=this.bmi(f.height,f.weight);
+    v.showBmi=b>0;
+    if(b>0){ var c=this.bmiCategory(b); v.bmiVal=b.toFixed(1); v.bmiCat=c.label; v.bmiCatColor=c.color; v.bmiBar=Math.min(100,Math.max(0,((b-15)/30)*100))+'%'; }
+    // FLI live
+    var fli=this.fli(f.tg,b,f.ggt,f.waist);
+    v.showFli=fli!==null;
+    if(fli!==null){ var g=this.fliGrade(fli); v.fliVal=fli.toFixed(1); v.fliColor=this.gradeColor(g); v.fliBar=fli.toFixed(1)+'%'; }
+    // BMI live (lifestyle)
+    var lb=this.bmi(l.height,l.weight);
+    v.showLsBmi=lb>0;
+    if(lb>0){ var lc=this.bmiCategory(lb); v.lsBmiVal=lb.toFixed(1); v.lsBmiCat=lc.label; v.lsBmiCatColor=lc.color; }
+
+    // results
+    if(s.result){
+      var r=s.result; var col=this.gradeColor(r.grade); var cat=this.bmiCategory(r.bmi);
+      var rgb={grade_0:'16,185,129',grade_1:'245,158,11',grade_2:'249,115,22',grade_3:'220,38,38'}[r.grade]||'245,158,11';
+      var deep={grade_0:'5,150,105',grade_1:'180,120,10',grade_2:'200,80,15',grade_3:'159,18,57'}[r.grade];
+      v.resName=r.name; v.resBadge='Grade '+r.info.num+' — '+r.info.en; v.resDesc=r.info.desc;
+      v.gradeColor=col; v.gradeNum=this.faNum(r.info.num);
+      v.gradeBorder='rgba('+rgb+',.4)'; v.gradeGlow='rgba('+rgb+',.4)';
+      v.resultBg='linear-gradient(135deg, rgba('+rgb+',.28) 0%, rgba('+deep+',.12) 55%, rgba(255,255,255,.55) 100%)';
+      v.resBmi=r.bmi.toFixed(1); v.bmiCat=cat.label; v.bmiCatColor=cat.color;
+      v.resScore=r.score; v.resScoreLbl=r.scoreLbl;
+      v.gaugePct=this.faNum(r.gaugePct);
+      v.gaugeOffset=(276.5*(1-r.gaugePct/100)).toFixed(1);
+      v.recDiet=r.recs.diet; v.recActivity=r.recs.activity; v.recMedical=r.recs.medical;
+      var wa=(this.props.waNumber ?? '989191182649');
+      v.waLink='https://wa.me/'+wa+'?text='+encodeURIComponent('سلام، می‌خواهم مشاوره تخصصی درباره نتایج کبد چرب دریافت کنم. گرید: '+r.info.fa+' — نام: '+r.name);
+    } else {
+      v.waLink='https://wa.me/'+(this.props.waNumber ?? '989191182649');
+    }
+    return v;
+  }
+}
+</script>
+</body>
+</html>

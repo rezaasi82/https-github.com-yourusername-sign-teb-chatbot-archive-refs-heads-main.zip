@@ -1,0 +1,182 @@
+# SignTeb Fatty Liver Calculator — Translation Template
+# Copyright (C) 2024 SignTeb
+# This file is distributed under the GPL v2+.
+#
+# Translators:
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SignTeb Fatty Liver Calculator 1.0.0\n"
+"Report-Msgid-Bugs-To: reza.asi1982@gmail.com\n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: signteb-fatty-liver-calculator.php
+msgid "SignTeb Liver Leads"
+msgstr ""
+
+msgid "Liver Leads"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "License"
+msgstr ""
+
+msgid "License 🔑"
+msgstr ""
+
+msgid "Export CSV"
+msgstr ""
+
+#: includes/class-signteb-license.php
+msgid "Personal (1 site)"
+msgstr ""
+
+msgid "Business (5 sites)"
+msgstr ""
+
+msgid "Agency (unlimited)"
+msgstr ""
+
+msgid "White-Label"
+msgstr ""
+
+msgid "Not licensed"
+msgstr ""
+
+msgid "License Active"
+msgstr ""
+
+msgid "Not Licensed"
+msgstr ""
+
+msgid "Plan:"
+msgstr ""
+
+msgid "Expires:"
+msgstr ""
+
+msgid "Domain:"
+msgstr ""
+
+msgid "Enter your license key below to unlock all features."
+msgstr ""
+
+msgid "Activate License"
+msgstr ""
+
+msgid "License Key"
+msgstr ""
+
+msgid "Enter the key you received after purchase."
+msgstr ""
+
+msgid "Deactivate License"
+msgstr ""
+
+msgid "Deactivate This Site"
+msgstr ""
+
+msgid "Are you sure you want to deactivate?"
+msgstr ""
+
+msgid "Deactivating releases this site's seat so you can use the key on another domain."
+msgstr ""
+
+msgid "License Plans"
+msgstr ""
+
+msgid "Sites"
+msgstr ""
+
+msgid "Support"
+msgstr ""
+
+msgid "License expired."
+msgstr ""
+
+msgid "Invalid license key."
+msgstr ""
+
+msgid "No active license found."
+msgstr ""
+
+msgid "License deactivated."
+msgstr ""
+
+#: templates/calculator-template.php
+msgid "Fatty Liver Grade Calculator"
+msgstr ""
+
+msgid "Advanced clinical screening tool"
+msgstr ""
+
+msgid "Clinical Screening"
+msgstr ""
+
+msgid "Lifestyle Screening"
+msgstr ""
+
+msgid "Patient Basic Information"
+msgstr ""
+
+msgid "Age"
+msgstr ""
+
+msgid "Gender"
+msgstr ""
+
+msgid "Male"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
+msgid "Height"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "Waist Circumference"
+msgstr ""
+
+msgid "Laboratory Values"
+msgstr ""
+
+msgid "Triglycerides"
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Mobile Number"
+msgstr ""
+
+msgid "Results are ready!"
+msgstr ""
+
+msgid "View Full Results — Free"
+msgstr ""
+
+msgid "Your information is confidential and will never be shared with third parties."
+msgstr ""
+
+msgid "Personalized Recommendations"
+msgstr ""
+
+msgid "Recalculate"
+msgstr ""
+
+msgid "Consult with a Medical Specialist"
+msgstr ""
