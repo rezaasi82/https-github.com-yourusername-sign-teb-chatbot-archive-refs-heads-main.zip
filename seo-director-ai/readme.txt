@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.9.1
+Stable tag: 0.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,15 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.10.0 =
+Wave 1 of the SEO Operating System — five new content tools under the Content screen, all working on your own WordPress content with no extra API costs:
+* AI SEO Brief Generator (Pro): enter a target keyword and get a full writing brief — goal, keyword set, H2/H3 outline, FAQs, entities to cover — grounded in your own Search Console demand data and existing related posts.
+* Internal Linking Engine (Starter+): finds pages that mention another page's topic but don't link to it, and proposes anchor → target pairs. Persian-aware matching; per-post or site-wide.
+* Schema Generator (Starter+): one-click Article + Breadcrumb JSON-LD per post, plus FAQPage schema auto-extracted from question-style headings (? or ؟); saved schema is injected into the page head.
+* On-page Auditor (Starter+): scans all published posts/pages for short/long titles, missing meta descriptions, H1-in-content, thin content, missing headings, images without alt, and no internal links — worst pages first.
+* Content Optimization Score (Pro): deterministic 0–100 score of a post against its target keyword (placement, structure, depth, FAQ, links, images) with a per-check breakdown, plus an optional AI entity-coverage list.
+* The Content screen is now tabbed (Brief / Score / Internal links / Audit / Schema / Meta & Gap) and fully bilingual.
 
 = 0.9.1 =
 * New "Sync now" button in Settings → Data sync: kicks the Search Console + Analytics sync immediately instead of waiting for the daily cron. Safe to press repeatedly — a sync already in flight is never duplicated. The card shows live per-service status while the sync runs.

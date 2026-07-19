@@ -51,7 +51,13 @@ use SEODirector\Analysis\RootCause\CauseCandidateEngine;
 use SEODirector\Analysis\RootCause\CoreUpdateCalendar;
 use SEODirector\Integrations\Serp\SerpApiProvider;
 use SEODirector\Analysis\TrendAnalyzer;
+use SEODirector\Content\BriefGenerator;
 use SEODirector\Content\ContentStrategist;
+use SEODirector\Content\InternalLinkSuggester;
+use SEODirector\Content\OnPageAuditor;
+use SEODirector\Content\OptimizationScorer;
+use SEODirector\Content\SchemaGenerator;
+use SEODirector\Content\SchemaInjector;
 use SEODirector\License\FeatureGate;
 use SEODirector\License\GracePeriodHandler;
 use SEODirector\License\LicenseManager;
@@ -155,6 +161,9 @@ final class Plugin {
 		/** @var Updater $updater */
 		$updater = $this->container->get( Updater::class );
 		$updater->register();
+
+		// Front-end JSON-LD output for posts with saved schema.
+		$this->container->get( SchemaInjector::class )->register();
 
 		if ( is_admin() ) {
 			/** @var AdminMenu $menu */
@@ -356,6 +365,15 @@ final class Plugin {
 			ContentStrategist::class,
 			static fn( Container $c ) => new ContentStrategist( $c->get( InsightService::class ), $c->get( PropertiesRepository::class ) )
 		);
+		$c->set(
+			BriefGenerator::class,
+			static fn( Container $c ) => new BriefGenerator( $c->get( InsightService::class ), $c->get( PropertiesRepository::class ) )
+		);
+		$c->set( InternalLinkSuggester::class, static fn() => new InternalLinkSuggester() );
+		$c->set( SchemaGenerator::class, static fn() => new SchemaGenerator() );
+		$c->set( SchemaInjector::class, static fn() => new SchemaInjector() );
+		$c->set( OnPageAuditor::class, static fn() => new OnPageAuditor() );
+		$c->set( OptimizationScorer::class, static fn( Container $c ) => new OptimizationScorer( $c->get( InsightService::class ) ) );
 		$c->set(
 			WeeklyIntelligence::class,
 			static fn( Container $c ) => new WeeklyIntelligence(

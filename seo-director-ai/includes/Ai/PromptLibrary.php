@@ -23,7 +23,7 @@ final class PromptLibrary {
 	/**
 	 * Build an envelope for one insight type.
 	 *
-	 * @param 'root_cause'|'growth'|'decline'|'summary_weekly'|'summary_monthly'|'content_meta'|'content_gap' $type
+	 * @param 'root_cause'|'growth'|'decline'|'summary_weekly'|'summary_monthly'|'content_meta'|'content_gap'|'content_brief'|'entity_coverage' $type
 	 * @param array<string, mixed>                                              $evidence
 	 * @param array<string, mixed>                                              $site_context niche, goals…
 	 */
@@ -83,6 +83,57 @@ final class PromptLibrary {
 					],
 				],
 				400,
+			],
+			'content_brief' => [
+				'content_brief.v1',
+				'Create a complete SEO content brief for the target keyword. Use the related queries as demand evidence. The outline must be a logical H2/H3 structure a writer can follow; FAQs should answer real user questions; entities are the concepts the article must cover to be comprehensive. Match the language of the target keyword.',
+				[
+					'type'       => 'object',
+					'required'   => [ 'goal', 'primary_keyword', 'secondary_keywords', 'outline', 'faq', 'entities' ],
+					'properties' => [
+						'goal'               => [ 'type' => 'string' ],
+						'primary_keyword'    => [ 'type' => 'string' ],
+						'secondary_keywords' => [ 'type' => 'array', 'items' => [ 'type' => 'string' ] ],
+						'outline'            => [
+							'type'  => 'array',
+							'items' => [
+								'type'       => 'object',
+								'required'   => [ 'level', 'heading' ],
+								'properties' => [
+									'level'   => [ 'type' => 'integer' ],
+									'heading' => [ 'type' => 'string' ],
+									'notes'   => [ 'type' => 'string' ],
+								],
+							],
+						],
+						'faq'                => [
+							'type'  => 'array',
+							'items' => [
+								'type'       => 'object',
+								'required'   => [ 'question' ],
+								'properties' => [
+									'question' => [ 'type' => 'string' ],
+									'answer'   => [ 'type' => 'string' ],
+								],
+							],
+						],
+						'entities'           => [ 'type' => 'array', 'items' => [ 'type' => 'string' ] ],
+					],
+				],
+				1600,
+			],
+			'entity_coverage' => [
+				'entity_coverage.v1',
+				'Given an article excerpt and its target keyword, list the important entities/concepts a comprehensive article on this topic must cover, and split them into covered (present in the excerpt) and missing. Be strict: only mark covered when genuinely addressed.',
+				[
+					'type'       => 'object',
+					'required'   => [ 'covered', 'missing' ],
+					'properties' => [
+						'covered' => [ 'type' => 'array', 'items' => [ 'type' => 'string' ] ],
+						'missing' => [ 'type' => 'array', 'items' => [ 'type' => 'string' ] ],
+					],
+				],
+				700,
 			],
 			'content_gap' => [
 				'content_gap.v1',

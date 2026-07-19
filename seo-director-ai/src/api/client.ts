@@ -219,6 +219,52 @@ export interface ContentGapTopic {
   [key: string]: unknown;
 }
 
+export interface PostRef {
+  id: number;
+  title: string;
+  url: string;
+}
+
+export interface ContentBrief {
+  goal: string;
+  primary_keyword: string;
+  secondary_keywords: string[];
+  outline: Array<{ level: number; heading: string; notes?: string }>;
+  faq: Array<{ question: string; answer?: string }>;
+  entities: string[];
+  related_queries: Array<{ query: string; impressions: number; position: number }>;
+  existing_posts: PostRef[];
+}
+
+export interface LinkSuggestionGroup {
+  source: PostRef;
+  suggestions: Array<{ target_id: number; target_title: string; target_url: string; anchor: string; score: number }>;
+}
+
+export interface AuditResult {
+  scanned: number;
+  issues_total: number;
+  generated_at: string;
+  pages: Array<{
+    id: number;
+    title: string;
+    url: string;
+    issues: Array<{ code: string; severity: 'high' | 'medium' | 'low'; message: string }>;
+  }>;
+}
+
+export interface SchemaBuildResult {
+  graph: Array<Record<string, unknown>>;
+  faq_found: number;
+  saved?: boolean;
+}
+
+export interface ScoreResult {
+  score: number;
+  checks: Array<{ code: string; label: string; points: number; max: number; detail: string }>;
+  entities: { covered: string[]; missing: string[] } | null;
+}
+
 export interface ReportRow {
   id: number;
   type: string;
@@ -354,6 +400,22 @@ export const api = {
   contentMeta: (hash: string) =>
     request<MetaSuggestion>('/content/meta', { method: 'POST', body: JSON.stringify({ hash }) }),
   contentGap: () => request<{ topics: ContentGapTopic[] }>('/content/gap', { method: 'POST' }),
+  contentBrief: (keyword: string) =>
+    request<ContentBrief>('/content/brief', { method: 'POST', body: JSON.stringify({ keyword }) }),
+  contentPosts: () => request<{ posts: PostRef[] }>('/content/posts'),
+  contentLinks: (postId?: number) =>
+    request<{ mode: string; items: LinkSuggestionGroup[] }>(`/content/links${postId ? `?post_id=${postId}` : ''}`),
+  contentAudit: (force = false) => request<AuditResult>(`/content/audit${force ? '?force=true' : ''}`),
+  contentSchemaPreview: (postId: number) => request<SchemaBuildResult>(`/content/schema?post_id=${postId}`),
+  contentSchemaSave: (postId: number, types: string[]) =>
+    request<SchemaBuildResult>('/content/schema', { method: 'POST', body: JSON.stringify({ post_id: postId, types }) }),
+  contentSchemaRemove: (postId: number) =>
+    request<{ removed: boolean }>(`/content/schema?post_id=${postId}`, { method: 'DELETE' }),
+  contentScore: (postId: number, keyword: string, entities = false) =>
+    request<ScoreResult>('/content/score', {
+      method: 'POST',
+      body: JSON.stringify({ post_id: postId, keyword, entities }),
+    }),
   reports: () => request<{ items: ReportRow[] }>('/reports'),
   generateReport: (type: string, formats: string[]) =>
     request<{ items: ReportRow[] }>('/reports', { method: 'POST', body: JSON.stringify({ type, formats }) }),

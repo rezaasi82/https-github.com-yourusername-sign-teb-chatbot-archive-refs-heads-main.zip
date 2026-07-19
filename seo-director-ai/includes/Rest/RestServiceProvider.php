@@ -34,7 +34,12 @@ use SEODirector\Integrations\Google\SearchConsoleClient;
 use SEODirector\Integrations\Google\TrendsClient;
 use SEODirector\Jobs\Handlers\DailySyncCoordinator;
 use SEODirector\Roadmap\RoadmapGenerator;
+use SEODirector\Content\BriefGenerator;
 use SEODirector\Content\ContentStrategist;
+use SEODirector\Content\InternalLinkSuggester;
+use SEODirector\Content\OnPageAuditor;
+use SEODirector\Content\OptimizationScorer;
+use SEODirector\Content\SchemaGenerator;
 use SEODirector\License\FeatureGate;
 use SEODirector\License\LicenseManager;
 use SEODirector\Reports\ReportGenerator;
@@ -129,6 +134,11 @@ final class RestServiceProvider {
 			),
 			new ContentController(
 				$c->get( ContentStrategist::class ),
+				$c->get( BriefGenerator::class ),
+				$c->get( InternalLinkSuggester::class ),
+				$c->get( SchemaGenerator::class ),
+				$c->get( OnPageAuditor::class ),
+				$c->get( OptimizationScorer::class ),
 				$c->get( FeatureGate::class ),
 				$c->get( RateLimiter::class )
 			),
