@@ -27,14 +27,14 @@ export default function Navbar() {
           "mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-2xl px-5 py-3 transition-all duration-500 sm:px-6",
           scrolled ? "glass-strong mx-4 sm:mx-auto" : "bg-transparent"
         )}
-        aria-label="Main navigation"
+        aria-label="ناوبری اصلی"
       >
         <a href="#" className="flex items-center gap-2.5">
           <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary shadow-glow">
             <Sparkles className="h-5 w-5 text-white" />
           </span>
-          <span className="text-lg font-bold tracking-tight">
-            Medora<span className="text-gradient"> AI</span>
+          <span className="text-lg font-bold">
+            مدورا <span className="text-gradient">AI</span>
           </span>
         </a>
 
@@ -56,20 +56,20 @@ export default function Navbar() {
             href="#pricing"
             className="text-sm font-medium text-white/70 transition-colors hover:text-white"
           >
-            Sign in
+            ورود
           </a>
           <a
             href="#cta"
             className="rounded-full bg-gradient-to-r from-primary to-secondary px-5 py-2.5 text-sm font-semibold shadow-glow transition-shadow hover:shadow-glow-violet"
           >
-            Get started
+            شروع کنید
           </a>
         </div>
 
         <button
           className="glass rounded-xl p-2 md:hidden"
           onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? "بستن منو" : "باز کردن منو"}
           aria-expanded={open}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -103,7 +103,7 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className="block rounded-xl bg-gradient-to-r from-primary to-secondary px-4 py-3 text-center text-sm font-semibold"
                 >
-                  Get started
+                  شروع کنید
                 </a>
               </li>
             </ul>

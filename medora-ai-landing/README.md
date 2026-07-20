@@ -1,6 +1,8 @@
-# Medora AI — 3D Futuristic Landing Page
+# Medora AI — 3D Futuristic Landing Page (فارسی / RTL)
 
-A premium, immersive 3D landing page for **Medora AI** (the intelligence layer for modern healthcare), built to 2026 SaaS standards: dark luxury theme, glassmorphism, aurora gradient mesh, WebGL 3D scenes, and scroll-driven motion throughout.
+A premium, immersive 3D landing page for **Medora AI** (لایهٔ هوشمند پزشکیِ مدرن), built to 2026 SaaS standards: dark luxury theme, glassmorphism, aurora gradient mesh, WebGL 3D scenes, and scroll-driven motion throughout.
+
+The page is fully **Persian and right-to-left**: `lang="fa" dir="rtl"`, the Vazirmatn font via `next/font`, Persian numerals everywhere (including the animated `CountUp` counters via `toFaDigits`), Toman pricing, direction-aware arrows (`ArrowLeft`), and logical CSS properties (`ms/me/ps/pe/start/end`, `text-start`) so the layout mirrors correctly. Letter-spacing is removed from Persian text so Arabic-script letter joining stays intact. All copy lives in `lib/data.ts` for easy localization.
 
 ## Tech Stack
 

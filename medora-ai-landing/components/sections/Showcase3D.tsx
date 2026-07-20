@@ -18,16 +18,16 @@ const ShowcaseScene = dynamic(
 
 const CALLOUTS = [
   {
-    title: "Neural reasoning core",
-    body: "Transformer ensemble trained on 40M+ clinical studies and de-identified encounters.",
+    title: "هستهٔ استدلال عصبی",
+    body: "مجموعه‌مدل‌های ترنسفورمر، آموزش‌دیده روی بیش از ۴۰ میلیون مطالعهٔ بالینی و ویزیت‌های بی‌نام‌شده.",
   },
   {
-    title: "Real-time context graph",
-    body: "Every lab, note, and vital linked into a living patient graph the AI reasons over.",
+    title: "گراف زمینهٔ بلادرنگ",
+    body: "هر آزمایش، یادداشت و علامت حیاتی به یک گراف زندهٔ بیمار متصل می‌شود که هوش مصنوعی روی آن استدلال می‌کند.",
   },
   {
-    title: "Explainable by design",
-    body: "Every suggestion ships with citations, confidence, and a visual evidence trail.",
+    title: "شفاف و توضیح‌پذیر از پایه",
+    body: "هر پیشنهاد همراه با منابع، میزان اطمینان و ردِّ شواهد تصویری ارائه می‌شود.",
   },
 ];
 
@@ -53,10 +53,10 @@ export default function Showcase3D() {
       />
       <div className="section-shell relative z-10">
         <SectionHeading
-          eyebrow="Inside the engine"
-          title="Medicine, modeled in"
-          highlight="three dimensions"
-          description="Scroll to rotate the Medora reasoning core. Move your cursor to explore it — every suggestion your clinicians see starts here."
+          eyebrow="درون موتور"
+          title="پزشکی، مدل‌شده در"
+          highlight="سه بُعد"
+          description="اسکرول کنید تا هستهٔ استدلال مدورا بچرخد؛ نشانگر را حرکت دهید تا آن را بکاوید — هر پیشنهادی که پزشکان شما می‌بینند، از همین‌جا آغاز می‌شود."
         />
 
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_380px]">
@@ -64,8 +64,8 @@ export default function Showcase3D() {
             <div className="glass relative aspect-[4/3] overflow-hidden rounded-3xl md:aspect-[16/9]">
               <ShowcaseScene progress={progress} />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 to-transparent" />
-              <span className="glass absolute bottom-4 left-4 rounded-full px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/60">
-                Live WebGL · drag-free, scroll-driven
+              <span className="glass absolute bottom-4 start-4 rounded-full px-3 py-1.5 text-[11px] text-white/60">
+                WebGL زنده · بدون درگ، هدایت با اسکرول
               </span>
             </div>
           </Reveal>
@@ -75,8 +75,8 @@ export default function Showcase3D() {
               <Reveal key={callout.title} delay={0.1 * i}>
                 <div className="glass group rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-glow">
                   <h3 className="font-semibold text-white">
-                    <span className="mr-2 text-gradient font-bold">
-                      0{i + 1}
+                    <span className="me-2 text-gradient font-bold">
+                      ۰{["۱", "۲", "۳"][i]}
                     </span>
                     {callout.title}
                   </h3>

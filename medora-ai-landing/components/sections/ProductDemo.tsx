@@ -43,10 +43,10 @@ export default function ProductDemo() {
       />
       <div className="section-shell relative z-10">
         <SectionHeading
-          eyebrow="Product demo"
-          title="Your command center for"
-          highlight="every encounter"
-          description="One glass pane over the whole clinic: live vitals, AI-drafted notes, and a queue that triages itself. Tilt it — it's real."
+          eyebrow="دموی محصول"
+          title="مرکز فرماندهی شما برای"
+          highlight="هر ویزیت"
+          description="یک قاب شیشه‌ای روی کل کلینیک: شاخص‌های زنده، یادداشت‌های پیش‌نویسِ هوش مصنوعی و صفی که خودش تریاژ می‌کند. با موس کج‌اش کنید — واقعی است."
         />
 
         <Reveal scale={0.93} y={60}>
@@ -66,7 +66,7 @@ export default function ProductDemo() {
                 <span className="h-3 w-3 rounded-full bg-red-400/70" />
                 <span className="h-3 w-3 rounded-full bg-yellow-400/70" />
                 <span className="h-3 w-3 rounded-full bg-green-400/70" />
-                <span className="ml-3 rounded-md bg-white/5 px-3 py-1 text-[11px] text-white/40">
+                <span className="ms-3 rounded-md bg-white/5 px-3 py-1 text-[11px] text-white/40" dir="ltr">
                   app.medora.ai / dashboard
                 </span>
               </div>
@@ -102,9 +102,9 @@ export default function ProductDemo() {
                   style={{ transform: "translateZ(45px)" }}
                 >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold">Encounters today</p>
+                    <p className="text-sm font-semibold">ویزیت‌های امروز</p>
                     <span className="rounded-full bg-highlight/10 px-2.5 py-1 text-[11px] font-medium text-highlight">
-                      live
+                      زنده
                     </span>
                   </div>
                   <div className="mt-4 flex h-28 items-end gap-1.5 md:h-36">
@@ -130,13 +130,13 @@ export default function ProductDemo() {
                   className="glass rounded-2xl p-4"
                   style={{ transform: "translateZ(45px)" }}
                 >
-                  <p className="text-sm font-semibold">AI notes queue</p>
+                  <p className="text-sm font-semibold">صف یادداشت‌های هوشمند</p>
                   <ul className="mt-3 space-y-2.5">
                     {[
-                      ["Rm 4 · A. Naderi", "Signed", "text-emerald-400"],
-                      ["Rm 7 · J. Malik", "Drafting…", "text-highlight"],
-                      ["Rm 2 · L. Costa", "Review", "text-yellow-400"],
-                      ["Tele · R. Adams", "Queued", "text-white/40"],
+                      ["اتاق ۴ · ا. نادری", "امضا شد", "text-emerald-400"],
+                      ["اتاق ۷ · ج. ملک", "در حال نگارش…", "text-highlight"],
+                      ["اتاق ۲ · ل. کوستا", "بازبینی", "text-yellow-400"],
+                      ["تله‌ویزیت · ر. آدامز", "در صف", "text-white/40"],
                     ].map(([who, status, color]) => (
                       <li
                         key={who}
@@ -148,10 +148,10 @@ export default function ProductDemo() {
                     ))}
                   </ul>
                   <p className="mt-4 text-2xl font-bold">
-                    <CountUp value={97.1} suffix="%" decimals={1} />
+                    <CountUp value={97.1} suffix="٪" decimals={1} />
                   </p>
                   <p className="text-[11px] text-white/45">
-                    Notes accepted without edits
+                    یادداشت‌های پذیرفته‌شده بدون ویرایش
                   </p>
                 </div>
               </div>

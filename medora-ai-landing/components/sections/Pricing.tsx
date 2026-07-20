@@ -30,9 +30,9 @@ function PricingCard({
           </span>
 
           {plan.popular ? (
-            <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-secondary px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider shadow-glow">
+            <span className="absolute end-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-secondary px-3 py-1.5 text-[11px] font-semibold shadow-glow">
               <Sparkles className="h-3 w-3" />
-              Most popular
+              محبوب‌ترین
             </span>
           ) : null}
 
@@ -42,17 +42,15 @@ function PricingCard({
           <div className="mt-6 flex items-end gap-2">
             {plan.price !== null ? (
               <>
-                <span className="text-5xl font-bold tracking-tight">
-                  ${plan.price}
+                <span className="text-4xl font-bold sm:text-5xl">
+                  {plan.price}
                 </span>
                 <span className="pb-1.5 text-xs text-white/45">
                   {plan.period}
                 </span>
               </>
             ) : (
-              <span className="text-4xl font-bold tracking-tight">
-                Let&apos;s talk
-              </span>
+              <span className="text-4xl font-bold">بیایید صحبت کنیم</span>
             )}
           </div>
 
@@ -96,10 +94,10 @@ export default function Pricing() {
       />
       <div className="section-shell relative z-10">
         <SectionHeading
-          eyebrow="Pricing"
-          title="Simple pricing,"
-          highlight="serious outcomes"
-          description="Every plan includes the full clinical core — documentation, reasoning, and patient chat. No hidden add-ons, ever. 30-day free trial, cancel anytime."
+          eyebrow="تعرفه‌ها"
+          title="قیمت‌گذاری ساده،"
+          highlight="نتایج جدی"
+          description="همهٔ پلن‌ها هستهٔ کامل بالینی را دارند — مستندسازی، استدلال و چت بیمار. هیچ افزونهٔ پنهانی در کار نیست. ۳۰ روز آزمایش رایگان، لغو در هر زمان."
         />
         <div className="grid items-stretch gap-6 lg:grid-cols-3">
           {PRICING_PLANS.map((plan, i) => (

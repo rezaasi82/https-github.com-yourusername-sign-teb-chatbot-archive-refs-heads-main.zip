@@ -20,11 +20,11 @@ export default function SectionHeading({
     <div
       className={cn(
         "mb-14 flex flex-col gap-4 md:mb-20",
-        align === "center" ? "items-center text-center" : "items-start text-left"
+        align === "center" ? "items-center text-center" : "items-start text-start"
       )}
     >
       <Reveal>
-        <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-highlight">
+        <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium text-highlight">
           <span className="h-1.5 w-1.5 rounded-full bg-highlight shadow-glow-cyan" />
           {eyebrow}
         </span>

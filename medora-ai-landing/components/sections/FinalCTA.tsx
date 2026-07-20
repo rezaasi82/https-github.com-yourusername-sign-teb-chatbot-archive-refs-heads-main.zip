@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import Particles from "@/components/ui/Particles";
 import Reveal from "@/components/ui/Reveal";
@@ -31,36 +31,37 @@ export default function FinalCTA() {
 
       <div className="section-shell relative z-10 flex flex-col items-center text-center">
         <Reveal>
-          <span className="glass inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-highlight">
-            The future won&apos;t wait
+          <span className="glass inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium text-highlight">
+            آینده منتظر نمی‌ماند
           </span>
         </Reveal>
         <Reveal delay={0.1}>
-          <h2 className="mt-6 max-w-4xl text-4xl font-bold leading-[1.06] tracking-tight sm:text-6xl md:text-7xl">
-            Give every clinician a<br />
-            <span className="text-gradient">superhuman colleague</span>
+          <h2 className="mt-6 max-w-4xl text-4xl font-bold leading-[1.2] sm:text-6xl md:text-7xl">
+            به هر پزشک، یک
+            <br />
+            <span className="text-gradient">همکارِ فوق‌بشری بدهید</span>
           </h2>
         </Reveal>
         <Reveal delay={0.2}>
           <p className="mt-6 max-w-xl text-lg text-white/60">
-            Join 240+ health systems already practicing tomorrow&apos;s
-            medicine. Live in days — not quarters.
+            به بیش از ۲۴۰ مرکز درمانی بپیوندید که همین حالا طبِ فردا را تمرین
+            می‌کنند. راه‌اندازی در چند روز — نه چند فصل.
           </p>
         </Reveal>
         <Reveal delay={0.3}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <MagneticButton href="#" className="px-10 py-5 text-base">
-              Start your free trial
-              <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              آزمایش رایگان را شروع کنید
+              <ArrowLeft className="h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
             </MagneticButton>
             <MagneticButton href="#" variant="ghost" className="px-10 py-5 text-base">
-              Book a live demo
+              رزرو دموی زنده
             </MagneticButton>
           </div>
         </Reveal>
         <Reveal delay={0.4}>
           <p className="mt-6 text-xs text-white/40">
-            No credit card required · HIPAA-ready from day one · Cancel anytime
+            بدون نیاز به کارت اعتباری · سازگار با HIPAA از روز اول · لغو در هر زمان
           </p>
         </Reveal>
       </div>

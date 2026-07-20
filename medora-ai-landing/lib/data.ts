@@ -11,215 +11,215 @@ import {
 } from "lucide-react";
 
 export const NAV_LINKS = [
-  { label: "Product", href: "#showcase" },
-  { label: "Features", href: "#features" },
-  { label: "Demo", href: "#demo" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
+  { label: "محصول", href: "#showcase" },
+  { label: "امکانات", href: "#features" },
+  { label: "دمو", href: "#demo" },
+  { label: "تعرفه‌ها", href: "#pricing" },
+  { label: "سؤالات متداول", href: "#faq" },
 ];
 
 export const HERO_STATS = [
-  { value: 4.2, suffix: "M+", label: "Clinical decisions assisted" },
-  { value: 98.6, suffix: "%", label: "Documentation accuracy" },
-  { value: 11, suffix: "hrs", label: "Saved per clinician / week" },
-  { value: 240, suffix: "+", label: "Health systems onboard" },
+  { value: 4.2, suffix: " میلیون+", label: "تصمیم بالینیِ پشتیبانی‌شده" },
+  { value: 98.6, suffix: "٪", label: "دقت مستندسازی" },
+  { value: 11, suffix: " ساعت", label: "صرفه‌جویی هر پزشک در هفته" },
+  { value: 240, suffix: "+", label: "مرکز درمانی همراه" },
 ];
 
 export const TRUST_BADGES = [
-  "HIPAA Compliant",
-  "SOC 2 Type II",
+  "سازگار با HIPAA",
+  "گواهی SOC 2 Type II",
   "ISO 27001",
-  "GDPR Ready",
-  "FDA SaMD Track",
+  "آمادهٔ GDPR",
+  "مسیر FDA SaMD",
 ];
 
 export const FEATURES = [
   {
     icon: BrainCircuit,
-    title: "Clinical Reasoning Engine",
+    title: "موتور استدلال بالینی",
     description:
-      "A medical-grade LLM that cross-references symptoms, labs, and history against 40M+ peer-reviewed studies — surfacing differentials in seconds, not hours.",
+      "یک مدل زبانی در سطح پزشکی که علائم، آزمایش‌ها و سوابق بیمار را با بیش از ۴۰ میلیون مقالهٔ داوری‌شده تطبیق می‌دهد — و تشخیص‌های افتراقی را در چند ثانیه پیش روی شما می‌گذارد، نه چند ساعت.",
     size: "large" as const,
     glow: "primary" as const,
   },
   {
     icon: FileText,
-    title: "Ambient Documentation",
+    title: "مستندسازی هوشمند ویزیت",
     description:
-      "Medora listens to the visit and writes the note. SOAP, H&P, discharge — signed and coded before you leave the room.",
+      "مدورا به ویزیت گوش می‌دهد و یادداشت را می‌نویسد. SOAP، شرح‌حال، خلاصهٔ ترخیص — پیش از آن‌که از اتاق خارج شوید، امضاشده و کدگذاری‌شده.",
     size: "small" as const,
     glow: "violet" as const,
   },
   {
     icon: ScanEye,
-    title: "Imaging Co-Pilot",
+    title: "دستیار تصویربرداری",
     description:
-      "Second-read AI for radiology that flags anomalies with pixel-level heatmaps and confidence scoring.",
+      "خوانش دومِ هوشمند برای رادیولوژی که ناهنجاری‌ها را با نقشهٔ حرارتی در سطح پیکسل و امتیاز اطمینان علامت‌گذاری می‌کند.",
     size: "small" as const,
     glow: "cyan" as const,
   },
   {
     icon: Workflow,
-    title: "Care Pathway Automation",
+    title: "خودکارسازی مسیر درمان",
     description:
-      "Orders, referrals, and follow-ups triggered automatically from encounter context — fully auditable, always physician-approved.",
+      "دستورها، ارجاع‌ها و پیگیری‌ها به‌صورت خودکار از متن ویزیت استخراج می‌شوند — کاملاً قابل ممیزی و همیشه با تأیید پزشک.",
     size: "small" as const,
     glow: "cyan" as const,
   },
   {
     icon: MessagesSquare,
-    title: "Patient Companion",
+    title: "همراه بیمار",
     description:
-      "24/7 multilingual triage and aftercare chat that knows the care plan and escalates to humans the moment it should.",
+      "گفتگوی شبانه‌روزی و چندزبانه برای تریاژ و مراقبت پس از درمان؛ برنامهٔ درمان را می‌شناسد و هر لحظه که لازم باشد به تیم انسانی ارجاع می‌دهد.",
     size: "small" as const,
     glow: "violet" as const,
   },
   {
     icon: Lock,
-    title: "Zero-Trust PHI Vault",
+    title: "گاوصندوق داده با اعتماد صفر",
     description:
-      "End-to-end encryption, on-prem or private cloud deployment, and full audit trails. Your data never trains our models. Compliance isn't a feature — it's the foundation.",
+      "رمزنگاری سرتاسری، استقرار روی سرور داخلی یا ابر خصوصی، و لاگ کامل ممیزی. داده‌های شما هرگز برای آموزش مدل‌ها استفاده نمی‌شود. انطباق، یک قابلیت نیست — بنیانِ کار است.",
     size: "large" as const,
     glow: "primary" as const,
   },
 ];
 
 export const DEMO_VITALS = [
-  { icon: HeartPulse, label: "Patient throughput", value: "+34%" },
-  { icon: Activity, label: "Avg. note time", value: "48s" },
-  { icon: Stethoscope, label: "Dx concordance", value: "97.1%" },
+  { icon: HeartPulse, label: "ظرفیت پذیرش بیمار", value: "+۳۴٪" },
+  { icon: Activity, label: "میانگین زمان یادداشت", value: "۴۸ ثانیه" },
+  { icon: Stethoscope, label: "هم‌خوانی تشخیص", value: "۹۷٫۱٪" },
 ];
 
 export const TESTIMONIALS = [
   {
-    name: "Dr. Sarah Chen",
-    role: "Chief of Emergency Medicine, Northview Health",
+    name: "دکتر سارا چن",
+    role: "رئیس اورژانس، مرکز درمانی نورث‌ویو",
     quote:
-      "Medora cut our documentation burden by 70%. My residents actually look at patients now instead of screens.",
-    initials: "SC",
+      "مدورا بارِ مستندسازی ما را ۷۰٪ کم کرد. رزیدنت‌هایم حالا به‌جای مانیتور، واقعاً به بیمار نگاه می‌کنند.",
+    initials: "س‌چ",
     hue: "from-blue-500 to-cyan-400",
   },
   {
-    name: "Dr. Marcus Webb",
-    role: "Radiologist, Atlas Imaging Group",
+    name: "دکتر مارکوس وب",
+    role: "رادیولوژیست، گروه تصویربرداری اطلس",
     quote:
-      "The imaging co-pilot caught a 4mm nodule I'd flagged as review-later. That's the moment I stopped calling it a gadget.",
-    initials: "MW",
+      "دستیار تصویربرداری، ندول ۴ میلی‌متری‌ای را گرفت که من گذاشته بودم «بعداً بررسی شود». همان لحظه بود که دیگر اسمش را ابزار تزئینی نگذاشتم.",
+    initials: "م‌و",
     hue: "from-violet-500 to-fuchsia-400",
   },
   {
-    name: "Amara Okafor",
-    role: "CIO, Meridian Hospital Network",
+    name: "آمارا اوکافور",
+    role: "مدیر فناوری، شبکهٔ بیمارستانی مریدین",
     quote:
-      "Deployment across 12 hospitals in six weeks, zero PHI incidents, and the first tech our physicians asked for more of.",
-    initials: "AO",
+      "استقرار در ۱۲ بیمارستان طی شش هفته، بدون حتی یک حادثهٔ دادهٔ بیمار — و اولین فناوری‌ای که پزشکان ما خودشان بیشترش را خواستند.",
+    initials: "آ‌ا",
     hue: "from-cyan-400 to-emerald-400",
   },
   {
-    name: "Dr. Elena Rodriguez",
-    role: "Family Medicine, Solano Clinic",
+    name: "دکتر النا رودریگز",
+    role: "پزشک خانواده، کلینیک سولانو",
     quote:
-      "I finish my charts before dinner now. My kids think Medora is a member of the family — honestly, fair.",
-    initials: "ER",
+      "حالا پرونده‌هایم را قبل از شام تمام می‌کنم. بچه‌هایم فکر می‌کنند مدورا عضوی از خانواده است — راستش، بی‌راه هم نمی‌گویند.",
+    initials: "ا‌ر",
     hue: "from-blue-400 to-violet-500",
   },
   {
-    name: "James Park",
-    role: "VP Clinical Ops, Helio Care",
+    name: "جیمز پارک",
+    role: "معاون عملیات بالینی، هلیو کر",
     quote:
-      "ROI was positive in month two. Nurse triage times dropped 41% and patient satisfaction hit an all-time high.",
-    initials: "JP",
+      "بازگشت سرمایه از ماه دوم مثبت شد. زمان تریاژ پرستاری ۴۱٪ پایین آمد و رضایت بیماران به بالاترین رکورد تاریخ ما رسید.",
+    initials: "ج‌پ",
     hue: "from-cyan-500 to-blue-500",
   },
   {
-    name: "Dr. Priya Nair",
-    role: "Hospitalist, St. Auburn Medical",
+    name: "دکتر پریا نایر",
+    role: "پزشک بیمارستانی، مرکز درمانی سنت‌آبرن",
     quote:
-      "It reads the whole chart — every consult, every lab trend — and briefs me in 30 seconds before I walk in the door.",
-    initials: "PN",
+      "کل پرونده را می‌خواند — هر مشاوره، هر روند آزمایش — و ۳۰ ثانیه قبل از این‌که وارد اتاق شوم، خلاصه‌اش را به من می‌دهد.",
+    initials: "پ‌ن",
     hue: "from-fuchsia-500 to-violet-400",
   },
 ];
 
 export const PRICING_PLANS = [
   {
-    name: "Clinic",
-    price: 149,
-    period: "/clinician · month",
-    description: "For independent practices ready to reclaim their evenings.",
+    name: "مطب",
+    price: "۲٫۹ میلیون",
+    period: "تومان · هر پزشک / ماه",
+    description: "برای مطب‌های مستقلی که می‌خواهند عصرهایشان را پس بگیرند.",
     features: [
-      "Ambient documentation",
-      "Clinical reasoning engine",
-      "Patient companion chat",
-      "EHR integration (FHIR/HL7)",
-      "Email & chat support",
+      "مستندسازی هوشمند ویزیت",
+      "موتور استدلال بالینی",
+      "چت همراه بیمار",
+      "اتصال به پروندهٔ الکترونیک (FHIR/HL7)",
+      "پشتیبانی ایمیل و چت",
     ],
-    cta: "Start free trial",
+    cta: "شروع رایگان",
     popular: false,
   },
   {
-    name: "Health System",
-    price: 289,
-    period: "/clinician · month",
-    description: "For hospitals and networks that run on outcomes.",
+    name: "مرکز درمانی",
+    price: "۵٫۹ میلیون",
+    period: "تومان · هر پزشک / ماه",
+    description: "برای بیمارستان‌ها و شبکه‌هایی که با «نتیجه» کار می‌کنند.",
     features: [
-      "Everything in Clinic",
-      "Imaging co-pilot",
-      "Care pathway automation",
-      "Private cloud deployment",
-      "Advanced analytics dashboard",
-      "Dedicated success engineer",
+      "همهٔ امکانات پلن مطب",
+      "دستیار تصویربرداری",
+      "خودکارسازی مسیر درمان",
+      "استقرار روی ابر خصوصی",
+      "داشبورد تحلیلی پیشرفته",
+      "مهندس موفقیت اختصاصی",
     ],
-    cta: "Book a demo",
+    cta: "رزرو دمو",
     popular: true,
   },
   {
-    name: "Enterprise",
+    name: "سازمانی",
     price: null,
-    period: "custom",
-    description: "For national networks, payers, and research institutions.",
+    period: "توافقی",
+    description: "برای شبکه‌های ملی، بیمه‌گرها و مراکز پژوهشی.",
     features: [
-      "Everything in Health System",
-      "On-prem deployment",
-      "Custom model fine-tuning",
-      "99.99% uptime SLA",
-      "White-glove onboarding",
-      "24/7 priority support",
+      "همهٔ امکانات پلن مرکز درمانی",
+      "استقرار کامل روی سرور داخلی",
+      "شخصی‌سازی و fine-tune مدل",
+      "تضمین آپ‌تایم ۹۹٫۹۹٪",
+      "راه‌اندازی VIP",
+      "پشتیبانی ۲۴/۷ اولویت‌دار",
     ],
-    cta: "Talk to sales",
+    cta: "گفت‌وگو با فروش",
     popular: false,
   },
 ];
 
 export const FAQS = [
   {
-    question: "Is Medora AI HIPAA compliant?",
+    question: "آیا مدورا با استانداردهای محرمانگی داده (HIPAA) سازگار است؟",
     answer:
-      "Yes. Medora is HIPAA compliant, SOC 2 Type II certified, and ISO 27001 audited. PHI is encrypted end-to-end (AES-256 at rest, TLS 1.3 in transit), and we sign BAAs with every customer. Your data is never used to train our models.",
+      "بله. مدورا با HIPAA سازگار است، گواهی SOC 2 Type II دارد و ممیزی ISO 27001 را گذرانده. دادهٔ بیمار سرتاسر رمزنگاری می‌شود (AES-256 در حالت سکون، TLS 1.3 در انتقال) و با هر مشتری قرارداد BAA امضا می‌کنیم. داده‌های شما هرگز برای آموزش مدل‌های ما استفاده نمی‌شود.",
   },
   {
-    question: "How does Medora integrate with our EHR?",
+    question: "مدورا چطور به سیستم پروندهٔ الکترونیک ما وصل می‌شود؟",
     answer:
-      "Medora connects natively to Epic, Cerner, Athena, and 40+ other systems via FHIR R4 and HL7v2. Typical integration takes days, not months — our deployment team handles the interface work end-to-end.",
+      "مدورا به‌صورت بومی از طریق FHIR R4 و HL7v2 به Epic، Cerner، Athena و بیش از ۴۰ سیستم دیگر متصل می‌شود. اتصال معمولاً چند روز طول می‌کشد، نه چند ماه — تیم استقرار ما کار رابط‌ها را سرتاسر انجام می‌دهد.",
   },
   {
-    question: "Does the AI make clinical decisions on its own?",
+    question: "آیا هوش مصنوعی خودش تصمیم بالینی می‌گیرد؟",
     answer:
-      "Never. Medora is a decision-support copilot: every suggestion, order, and note requires explicit clinician review and sign-off. Full audit trails record what the AI proposed and what the physician approved.",
+      "هرگز. مدورا یک دستیارِ پشتیبان تصمیم است: هر پیشنهاد، دستور و یادداشت باید صراحتاً توسط پزشک بازبینی و امضا شود. لاگ کامل ممیزی ثبت می‌کند که هوش مصنوعی چه پیشنهادی داده و پزشک چه چیزی را تأیید کرده است.",
   },
   {
-    question: "What languages does the Patient Companion support?",
+    question: "همراه بیمار از چه زبان‌هایی پشتیبانی می‌کند؟",
     answer:
-      "The patient-facing companion speaks 38 languages with medical-grade accuracy, including English, Spanish, Mandarin, Arabic, Farsi, and French — with automatic escalation to human staff when clinically indicated.",
+      "همراه بیمار به ۳۸ زبان با دقت در سطح پزشکی صحبت می‌کند — از جمله فارسی، انگلیسی، عربی، اسپانیایی، ماندارین و فرانسه — و هر جا که از نظر بالینی لازم باشد، به‌صورت خودکار به کادر انسانی ارجاع می‌دهد.",
   },
   {
-    question: "How long does deployment take?",
+    question: "راه‌اندازی چقدر طول می‌کشد؟",
     answer:
-      "A single clinic can go live in under a week. Multi-hospital networks typically deploy in 4–8 weeks including EHR integration, security review, and clinician onboarding.",
+      "یک مطب می‌تواند در کمتر از یک هفته فعال شود. شبکه‌های چندبیمارستانی معمولاً طی ۴ تا ۸ هفته مستقر می‌شوند — شامل اتصال پروندهٔ الکترونیک، بازبینی امنیتی و آموزش پزشکان.",
   },
   {
-    question: "Can we deploy on-premises?",
+    question: "آیا امکان استقرار روی سرورهای خودمان وجود دارد؟",
     answer:
-      "Yes. Enterprise plans support fully air-gapped on-prem deployment as well as private cloud (AWS, Azure, GCP) with customer-managed keys.",
+      "بله. پلن سازمانی از استقرار کاملاً ایزوله روی سرور داخلی (air-gapped) و همچنین ابر خصوصی (AWS، Azure، GCP) با کلیدهای تحت مدیریت مشتری پشتیبانی می‌کند.",
   },
 ];

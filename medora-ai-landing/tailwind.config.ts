@@ -16,7 +16,7 @@ const config: Config = {
         highlight: "#22D3EE",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["var(--font-sans)", "system-ui", "-apple-system", "sans-serif"],
       },
       animation: {
         aurora: "aurora 18s ease-in-out infinite alternate",

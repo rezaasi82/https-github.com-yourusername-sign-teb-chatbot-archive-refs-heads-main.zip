@@ -30,7 +30,7 @@ function FaqItem({
         <button
           onClick={onToggle}
           aria-expanded={open}
-          className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+          className="flex w-full items-center justify-between gap-4 px-6 py-5 text-start"
         >
           <span className="text-[15px] font-medium text-white/85 md:text-base">
             {faq.question}
@@ -69,10 +69,10 @@ export default function FAQ() {
     <section id="faq" className="relative py-28 md:py-36">
       <div className="section-shell">
         <SectionHeading
-          eyebrow="FAQ"
-          title="Questions,"
-          highlight="answered"
-          description="Everything hospital IT, compliance officers, and skeptical physicians usually ask us first."
+          eyebrow="سؤالات متداول"
+          title="پرسش‌ها،"
+          highlight="پاسخ داده شد"
+          description="هر آنچه واحد فناوری بیمارستان، مسئولان انطباق و پزشکانِ محتاط معمولاً اول از ما می‌پرسند."
         />
         <div className="mx-auto flex max-w-3xl flex-col gap-4">
           {FAQS.map((faq, i) => (

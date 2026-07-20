@@ -80,10 +80,10 @@ export default function Features() {
     <section id="features" className="relative py-28 md:py-36">
       <div className="section-shell">
         <SectionHeading
-          eyebrow="Capabilities"
-          title="Everything a clinic needs,"
-          highlight="nothing it doesn't"
-          description="Six systems, one platform. Each one designed with clinicians, validated in the wild, and shipped in the core product — never as a paid add-on."
+          eyebrow="امکانات"
+          title="هر آنچه یک کلینیک لازم دارد،"
+          highlight="نه بیشتر و نه کمتر"
+          description="شش سامانه، یک پلتفرم. هر کدام با پزشکان طراحی شده، در میدان واقعی اعتبارسنجی شده و در هستهٔ اصلی محصول عرضه می‌شود — نه به‌عنوان افزونهٔ پولی جداگانه."
         />
         <div className="grid gap-5 md:grid-cols-3 md:gap-6">
           {FEATURES.map((feature, i) => (

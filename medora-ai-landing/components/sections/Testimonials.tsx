@@ -14,7 +14,7 @@ function TestimonialCard({
     <figure className="glass group relative w-[340px] shrink-0 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 sm:w-[400px]">
       <Quote className="absolute right-5 top-5 h-6 w-6 text-white/10 transition-colors duration-300 group-hover:text-primary/40" />
       <blockquote className="text-sm leading-relaxed text-white/70">
-        &ldquo;{testimonial.quote}&rdquo;
+        «{testimonial.quote}»
       </blockquote>
       <figcaption className="mt-5 flex items-center gap-3">
         <span
@@ -45,7 +45,7 @@ function MarqueeRow({
     <div className="group/row relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
       <div
         className={cn(
-          "flex w-max gap-5 pr-5 [animation-play-state:running] group-hover/row:[animation-play-state:paused]",
+          "flex w-max gap-5 pe-5 [animation-play-state:running] group-hover/row:[animation-play-state:paused]",
           reverse ? "animate-marquee-reverse" : "animate-marquee"
         )}
       >
@@ -69,10 +69,10 @@ export default function Testimonials() {
       />
       <div className="section-shell relative z-10">
         <SectionHeading
-          eyebrow="Loved by clinicians"
-          title="Trusted where it"
-          highlight="matters most"
-          description="From solo family practices to 12-hospital networks — hear it from the people wearing the white coats."
+          eyebrow="محبوب پزشکان"
+          title="مورد اعتماد، آنجا که"
+          highlight="بیشترین اهمیت را دارد"
+          description="از مطب‌های تک‌نفرهٔ پزشک خانواده تا شبکه‌های ۱۲بیمارستانی — از زبان کسانی بشنوید که روپوش سفید بر تن دارند."
         />
       </div>
       <div className="relative z-10 flex flex-col gap-5">

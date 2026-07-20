@@ -2,6 +2,7 @@
 
 import { animate, useInView, useMotionValue } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { toFaDigits } from "@/lib/utils";
 
 type CountUpProps = {
   value: number;
@@ -20,7 +21,7 @@ export default function CountUp({
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const motionValue = useMotionValue(0);
-  const [display, setDisplay] = useState("0");
+  const [display, setDisplay] = useState("۰");
   const places = decimals ?? (Number.isInteger(value) ? 0 : 1);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export default function CountUp({
     const controls = animate(motionValue, value, {
       duration,
       ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => setDisplay(v.toFixed(places)),
+      onUpdate: (v) => setDisplay(toFaDigits(v.toFixed(places))),
     });
     return controls.stop;
   }, [inView, value, duration, places, motionValue]);

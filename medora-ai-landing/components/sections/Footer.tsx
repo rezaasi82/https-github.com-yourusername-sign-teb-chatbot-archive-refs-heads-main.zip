@@ -1,21 +1,22 @@
 import { Github, Linkedin, Sparkles, Twitter } from "lucide-react";
+import { toFaDigits } from "@/lib/utils";
 
 const FOOTER_COLUMNS = [
   {
-    heading: "Product",
-    links: ["Clinical Reasoning", "Ambient Docs", "Imaging Co-Pilot", "Patient Companion", "Pricing"],
+    heading: "محصول",
+    links: ["استدلال بالینی", "مستندسازی هوشمند", "دستیار تصویربرداری", "همراه بیمار", "تعرفه‌ها"],
   },
   {
-    heading: "Company",
-    links: ["About", "Careers", "Press", "Partners", "Contact"],
+    heading: "شرکت",
+    links: ["دربارهٔ ما", "فرصت‌های شغلی", "رسانه", "همکاران تجاری", "تماس با ما"],
   },
   {
-    heading: "Resources",
-    links: ["Documentation", "API Reference", "Clinical Evidence", "Security", "Status"],
+    heading: "منابع",
+    links: ["مستندات", "مرجع API", "شواهد بالینی", "امنیت", "وضعیت سرویس"],
   },
   {
-    heading: "Legal",
-    links: ["Privacy", "Terms", "BAA", "Compliance", "Cookies"],
+    heading: "حقوقی",
+    links: ["حریم خصوصی", "شرایط استفاده", "قرارداد BAA", "انطباق", "کوکی‌ها"],
   },
 ];
 
@@ -29,19 +30,18 @@ export default function Footer() {
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary shadow-glow">
                 <Sparkles className="h-5 w-5 text-white" />
               </span>
-              <span className="text-lg font-bold tracking-tight">
-                Medora<span className="text-gradient"> AI</span>
+              <span className="text-lg font-bold">
+                مدورا <span className="text-gradient">AI</span>
               </span>
             </a>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/50">
-              The intelligence layer for modern healthcare. Built with
-              clinicians, for clinicians.
+              لایهٔ هوشمند پزشکیِ مدرن. ساخته‌شده با پزشکان، برای پزشکان.
             </p>
             <div className="mt-6 flex gap-3">
               {[
-                { icon: Twitter, label: "Twitter" },
-                { icon: Linkedin, label: "LinkedIn" },
-                { icon: Github, label: "GitHub" },
+                { icon: Twitter, label: "توییتر" },
+                { icon: Linkedin, label: "لینکدین" },
+                { icon: Github, label: "گیت‌هاب" },
               ].map(({ icon: Icon, label }) => (
                 <a
                   key={label}
@@ -80,10 +80,11 @@ export default function Footer() {
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
           <p className="text-xs text-white/40">
-            © {new Date().getFullYear()} Medora AI, Inc. All rights reserved.
+            © {toFaDigits(new Date().getFullYear())} مدورا AI — تمام حقوق محفوظ
+            است.
           </p>
           <p className="text-xs text-white/40">
-            Medora is decision support — not a replacement for clinical judgment.
+            مدورا ابزار پشتیبان تصمیم است — نه جایگزینِ قضاوت بالینی.
           </p>
         </div>
       </div>

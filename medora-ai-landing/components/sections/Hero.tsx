@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, PlayCircle, ShieldCheck } from "lucide-react";
+import { ArrowLeft, PlayCircle, ShieldCheck } from "lucide-react";
 import dynamic from "next/dynamic";
 import AuroraBackground from "@/components/ui/AuroraBackground";
 import CountUp from "@/components/ui/CountUp";
@@ -67,36 +67,35 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-highlight opacity-70" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-highlight" />
             </span>
-            Introducing Medora Reasoning v3 — now live
+            معرفی موتور استدلال مدورا نسخهٔ ۳ — هم‌اکنون فعال
           </motion.span>
 
           <motion.h1
             variants={item}
-            className="text-5xl font-bold leading-[1.04] tracking-tight sm:text-6xl xl:text-7xl"
+            className="text-5xl font-bold leading-[1.15] sm:text-6xl xl:text-7xl"
           >
-            The intelligence
+            لایهٔ هوشمندِ
             <br />
-            layer for{" "}
-            <span className="text-gradient">modern healthcare</span>
+            <span className="text-gradient">پزشکیِ مدرن</span>
           </motion.h1>
 
           <motion.p
             variants={item}
             className="max-w-xl text-lg leading-relaxed text-white/60"
           >
-            Medora AI listens, reasons, and documents — so clinicians can get
-            back to medicine. Diagnose faster, chart in seconds, and give every
-            patient a 24/7 companion that never sleeps.
+            مدورا گوش می‌دهد، استدلال می‌کند و مستند می‌سازد — تا پزشک به طبابت
+            برگردد. سریع‌تر تشخیص دهید، در چند ثانیه پرونده بنویسید و به هر
+            بیمار همراهی ۲۴ساعته بدهید که هرگز نمی‌خوابد.
           </motion.p>
 
           <motion.div variants={item} className="flex flex-wrap items-center gap-4">
             <MagneticButton href="#cta">
-              Start free trial
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              شروع رایگان
+              <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
             </MagneticButton>
             <MagneticButton href="#demo" variant="ghost">
               <PlayCircle className="h-4 w-4 text-highlight" />
-              Watch the demo
+              تماشای دمو
             </MagneticButton>
           </motion.div>
 
@@ -143,16 +142,16 @@ export default function Hero() {
           <div className="absolute inset-8 rounded-full bg-primary/15 blur-[90px] animate-pulse-glow" />
           <AIOrb />
           {/* floating glass chips around the orb */}
-          <div className="glass absolute left-0 top-[18%] hidden animate-float-y rounded-2xl px-4 py-3 text-xs sm:block">
-            <p className="font-semibold text-highlight">Note signed ✓</p>
-            <p className="mt-0.5 text-white/55">SOAP · 47 seconds</p>
+          <div className="glass absolute start-0 top-[18%] hidden animate-float-y rounded-2xl px-4 py-3 text-xs sm:block">
+            <p className="font-semibold text-highlight">یادداشت امضا شد ✓</p>
+            <p className="mt-0.5 text-white/55">SOAP · ۴۷ ثانیه</p>
           </div>
           <div
-            className="glass absolute bottom-[14%] right-0 hidden animate-float-y rounded-2xl px-4 py-3 text-xs sm:block"
+            className="glass absolute bottom-[14%] end-0 hidden animate-float-y rounded-2xl px-4 py-3 text-xs sm:block"
             style={{ animationDelay: "-2.5s" }}
           >
-            <p className="font-semibold text-secondary">Differential ready</p>
-            <p className="mt-0.5 text-white/55">3 candidates · 98% conf.</p>
+            <p className="font-semibold text-secondary">تشخیص افتراقی آماده است</p>
+            <p className="mt-0.5 text-white/55">۳ گزینه · اطمینان ۹۸٪</p>
           </div>
         </motion.div>
       </div>
