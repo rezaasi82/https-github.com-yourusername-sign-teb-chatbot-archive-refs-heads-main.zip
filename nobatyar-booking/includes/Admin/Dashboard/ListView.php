@@ -132,15 +132,18 @@ class ListView
                             </td>
                             <td><?php echo esc_html($providers[(int) $booking['provider_id']]['name'] ?? ''); ?></td>
                             <td><?php echo esc_html($services[(int) $booking['service_id']]['name'] ?? ''); ?></td>
-                            <td><?php echo esc_html(JalaliConverter::gregorian_to_jalali_string(substr($booking['booking_datetime'], 0, 10))); ?></td>
-                            <td><?php echo esc_html($booking['status']); ?></td>
+                            <td>
+                                <?php echo esc_html(JalaliConverter::gregorian_to_jalali_string(substr($booking['booking_datetime'], 0, 10))); ?>
+                                <span class="description"><?php echo esc_html(substr($booking['booking_datetime'], 11, 5)); ?></span>
+                            </td>
+                            <td><?php echo $this->status_badge($booking['status']); // pre-escaped HTML ?></td>
                             <td>
                                 <form method="post">
                                     <input type="hidden" name="booking_id" value="<?php echo (int) $booking['id']; ?>">
                                     <?php wp_nonce_field('nobatyar_change_status', 'nobatyar_change_status_nonce'); ?>
                                     <select name="new_status">
                                         <?php foreach (BookingStatus::all() as $status) : ?>
-                                            <option value="<?php echo esc_attr($status); ?>" <?php selected($booking['status'], $status); ?>><?php echo esc_html($status); ?></option>
+                                            <option value="<?php echo esc_attr($status); ?>" <?php selected($booking['status'], $status); ?>><?php echo esc_html($this->status_label($status)); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                     <button type="submit" name="nobatyar_change_status" value="1" class="button"><?php echo esc_html__('ثبت', 'nobatyar-booking'); ?></button>
@@ -161,6 +164,28 @@ class ListView
         <?php
 
         return ob_get_clean();
+    }
+
+    private function status_label(string $status): string
+    {
+        $labels = [
+            'pending'   => __('در انتظار', 'nobatyar-booking'),
+            'confirmed' => __('تأیید شده', 'nobatyar-booking'),
+            'done'      => __('انجام شده', 'nobatyar-booking'),
+            'cancelled' => __('لغو شده', 'nobatyar-booking'),
+            'no_show'   => __('غیبت', 'nobatyar-booking'),
+        ];
+
+        return $labels[$status] ?? $status;
+    }
+
+    private function status_badge(string $status): string
+    {
+        return sprintf(
+            '<span class="nby-badge nby-badge--%s">%s</span>',
+            esc_attr($status),
+            esc_html($this->status_label($status))
+        );
     }
 
     /**

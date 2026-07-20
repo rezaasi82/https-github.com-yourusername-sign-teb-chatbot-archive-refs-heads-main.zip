@@ -1,34 +1,522 @@
-.nobatyar-booking-form-wrap {
+/* =====================================================
+   Nobatyar Booking Form — v1.4
+   RTL · Mobile-first · CSS custom properties
+   ===================================================== */
+
+.nby-wrap {
+    --nby-primary:    #2980b9;
+    --nby-primary-dk: #1f618d;
+    --nby-success:    #27ae60;
+    --nby-success-dk: #219150;
+    --nby-error:      #c0392b;
+    --nby-text:       #2c3e50;
+    --nby-text-muted: #7f8c8d;
+    --nby-border:     #dde1e7;
+    --nby-bg:         #ffffff;
+    --nby-bg-subtle:  #f7f9fb;
+    --nby-radius:     8px;
+    --nby-radius-sm:  4px;
+    --nby-shadow:     0 2px 12px rgba(0, 0, 0, 0.08);
+    --nby-transition: 0.18s ease;
+
     direction: rtl;
     text-align: right;
     max-width: 480px;
-}
-
-.nobatyar-booking-form .nobatyar-field {
-    margin-bottom: 1em;
-}
-
-.nobatyar-booking-form label {
-    display: block;
-    margin-bottom: 0.25em;
-    font-weight: 600;
-}
-
-.nobatyar-booking-form select,
-.nobatyar-booking-form input {
-    width: 100%;
-    padding: 0.5em;
+    font-family: inherit;
+    color: var(--nby-text);
     box-sizing: border-box;
 }
 
-.nobatyar-booking-message {
-    margin-top: 1em;
+.nby-wrap *,
+.nby-wrap *::before,
+.nby-wrap *::after {
+    box-sizing: inherit;
+}
+
+/* ----- Step Indicator ----- */
+
+.nby-steps {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.75em;
+    padding: 0;
+}
+
+.nby-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+}
+
+.nby-step__bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--nby-border);
+    background: var(--nby-bg);
+    color: var(--nby-text-muted);
+    font-size: 0.82em;
+    font-weight: 700;
+    transition:
+        background var(--nby-transition),
+        border-color var(--nby-transition),
+        color var(--nby-transition);
+}
+
+.nby-step__label {
+    font-size: 0.72em;
+    color: var(--nby-text-muted);
+    white-space: nowrap;
+    transition: color var(--nby-transition);
+}
+
+.nby-step__connector {
+    flex: 1;
+    height: 2px;
+    background: var(--nby-border);
+    margin: 0 4px;
+    margin-top: 17px; /* vertically align with bubble centres */
+    transition: background var(--nby-transition);
+}
+
+.nby-step.is-active .nby-step__bubble {
+    border-color: var(--nby-primary);
+    background: var(--nby-primary);
+    color: #fff;
+}
+
+.nby-step.is-active .nby-step__label {
+    color: var(--nby-primary);
     font-weight: 600;
 }
 
-.nobatyar-booking-message.is-error {
-    color: #c0392b;
+.nby-step.is-done .nby-step__bubble {
+    border-color: var(--nby-success);
+    background: var(--nby-success);
+    color: #fff;
 }
+
+.nby-step.is-done + .nby-step__connector {
+    background: var(--nby-success);
+}
+
+/* ----- Error Bar ----- */
+
+.nby-error-bar {
+    margin-bottom: 1em;
+    padding: 10px 14px;
+    background: #fdf0ef;
+    border: 1px solid #f5c2c0;
+    border-radius: var(--nby-radius);
+    color: var(--nby-error);
+    font-size: 0.9em;
+    line-height: 1.45;
+}
+
+.nby-error-bar[hidden] {
+    display: none;
+}
+
+/* ----- Panels ----- */
+
+.nby-form {
+    position: relative;
+}
+
+.nby-panel[hidden] {
+    display: none;
+}
+
+/* ----- Fields ----- */
+
+.nby-field {
+    margin-bottom: 1.1em;
+}
+
+.nby-label {
+    display: block;
+    margin-bottom: 0.35em;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--nby-text);
+}
+
+.nby-input,
+.nby-select {
+    display: block;
+    width: 100%;
+    padding: 0.55em 0.75em;
+    border: 1.5px solid var(--nby-border);
+    border-radius: var(--nby-radius);
+    background: var(--nby-bg);
+    color: var(--nby-text);
+    font-size: 1em;
+    font-family: inherit;
+    line-height: 1.5;
+    transition:
+        border-color var(--nby-transition),
+        box-shadow var(--nby-transition);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.nby-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237f8c8d' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 12px center;
+    padding-left: 32px;
+}
+
+.nby-input:focus,
+.nby-select:focus {
+    outline: none;
+    border-color: var(--nby-primary);
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.15);
+}
+
+input[type="tel"].nby-input,
+input[type="email"].nby-input {
+    direction: ltr;
+    text-align: left;
+}
+
+input[type="number"].nby-input {
+    -moz-appearance: textfield;
+}
+
+input[type="number"].nby-input::-webkit-inner-spin-button,
+input[type="number"].nby-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ----- Input Group (coupon / gift card) ----- */
+
+.nby-input-group {
+    display: flex;
+    gap: 6px;
+}
+
+.nby-input-group .nby-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.nby-input-group .nby-btn {
+    flex: 0 0 auto;
+}
+
+/* ----- Toggle Switch ----- */
+
+.nby-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.nby-toggle__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.nby-toggle__track {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+    background: var(--nby-border);
+    flex-shrink: 0;
+    transition: background var(--nby-transition);
+}
+
+.nby-toggle__track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform var(--nby-transition);
+}
+
+.nby-toggle__input:checked + .nby-toggle__track {
+    background: var(--nby-primary);
+}
+
+.nby-toggle__input:checked + .nby-toggle__track::after {
+    transform: translateX(-18px);
+}
+
+.nby-toggle__input:focus-visible + .nby-toggle__track {
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.25);
+}
+
+.nby-toggle__text {
+    font-size: 0.9em;
+    color: var(--nby-text);
+}
+
+/* ----- Expandable (package / recurrence sub-fields) ----- */
+
+.nby-expandable {
+    margin-top: -0.4em;
+    margin-bottom: 0.5em;
+    padding: 0.8em 0.9em;
+    background: var(--nby-bg-subtle);
+    border: 1px solid var(--nby-border);
+    border-radius: var(--nby-radius);
+}
+
+.nby-expandable[hidden] {
+    display: none;
+}
+
+.nby-expandable .nby-field:last-child {
+    margin-bottom: 0;
+}
+
+/* ----- Slot Chips ----- */
+
+.nby-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 44px;
+    align-items: flex-start;
+    align-content: flex-start;
+    padding: 2px 0;
+}
+
+.nby-slots__hint {
+    margin: 0;
+    color: var(--nby-text-muted);
+    font-size: 0.875em;
+    align-self: center;
+}
+
+.nby-slot-chip {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 14px;
+    border: 1.5px solid var(--nby-border);
+    border-radius: 20px;
+    background: var(--nby-bg-subtle);
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition:
+        border-color var(--nby-transition),
+        background var(--nby-transition),
+        color var(--nby-transition),
+        box-shadow var(--nby-transition);
+}
+
+.nby-slot-chip:hover {
+    border-color: var(--nby-primary);
+    background: #eaf4fb;
+}
+
+.nby-slot-chip.is-selected {
+    border-color: var(--nby-primary);
+    background: var(--nby-primary);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(41, 128, 185, 0.28);
+}
+
+.nby-slot-chip__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.nby-slot-chip__time {
+    font-size: 0.9em;
+    font-weight: 600;
+    direction: ltr;
+    line-height: 1.2;
+}
+
+.nby-slot-chip__cap {
+    font-size: 0.7em;
+    color: var(--nby-text-muted);
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.nby-slot-chip.is-selected .nby-slot-chip__cap {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ----- Promo Result ----- */
+
+.nby-promo-result {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.82em;
+    min-height: 1em;
+    line-height: 1.4;
+}
+
+.nby-promo-result.is-ok {
+    color: var(--nby-success);
+}
+
+.nby-promo-result.is-error {
+    color: var(--nby-error);
+}
+
+/* ----- Action Rows ----- */
+
+.nby-actions {
+    display: flex;
+    margin-top: 1.5em;
+}
+
+.nby-actions--split {
+    justify-content: space-between;
+}
+
+/* ----- Buttons ----- */
+
+.nby-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0.6em 1.25em;
+    border: 1.5px solid transparent;
+    border-radius: var(--nby-radius);
+    font-size: 0.95em;
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        background var(--nby-transition),
+        border-color var(--nby-transition),
+        color var(--nby-transition),
+        box-shadow var(--nby-transition),
+        opacity var(--nby-transition);
+}
+
+.nby-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.nby-btn--block {
+    width: 100%;
+}
+
+.nby-btn--primary {
+    background: var(--nby-primary);
+    border-color: var(--nby-primary);
+    color: #fff;
+}
+
+.nby-btn--primary:hover:not(:disabled) {
+    background: var(--nby-primary-dk);
+    border-color: var(--nby-primary-dk);
+}
+
+.nby-btn--primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.35);
+}
+
+.nby-btn--success {
+    background: var(--nby-success);
+    border-color: var(--nby-success);
+    color: #fff;
+}
+
+.nby-btn--success:hover:not(:disabled) {
+    background: var(--nby-success-dk);
+    border-color: var(--nby-success-dk);
+}
+
+.nby-btn--success:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.35);
+}
+
+.nby-btn--secondary {
+    background: transparent;
+    border-color: var(--nby-border);
+    color: var(--nby-text);
+}
+
+.nby-btn--secondary:hover:not(:disabled) {
+    border-color: var(--nby-primary);
+    color: var(--nby-primary);
+}
+
+.nby-btn--ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--nby-text-muted);
+}
+
+.nby-btn--ghost:hover:not(:disabled) {
+    color: var(--nby-text);
+    background: var(--nby-bg-subtle);
+}
+
+/* ----- Success Panel ----- */
+
+.nby-panel--success {
+    padding: 2.5em 1em;
+    text-align: center;
+}
+
+.nby-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+.nby-success__icon {
+    color: var(--nby-success);
+    animation: nby-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes nby-pop {
+    from { transform: scale(0.4); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+.nby-success__message {
+    margin: 0;
+    font-size: 1.05em;
+    font-weight: 600;
+    color: var(--nby-text);
+    line-height: 1.5;
+}
+
+/* ----- Jalali Calendar (class names kept as-is for the picker script) ----- */
 
 .nobatyar-jalali-field {
     position: relative;
@@ -36,21 +524,21 @@
 
 .nobatyar-jalali-display {
     cursor: pointer;
-    background-color: #fff;
+    background-color: var(--nby-bg);
 }
 
 .nobatyar-jalali-calendar {
     position: absolute;
-    z-index: 10;
+    z-index: 100;
     top: 100%;
     right: 0;
     left: 0;
-    margin-top: 0.25em;
-    padding: 0.5em;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin-top: 4px;
+    padding: 0.6em;
+    background: var(--nby-bg);
+    border: 1px solid var(--nby-border);
+    border-radius: var(--nby-radius);
+    box-shadow: var(--nby-shadow);
     box-sizing: border-box;
 }
 
@@ -59,6 +547,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 0.5em;
+    font-size: 0.9em;
     font-weight: 600;
 }
 
@@ -67,8 +556,18 @@
     border: none;
     font-size: 1.1em;
     cursor: pointer;
-    padding: 0.25em 0.5em;
+    padding: 0.2em 0.45em;
+    border-radius: var(--nby-radius-sm);
+    color: var(--nby-text-muted);
     width: auto;
+    transition:
+        color var(--nby-transition),
+        background var(--nby-transition);
+}
+
+.nobatyar-jalali-nav:hover {
+    color: var(--nby-primary);
+    background: var(--nby-bg-subtle);
 }
 
 .nobatyar-jalali-weekdays,
@@ -80,8 +579,9 @@
 }
 
 .nobatyar-jalali-weekdays span {
-    font-size: 0.8em;
-    color: #666;
+    font-size: 0.75em;
+    font-weight: 600;
+    color: var(--nby-text-muted);
     padding: 0.25em 0;
 }
 
@@ -90,25 +590,52 @@
     border: none;
     background: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: var(--nby-radius-sm);
+    font-size: 0.85em;
+    color: var(--nby-text);
     width: auto;
+    transition:
+        background var(--nby-transition),
+        color var(--nby-transition);
 }
 
 .nobatyar-jalali-day:hover:not(:disabled) {
-    background-color: #eee;
+    background: var(--nby-bg-subtle);
+    color: var(--nby-primary);
 }
 
 .nobatyar-jalali-day.is-today {
     font-weight: 700;
-    color: #2980b9;
+    color: var(--nby-primary);
 }
 
 .nobatyar-jalali-day.is-selected {
-    background-color: #2980b9;
+    background: var(--nby-primary);
     color: #fff;
 }
 
 .nobatyar-jalali-day.is-past {
-    color: #ccc;
+    color: var(--nby-border);
     cursor: not-allowed;
+}
+
+/* ----- Mobile ----- */
+
+@media (max-width: 400px) {
+    .nby-step__label {
+        font-size: 0.65em;
+    }
+
+    .nby-btn {
+        font-size: 0.9em;
+        padding: 0.55em 0.9em;
+    }
+
+    .nby-slot-chip {
+        padding: 6px 10px;
+    }
+
+    .nby-slot-chip__time {
+        font-size: 0.85em;
+    }
 }

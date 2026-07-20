@@ -35,17 +35,10 @@ class BookingController
                 'methods'             => \WP_REST_Server::CREATABLE,
                 'callback'            => [$this, 'create_booking'],
                 'permission_callback' => [$this, 'check_public_create_permission'],
-                'args'                => [
-                    'provider_id'      => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
-                    'service_id'       => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
-                    'booking_datetime' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'customer_name'    => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'customer_phone'   => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'customer_email'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
-                    'notes'            => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_textarea_field'],
-                    'coupon_code'      => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'gift_card_code'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                ],
+                'args'                => array_merge($this->common_booking_args(), [
+                    'coupon_code'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'gift_card_code' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                ]),
             ],
         ]);
 
@@ -53,17 +46,10 @@ class BookingController
             'methods'             => \WP_REST_Server::CREATABLE,
             'callback'            => [$this, 'create_recurring_booking'],
             'permission_callback' => [$this, 'check_public_create_permission'],
-            'args'                => [
-                'provider_id'             => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
-                'service_id'              => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
-                'booking_datetime'        => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                'customer_name'           => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                'customer_phone'          => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                'customer_email'          => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
-                'notes'                   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_textarea_field'],
-                'recurrence_frequency'    => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_key'],
-                'recurrence_occurrences'  => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
-            ],
+            'args'                => array_merge($this->common_booking_args(), [
+                'recurrence_frequency'   => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_key'],
+                'recurrence_occurrences' => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
+            ]),
         ]);
 
         register_rest_route('nobatyar/v1', '/bookings/(?P<id>\d+)', [
@@ -202,6 +188,19 @@ class BookingController
         }
 
         return new \WP_REST_Response(['updated' => true], 200);
+    }
+
+    private function common_booking_args(): array
+    {
+        return [
+            'provider_id'      => ['required' => true,  'type' => 'integer', 'sanitize_callback' => 'absint'],
+            'service_id'       => ['required' => true,  'type' => 'integer', 'sanitize_callback' => 'absint'],
+            'booking_datetime' => ['required' => true,  'type' => 'string',  'sanitize_callback' => 'sanitize_text_field'],
+            'customer_name'    => ['required' => true,  'type' => 'string',  'sanitize_callback' => 'sanitize_text_field'],
+            'customer_phone'   => ['required' => true,  'type' => 'string',  'sanitize_callback' => 'sanitize_text_field'],
+            'customer_email'   => ['required' => false, 'type' => 'string',  'sanitize_callback' => 'sanitize_email'],
+            'notes'            => ['required' => false, 'type' => 'string',  'sanitize_callback' => 'sanitize_textarea_field'],
+        ];
     }
 
     /**

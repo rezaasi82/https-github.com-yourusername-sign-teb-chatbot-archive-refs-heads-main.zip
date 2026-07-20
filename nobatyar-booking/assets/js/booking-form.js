@@ -1,376 +1,518 @@
 (function () {
     'use strict';
 
-    var form = document.getElementById('nobatyar-booking-form');
+    const form     = document.getElementById('nby-form');
+    const errorBar = document.getElementById('nby-error');
 
     if (!form || typeof nobatyarBooking === 'undefined') {
         return;
     }
 
-    var serviceField  = form.querySelector('#nobatyar-service');
-    var providerField = form.querySelector('#nobatyar-provider');
-    var dateField      = form.querySelector('#nobatyar-date');
-    var slotField      = form.querySelector('#nobatyar-slot');
-    var messageBox     = form.querySelector('#nobatyar-booking-message');
+    const wrap = form.closest('.nby-wrap');
 
-    var recurrenceEnableField = form.querySelector('#nobatyar-recurrence-enable');
-    var recurrenceFields      = form.querySelector('#nobatyar-recurrence-fields');
-    var recurrenceFrequencyField   = form.querySelector('#nobatyar-recurrence-frequency');
-    var recurrenceOccurrencesField = form.querySelector('#nobatyar-recurrence-occurrences');
+    // --- Field refs ---
+    const serviceField          = document.getElementById('nby-service');
+    const providerField         = document.getElementById('nby-provider');
+    const dateHidden            = document.getElementById('nobatyar-date');   // written by jalali-datepicker.js
+    const slotsBox              = document.getElementById('nby-slots');
+    const slotHidden            = document.getElementById('nby-slot');
+    const customerNameField     = document.getElementById('nby-customer-name');
+    const customerPhoneField    = document.getElementById('nby-customer-phone');
+    const customerEmailField    = document.getElementById('nby-customer-email');
+    const couponCodeField       = document.getElementById('nby-coupon-code');
+    const couponApplyBtn        = document.getElementById('nby-coupon-apply');
+    const couponResultEl        = document.getElementById('nby-coupon-result');
+    const giftCardCodeField     = document.getElementById('nby-gift-card-code');
+    const giftCardApplyBtn      = document.getElementById('nby-gift-card-apply');
+    const giftCardResultEl      = document.getElementById('nby-gift-card-result');
+    const usePackageField       = document.getElementById('nby-use-package');
+    const packageFieldsBox      = document.getElementById('nby-package-fields');
+    const packageLookupBtn      = document.getElementById('nby-package-lookup');
+    const packagePurchaseField  = document.getElementById('nby-package-purchase');
+    const recurrenceEnableField = document.getElementById('nby-recurrence-enable');
+    const recurrenceFieldsBox   = document.getElementById('nby-recurrence-fields');
+    const recurrenceFreqField   = document.getElementById('nby-recurrence-frequency');
+    const recurrenceOccField    = document.getElementById('nby-recurrence-occurrences');
+    const successMessageEl      = document.getElementById('nby-success-message');
+    const submitBtn             = document.getElementById('nby-submit');
 
-    if (recurrenceEnableField && recurrenceFields) {
-        recurrenceEnableField.addEventListener('change', function () {
-            recurrenceFields.hidden = !recurrenceEnableField.checked;
+    // --- State ---
+    let appliedCouponCode   = '';
+    let appliedGiftCardCode = '';
+    let packagePurchases    = [];
+    let slotDebounceTimer   = null;
+
+    // --- Unified fetch wrapper ---
+    function apiFetch(url, options) {
+        const opts    = options || {};
+        opts.headers  = Object.assign({ 'X-WP-Nonce': nobatyarBooking.nonce }, opts.headers || {});
+
+        return fetch(url, opts).then(function (res) {
+            return res.json().then(function (data) {
+                return { ok: res.ok, data: data };
+            });
         });
     }
 
-    var couponCodeField   = form.querySelector('#nobatyar-coupon-code');
-    var couponApplyBtn    = form.querySelector('#nobatyar-coupon-apply-btn');
-    var couponResultField = form.querySelector('#nobatyar-coupon-result');
-    var appliedCouponCode = '';
+    // --- Error / success display ---
+    function showError(message) {
+        errorBar.textContent = message;
+        errorBar.hidden      = false;
+        errorBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 
-    function resetCouponResult(text, isError) {
-        if (!couponResultField) {
+    function hideError() {
+        errorBar.hidden      = true;
+        errorBar.textContent = '';
+    }
+
+    // --- Step navigation ---
+    function goToStep(step) {
+        if (wrap) {
+            wrap.querySelectorAll('.nby-step[data-step]').forEach(function (el) {
+                const s = parseInt(el.getAttribute('data-step'), 10);
+                el.classList.toggle('is-active', s === step);
+                el.classList.toggle('is-done',   s < step);
+                if (s === step) {
+                    el.setAttribute('aria-current', 'step');
+                } else {
+                    el.removeAttribute('aria-current');
+                }
+            });
+        }
+
+        form.querySelectorAll('.nby-panel[data-panel]').forEach(function (panel) {
+            panel.hidden = panel.getAttribute('data-panel') !== String(step);
+        });
+
+        hideError();
+    }
+
+    function showSuccess(message) {
+        form.querySelectorAll('.nby-panel[data-panel]').forEach(function (panel) {
+            panel.hidden = panel.getAttribute('data-panel') !== 'success';
+        });
+
+        if (successMessageEl) {
+            successMessageEl.textContent = message;
+        }
+
+        if (wrap) {
+            wrap.querySelectorAll('.nby-step[data-step]').forEach(function (el) {
+                el.classList.remove('is-active', 'is-done');
+                el.removeAttribute('aria-current');
+            });
+        }
+
+        hideError();
+    }
+
+    // --- Slot chips ---
+    function setSlotHint(message) {
+        if (slotsBox) {
+            slotsBox.innerHTML = '<p class="nby-slots__hint">'
+                + message.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                + '</p>';
+        }
+        if (slotHidden) { slotHidden.value = ''; }
+    }
+
+    function renderSlots(slots) {
+        if (!slotsBox) { return; }
+        if (slotHidden) { slotHidden.value = ''; }
+        slotsBox.innerHTML = '';
+
+        if (!slots || slots.length === 0) {
+            setSlotHint('بازه آزادی برای این تاریخ وجود ندارد');
             return;
         }
 
-        couponResultField.textContent = text || '';
-        couponResultField.classList.toggle('is-error', !!isError);
+        slots.forEach(function (slot) {
+            const label       = document.createElement('label');
+            label.className   = 'nby-slot-chip';
+
+            const radio       = document.createElement('input');
+            radio.type        = 'radio';
+            radio.name        = 'nby_slot_radio';
+            radio.value       = slot.start;
+            radio.className   = 'nby-slot-chip__input';
+
+            radio.addEventListener('change', function () {
+                if (slotHidden) { slotHidden.value = slot.start; }
+                slotsBox.querySelectorAll('.nby-slot-chip').forEach(function (chip) {
+                    chip.classList.remove('is-selected');
+                });
+                label.classList.add('is-selected');
+            });
+
+            const timeSpan    = document.createElement('span');
+            timeSpan.className = 'nby-slot-chip__time';
+            timeSpan.textContent = slot.start.substring(11, 16);
+
+            label.appendChild(radio);
+            label.appendChild(timeSpan);
+
+            if (typeof slot.capacity_remaining !== 'undefined') {
+                const capSpan      = document.createElement('span');
+                capSpan.className  = 'nby-slot-chip__cap';
+                capSpan.textContent = slot.capacity_remaining + ' جا';
+                label.appendChild(capSpan);
+            }
+
+            slotsBox.appendChild(label);
+        });
     }
 
+    function loadSlots() {
+        if (!serviceField || !providerField || !dateHidden) { return; }
+
+        const providerId = providerField.value;
+        const serviceId  = serviceField.value;
+        const date       = dateHidden.value;
+
+        if (!providerId || !serviceId || !date) { return; }
+
+        setSlotHint('در حال بارگذاری...');
+
+        const url = nobatyarBooking.restUrl + 'availability'
+            + '?provider_id=' + encodeURIComponent(providerId)
+            + '&service_id='  + encodeURIComponent(serviceId)
+            + '&date='        + encodeURIComponent(date);
+
+        apiFetch(url)
+            .then(function (result) {
+                renderSlots(result.data.slots || []);
+            })
+            .catch(function () {
+                setSlotHint('خطا در بارگذاری بازه‌های زمانی');
+            });
+    }
+
+    function debouncedLoadSlots() {
+        clearTimeout(slotDebounceTimer);
+        slotDebounceTimer = setTimeout(loadSlots, 180);
+    }
+
+    if (dateHidden) {
+        dateHidden.addEventListener('change', debouncedLoadSlots);
+    }
+
+    // --- Step 1 → 2 ---
+    const next1Btn = document.getElementById('nby-next-1');
+    if (next1Btn) {
+        next1Btn.addEventListener('click', function () {
+            if (!serviceField || !serviceField.value) {
+                showError('لطفاً خدمت را انتخاب کنید.');
+                return;
+            }
+            if (!providerField || !providerField.value) {
+                showError('لطفاً سرویس‌دهنده را انتخاب کنید.');
+                return;
+            }
+            goToStep(2);
+        });
+    }
+
+    // --- Step 2 navigation ---
+    const back2Btn = document.getElementById('nby-back-2');
+    const next2Btn = document.getElementById('nby-next-2');
+
+    if (back2Btn) {
+        back2Btn.addEventListener('click', function () { goToStep(1); });
+    }
+
+    if (next2Btn) {
+        next2Btn.addEventListener('click', function () {
+            if (!dateHidden || !dateHidden.value) {
+                showError('لطفاً تاریخ را انتخاب کنید.');
+                return;
+            }
+            if (!slotHidden || !slotHidden.value) {
+                showError('لطفاً بازه زمانی را انتخاب کنید.');
+                return;
+            }
+            goToStep(3);
+        });
+    }
+
+    // --- Step 3 back ---
+    const back3Btn = document.getElementById('nby-back-3');
+    if (back3Btn) {
+        back3Btn.addEventListener('click', function () { goToStep(2); });
+    }
+
+    // --- Promo result helper ---
+    function setPromoResult(el, text, isOk) {
+        if (!el) { return; }
+        el.textContent = text || '';
+        el.className   = 'nby-promo-result' + (text ? (isOk ? ' is-ok' : ' is-error') : '');
+    }
+
+    // --- Coupon apply ---
     if (couponApplyBtn && couponCodeField) {
         couponApplyBtn.addEventListener('click', function () {
-            var code      = couponCodeField.value.trim();
-            var serviceId = serviceField.value;
-
+            const code      = couponCodeField.value.trim();
+            const serviceId = serviceField ? serviceField.value : '';
             appliedCouponCode = '';
 
             if (!code) {
-                resetCouponResult('کد تخفیف را وارد کنید.', true);
+                setPromoResult(couponResultEl, 'کد تخفیف را وارد کنید.', false);
                 return;
             }
-
             if (!serviceId) {
-                resetCouponResult('ابتدا خدمت را انتخاب کنید.', true);
+                setPromoResult(couponResultEl, 'ابتدا خدمت را انتخاب کنید.', false);
                 return;
             }
 
-            resetCouponResult('در حال بررسی...', false);
+            setPromoResult(couponResultEl, 'در حال بررسی...', true);
 
-            var url = nobatyarBooking.restUrl + 'coupons/validate?code=' + encodeURIComponent(code) +
-                '&service_id=' + encodeURIComponent(serviceId);
+            const url = nobatyarBooking.restUrl + 'coupons/validate'
+                + '?code='       + encodeURIComponent(code)
+                + '&service_id=' + encodeURIComponent(serviceId);
 
-            fetch(url, { headers: { 'X-WP-Nonce': nobatyarBooking.nonce } })
-                .then(function (response) {
-                    return response.json().then(function (data) {
-                        return { ok: response.ok, data: data };
-                    });
-                })
+            apiFetch(url)
                 .then(function (result) {
                     if (!result.ok) {
-                        resetCouponResult(result.data.message || 'کد تخفیف معتبر نیست.', true);
+                        setPromoResult(couponResultEl, result.data.message || 'کد تخفیف معتبر نیست.', false);
                         return;
                     }
-
                     appliedCouponCode = code;
-
-                    var discountLabel = result.data.discount_type === 'percent'
-                        ? (result.data.discount_value + '%')
+                    const disc = result.data.discount_type === 'percent'
+                        ? result.data.discount_value + '%'
                         : result.data.discount_value;
-
-                    resetCouponResult('کد تخفیف اعمال شد (' + discountLabel + ').', false);
+                    setPromoResult(couponResultEl, 'کد تخفیف اعمال شد (' + disc + ').', true);
                 })
                 .catch(function () {
-                    resetCouponResult('خطا در بررسی کد تخفیف.', true);
+                    setPromoResult(couponResultEl, 'خطا در بررسی کد تخفیف.', false);
                 });
         });
     }
 
-    var giftCardCodeField   = form.querySelector('#nobatyar-gift-card-code');
-    var giftCardApplyBtn    = form.querySelector('#nobatyar-gift-card-apply-btn');
-    var giftCardResultField = form.querySelector('#nobatyar-gift-card-result');
-    var appliedGiftCardCode = '';
-
-    function resetGiftCardResult(text, isError) {
-        if (!giftCardResultField) {
-            return;
-        }
-
-        giftCardResultField.textContent = text || '';
-        giftCardResultField.classList.toggle('is-error', !!isError);
-    }
-
+    // --- Gift card apply ---
     if (giftCardApplyBtn && giftCardCodeField) {
         giftCardApplyBtn.addEventListener('click', function () {
-            var code = giftCardCodeField.value.trim();
-
+            const code = giftCardCodeField.value.trim();
             appliedGiftCardCode = '';
 
             if (!code) {
-                resetGiftCardResult('کد کارت هدیه را وارد کنید.', true);
+                setPromoResult(giftCardResultEl, 'کد کارت هدیه را وارد کنید.', false);
                 return;
             }
 
-            resetGiftCardResult('در حال بررسی...', false);
+            setPromoResult(giftCardResultEl, 'در حال بررسی...', true);
 
-            var url = nobatyarBooking.restUrl + 'gift-cards/validate?code=' + encodeURIComponent(code);
+            const url = nobatyarBooking.restUrl + 'gift-cards/validate?code=' + encodeURIComponent(code);
 
-            fetch(url, { headers: { 'X-WP-Nonce': nobatyarBooking.nonce } })
-                .then(function (response) {
-                    return response.json().then(function (data) {
-                        return { ok: response.ok, data: data };
-                    });
-                })
+            apiFetch(url)
                 .then(function (result) {
                     if (!result.ok) {
-                        resetGiftCardResult(result.data.message || 'کد کارت هدیه معتبر نیست.', true);
+                        setPromoResult(giftCardResultEl, result.data.message || 'کد کارت هدیه معتبر نیست.', false);
                         return;
                     }
-
                     appliedGiftCardCode = code;
-
-                    resetGiftCardResult('کارت هدیه اعمال شد (موجودی: ' + result.data.remaining_balance + ').', false);
+                    setPromoResult(giftCardResultEl, 'کارت هدیه اعمال شد (موجودی: ' + result.data.remaining_balance + ').', true);
                 })
                 .catch(function () {
-                    resetGiftCardResult('خطا در بررسی کارت هدیه.', true);
+                    setPromoResult(giftCardResultEl, 'خطا در بررسی کارت هدیه.', false);
                 });
         });
     }
 
-    var usePackageField     = form.querySelector('#nobatyar-use-package');
-    var packageFields        = form.querySelector('#nobatyar-package-fields');
-    var packageLookupBtn     = form.querySelector('#nobatyar-package-lookup-btn');
-    var packagePurchaseField = form.querySelector('#nobatyar-package-purchase');
-    var packagePurchases     = [];
-
-    if (usePackageField && packageFields) {
+    // --- Package toggle ---
+    if (usePackageField && packageFieldsBox) {
         usePackageField.addEventListener('change', function () {
-            packageFields.hidden = !usePackageField.checked;
-            serviceField.disabled = usePackageField.checked;
+            packageFieldsBox.hidden = !usePackageField.checked;
+
+            if (serviceField) { serviceField.disabled = usePackageField.checked; }
 
             if (recurrenceEnableField) {
                 recurrenceEnableField.disabled = usePackageField.checked;
-
                 if (usePackageField.checked) {
                     recurrenceEnableField.checked = false;
-
-                    if (recurrenceFields) {
-                        recurrenceFields.hidden = true;
-                    }
+                    if (recurrenceFieldsBox) { recurrenceFieldsBox.hidden = true; }
                 }
             }
         });
     }
 
-    function resetPackagePurchaseOptions(placeholder) {
+    // --- Package lookup ---
+    function resetPackageOptions(placeholder) {
+        if (!packagePurchaseField) { return; }
         packagePurchaseField.innerHTML = '';
-        var option = document.createElement('option');
-        option.value = '';
-        option.textContent = placeholder;
-        packagePurchaseField.appendChild(option);
+        const opt     = document.createElement('option');
+        opt.value     = '';
+        opt.textContent = placeholder;
+        packagePurchaseField.appendChild(opt);
     }
 
     if (packageLookupBtn && packagePurchaseField) {
         packageLookupBtn.addEventListener('click', function () {
-            var phone = form.querySelector('#nobatyar-customer-phone').value;
+            const phone = customerPhoneField ? customerPhoneField.value.trim() : '';
 
             if (!phone) {
-                setMessage('برای بررسی اعتبار پکیج ابتدا شماره موبایل را وارد کنید.', true);
+                showError('برای بررسی اعتبار پکیج ابتدا شماره موبایل را وارد کنید.');
                 return;
             }
 
-            setMessage('', false);
-            resetPackagePurchaseOptions('در حال بررسی...');
+            hideError();
+            resetPackageOptions('در حال بررسی...');
 
-            var url = nobatyarBooking.restUrl + 'packages/purchases/lookup?phone=' + encodeURIComponent(phone);
+            const url = nobatyarBooking.restUrl + 'packages/purchases/lookup?phone=' + encodeURIComponent(phone);
 
-            fetch(url, { headers: { 'X-WP-Nonce': nobatyarBooking.nonce } })
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                    packagePurchases = data.purchases || [];
+            apiFetch(url)
+                .then(function (result) {
+                    packagePurchases = result.data && result.data.purchases ? result.data.purchases : [];
 
                     if (!packagePurchases.length) {
-                        resetPackagePurchaseOptions('پکیج فعالی برای این شماره یافت نشد');
+                        resetPackageOptions('پکیج فعالی برای این شماره یافت نشد');
                         return;
                     }
 
-                    resetPackagePurchaseOptions('انتخاب کنید');
-
+                    resetPackageOptions('انتخاب کنید');
                     packagePurchases.forEach(function (purchase) {
-                        var option = document.createElement('option');
-                        option.value = purchase.id;
-                        option.textContent = purchase.package_name + ' (' + purchase.sessions_remaining + ' از ' + purchase.sessions_total + ' باقی‌مانده)';
-                        packagePurchaseField.appendChild(option);
+                        const opt       = document.createElement('option');
+                        opt.value       = purchase.id;
+                        opt.textContent = purchase.package_name
+                            + ' (' + purchase.sessions_remaining
+                            + ' از ' + purchase.sessions_total + ' باقی‌مانده)';
+                        packagePurchaseField.appendChild(opt);
                     });
                 })
                 .catch(function () {
-                    resetPackagePurchaseOptions('خطا در بررسی اعتبار پکیج');
+                    resetPackageOptions('خطا در بررسی اعتبار پکیج');
                 });
         });
     }
 
     if (packagePurchaseField) {
         packagePurchaseField.addEventListener('change', function () {
-            var selected = packagePurchases.filter(function (purchase) {
-                return String(purchase.id) === packagePurchaseField.value;
+            const selected = packagePurchases.filter(function (p) {
+                return String(p.id) === packagePurchaseField.value;
             })[0];
 
-            if (selected) {
+            if (selected && serviceField) {
                 serviceField.value = selected.service_id;
-                loadAvailableSlots();
+                debouncedLoadSlots();
             }
         });
     }
 
-    function setMessage(text, isError) {
-        messageBox.textContent = text;
-        messageBox.classList.toggle('is-error', !!isError);
+    // --- Recurring toggle ---
+    if (recurrenceEnableField && recurrenceFieldsBox) {
+        recurrenceEnableField.addEventListener('change', function () {
+            recurrenceFieldsBox.hidden = !recurrenceEnableField.checked;
+        });
     }
 
-    function resetSlots(placeholder) {
-        slotField.innerHTML = '';
-        var option = document.createElement('option');
-        option.value = '';
-        option.textContent = placeholder;
-        slotField.appendChild(option);
+    // --- Form reset helper ---
+    function resetForm() {
+        form.reset();
+        if (slotHidden)  { slotHidden.value = ''; }
+        setSlotHint('ابتدا تاریخ را انتخاب کنید');
+        if (serviceField) { serviceField.disabled = false; }
+        appliedCouponCode   = '';
+        appliedGiftCardCode = '';
+        setPromoResult(couponResultEl,   '', true);
+        setPromoResult(giftCardResultEl, '', true);
+        packagePurchases = [];
+        resetPackageOptions('ابتدا شماره موبایل را بررسی کنید');
+        if (packageFieldsBox)    { packageFieldsBox.hidden    = true; }
+        if (recurrenceFieldsBox) { recurrenceFieldsBox.hidden = true; }
+        if (recurrenceEnableField) { recurrenceEnableField.disabled = false; }
     }
 
-    function loadAvailableSlots() {
-        var providerId = providerField.value;
-        var serviceId   = serviceField.value;
-        var date        = dateField.value;
+    // --- Form submit ---
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        hideError();
 
-        if (!providerId || !serviceId || !date) {
+        // Step 3 validation
+        if (customerNameField && !customerNameField.value.trim()) {
+            showError('لطفاً نام مشتری را وارد کنید.');
+            return;
+        }
+        if (customerPhoneField && !customerPhoneField.value.trim()) {
+            showError('لطفاً شماره موبایل را وارد کنید.');
             return;
         }
 
-        resetSlots('در حال بارگذاری...');
-
-        var url = nobatyarBooking.restUrl + 'availability?provider_id=' + encodeURIComponent(providerId) +
-            '&service_id=' + encodeURIComponent(serviceId) + '&date=' + encodeURIComponent(date);
-
-        fetch(url, { headers: { 'X-WP-Nonce': nobatyarBooking.nonce } })
-            .then(function (response) { return response.json(); })
-            .then(function (data) {
-                resetSlots('انتخاب کنید');
-
-                (data.slots || []).forEach(function (slot) {
-                    var option = document.createElement('option');
-                    option.value = slot.start;
-                    option.textContent = slot.start.substring(11, 16);
-
-                    if (typeof slot.capacity_remaining !== 'undefined') {
-                        option.textContent += ' (' + slot.capacity_remaining + ' جای خالی)';
-                    }
-
-                    slotField.appendChild(option);
-                });
-
-                if (!data.slots || data.slots.length === 0) {
-                    resetSlots('بازه آزادی برای این تاریخ وجود ندارد');
-                }
-            })
-            .catch(function () {
-                resetSlots('خطا در بارگذاری بازه‌های زمانی');
-            });
-    }
-
-    [serviceField, providerField, dateField].forEach(function (field) {
-        field.addEventListener('change', loadAvailableSlots);
-    });
-
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        setMessage('', false);
-
-        var isUsingPackage = !!(usePackageField && usePackageField.checked);
-        var isRecurring     = !isUsingPackage && !!(recurrenceEnableField && recurrenceEnableField.checked);
-        var endpoint        = 'bookings';
-        var payload;
+        const isUsingPackage = !!(usePackageField && usePackageField.checked);
+        const isRecurring    = !isUsingPackage && !!(recurrenceEnableField && recurrenceEnableField.checked);
+        let endpoint;
+        let payload;
 
         if (isUsingPackage) {
             endpoint = 'bookings/package-redeem';
-            payload = {
-                package_purchase_id: packagePurchaseField.value,
-                provider_id:         providerField.value,
-                booking_datetime:    slotField.value,
-                customer_name:       form.querySelector('#nobatyar-customer-name').value,
-                customer_phone:      form.querySelector('#nobatyar-customer-phone').value,
-                customer_email:      form.querySelector('#nobatyar-customer-email').value,
+            payload  = {
+                package_purchase_id: packagePurchaseField ? packagePurchaseField.value           : '',
+                provider_id:         providerField        ? providerField.value                  : '',
+                booking_datetime:    slotHidden           ? slotHidden.value                     : '',
+                customer_name:       customerNameField    ? customerNameField.value.trim()       : '',
+                customer_phone:      customerPhoneField   ? customerPhoneField.value.trim()      : '',
+                customer_email:      customerEmailField   ? customerEmailField.value.trim()      : '',
             };
         } else {
-            payload = {
-                provider_id:       providerField.value,
-                service_id:        serviceField.value,
-                booking_datetime:  slotField.value,
-                customer_name:     form.querySelector('#nobatyar-customer-name').value,
-                customer_phone:    form.querySelector('#nobatyar-customer-phone').value,
-                customer_email:    form.querySelector('#nobatyar-customer-email').value,
+            endpoint = 'bookings';
+            payload  = {
+                provider_id:      providerField      ? providerField.value             : '',
+                service_id:       serviceField       ? serviceField.value              : '',
+                booking_datetime: slotHidden         ? slotHidden.value                : '',
+                customer_name:    customerNameField  ? customerNameField.value.trim()  : '',
+                customer_phone:   customerPhoneField ? customerPhoneField.value.trim() : '',
+                customer_email:   customerEmailField ? customerEmailField.value.trim() : '',
             };
 
-            if (appliedCouponCode) {
-                payload.coupon_code = appliedCouponCode;
-            }
-
-            if (appliedGiftCardCode) {
-                payload.gift_card_code = appliedGiftCardCode;
-            }
+            if (appliedCouponCode)   { payload.coupon_code    = appliedCouponCode; }
+            if (appliedGiftCardCode) { payload.gift_card_code = appliedGiftCardCode; }
 
             if (isRecurring) {
-                endpoint = 'bookings/recurring';
-                payload.recurrence_frequency   = recurrenceFrequencyField.value;
-                payload.recurrence_occurrences = recurrenceOccurrencesField.value;
+                endpoint                      = 'bookings/recurring';
+                payload.recurrence_frequency   = recurrenceFreqField ? recurrenceFreqField.value : '';
+                payload.recurrence_occurrences = recurrenceOccField  ? recurrenceOccField.value  : '';
             }
         }
 
-        fetch(nobatyarBooking.restUrl + endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-WP-Nonce': nobatyarBooking.nonce,
-            },
-            body: JSON.stringify(payload),
+        if (submitBtn) {
+            submitBtn.disabled    = true;
+            submitBtn.textContent = 'در حال ثبت...';
+        }
+
+        apiFetch(nobatyarBooking.restUrl + endpoint, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(payload),
         })
-            .then(function (response) {
-                return response.json().then(function (data) {
-                    return { ok: response.ok, data: data };
-                });
-            })
             .then(function (result) {
+                if (submitBtn) {
+                    submitBtn.disabled    = false;
+                    submitBtn.textContent = 'ثبت نوبت';
+                }
+
                 if (!result.ok) {
-                    setMessage(result.data.message || 'ثبت نوبت با خطا مواجه شد.', true);
+                    showError(result.data.message || 'ثبت نوبت با خطا مواجه شد.');
                     return;
                 }
 
-                if (isRecurring && result.data.ids) {
-                    setMessage('سری نوبت‌های تکرارشونده (' + result.data.ids.length + ' نوبت) با موفقیت ثبت شد.', false);
-                } else {
-                    setMessage('نوبت شما با موفقیت ثبت شد.', false);
-                }
+                const message = isRecurring && result.data.ids
+                    ? 'سری نوبت‌های تکرارشونده (' + result.data.ids.length + ' نوبت) با موفقیت ثبت شد.'
+                    : 'نوبت شما با موفقیت ثبت شد.';
 
-                form.reset();
-                resetSlots('ابتدا سرویس‌دهنده، خدمت و تاریخ را انتخاب کنید');
-                serviceField.disabled = false;
-                appliedCouponCode = '';
-                resetCouponResult('', false);
-                appliedGiftCardCode = '';
-                resetGiftCardResult('', false);
-
-                if (recurrenceFields) {
-                    recurrenceFields.hidden = true;
-                }
-
-                if (packageFields) {
-                    packageFields.hidden = true;
-                    resetPackagePurchaseOptions('ابتدا شماره موبایل را بررسی کنید');
-                }
-
-                if (recurrenceEnableField) {
-                    recurrenceEnableField.disabled = false;
-                }
+                resetForm();
+                showSuccess(message);
             })
             .catch(function () {
-                setMessage('ثبت نوبت با خطا مواجه شد.', true);
+                if (submitBtn) {
+                    submitBtn.disabled    = false;
+                    submitBtn.textContent = 'ثبت نوبت';
+                }
+                showError('ثبت نوبت با خطا مواجه شد.');
             });
     });
+
+    // --- Book another ---
+    const bookAnotherBtn = document.getElementById('nby-book-another');
+    if (bookAnotherBtn) {
+        bookAnotherBtn.addEventListener('click', function () { goToStep(1); });
+    }
+
 })();
