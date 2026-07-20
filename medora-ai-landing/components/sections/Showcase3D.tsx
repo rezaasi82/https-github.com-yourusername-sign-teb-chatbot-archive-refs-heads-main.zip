@@ -3,6 +3,7 @@
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
+import ParallaxLayer from "@/components/ui/ParallaxLayer";
 import Reveal from "@/components/ui/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
 
@@ -47,10 +48,12 @@ export default function Showcase3D() {
       ref={sectionRef}
       className="noise relative overflow-hidden py-28 md:py-36"
     >
-      <div
-        aria-hidden
-        className="absolute left-1/2 top-1/2 h-[60vh] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary/10 blur-[140px]"
-      />
+      <ParallaxLayer speed={0.5} className="pointer-events-none absolute inset-0">
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-1/2 h-[60vh] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary/10 blur-[140px]"
+        />
+      </ParallaxLayer>
       <div className="section-shell relative z-10">
         <SectionHeading
           eyebrow="درون موتور"

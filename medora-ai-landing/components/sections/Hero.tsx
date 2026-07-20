@@ -1,8 +1,14 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  type Variants,
+} from "framer-motion";
 import { ArrowLeft, PlayCircle, ShieldCheck } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useRef } from "react";
 import AuroraBackground from "@/components/ui/AuroraBackground";
 import CountUp from "@/components/ui/CountUp";
 import MagneticButton from "@/components/ui/MagneticButton";
@@ -33,10 +39,28 @@ const item: Variants = {
 
 export default function Hero() {
   const mouse = useMousePosition();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Scroll-out parallax: as the hero leaves the viewport, the text column,
+  // the orb, and the background separate at different speeds and fade.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -140]);
+  const orbY = useTransform(scrollYProgress, [0, 1], [0, 170]);
+  const orbScale = useTransform(scrollYProgress, [0, 1], [1, 0.82]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const auroraY = useTransform(scrollYProgress, [0, 1], [0, 90]);
 
   return (
-    <section className="noise relative flex min-h-screen items-center overflow-hidden pt-28 md:pt-24">
-      <AuroraBackground />
+    <section
+      ref={sectionRef}
+      className="noise relative flex min-h-screen items-center overflow-hidden pt-28 md:pt-24"
+    >
+      <motion.div style={{ y: auroraY }} className="absolute inset-0">
+        <AuroraBackground />
+      </motion.div>
       <div className="absolute inset-0">
         <Particles quantity={45} className="opacity-70" />
       </div>
@@ -57,6 +81,7 @@ export default function Hero() {
           variants={container}
           initial="hidden"
           animate="visible"
+          style={{ y: contentY, opacity: heroOpacity }}
           className="flex flex-col items-start gap-7"
         >
           <motion.span
@@ -129,26 +154,40 @@ export default function Hero() {
           </motion.dl>
         </motion.div>
 
-        {/* 3D orb with parallax layers */}
+        {/* 3D orb with layered scroll + mouse parallax */}
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.35, ease: [0.21, 0.65, 0.28, 0.99] }}
+          style={{ y: orbY, scale: orbScale, opacity: heroOpacity }}
           className="relative mx-auto aspect-square w-full max-w-[560px]"
-          style={{
-            transform: `translate(${mouse.x * -18}px, ${mouse.y * -14}px)`,
-          }}
         >
-          <div className="absolute inset-8 rounded-full bg-primary/15 blur-[90px] animate-pulse-glow" />
-          <AIOrb />
-          {/* floating glass chips around the orb */}
-          <div className="glass absolute start-0 top-[18%] hidden animate-float-y rounded-2xl px-4 py-3 text-xs sm:block">
+          {/* mid layer: glow + orb follow the cursor gently */}
+          <div
+            className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform"
+            style={{
+              transform: `translate(${mouse.x * -18}px, ${mouse.y * -14}px)`,
+            }}
+          >
+            <div className="absolute inset-8 rounded-full bg-primary/15 blur-[90px] animate-pulse-glow" />
+            <AIOrb />
+          </div>
+          {/* near layer: chips drift faster and in opposite phase for depth */}
+          <div
+            className="glass absolute start-0 top-[18%] hidden animate-float-y rounded-2xl px-4 py-3 text-xs transition-transform duration-300 ease-out will-change-transform sm:block"
+            style={{
+              transform: `translate(${mouse.x * 34}px, ${mouse.y * 26}px)`,
+            }}
+          >
             <p className="font-semibold text-highlight">یادداشت امضا شد ✓</p>
             <p className="mt-0.5 text-white/55">SOAP · ۴۷ ثانیه</p>
           </div>
           <div
-            className="glass absolute bottom-[14%] end-0 hidden animate-float-y rounded-2xl px-4 py-3 text-xs sm:block"
-            style={{ animationDelay: "-2.5s" }}
+            className="glass absolute bottom-[14%] end-0 hidden animate-float-y rounded-2xl px-4 py-3 text-xs transition-transform duration-300 ease-out will-change-transform sm:block"
+            style={{
+              animationDelay: "-2.5s",
+              transform: `translate(${mouse.x * -28}px, ${mouse.y * -22}px)`,
+            }}
           >
             <p className="font-semibold text-secondary">تشخیص افتراقی آماده است</p>
             <p className="mt-0.5 text-white/55">۳ گزینه · اطمینان ۹۸٪</p>

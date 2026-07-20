@@ -1,6 +1,7 @@
 "use client";
 
 import { Quote } from "lucide-react";
+import ParallaxLayer from "@/components/ui/ParallaxLayer";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { TESTIMONIALS } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -63,10 +64,12 @@ export default function Testimonials() {
 
   return (
     <section className="relative overflow-hidden py-28 md:py-36">
-      <div
-        aria-hidden
-        className="absolute right-0 top-1/3 h-[45vh] w-[35vw] rounded-full bg-secondary/10 blur-[130px]"
-      />
+      <ParallaxLayer speed={-0.35} className="pointer-events-none absolute inset-0">
+        <div
+          aria-hidden
+          className="absolute right-0 top-1/3 h-[45vh] w-[35vw] rounded-full bg-secondary/10 blur-[130px]"
+        />
+      </ParallaxLayer>
       <div className="section-shell relative z-10">
         <SectionHeading
           eyebrow="محبوب پزشکان"

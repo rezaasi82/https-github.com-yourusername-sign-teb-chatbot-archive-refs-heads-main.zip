@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { MouseEvent, useRef } from "react";
 import CountUp from "@/components/ui/CountUp";
+import ParallaxLayer from "@/components/ui/ParallaxLayer";
 import Reveal from "@/components/ui/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { DEMO_VITALS } from "@/lib/data";
@@ -37,10 +38,12 @@ export default function ProductDemo() {
 
   return (
     <section id="demo" className="relative overflow-hidden py-28 md:py-36">
-      <div
-        aria-hidden
-        className="absolute left-1/2 top-0 h-[40vh] w-[70vw] -translate-x-1/2 rounded-full bg-primary/10 blur-[130px]"
-      />
+      <ParallaxLayer speed={0.45} className="pointer-events-none absolute inset-0">
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-0 h-[40vh] w-[70vw] -translate-x-1/2 rounded-full bg-primary/10 blur-[130px]"
+        />
+      </ParallaxLayer>
       <div className="section-shell relative z-10">
         <SectionHeading
           eyebrow="دموی محصول"

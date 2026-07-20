@@ -13,19 +13,36 @@ type ShowcaseSceneProps = {
 function HelixModel({ progress }: { progress: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const knotRef = useRef<THREE.Mesh>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
 
-  useFrame(({ clock, pointer }) => {
+  useFrame(({ clock, pointer, camera }) => {
     const t = clock.getElapsedTime();
     const group = groupRef.current;
     if (group) {
-      // scroll drives the master rotation; mouse adds fine-grained tilt
-      const targetY = progress * Math.PI * 2 + pointer.x * 0.8;
-      const targetX = pointer.y * 0.45;
+      // scroll drives the master choreography; mouse adds fine-grained tilt
+      const targetY = progress * Math.PI * 2.5 + pointer.x * 0.9;
+      const targetX = (progress - 0.5) * 0.7 + pointer.y * 0.5;
       group.rotation.y += (targetY - group.rotation.y) * 0.06;
       group.rotation.x += (targetX - group.rotation.x) * 0.06;
+      // the model rises slightly as the section scrolls through
+      const targetPosY = (progress - 0.5) * -0.9;
+      group.position.y += (targetPosY - group.position.y) * 0.05;
     }
+    // camera dolly: pushes in toward the core mid-section, pulls back out
+    const targetZ = 7.4 - Math.sin(progress * Math.PI) * 2.1;
+    camera.position.z += (targetZ - camera.position.z) * 0.05;
+    camera.position.x += (pointer.x * 0.5 - camera.position.x) * 0.04;
+    camera.lookAt(0, 0, 0);
+
     if (knotRef.current) {
       knotRef.current.rotation.z = t * 0.15;
+    }
+    if (coreRef.current) {
+      // energy core breathes, and charges up with scroll progress
+      const pulse = 0.45 + Math.sin(t * 2.2) * 0.04 + progress * 0.16;
+      coreRef.current.scale.setScalar(pulse);
+      const mat = coreRef.current.material as THREE.MeshStandardMaterial;
+      mat.emissiveIntensity = 1.8 + Math.sin(t * 2.2) * 0.5 + progress * 1.4;
     }
   });
 
@@ -50,7 +67,7 @@ function HelixModel({ progress }: { progress: number }) {
           />
         </mesh>
         {/* inner energy core */}
-        <mesh scale={0.45}>
+        <mesh ref={coreRef} scale={0.45}>
           <icosahedronGeometry args={[1, 12]} />
           <meshStandardMaterial
             color="#22d3ee"
@@ -87,7 +104,7 @@ function HelixModel({ progress }: { progress: number }) {
 export default function ShowcaseScene({ progress }: ShowcaseSceneProps) {
   return (
     <Canvas
-      camera={{ position: [0, 0.4, 6], fov: 42 }}
+      camera={{ position: [0, 0.4, 7.4], fov: 42 }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ background: "transparent" }}

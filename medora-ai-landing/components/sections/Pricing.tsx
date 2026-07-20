@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Sparkles } from "lucide-react";
+import ParallaxLayer from "@/components/ui/ParallaxLayer";
 import Reveal from "@/components/ui/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { PRICING_PLANS } from "@/lib/data";
@@ -88,10 +89,12 @@ function PricingCard({
 export default function Pricing() {
   return (
     <section id="pricing" className="relative py-28 md:py-36">
-      <div
-        aria-hidden
-        className="absolute left-0 top-1/4 h-[50vh] w-[35vw] rounded-full bg-primary/10 blur-[140px]"
-      />
+      <ParallaxLayer speed={0.4} className="pointer-events-none absolute inset-0">
+        <div
+          aria-hidden
+          className="absolute left-0 top-1/4 h-[50vh] w-[35vw] rounded-full bg-primary/10 blur-[140px]"
+        />
+      </ParallaxLayer>
       <div className="section-shell relative z-10">
         <SectionHeading
           eyebrow="تعرفه‌ها"
