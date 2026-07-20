@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.10.0
+Stable tag: 0.11.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,13 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.11.0 =
+Wave 2 of the SEO Operating System — a new Research screen with three tools:
+* Keyword Research (Starter+): discovers keywords from Google Autocomplete (free, question/commercial prefix expansion in Persian and English), People-Also-Ask and related searches when a SerpApi key is set, and your own Search Console queries. Deterministic intent classification (informational/commercial/transactional/local). Impressions and position come from your real GSC data — no fabricated volume numbers.
+* Topic Cluster Builder (Pro): runs keyword research on a seed topic, then plans a pillar page + cluster articles with an internal-linking map; existing posts are reused as "update" items instead of proposing duplicates.
+* Competitor Intelligence (Pro, needs a SerpApi key): checks the live SERP for your top 10 GSC queries and aggregates which domains out-rank you most (appearances, average position, sample queries), plus a single-query SERP view with your row highlighted. SERPs cached 24h to control API cost.
+* New sda/v1 endpoints: /research/keywords, /research/cluster, /research/competitors, /research/serp. New feature keys: keyword_research (Starter), topic_clusters + competitor_intel (Pro).
 
 = 0.10.0 =
 Wave 1 of the SEO Operating System — five new content tools under the Content screen, all working on your own WordPress content with no extra API costs:

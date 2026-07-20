@@ -22,6 +22,7 @@ final class FeatureGate {
 		],
 		'starter'    => [
 			'core_detectors',       // striking-distance, low-CTR, near-top
+			'keyword_research',     // autocomplete + GSC-grounded keyword discovery
 			'movers',
 			'alerts_email',
 			'ai_explain',
@@ -32,6 +33,8 @@ final class FeatureGate {
 			'all_detectors',        // + snippet, faq, schema, cannibalization, internal links
 			'root_cause_full',
 			'content_strategist',
+			'topic_clusters',       // AI pillar/cluster planning
+			'competitor_intel',     // SERP-based competitor analysis (needs SerpApi key)
 			'reports_all_formats',
 			'reports_schedule',
 			'alert_channels',       // webhook / slack / telegram

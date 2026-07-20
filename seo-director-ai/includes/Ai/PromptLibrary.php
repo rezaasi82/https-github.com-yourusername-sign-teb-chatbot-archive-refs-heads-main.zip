@@ -23,7 +23,7 @@ final class PromptLibrary {
 	/**
 	 * Build an envelope for one insight type.
 	 *
-	 * @param 'root_cause'|'growth'|'decline'|'summary_weekly'|'summary_monthly'|'content_meta'|'content_gap'|'content_brief'|'entity_coverage' $type
+	 * @param 'root_cause'|'growth'|'decline'|'summary_weekly'|'summary_monthly'|'content_meta'|'content_gap'|'content_brief'|'entity_coverage'|'topic_cluster' $type
 	 * @param array<string, mixed>                                              $evidence
 	 * @param array<string, mixed>                                              $site_context niche, goals…
 	 */
@@ -83,6 +83,40 @@ final class PromptLibrary {
 					],
 				],
 				400,
+			],
+			'topic_cluster' => [
+				'topic_cluster.v1',
+				'Organize the researched keywords into a topic cluster: ONE pillar page targeting the broad seed topic, plus cluster articles each targeting a specific sub-intent. Reuse existing posts as clusters where they fit (mark role as "update") instead of proposing duplicates; new pages get role "create". linking_notes must explain the pillar↔cluster internal-linking plan in 2-4 sentences. Match the language of the seed topic.',
+				[
+					'type'       => 'object',
+					'required'   => [ 'pillar', 'clusters', 'linking_notes' ],
+					'properties' => [
+						'pillar'        => [
+							'type'       => 'object',
+							'required'   => [ 'title', 'target_keyword' ],
+							'properties' => [
+								'title'          => [ 'type' => 'string' ],
+								'target_keyword' => [ 'type' => 'string' ],
+								'rationale'      => [ 'type' => 'string' ],
+							],
+						],
+						'clusters'      => [
+							'type'  => 'array',
+							'items' => [
+								'type'       => 'object',
+								'required'   => [ 'title', 'target_keyword', 'role' ],
+								'properties' => [
+									'title'          => [ 'type' => 'string' ],
+									'target_keyword' => [ 'type' => 'string' ],
+									'role'           => [ 'type' => 'string', 'enum' => [ 'create', 'update' ] ],
+									'intent'         => [ 'type' => 'string' ],
+								],
+							],
+						],
+						'linking_notes' => [ 'type' => 'string' ],
+					],
+				],
+				1400,
 			],
 			'content_brief' => [
 				'content_brief.v1',

@@ -58,6 +58,11 @@ use SEODirector\Content\OnPageAuditor;
 use SEODirector\Content\OptimizationScorer;
 use SEODirector\Content\SchemaGenerator;
 use SEODirector\Content\SchemaInjector;
+use SEODirector\Research\AutocompleteClient;
+use SEODirector\Research\ClusterBuilder;
+use SEODirector\Research\CompetitorAnalyzer;
+use SEODirector\Research\KeywordResearcher;
+use SEODirector\Research\SerpClient as ResearchSerpClient;
 use SEODirector\License\FeatureGate;
 use SEODirector\License\GracePeriodHandler;
 use SEODirector\License\LicenseManager;
@@ -374,6 +379,26 @@ final class Plugin {
 		$c->set( SchemaInjector::class, static fn() => new SchemaInjector() );
 		$c->set( OnPageAuditor::class, static fn() => new OnPageAuditor() );
 		$c->set( OptimizationScorer::class, static fn( Container $c ) => new OptimizationScorer( $c->get( InsightService::class ) ) );
+
+		// Research module (Wave 2): keyword discovery, clusters, competitors.
+		$c->set( AutocompleteClient::class, static fn( Container $c ) => new AutocompleteClient( $c->get( RetryingHttpClient::class ) ) );
+		$c->set( ResearchSerpClient::class, static fn( Container $c ) => new ResearchSerpClient( $c->get( Settings::class ), $c->get( RetryingHttpClient::class ) ) );
+		$c->set(
+			KeywordResearcher::class,
+			static fn( Container $c ) => new KeywordResearcher(
+				$c->get( AutocompleteClient::class ),
+				$c->get( ResearchSerpClient::class ),
+				$c->get( PropertiesRepository::class )
+			)
+		);
+		$c->set(
+			ClusterBuilder::class,
+			static fn( Container $c ) => new ClusterBuilder( $c->get( InsightService::class ), $c->get( KeywordResearcher::class ) )
+		);
+		$c->set(
+			CompetitorAnalyzer::class,
+			static fn( Container $c ) => new CompetitorAnalyzer( $c->get( ResearchSerpClient::class ), $c->get( PropertiesRepository::class ) )
+		);
 		$c->set(
 			WeeklyIntelligence::class,
 			static fn( Container $c ) => new WeeklyIntelligence(

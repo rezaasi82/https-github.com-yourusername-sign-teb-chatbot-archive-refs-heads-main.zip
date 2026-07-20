@@ -265,6 +265,34 @@ export interface ScoreResult {
   entities: { covered: string[]; missing: string[] } | null;
 }
 
+export interface KeywordRow {
+  keyword: string;
+  sources: string[];
+  intent: string;
+  impressions: number | null;
+  position: number | null;
+}
+
+export interface ClusterPlan {
+  pillar: { title?: string; target_keyword?: string; rationale?: string };
+  clusters: Array<{ title: string; target_keyword: string; role: 'create' | 'update'; intent?: string }>;
+  linking_notes: string;
+  keywords_used: number;
+}
+
+export interface CompetitorOverview {
+  competitors: Array<{ domain: string; appearances: number; avg_position: number; sample_queries: string[] }>;
+  queries_checked: number;
+  our_domain: string;
+}
+
+export interface SerpView {
+  query: string;
+  our_domain: string;
+  our_position: number | null;
+  results: Array<{ position: number; title: string; link: string; domain: string; is_us: boolean }>;
+}
+
 export interface ReportRow {
   id: number;
   type: string;
@@ -411,6 +439,14 @@ export const api = {
     request<SchemaBuildResult>('/content/schema', { method: 'POST', body: JSON.stringify({ post_id: postId, types }) }),
   contentSchemaRemove: (postId: number) =>
     request<{ removed: boolean }>(`/content/schema?post_id=${postId}`, { method: 'DELETE' }),
+  researchKeywords: (seed: string, lang = 'fa') =>
+    request<{ seed: string; keywords: KeywordRow[]; serp_used: boolean }>(
+      `/research/keywords?seed=${encodeURIComponent(seed)}&lang=${lang}`,
+    ),
+  researchCluster: (seed: string, lang = 'fa') =>
+    request<ClusterPlan>('/research/cluster', { method: 'POST', body: JSON.stringify({ seed, lang }) }),
+  researchCompetitors: () => request<CompetitorOverview>('/research/competitors'),
+  researchSerp: (query: string) => request<SerpView>(`/research/serp?query=${encodeURIComponent(query)}`),
   contentScore: (postId: number, keyword: string, entities = false) =>
     request<ScoreResult>('/content/score', {
       method: 'POST',

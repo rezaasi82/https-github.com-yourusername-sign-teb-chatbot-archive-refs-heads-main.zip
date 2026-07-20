@@ -18,6 +18,7 @@ const AlertsPage = lazy(() => import('../features/alerts/AlertsPage').then((m) =
 const ReportsPage = lazy(() => import('../features/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })));
 const AgencyPage = lazy(() => import('../features/agency/AgencyPage').then((m) => ({ default: m.AgencyPage })));
 const SettingsPage = lazy(() => import('../features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+const ResearchPage = lazy(() => import('../features/research/ResearchPage').then((m) => ({ default: m.ResearchPage })));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 60_000, refetchOnWindowFocus: false } },
@@ -37,6 +38,7 @@ const NAV: NavItem[] = [
   { route: 'overview', label: 'Overview', page: OverviewPage },
   { route: 'movers', label: 'Winners & Losers', page: WinnersLosersPage, feature: 'movers', requires: 'starter' },
   { route: 'opportunities', label: 'Opportunities', page: OpportunitiesPage, feature: 'core_detectors', requires: 'starter' },
+  { route: 'research', label: 'Research', page: ResearchPage, feature: 'keyword_research', requires: 'starter' },
   { route: 'content', label: 'Content', page: ContentPage, feature: 'content_strategist', requires: 'pro' },
   { route: 'roadmap', label: 'Roadmap', page: RoadmapPage, feature: 'roadmap_monthly', requires: 'starter' },
   { route: 'alerts', label: 'Alerts', page: AlertsPage, feature: 'alerts_email', requires: 'starter' },

@@ -211,6 +211,47 @@ const FA: Record<string, string> = {
   'Your current pages cover the queries you rank for.': 'صفحات فعلی شما کوئری‌هایتان را پوشش می‌دهند.',
   'Could not generate': 'تولید ناموفق بود',
   'Could not analyze': 'تحلیل ناموفق بود',
+
+  // Research (Wave 2)
+  'Research': 'ریسرچ',
+  'Clusters': 'کلاسترها',
+  'Competitors': 'رقبا',
+  'Keyword research': 'تحقیق کلیدواژه',
+  'Discovers keywords from Google Autocomplete (free), People-Also-Ask and related searches (when a SerpApi key is set), and your own Search Console queries — impressions and position are your real numbers, not estimates.':
+    'کلیدواژه‌ها را از اتوکامپلیت گوگل (رایگان)، سؤالات PAA و جست‌وجوهای مرتبط (وقتی کلید SerpApi ثبت باشد) و کوئری‌های سرچ‌کنسول خودتان کشف می‌کند — ایمپرشن و جایگاه، اعداد واقعی خود شما هستند، نه تخمین.',
+  'Seed keyword (e.g. فتق شکم)': 'کلیدواژهٔ بذر (مثلاً فتق شکم)',
+  'Researching…': 'در حال تحقیق…',
+  'keywords found': 'کلیدواژه پیدا شد',
+  'add a SerpApi key in Settings to also get People-Also-Ask questions': 'برای دریافت سؤالات PAA، کلید SerpApi را در تنظیمات اضافه کنید',
+  'Keyword': 'کلیدواژه',
+  'Intent': 'اینتنت',
+  'Sources': 'منابع',
+  'Impressions (yours)': 'ایمپرشن (شما)',
+  'Position (yours)': 'جایگاه (شما)',
+  'Topic cluster builder': 'سازندهٔ کلاستر موضوعی',
+  'Runs keyword research on the seed topic, then plans one pillar page plus cluster articles with an internal-linking map. Existing posts are reused as “update” items instead of duplicates.':
+    'اول روی موضوع بذر تحقیق کلیدواژه اجرا می‌کند، بعد یک صفحهٔ پیلار + مقالات کلاستر با نقشهٔ لینک داخلی می‌چیند. نوشته‌های موجود به‌جای تکرار، به‌عنوان «به‌روزرسانی» استفاده می‌شوند.',
+  'Seed topic (e.g. فتق شکم)': 'موضوع بذر (مثلاً فتق شکم)',
+  'Build cluster': 'ساخت کلاستر',
+  'Planning…': 'در حال برنامه‌ریزی…',
+  'Pillar': 'پیلار',
+  'Update existing': 'به‌روزرسانی موجود',
+  'Create new': 'ایجاد جدید',
+  'Internal-linking plan': 'نقشهٔ لینک‌سازی داخلی',
+  'Competitor overview': 'نمای کلی رقبا',
+  'Checks the live SERP for your top 10 Search Console queries and shows which domains out-rank you most. Needs a SerpApi key (Settings → Enterprise card or any plan with a key saved). SERPs are cached 24h.':
+    'SERP زندهٔ ۱۰ کوئری برتر سرچ‌کنسول شما را بررسی می‌کند و نشان می‌دهد کدام دامنه‌ها بیشتر از شما بالاترند. به کلید SerpApi نیاز دارد. نتایج SERP ۲۴ ساعت کش می‌شوند.',
+  'Analyze competitors': 'تحلیل رقبا',
+  'queries checked against': 'کوئری بررسی شد در برابر',
+  'Competitor domain': 'دامنهٔ رقیب',
+  'Times above you': 'دفعات بالاتر از شما',
+  'Avg position': 'میانگین جایگاه',
+  'Sample queries': 'نمونه کوئری‌ها',
+  'SERP check for one query': 'بررسی SERP برای یک کوئری',
+  'e.g. جراح فتق تهران': 'مثلاً جراح فتق تهران',
+  'Check SERP': 'بررسی SERP',
+  'Your position:': 'جایگاه شما:',
+  'You are not in the top 10 for this query.': 'برای این کوئری در ۱۰ نتیجهٔ اول نیستید.',
 };
 
 /** True when the wp-admin locale is Persian (fa_IR, fa_AF, …). */

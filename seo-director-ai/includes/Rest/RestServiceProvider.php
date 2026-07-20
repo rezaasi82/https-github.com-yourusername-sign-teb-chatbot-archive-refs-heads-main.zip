@@ -49,6 +49,10 @@ use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
 use SEODirector\Rest\Controllers\HubIngestController;
 use SEODirector\Rest\Controllers\IntegrationsController;
+use SEODirector\Rest\Controllers\ResearchController;
+use SEODirector\Research\ClusterBuilder;
+use SEODirector\Research\CompetitorAnalyzer;
+use SEODirector\Research\KeywordResearcher;
 use SEODirector\Rest\Controllers\ContentController;
 use SEODirector\Rest\Controllers\InsightsController;
 use SEODirector\Rest\Controllers\LicenseController;
@@ -160,6 +164,13 @@ final class RestServiceProvider {
 				$c->get( TrendsClient::class ),
 				$c->get( BusinessProfileClient::class ),
 				$c->get( GoogleAdsClient::class )
+			),
+			new ResearchController(
+				$c->get( KeywordResearcher::class ),
+				$c->get( ClusterBuilder::class ),
+				$c->get( CompetitorAnalyzer::class ),
+				$c->get( FeatureGate::class ),
+				$c->get( RateLimiter::class )
 			),
 		];
 
