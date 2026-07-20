@@ -19,6 +19,7 @@ const ReportsPage = lazy(() => import('../features/reports/ReportsPage').then((m
 const AgencyPage = lazy(() => import('../features/agency/AgencyPage').then((m) => ({ default: m.AgencyPage })));
 const SettingsPage = lazy(() => import('../features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 const ResearchPage = lazy(() => import('../features/research/ResearchPage').then((m) => ({ default: m.ResearchPage })));
+const MedicalPage = lazy(() => import('../features/medical/MedicalPage').then((m) => ({ default: m.MedicalPage })));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 60_000, refetchOnWindowFocus: false } },
@@ -40,6 +41,10 @@ const NAV: NavItem[] = [
   { route: 'opportunities', label: 'Opportunities', page: OpportunitiesPage, feature: 'core_detectors', requires: 'starter' },
   { route: 'research', label: 'Research', page: ResearchPage, feature: 'keyword_research', requires: 'starter' },
   { route: 'content', label: 'Content', page: ContentPage, feature: 'content_strategist', requires: 'pro' },
+  // Medical Pack — only shown when the site enabled medical mode.
+  ...(boot().medicalMode
+    ? [{ route: 'medical', label: 'Medical', page: MedicalPage, feature: 'medical_pack', requires: 'pro' } as NavItem]
+    : []),
   { route: 'roadmap', label: 'Roadmap', page: RoadmapPage, feature: 'roadmap_monthly', requires: 'starter' },
   { route: 'alerts', label: 'Alerts', page: AlertsPage, feature: 'alerts_email', requires: 'starter' },
   { route: 'reports', label: 'Reports', page: ReportsPage, feature: 'reports_pdf', requires: 'starter' },

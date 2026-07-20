@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.11.0
+Stable tag: 0.12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,14 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.0 =
+Wave 3 — the Medical Pack, the differentiator for Persian medical/YMYL sites. Turn on "Medical mode" in Settings (Pro license) to reveal a new Medical screen with three tools:
+* Medical E-E-A-T Analyzer: scores a medical page 0–100 against Google's YMYL trust signals — named author (not "admin"), author bio, medical reviewer, citations to authoritative sources (WHO, PubMed, Mayo Clinic, the Iranian Medical Council, and more), freshness, disclaimer, and topic depth — with a per-check breakdown. Deterministic.
+* Medical Entity Engine + Schema: detects the diseases, symptoms, treatments, drugs, specialties, and body parts a post covers (Persian dictionary, filterable via sda_medical_dictionary), and generates MedicalWebPage schema listing them; site-level Physician + MedicalClinic schema is built from your Settings and printed on the front page.
+* Medical Knowledge Graph: aggregates entity coverage across the whole site — which concepts you cover and how deeply — and lists dictionary concepts you have no page for yet (content gaps).
+* New Settings card: medical mode toggle plus physician name / specialty / medical-license number and clinic name / phone / address (feed the schema).
+* New sda/v1 endpoints under /medical/*. New feature key: medical_pack (Pro). The whole pack is hidden unless medical mode is enabled, so non-medical sites stay clean.
 
 = 0.11.0 =
 Wave 2 of the SEO Operating System — a new Research screen with three tools:

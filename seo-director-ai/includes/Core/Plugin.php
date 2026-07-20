@@ -58,6 +58,10 @@ use SEODirector\Content\OnPageAuditor;
 use SEODirector\Content\OptimizationScorer;
 use SEODirector\Content\SchemaGenerator;
 use SEODirector\Content\SchemaInjector;
+use SEODirector\Medical\EeatAnalyzer;
+use SEODirector\Medical\KnowledgeGraph;
+use SEODirector\Medical\MedicalEntityEngine;
+use SEODirector\Medical\MedicalSchemaBuilder;
 use SEODirector\Research\AutocompleteClient;
 use SEODirector\Research\ClusterBuilder;
 use SEODirector\Research\CompetitorAnalyzer;
@@ -376,7 +380,14 @@ final class Plugin {
 		);
 		$c->set( InternalLinkSuggester::class, static fn() => new InternalLinkSuggester() );
 		$c->set( SchemaGenerator::class, static fn() => new SchemaGenerator() );
-		$c->set( SchemaInjector::class, static fn() => new SchemaInjector() );
+
+		// Medical Pack (Wave 3).
+		$c->set( MedicalEntityEngine::class, static fn() => new MedicalEntityEngine() );
+		$c->set( EeatAnalyzer::class, static fn( Container $c ) => new EeatAnalyzer( $c->get( MedicalEntityEngine::class ) ) );
+		$c->set( MedicalSchemaBuilder::class, static fn( Container $c ) => new MedicalSchemaBuilder( $c->get( Settings::class ), $c->get( MedicalEntityEngine::class ) ) );
+		$c->set( KnowledgeGraph::class, static fn( Container $c ) => new KnowledgeGraph( $c->get( MedicalEntityEngine::class ) ) );
+
+		$c->set( SchemaInjector::class, static fn( Container $c ) => new SchemaInjector( $c->get( Settings::class ), $c->get( MedicalSchemaBuilder::class ) ) );
 		$c->set( OnPageAuditor::class, static fn() => new OnPageAuditor() );
 		$c->set( OptimizationScorer::class, static fn( Container $c ) => new OptimizationScorer( $c->get( InsightService::class ) ) );
 

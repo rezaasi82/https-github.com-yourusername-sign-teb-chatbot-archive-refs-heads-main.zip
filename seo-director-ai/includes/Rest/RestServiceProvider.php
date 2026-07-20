@@ -49,7 +49,12 @@ use SEODirector\Rest\Controllers\AlertsController;
 use SEODirector\Rest\Controllers\ConnectionsController;
 use SEODirector\Rest\Controllers\HubIngestController;
 use SEODirector\Rest\Controllers\IntegrationsController;
+use SEODirector\Rest\Controllers\MedicalController;
 use SEODirector\Rest\Controllers\ResearchController;
+use SEODirector\Medical\EeatAnalyzer;
+use SEODirector\Medical\KnowledgeGraph;
+use SEODirector\Medical\MedicalEntityEngine;
+use SEODirector\Medical\MedicalSchemaBuilder;
 use SEODirector\Research\ClusterBuilder;
 use SEODirector\Research\CompetitorAnalyzer;
 use SEODirector\Research\KeywordResearcher;
@@ -171,6 +176,13 @@ final class RestServiceProvider {
 				$c->get( CompetitorAnalyzer::class ),
 				$c->get( FeatureGate::class ),
 				$c->get( RateLimiter::class )
+			),
+			new MedicalController(
+				$c->get( EeatAnalyzer::class ),
+				$c->get( MedicalEntityEngine::class ),
+				$c->get( MedicalSchemaBuilder::class ),
+				$c->get( KnowledgeGraph::class ),
+				$c->get( FeatureGate::class )
 			),
 		];
 

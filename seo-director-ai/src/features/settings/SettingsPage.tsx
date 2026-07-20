@@ -762,6 +762,55 @@ function AutoUpdateCard() {
   );
 }
 
+function MedicalCard() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['settings'], queryFn: api.settings });
+  const { data: licenseData } = useQuery({ queryKey: ['license'], queryFn: api.licenseStatus });
+
+  const save = useMutation({
+    mutationFn: (patch: Record<string, unknown>) => api.updateSettings(patch),
+    onSuccess: (next) => queryClient.setQueryData(['settings'], next),
+  });
+
+  if (!data) return null;
+  const allowed = Boolean(licenseData?.features?.medical_pack);
+  const on = Boolean(data.settings.medical_mode);
+
+  return (
+    <div className="sda-card">
+      <h2>{t('Medical mode (Medical Pack)')}</h2>
+      <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
+        {allowed
+          ? t('Turn this on for medical/clinic sites to unlock E-E-A-T analysis, medical entity detection, medical schema, and the knowledge graph. Reload the dashboard after toggling.')
+          : t('The Medical Pack requires a Pro license.')}
+      </p>
+      <div style={{ display: 'grid', gap: 10, opacity: allowed ? 1 : 0.6 }}>
+        <label style={{ fontSize: 13, color: 'var(--sda-text)', display: 'flex', gap: 8, alignItems: 'center' }}>
+          <input
+            type="checkbox"
+            defaultChecked={on}
+            disabled={!allowed}
+            onChange={(e) => save.mutate({ medical_mode: e.target.checked })}
+          />
+          {t('Enable medical mode')}
+        </label>
+
+        <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
+          <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>{t('Physician & clinic (for schema)')}</legend>
+          <div style={{ display: 'grid', gap: 8 }}>
+            <input className="sda-input" placeholder={t('Physician name')} defaultValue={(data.settings.med_physician_name as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_name: e.target.value })} />
+            <input className="sda-input" placeholder={t('Specialty (e.g. جراح عمومی)')} defaultValue={(data.settings.med_physician_specialty as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_specialty: e.target.value })} />
+            <input className="sda-input" placeholder={t('Medical license no. (شماره نظام پزشکی)')} defaultValue={(data.settings.med_physician_license as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_license: e.target.value })} />
+            <input className="sda-input" placeholder={t('Clinic name')} defaultValue={(data.settings.med_clinic_name as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_name: e.target.value })} />
+            <input className="sda-input" placeholder={t('Clinic phone')} defaultValue={(data.settings.med_clinic_phone as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_phone: e.target.value })} />
+            <textarea className="sda-input" style={{ minHeight: 48 }} placeholder={t('Clinic address')} defaultValue={(data.settings.med_clinic_address as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_address: e.target.value })} />
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  );
+}
+
 export function SettingsPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['connections'],
@@ -801,6 +850,7 @@ export function SettingsPage() {
       <AiProviderCard />
       <GoogleAdsCard />
       <AutoUpdateCard />
+      <MedicalCard />
       <LicenseCard />
       <AlertChannelsCard />
       <WhiteLabelCard />

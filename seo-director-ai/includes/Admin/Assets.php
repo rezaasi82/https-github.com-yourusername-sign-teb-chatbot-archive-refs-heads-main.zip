@@ -64,6 +64,7 @@ final class Assets {
 					'isRtl'     => is_rtl(),
 					'canManage' => current_user_can( \SEODirector\Core\Capabilities::MANAGE ),
 					'canManageClients' => current_user_can( \SEODirector\Core\Capabilities::MANAGE_CLIENTS ),
+					'medicalMode' => (bool) $this->settings->get( 'medical_mode', false ),
 					'version'   => SDA_VERSION,
 					'siteName'  => get_bloginfo( 'name' ),
 					'branding'  => $this->white_label->boot_payload(),

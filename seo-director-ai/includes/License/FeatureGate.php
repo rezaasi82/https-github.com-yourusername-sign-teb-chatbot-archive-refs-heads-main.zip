@@ -35,6 +35,7 @@ final class FeatureGate {
 			'content_strategist',
 			'topic_clusters',       // AI pillar/cluster planning
 			'competitor_intel',     // SERP-based competitor analysis (needs SerpApi key)
+			'medical_pack',         // medical entity engine, E-E-A-T, medical schema, KG
 			'reports_all_formats',
 			'reports_schedule',
 			'alert_channels',       // webhook / slack / telegram

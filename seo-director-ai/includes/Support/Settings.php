@@ -112,6 +112,13 @@ final class Settings {
 			'serp_provider'         => static fn( $v ) => in_array( $v, [ '', 'serpapi' ], true ) ? $v : '',
 			'serp_api_key'          => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'demo_mode'             => static fn( $v ) => in_array( $v, [ 'auto', 'off' ], true ) ? $v : 'auto',
+			'medical_mode'          => static fn( $v ) => (bool) $v,
+			'med_physician_name'    => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'med_physician_specialty' => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'med_physician_license' => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'med_clinic_name'       => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'med_clinic_phone'      => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'med_clinic_address'    => static fn( $v ) => sanitize_textarea_field( (string) $v ),
 			'delete_data_on_uninstall' => static fn( $v ) => (bool) $v,
 		];
 	}

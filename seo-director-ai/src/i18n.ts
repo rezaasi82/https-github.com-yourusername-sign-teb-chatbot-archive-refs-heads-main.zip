@@ -252,6 +252,43 @@ const FA: Record<string, string> = {
   'Check SERP': 'بررسی SERP',
   'Your position:': 'جایگاه شما:',
   'You are not in the top 10 for this query.': 'برای این کوئری در ۱۰ نتیجهٔ اول نیستید.',
+
+  // Medical Pack (Wave 3)
+  'Medical': 'پزشکی',
+  'E-E-A-T': 'E-E-A-T',
+  'Entities & Schema': 'موجودیت‌ها و اسکیما',
+  'Knowledge Graph': 'گراف دانش',
+  'The Medical Pack is a Pro feature': 'پک پزشکی یک قابلیت Pro است',
+  'Upgrade your license to unlock medical E-E-A-T, entity detection, medical schema, and the knowledge graph.':
+    'برای فعال‌سازی E-E-A-T پزشکی، تشخیص موجودیت، اسکیمای پزشکی و گراف دانش، لایسنس خود را ارتقا دهید.',
+  'Medical E-E-A-T analyzer': 'تحلیلگر E-E-A-T پزشکی',
+  'Scores a medical (YMYL) page against Google’s trust signals: named author, author bio, medical reviewer, authoritative citations, freshness, disclaimer, and topic depth.':
+    'یک صفحهٔ پزشکی (YMYL) را بر اساس سیگنال‌های اعتماد گوگل امتیاز می‌دهد: نویسندهٔ مشخص، بیوگرافی نویسنده، بازبین پزشکی، استناد به منابع معتبر، به‌روز بودن، سلب مسئولیت و عمق موضوعی.',
+  'Analyze': 'تحلیل',
+  'No medical entities detected — is this a medical page?': 'موجودیت پزشکی تشخیص داده نشد — آیا این صفحه پزشکی است؟',
+  'Medical entities & schema': 'موجودیت‌های پزشکی و اسکیما',
+  'Detects the medical concepts a post covers, and generates MedicalWebPage schema (with those conditions/procedures) that you can inject into the page head. Physician / MedicalClinic come from the Settings card.':
+    'مفاهیم پزشکی موجود در نوشته را تشخیص می‌دهد و اسکیمای MedicalWebPage (شامل همان بیماری‌ها/روش‌ها) تولید می‌کند که می‌توانید در head صفحه تزریق کنید. اطلاعات پزشک/کلینیک از کارت تنظیمات می‌آید.',
+  'Save schema to page': 'ذخیرهٔ اسکیما در صفحه',
+  'Saved — MedicalWebPage schema now prints on the page.': 'ذخیره شد — اسکیمای MedicalWebPage اکنون در صفحه چاپ می‌شود.',
+  'No medical entities detected in this post.': 'در این نوشته موجودیت پزشکی تشخیص داده نشد.',
+  'Medical knowledge graph': 'گراف دانش پزشکی',
+  'Which medical concepts your whole site covers, how deeply, and which important concepts you have no page for yet.':
+    'کل سایت چه مفاهیم پزشکی‌ای را پوشش می‌دهد، با چه عمقی، و برای کدام مفاهیم مهم هنوز صفحه‌ای ندارید.',
+  'dictionary concepts covered': 'مفهوم از دیکشنری پوشش داده شده',
+  'Not covered yet (content gaps)': 'هنوز پوشش داده نشده (شکاف محتوا)',
+  'Medical mode (Medical Pack)': 'حالت پزشکی (پک پزشکی)',
+  'Turn this on for medical/clinic sites to unlock E-E-A-T analysis, medical entity detection, medical schema, and the knowledge graph. Reload the dashboard after toggling.':
+    'برای سایت‌های پزشکی/کلینیک این را روشن کنید تا تحلیل E-E-A-T، تشخیص موجودیت پزشکی، اسکیمای پزشکی و گراف دانش فعال شود. پس از تغییر، داشبورد را دوباره بارگذاری کنید.',
+  'The Medical Pack requires a Pro license.': 'پک پزشکی نیازمند لایسنس Pro است.',
+  'Enable medical mode': 'فعال‌سازی حالت پزشکی',
+  'Physician & clinic (for schema)': 'پزشک و کلینیک (برای اسکیما)',
+  'Physician name': 'نام پزشک',
+  'Specialty (e.g. جراح عمومی)': 'تخصص (مثلاً جراح عمومی)',
+  'Medical license no. (شماره نظام پزشکی)': 'شمارهٔ نظام پزشکی',
+  'Clinic name': 'نام کلینیک',
+  'Clinic phone': 'تلفن کلینیک',
+  'Clinic address': 'آدرس کلینیک',
 };
 
 /** True when the wp-admin locale is Persian (fa_IR, fa_AF, …). */

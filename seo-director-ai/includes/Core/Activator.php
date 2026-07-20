@@ -75,6 +75,13 @@ final class Activator {
 			'auto_update'          => true,
 			'gads_developer_token' => '',
 			'gads_customer_id'     => '',
+			'medical_mode'         => false,
+			'med_physician_name'   => '',
+			'med_physician_specialty' => '',
+			'med_physician_license' => '',
+			'med_clinic_name'      => '',
+			'med_clinic_phone'     => '',
+			'med_clinic_address'   => '',
 			'license_shared_secret' => '',
 			// Agency: client-mode push target + branding (white-label).
 			'agency_hub_url'        => '',

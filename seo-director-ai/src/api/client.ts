@@ -17,6 +17,7 @@ export interface BootData {
   isRtl: boolean;
   canManage: boolean;
   canManageClients: boolean;
+  medicalMode: boolean;
   version: string;
   siteName: string;
   branding: Branding;
@@ -293,6 +294,28 @@ export interface SerpView {
   results: Array<{ position: number; title: string; link: string; domain: string; is_us: boolean }>;
 }
 
+export interface MedicalEntity {
+  term: string;
+  category: string;
+  count: number;
+}
+
+export interface EeatResult {
+  score: number;
+  checks: Array<{ code: string; label: string; points: number; max: number; ok: boolean; detail: string }>;
+  entities_found: number;
+  is_medical: boolean;
+}
+
+export interface KnowledgeGraphResult {
+  generated_at: string;
+  posts_scanned: number;
+  by_category: Record<string, Array<{ term: string; posts: number; mentions: number }>>;
+  missing: Array<{ term: string; category: string }>;
+  covered_terms: number;
+  total_terms: number;
+}
+
 export interface ReportRow {
   id: number;
   type: string;
@@ -447,6 +470,17 @@ export const api = {
     request<ClusterPlan>('/research/cluster', { method: 'POST', body: JSON.stringify({ seed, lang }) }),
   researchCompetitors: () => request<CompetitorOverview>('/research/competitors'),
   researchSerp: (query: string) => request<SerpView>(`/research/serp?query=${encodeURIComponent(query)}`),
+  medicalEeat: (postId: number) => request<EeatResult>(`/medical/eeat?post_id=${postId}`),
+  medicalEntities: (postId: number) => request<{ entities: MedicalEntity[] }>(`/medical/entities?post_id=${postId}`),
+  medicalSchemaSave: (postId: number) =>
+    request<{ graph: unknown[]; entities: MedicalEntity[]; saved: boolean }>('/medical/schema', {
+      method: 'POST',
+      body: JSON.stringify({ post_id: postId }),
+    }),
+  medicalSchemaRemove: (postId: number) =>
+    request<{ removed: boolean }>(`/medical/schema?post_id=${postId}`, { method: 'DELETE' }),
+  medicalKnowledgeGraph: (force = false) =>
+    request<KnowledgeGraphResult>(`/medical/knowledge-graph${force ? '?force=true' : ''}`),
   contentScore: (postId: number, keyword: string, entities = false) =>
     request<ScoreResult>('/content/score', {
       method: 'POST',
