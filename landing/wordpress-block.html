@@ -1,0 +1,730 @@
+<!-- Medora AI landing — paste this whole file into ONE "Custom HTML" (HTML سفارشی) block -->
+<style>
+
+#medora-landing{display:block;max-width:none!important;width:100vw;margin-left:calc(50% - 50vw)!important;margin-right:calc(50% - 50vw)!important;overflow-x:hidden;font-family:'Vazirmatn',Tahoma,Arial,sans-serif;color:#1c2536;background:#fff;line-height:1.9;-webkit-font-smoothing:antialiased;direction:rtl;text-align:right;font-size:16px;}
+#medora-landing *{box-sizing:border-box;}
+#medora-landing h1,#medora-landing h2,#medora-landing h3,#medora-landing h4{margin:0;padding:0;color:inherit;font-family:inherit;}
+#medora-landing p,#medora-landing ul,#medora-landing table,#medora-landing details,#medora-landing summary{margin:0;padding:0;font-family:inherit;}
+#medora-landing ul{list-style:none;}
+#medora-landing img{max-width:100%;height:auto;display:block;border:0;box-shadow:none;margin:0;}
+#medora-landing a{text-decoration:none;box-shadow:none;}
+#medora-landing a:hover{text-decoration:none;}
+html{scroll-behavior:smooth;}
+
+  @font-face {
+    font-family: 'Vazirmatn';
+    src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+    font-weight: 400; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Vazirmatn';
+    src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Medium.woff2') format('woff2');
+    font-weight: 500; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Vazirmatn';
+    src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+    font-weight: 700; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Vazirmatn';
+    src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Black.woff2') format('woff2');
+    font-weight: 900; font-display: swap;
+  }
+#medora-landing{
+    --navy: #0f1f3d;
+    --navy-2: #16294e;
+    --navy-3: #1e355f;
+    --gold: #c8a04e;
+    --gold-soft: #e3c98f;
+    --ink: #1c2536;
+    --muted: #5b667a;
+    --line: #e6eaf2;
+    --bg-soft: #f5f7fb;
+    --green: #2e9e6b;
+    --radius: 18px;
+    --shadow: 0 18px 50px rgba(15, 31, 61, .12);
+  }
+#medora-landing *{ margin: 0; padding: 0; box-sizing: border-box; }
+#medora-landing{
+    font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+    color: var(--ink);
+    background: #fff;
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+  }
+#medora-landing img{ max-width: 100%; display: block; }
+#medora-landing a{ text-decoration: none; color: inherit; }
+#medora-landing .container{ max-width: 1140px; margin: 0 auto; padding: 0 22px; }
+#medora-landing .btn{
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 15px 34px; border-radius: 14px; font-size: 17px; font-weight: 700;
+    cursor: pointer; border: 0; transition: transform .15s ease, box-shadow .15s ease;
+  }
+#medora-landing .btn:hover{ transform: translateY(-2px); }
+#medora-landing .btn-gold{
+    background: linear-gradient(135deg, var(--gold), #b4893a);
+    color: #fff; box-shadow: 0 10px 26px rgba(200, 160, 78, .38);
+  }
+#medora-landing .btn-ghost{
+    background: rgba(255,255,255,.08); color: #fff;
+    border: 1px solid rgba(255,255,255,.28);
+  }
+#medora-landing .btn-navy{ background: var(--navy); color: #fff; box-shadow: 0 10px 26px rgba(15,31,61,.25); }
+#medora-landing .swcl-header{
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(15, 31, 61, .92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+#medora-landing .nav{ display: flex; align-items: center; justify-content: space-between; height: 68px; }
+#medora-landing .logo{ display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 900; font-size: 21px; }
+#medora-landing .logo .mark{
+    width: 38px; height: 38px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--gold), #a97f2f);
+    display: grid; place-items: center; font-size: 19px;
+  }
+#medora-landing .nav-links{ display: flex; gap: 26px; font-size: 15px; }
+#medora-landing .nav-links a{ color: rgba(255,255,255,.82); transition: color .15s; }
+#medora-landing .nav-links a:hover{ color: var(--gold-soft); }
+#medora-landing .nav .btn{ padding: 10px 22px; font-size: 15px; }
+  @media (max-width: 860px) {
+#medora-landing .nav-links{ display: none; } }
+#medora-landing .hero{
+    background:
+      radial-gradient(1100px 520px at 85% -10%, rgba(200,160,78,.22), transparent 60%),
+      radial-gradient(900px 500px at 10% 110%, rgba(46,158,107,.14), transparent 55%),
+      linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
+    color: #fff; overflow: hidden;
+  }
+#medora-landing .hero-grid{
+    display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px;
+    align-items: center; padding: 84px 0 96px;
+  }
+#medora-landing .hero .eyebrow{
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,160,78,.16); border: 1px solid rgba(200,160,78,.4);
+    color: var(--gold-soft); border-radius: 100px; padding: 7px 18px;
+    font-size: 14px; font-weight: 500; margin-bottom: 22px;
+  }
+#medora-landing .hero h1{ font-size: 46px; font-weight: 900; line-height: 1.5; margin-bottom: 18px; }
+#medora-landing .hero h1 em{ font-style: normal; color: var(--gold-soft); }
+#medora-landing .hero .sub{ font-size: 19px; color: rgba(255,255,255,.85); max-width: 560px; margin-bottom: 34px; }
+#medora-landing .hero-ctas{ display: flex; gap: 14px; flex-wrap: wrap; }
+#medora-landing .hero-note{ margin-top: 18px; font-size: 14px; color: rgba(255,255,255,.6); }
+#medora-landing .phone-wrap{ position: relative; display: flex; justify-content: center; }
+#medora-landing .phone{
+    width: 320px; border-radius: 34px; padding: 10px;
+    background: linear-gradient(160deg, #2a3c63, #101d38);
+    box-shadow: 0 40px 90px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.15);
+  }
+#medora-landing .phone img{ border-radius: 26px; }
+#medora-landing .float-chip{
+    position: absolute; background: #fff; color: var(--ink);
+    border-radius: 14px; padding: 10px 16px; font-size: 13.5px; font-weight: 700;
+    box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
+  }
+#medora-landing .float-chip small{ display: block; font-weight: 400; color: var(--muted); font-size: 12px; line-height: 1.6; }
+#medora-landing .chip-1{ top: 12%; right: -6%; }
+#medora-landing .chip-2{ bottom: 14%; left: -8%; }
+  @media (max-width: 960px) {
+#medora-landing .hero-grid{ grid-template-columns: 1fr; padding: 60px 0 70px; }
+#medora-landing .hero h1{ font-size: 32px; }
+#medora-landing .chip-1{ right: 2%; }
+#medora-landing .chip-2{ left: 2%; }
+  }
+#medora-landing .trust{ background: var(--navy); border-top: 1px solid rgba(255,255,255,.08); }
+#medora-landing .trust-row{
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 42px;
+    padding: 20px 0; color: rgba(255,255,255,.85); font-size: 15px;
+  }
+#medora-landing .trust-row span{ display: inline-flex; align-items: center; gap: 8px; }
+#medora-landing .trust-row b{ color: var(--gold-soft); font-weight: 700; }
+#medora-landing section{ padding: 88px 0; }
+#medora-landing section.alt{ background: var(--bg-soft); }
+#medora-landing .sec-head{ text-align: center; max-width: 720px; margin: 0 auto 54px; }
+#medora-landing .sec-head .kicker{
+    display: inline-block; color: var(--gold); font-weight: 700; font-size: 15px;
+    letter-spacing: .5px; margin-bottom: 10px;
+  }
+#medora-landing .sec-head h2{ font-size: 34px; font-weight: 900; line-height: 1.6; margin-bottom: 14px; }
+#medora-landing .sec-head p{ color: var(--muted); font-size: 17px; }
+  @media (max-width: 720px) {
+#medora-landing .sec-head h2{ font-size: 26px; }
+#medora-landing section{ padding: 64px 0; } }
+#medora-landing .pain-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+#medora-landing .pain-card{
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 30px 26px; box-shadow: 0 8px 26px rgba(15,31,61,.06);
+  }
+#medora-landing .pain-card .ico{ font-size: 32px; margin-bottom: 14px; }
+#medora-landing .pain-card h3{ font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+#medora-landing .pain-card p{ color: var(--muted); font-size: 15.5px; }
+#medora-landing .solution-line{
+    margin-top: 40px; text-align: center; font-size: 19px; font-weight: 700;
+    color: var(--navy);
+  }
+#medora-landing .solution-line b{ color: var(--gold); }
+  @media (max-width: 860px) {
+#medora-landing .pain-grid{ grid-template-columns: 1fr; } }
+#medora-landing .feature{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+    align-items: center; padding: 46px 0;
+  }
+#medora-landing .feature.rev .f-media{ order: 2; }
+#medora-landing .f-media{
+    border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--line); box-shadow: var(--shadow);
+    background: #fff;
+  }
+#medora-landing .f-media.framed{ padding: 0; }
+#medora-landing .f-media .bar{
+    height: 34px; background: #eef1f7; display: flex; align-items: center; gap: 6px;
+    padding: 0 14px; border-bottom: 1px solid var(--line);
+  }
+#medora-landing .f-media .bar i{ width: 10px; height: 10px; border-radius: 50%; background: #d3d9e5; }
+#medora-landing .f-text .kicker{ color: var(--gold); font-weight: 700; font-size: 15px; display: block; margin-bottom: 8px; }
+#medora-landing .f-text h3{ font-size: 27px; font-weight: 900; line-height: 1.6; margin-bottom: 14px; }
+#medora-landing .f-text > p{ color: var(--muted); font-size: 16.5px; margin-bottom: 18px; }
+#medora-landing .f-list{ list-style: none; display: grid; gap: 12px; }
+#medora-landing .f-list li{ display: flex; gap: 11px; align-items: flex-start; font-size: 15.5px; }
+#medora-landing .f-list li::before{
+    content: "✓"; flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px;
+    background: rgba(200,160,78,.14); color: var(--gold); font-weight: 700;
+    display: grid; place-items: center; font-size: 13px; margin-top: 4px;
+  }
+#medora-landing .f-list b{ color: var(--navy); }
+  @media (max-width: 920px) {
+#medora-landing .feature, #medora-landing .feature.rev{ grid-template-columns: 1fr; gap: 28px; }
+#medora-landing .feature.rev .f-media{ order: 0; }
+#medora-landing .f-text h3{ font-size: 22px; }
+  }
+#medora-landing .mini-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+#medora-landing .mini-card{
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px 24px; transition: transform .18s ease, box-shadow .18s ease;
+  }
+#medora-landing .mini-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow); }
+#medora-landing .mini-card .ico{
+    width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center;
+    font-size: 25px; background: linear-gradient(135deg, rgba(200,160,78,.16), rgba(15,31,61,.07));
+    margin-bottom: 16px;
+  }
+#medora-landing .mini-card h3{ font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+#medora-landing .mini-card p{ color: var(--muted); font-size: 14.5px; }
+  @media (max-width: 860px) {
+#medora-landing .mini-grid{ grid-template-columns: 1fr; } }
+#medora-landing .steps{ display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; counter-reset: step; }
+#medora-landing .step{
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 16px; text-align: center; position: relative;
+  }
+#medora-landing .step .n{
+    width: 40px; height: 40px; margin: 0 auto 12px; border-radius: 50%;
+    background: var(--navy); color: var(--gold-soft); font-weight: 900;
+    display: grid; place-items: center; font-size: 17px;
+  }
+#medora-landing .step h4{ font-size: 15.5px; font-weight: 700; margin-bottom: 6px; }
+#medora-landing .step p{ font-size: 13px; color: var(--muted); line-height: 1.7; }
+  @media (max-width: 1000px) {
+#medora-landing .steps{ grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px) {
+#medora-landing .steps{ grid-template-columns: repeat(2, 1fr); } }
+#medora-landing .showcase{
+    background:
+      radial-gradient(900px 400px at 50% -10%, rgba(200,160,78,.18), transparent 60%),
+      linear-gradient(165deg, var(--navy), var(--navy-3));
+    color: #fff;
+  }
+#medora-landing .showcase .sec-head h2, #medora-landing .showcase .sec-head .kicker{ color: #fff; }
+#medora-landing .showcase .sec-head .kicker{ color: var(--gold-soft); }
+#medora-landing .showcase .sec-head p{ color: rgba(255,255,255,.78); }
+#medora-landing .shot-frame{
+    border-radius: 20px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 40px 100px rgba(0,0,0,.5);
+  }
+#medora-landing .showcase-points{
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 38px;
+  }
+#medora-landing .showcase-point{
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 14px; padding: 18px 20px; font-size: 15px;
+  }
+#medora-landing .showcase-point b{ color: var(--gold-soft); display: block; margin-bottom: 4px; font-size: 16px; }
+  @media (max-width: 860px) {
+#medora-landing .showcase-points{ grid-template-columns: 1fr; } }
+#medora-landing .cmp-wrap{ overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); }
+#medora-landing table.cmp{ width: 100%; border-collapse: collapse; background: #fff; min-width: 640px; }
+#medora-landing .cmp th, #medora-landing .cmp td{ padding: 16px 20px; text-align: right; font-size: 15.5px; border-bottom: 1px solid var(--line); }
+#medora-landing .cmp thead th{ background: var(--navy); color: #fff; font-size: 16px; }
+#medora-landing .cmp thead th:first-child{ border-radius: 0; }
+#medora-landing .cmp td.no{ color: #b3392f; }
+#medora-landing .cmp td.yes{ color: var(--green); font-weight: 700; }
+#medora-landing .cmp tbody tr:last-child td{ border-bottom: 0; }
+#medora-landing .aud-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+#medora-landing .aud-card{
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 26px 24px; display: flex; gap: 16px; align-items: flex-start;
+  }
+#medora-landing .aud-card .ico{ font-size: 30px; }
+#medora-landing .aud-card h3{ font-size: 17px; font-weight: 700; margin-bottom: 5px; }
+#medora-landing .aud-card p{ font-size: 14px; color: var(--muted); }
+  @media (max-width: 860px) {
+#medora-landing .aud-grid{ grid-template-columns: 1fr; } }
+#medora-landing .faq{ max-width: 800px; margin: 0 auto; display: grid; gap: 14px; }
+#medora-landing .faq details{
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 4px 24px; box-shadow: 0 4px 16px rgba(15,31,61,.05);
+  }
+#medora-landing .faq summary{
+    cursor: pointer; font-weight: 700; font-size: 16.5px; padding: 16px 0;
+    list-style: none; position: relative; padding-left: 30px;
+  }
+#medora-landing .faq summary::-webkit-details-marker{ display: none; }
+#medora-landing .faq summary::after{
+    content: "+"; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 26px; height: 26px; border-radius: 8px; background: var(--bg-soft);
+    display: grid; place-items: center; color: var(--gold); font-size: 19px; font-weight: 400;
+  }
+#medora-landing .faq details[open] summary::after{ content: "−"; }
+#medora-landing .faq .a{ padding: 0 0 18px; color: var(--muted); font-size: 15.5px; }
+#medora-landing .final{
+    background:
+      radial-gradient(800px 400px at 50% 120%, rgba(200,160,78,.25), transparent 60%),
+      linear-gradient(160deg, var(--navy), var(--navy-2));
+    color: #fff; text-align: center;
+  }
+#medora-landing .final h2{ font-size: 36px; font-weight: 900; line-height: 1.6; margin-bottom: 14px; }
+#medora-landing .final p{ color: rgba(255,255,255,.82); font-size: 18px; max-width: 640px; margin: 0 auto 34px; }
+#medora-landing .final .hero-ctas{ justify-content: center; }
+  @media (max-width: 720px) {
+#medora-landing .final h2{ font-size: 26px; } }
+#medora-landing .swcl-footer{ background: #0b1730; color: rgba(255,255,255,.65); padding: 34px 0; font-size: 14px; }
+#medora-landing .foot-row{ display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+#medora-landing .swcl-footer a{ color: var(--gold-soft); }
+
+</style>
+<div id="medora-landing">
+
+
+<!-- ======================= Header ======================= -->
+<div class="swcl-header">
+  <div class="container nav">
+    <a class="logo" href="#top">
+      <span class="mark">💬</span>
+      <span>Medora <span style="color:var(--gold-soft)">AI</span></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#features">امکانات</a>
+      <a href="#crm">CRM و داشبورد</a>
+      <a href="#how">چرخه کار</a>
+      <a href="#compare">مقایسه</a>
+      <a href="#faq">سؤالات متداول</a>
+    </nav>
+    <a class="btn btn-gold" href="#buy">دریافت افزونه</a>
+  </div>
+</div>
+
+<!-- ======================= Hero ======================= -->
+<div class="hero" id="top">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">🩺 افزونه وردپرس · دستیار هوش مصنوعی جذب بیمار</span>
+      <h1>بیمارِ ساعت ۱۱ شب،<br><em>منتظر صبح نمی‌ماند.</em></h1>
+      <p class="sub">
+        بیشتر بازدیدکنندگان سایت شما خارج از ساعت کاری می‌آیند؛ سؤال دارند، پاسخی نمی‌گیرند و می‌روند.
+        Medora AI همان لحظه به زبان فارسی جوابشان را می‌دهد، شماره‌شان را می‌گیرد و آن‌ها را به نوبت تبدیل می‌کند.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-gold" href="#buy">دریافت افزونه</a>
+        <a class="btn btn-ghost" href="#features">مشاهده امکانات</a>
+      </div>
+      <div class="hero-note">نصب ۵ دقیقه‌ای · بدون کدنویسی · سازگار با هر قالب وردپرس</div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <img src="/wp-content/uploads/medora/images/widget-chat.png" alt="ویجت چت هوشمند Medora AI در حال گفتگو با بیمار">
+      </div>
+      <div class="float-chip chip-1">🔥 لید داغ<br><small>آماده رزرو نوبت</small></div>
+      <div class="float-chip chip-2">🤖 پاسخ ۲۴ ساعته<br><small>حتی نیمه‌شب</small></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= Trust bar ======================= -->
+<div class="trust">
+  <div class="container trust-row">
+    <span>⚡ نصب <b>۵ دقیقه‌ای</b></span>
+    <span>🧩 <b>بدون کدنویسی</b></span>
+    <span>📲 پنل‌های پیامک <b>ایرانی</b></span>
+    <span>🇮🇷 با GapGPT، <b>بدون نیاز به تحریم‌شکن</b></span>
+    <span>🎫 همه امکانات در <b>یک لایسنس</b></span>
+  </div>
+</div>
+
+<!-- ======================= Problem → Solution ======================= -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">مسئله واقعی مطب‌ها</span>
+      <h2>سایت دارید، بازدید دارید؛ اما بیمار کجاست؟</h2>
+      <p>سه نشتی خاموش که هر روز برای کلینیک‌ها هزینه می‌سازد:</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="ico">🌙</div>
+        <h3>بی‌پاسخی شبانه</h3>
+        <p>بیمار شب یا آخر هفته سؤال می‌پرسد، کسی نیست جواب بدهد؛ او هم سراغ کلینیکی می‌رود که جواب می‌دهد.</p>
+      </div>
+      <div class="pain-card">
+        <div class="ico">🕳️</div>
+        <h3>لید گم‌شده</h3>
+        <p>بازدیدکننده‌ای که مردد بود و رفت، هیچ ردی از خودش نمی‌گذارد — نه شماره‌ای، نه نامی، نه فرصتی برای پیگیری.</p>
+      </div>
+      <div class="pain-card">
+        <div class="ico">❓</div>
+        <h3>ندانستن سؤال بیماران</h3>
+        <p>نمی‌دانید بیماران واقعاً چه می‌پرسند؛ پس محتوای سایت و استراتژی سئو بر پایه حدس نوشته می‌شود.</p>
+      </div>
+    </div>
+    <p class="solution-line">Medora AI هر سه نشتی را با <b>یک افزونه</b> می‌بندد: پاسخ فوری، ثبت لید، و تحلیل گفتگوها.</p>
+  </div>
+</section>
+
+<!-- ======================= Feature 1: AI Chat ======================= -->
+<section class="alt" id="features">
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">امکانات Medora AI</span>
+      <h2>یک منشی هوشمند که هیچ بیماری را از دست نمی‌دهد</h2>
+      <p>از اولین «سلام» بازدیدکننده تا ثبت نوبت — همه‌چیز داخل همین افزونه.</p>
+    </div>
+
+    <div class="feature">
+      <div class="f-media framed">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/wp-content/uploads/medora/images/widget-chat.png" alt="گفتگوی فارسی طبیعی ویجت چت با بیمار درباره هزینه جراحی" style="max-height:520px;object-fit:cover;object-position:top;width:100%">
+      </div>
+      <div class="f-text">
+        <span class="kicker">🤖 چت هوش مصنوعی فارسی</span>
+        <h3>پاسخ‌گویی طبیعی و ۲۴ ساعته، به زبان بیمار</h3>
+        <p>موتور گفتگوی Medora AI برای فضای درمانی ایران ساخته شده؛ نه یک چت‌بات عمومی ترجمه‌شده.</p>
+        <ul class="f-list">
+          <li><b>سه سرویس‌دهنده قابل انتخاب:</b> Anthropic Claude، OpenAI و GapGPT — گیت‌وی در دسترس از داخل ایران، بدون نیاز به تحریم‌شکن.</li>
+          <li><b>Fallback خودکار:</b> اگر سرویس اصلی خطا داد، بدون قطع گفتگو سراغ سرویس دوم می‌رود.</li>
+          <li><b>موتور پاسخ پویا:</b> ضدتکرار، با حافظه گفتگو؛ اول راهنمایی می‌کند، بعد دعوت به اقدام.</li>
+          <li>تنظیم لحن (دوستانه/رسمی) و زبان پاسخ (فارسی، عربی، انگلیسی یا تشخیص خودکار).</li>
+          <li>دانش محصول از تنظیمات خود افزونه: خدمات، هزینه‌ها، ساعات کاری و آدرس کلینیک شما.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature rev">
+      <div class="f-media">
+        <img src="/wp-content/uploads/medora/images/widget-teaser.png" alt="حباب دعوت هوشمند کنار آیکون چت با پیام خوش‌آمد">
+      </div>
+      <div class="f-text">
+        <span class="kicker">🧲 ماشین جذب لید</span>
+        <h3>از بازدیدکننده ساکت، بیمار واقعی بسازید</h3>
+        <p>جذب لید در Medora AI بخشی از خودِ گفتگو است، نه یک فرم خشک و آزاردهنده.</p>
+        <ul class="f-list">
+          <li><b>حباب دعوت هوشمند:</b> پیام خوش‌آمد کنار آیکون با صدای چایم لطیف — فقط یک‌بار برای هر بازدیدکننده، نه در هر صفحه.</li>
+          <li><b>فرم لید داخل چت:</b> دریافت نام و موبایل به‌صورت طبیعی در دل گفتگو، با امکان «فعلاً رد کن».</li>
+          <li><b>امتیازدهی خودکار:</b> هر گفتگو بلافاصله برچسب می‌خورد: 🔥 داغ، 🟡 متوسط، ⚪ سرد — تیم اول سراغ آماده‌ترین‌ها می‌رود.</li>
+          <li><b>خلاصه خودکار گفتگو:</b> بدون خواندن کل چت، در دو خط بدانید بیمار چه می‌خواست.</li>
+          <li><b>کارت CTA هوشمند:</b> رزرو نوبت، واتساپ، تماس و بله — فقط وقتی بیمار واقعاً آماده است.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-media framed">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/wp-content/uploads/medora/images/crm-board.png" alt="بورد کانبان CRM با ستون‌های لید جدید، تماس گرفته‌شد، پیگیری، رزرو شد و مراجعه کرد">
+      </div>
+      <div class="f-text">
+        <span class="kicker">📊 CRM داخلی مخصوص مطب</span>
+        <h3>پایپ‌لاین بیمار، از لید تا مراجعه</h3>
+        <p>بدون نیاز به نرم‌افزار جداگانه؛ CRM سبک و تخصصی مطب، داخل همان پیشخوان وردپرس.</p>
+        <ul class="f-list">
+          <li><b>پایپ‌لاین ۷ مرحله‌ای:</b> لید جدید ← تماس گرفته‌شد ← پیگیری ← رزرو شد ← مراجعه کرد ← بسته/ازدست‌رفته.</li>
+          <li><b>بورد کانبان کشیدنی:</b> کارت لید را بگیرید و بین ستون‌ها رها کنید.</li>
+          <li>پرونده کامل هر لید: متن گفتگو، امتیاز، برچسب‌ها، یادداشت داخلی و شعبه.</li>
+          <li><b>چندشعبه‌ای:</b> تعریف شعب، انتساب لید به شعبه و آمار جداگانه هر شعبه.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature rev">
+      <div class="f-media framed">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/wp-content/uploads/medora/images/lead-crm.png" alt="پرونده لید با خلاصه هوشمند گفتگو، وضعیت، برچسب و ارجاع به همکار">
+      </div>
+      <div class="f-text">
+        <span class="kicker">🤝 ارجاع لید به همکار</span>
+        <h3>لید داغ را با یک کلیک به همکار درست برسانید</h3>
+        <p>وقتی بیمار آماده است، هر ثانیه مهم است؛ ارجاع در Medora AI چند ثانیه بیشتر طول نمی‌کشد.</p>
+        <ul class="f-list">
+          <li><b>انتخاب همکار از لیست ذخیره‌شده:</b> شماره و ایمیل مقصد خودکار پر می‌شود.</li>
+          <li>ارسال کارت لید با <b>پیامک پنل</b>، ایمیل، یا دیپ‌لینک واتساپ، تلگرام، بله و ایتا.</li>
+          <li>خلاصه هوشمند گفتگو همراه کارت ارسال می‌شود — همکار بدون خواندن چت در جریان قرار می‌گیرد.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Dashboard showcase ======================= -->
+<section class="showcase" id="crm">
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">داشبورد مدیریتی</span>
+      <h2>هر روز صبح، تصویر کامل کلینیک در یک نگاه</h2>
+      <p>داشبورد لوکس Medora AI فقط عدد نشان نمی‌دهد؛ ارزش ریالی کار افزونه را هم برآورد می‌کند.</p>
+    </div>
+    <div class="shot-frame">
+      <img src="/wp-content/uploads/medora/images/dashboard.png" alt="داشبورد مدیریتی Medora AI با کارت‌های آماری، برآورد درآمد و قیف تبدیل بیمار">
+    </div>
+    <div class="showcase-points">
+      <div class="showcase-point">
+        <b>💰 برآورد درآمد تولیدشده</b>
+        بر اساس تعداد لید، نرخ تبدیل و قیمت متوسط خدمت شما محاسبه می‌شود.
+      </div>
+      <div class="showcase-point">
+        <b>📉 قیف تبدیل بیمار</b>
+        از گفتگو تا لید، تا رزرو و مراجعه — ببینید بیماران کجا از دست می‌روند.
+      </div>
+      <div class="showcase-point">
+        <b>📅 بازه‌های زمانی</b>
+        آمار روزانه، هفتگی، ماهانه و سالانه با کارت‌های آماری متحرک.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Feature: SMS + SEO ======================= -->
+<section>
+  <div class="container">
+    <div class="feature">
+      <div class="f-media framed">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/wp-content/uploads/medora/images/sms-settings.png" alt="تنظیمات پنل پیامک با انتخاب سرویس ملی‌پیامک و فیلد APIKey">
+      </div>
+      <div class="f-text">
+        <span class="kicker">📲 پیامک حرفه‌ای با پنل‌های ایرانی</span>
+        <h3>پنل پیامک خودتان، بدون هزینه اضافه</h3>
+        <p>فقط APIKey پنل‌تان را وارد کنید؛ بقیه کارها با Medora AI است.</p>
+        <ul class="f-list">
+          <li><b>۴ پنل ایرانی آماده:</b> کاوه‌نگار، ملی‌پیامک، SMS.ir و قاصدک + سرویس سفارشی برای پنل‌های خارجی مثل Twilio.</li>
+          <li><b>پشتیبانی کامل خط خدماتی اشتراکی:</b> کد الگو (پترن) برای هر قالب؛ تغییر شماره خط هیچ‌چیز را نمی‌شکند.</li>
+          <li><b>۴ قالب آماده و قابل ویرایش</b> با فرمت تأییدشده پنل‌ها: خوش‌آمد به لید، ارجاع به همکار، یادآوری پیگیری و سفارشی.</li>
+          <li><b>دکمه «بررسی اتصال»:</b> بدون ارسال پیامک، وضعیت اتصال و اعتبار پنل را نشان می‌دهد و حتی جابه‌جایی نام‌کاربری/رمز را خودکار اصلاح می‌کند.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature rev">
+      <div class="f-media framed">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/wp-content/uploads/medora/images/seo-center.png" alt="مرکز هوش سئو با پرتکرارترین پرسش‌های بیماران و ابر کلمات کلیدی">
+      </div>
+      <div class="f-text">
+        <span class="kicker">🔍 مرکز هوش سئو — گنج پنهان محصول</span>
+        <h3>استراتژی محتوا از دل سؤالات واقعی بیماران</h3>
+        <p>هر گفتگو یک داده‌ی سئو است؛ Medora AI این داده‌ها را برایتان به نقشه محتوا تبدیل می‌کند.</p>
+        <ul class="f-list">
+          <li>تحلیل خودکار گفتگوها: <b>پرتکرارترین پرسش‌ها</b>، ابر کلمات کلیدی و موضوعات داغ خدمات.</li>
+          <li><b>تولید ایده با هوش مصنوعی:</b> ۶ عنوان مقاله سئوشده + ۵ سؤال FAQ + ۴ توصیه عملی — بر پایه‌ی چیزی که بیماران واقعاً می‌پرسند، نه حدس.</li>
+          <li>خروجی مستقیم برای تیم محتوای کلینیک.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="f-media framed">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="/wp-content/uploads/medora/images/admin-notify.png" alt="اعلان گفتگوی جدید در نوار بالای پیشخوان وردپرس">
+      </div>
+      <div class="f-text">
+        <span class="kicker">🔔 اعلان فوری، هرجا که باشید</span>
+        <h3>هیچ لیدی بی‌خبر نمی‌ماند</h3>
+        <p>از پیشخوان وردپرس تا گروه تلگرام کلینیک — خبر لید جدید همان لحظه می‌رسد.</p>
+        <ul class="f-list">
+          <li><b>حباب قرمز زنده در نوار پیشخوان:</b> «۳ گفتگوی جدید» — بدون رفرش صفحه به‌روز می‌شود.</li>
+          <li><b>ربات بله و تلگرام:</b> کارت کامل لید (نام، شماره، امتیاز، خلاصه) همان لحظه به گروه یا کانال کلینیک ارسال می‌شود.</li>
+          <li>هر ادمین شمارنده مستقل خودش را دارد؛ با دیدن لیست، پاک می‌شود.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Safety + engineering mini cards ======================= -->
+<section class="alt">
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">اعتماد و مهندسی</span>
+      <h2>ساخته‌شده برای فضای درمان، نه فقط «یک چت‌بات دیگر»</h2>
+    </div>
+    <div class="mini-grid">
+      <div class="mini-card">
+        <div class="ico">🛡️</div>
+        <h3>لایه ایمنی پزشکی غیرقابل‌حذف</h3>
+        <p>هرگز تشخیص قطعی یا تجویز دارو نمی‌دهد و همیشه به ویزیت حضوری ارجاع می‌دهد. کنترل دولایه: هم در دستور سیستمی، هم در فیلتر خروجی — حتی اگر مدل خطا کند، فیلتر دوم می‌گیرد.</p>
+      </div>
+      <div class="mini-card">
+        <div class="ico">🚨</div>
+        <h3>تشخیص اورژانس</h3>
+        <p>در موارد اضطراری فوراً شماره اورژانس را نمایش می‌دهد و گفتگوی هوش مصنوعی را متوقف می‌کند؛ به پاسخ‌های مرتبط با علائم نیز دیسکلیمر پزشکی اضافه می‌شود.</p>
+      </div>
+      <div class="mini-card">
+        <div class="ico">🔐</div>
+        <h3>امنیت بانکی</h3>
+        <p>کلیدهای API با AES-256-GCM رمزنگاری می‌شوند؛ nonce و سطح دسترسی روی همه درخواست‌ها، محدودیت نرخ، قفل ضد brute-force و لاگ امنیتی کامل.</p>
+      </div>
+      <div class="mini-card">
+        <div class="ico">⚡</div>
+        <h3>سبک و سریع</h3>
+        <p>بدون jQuery؛ فایل‌های JS و CSS فقط در صفحات لازم لود می‌شوند — سرعت سایت شما دست‌نخورده می‌ماند.</p>
+      </div>
+      <div class="mini-card">
+        <div class="ico">📱</div>
+        <h3>موبایل-فرست و RTL کامل</h3>
+        <p>هندل حرفه‌ای کیبورد موبایل بدون پرش صفحه؛ سازگار با iOS و Android. شورت‌کد <code dir="ltr">&#91;medora_chat&#93;</code> برای چت درون‌صفحه‌ای در سایدبار یا هر برگه.</p>
+      </div>
+      <div class="mini-card">
+        <div class="ico">📤</div>
+        <h3>خروجی و اتصال‌ها</h3>
+        <p>خروجی PDF از پرونده هر لید، Webhook امضاشده به n8n / Make / Zapier با تلاش مجدد خودکار، و ثبت خودکار لیدها در Google Sheets — همراه دکمه تست اتصال و لاگ کامل.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= How it works ======================= -->
+<section id="how">
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">چرخه کار</span>
+      <h2>از بازدید تا نوبت، در شش قدم</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="n">۱</div><h4>بازدید</h4><p>بیمار وارد سایت می‌شود؛ حباب دعوت با صدای لطیف خوش‌آمد می‌گوید.</p></div>
+      <div class="step"><div class="n">۲</div><h4>گفتگو</h4><p>هوش مصنوعی به سؤالات هزینه، خدمات و آمادگی پاسخ می‌دهد.</p></div>
+      <div class="step"><div class="n">۳</div><h4>ثبت لید</h4><p>نام و موبایل به‌صورت طبیعی در دل چت دریافت و امتیازدهی می‌شود.</p></div>
+      <div class="step"><div class="n">۴</div><h4>اعلان فوری</h4><p>کارت لید همان لحظه به پیشخوان، بله یا تلگرام تیم می‌رسد.</p></div>
+      <div class="step"><div class="n">۵</div><h4>CRM</h4><p>لید در پایپ‌لاین پیگیری می‌شود؛ ارجاع به همکار با یک کلیک.</p></div>
+      <div class="step"><div class="n">۶</div><h4>نوبت 🎉</h4><p>بیمار رزرو می‌کند و داشبورد، ارزش ایجادشده را نشان می‌دهد.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Comparison ======================= -->
+<section class="alt" id="compare">
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">مقایسه</span>
+      <h2>تفاوت با چت‌آنلاین‌های معمولی</h2>
+      <p>چت ساده فقط پیام جابه‌جا می‌کند؛ Medora AI بیمار می‌سازد.</p>
+    </div>
+    <div class="cmp-wrap">
+      <table class="cmp">
+        <thead>
+          <tr><th>قابلیت</th><th>چت آنلاین معمولی</th><th>Medora AI</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>پاسخ‌گویی نیمه‌شب و تعطیلات</td><td class="no">✗ نیازمند اپراتور</td><td class="yes">✓ هوش مصنوعی ۲۴ ساعته</td></tr>
+          <tr><td>ایمنی پزشکی (عدم تشخیص/تجویز)</td><td class="no">✗ ندارد</td><td class="yes">✓ لایه دوگانه غیرقابل‌حذف</td></tr>
+          <tr><td>ثبت و امتیازدهی خودکار لید</td><td class="no">✗ دستی</td><td class="yes">✓ خودکار: داغ / متوسط / سرد</td></tr>
+          <tr><td>CRM و پایپ‌لاین بیمار</td><td class="no">✗ نرم‌افزار جداگانه</td><td class="yes">✓ داخل وردپرس</td></tr>
+          <tr><td>پیامک با پنل‌های ایرانی</td><td class="no">✗ معمولاً افزونه پولی جدا</td><td class="yes">✓ ۴ پنل ایرانی در همان لایسنس</td></tr>
+          <tr><td>کار روی هاست ایران بدون تحریم‌شکن</td><td class="no">✗ اغلب مشکل‌دار</td><td class="yes">✓ با گیت‌وی GapGPT</td></tr>
+          <tr><td>تحلیل سئو از گفتگوهای واقعی</td><td class="no">✗ ندارد</td><td class="yes">✓ مرکز هوش سئو + تولید ایده</td></tr>
+          <tr><td>برآورد درآمد تولیدشده</td><td class="no">✗ ندارد</td><td class="yes">✓ در داشبورد مدیریتی</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Audience ======================= -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">مخاطبان</span>
+      <h2>برای چه کسانی ساخته شده؟</h2>
+    </div>
+    <div class="aud-grid">
+      <div class="aud-card"><div class="ico">🦷</div><div><h3>دندان‌پزشکی</h3><p>پاسخ به سؤالات هزینه ایمپلنت و ارتودنسی، و تبدیل مراجعه‌کننده مردد به نوبت مشاوره.</p></div></div>
+      <div class="aud-card"><div class="ico">✨</div><div><h3>کلینیک زیبایی و لیزر</h3><p>حجم بالای سؤالات تکراری قیمت را هوش مصنوعی جواب می‌دهد؛ تیم فقط سراغ لیدهای داغ می‌رود.</p></div></div>
+      <div class="aud-card"><div class="ico">🔪</div><div><h3>جراحان</h3><p>راهنمایی آمادگی قبل از عمل و شرایط جراحی، با ارجاع همیشگی به ویزیت حضوری.</p></div></div>
+      <div class="aud-card"><div class="ico">🧠</div><div><h3>روان‌شناسان</h3><p>پاسخ محترمانه به سؤالات اولیه و دعوت به جلسه، بدون ورود به حیطه تشخیص.</p></div></div>
+      <div class="aud-card"><div class="ico">🏥</div><div><h3>کلینیک چندشعبه‌ای</h3><p>انتساب لید به شعبه، آمار جداگانه هر شعبه و ارجاع به همکار همان شعبه.</p></div></div>
+      <div class="aud-card"><div class="ico">🔬</div><div><h3>آزمایشگاه و تصویربرداری</h3><p>پاسخ به شرایط ناشتایی و آمادگی آزمایش‌ها، و راهنمایی ساعات پذیرش.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section class="alt" id="faq">
+  <div class="container">
+    <div class="sec-head">
+      <span class="kicker">سؤالات متداول</span>
+      <h2>قبل از خرید، این‌ها را بدانید</h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>نصب چقدر طول می‌کشد و به کدنویسی نیاز دارد؟</summary>
+        <div class="a">حدود ۵ دقیقه: آپلود افزونه، فعال‌سازی با کد خرید، وارد کردن اطلاعات کلینیک در ویزارد تنظیمات. هیچ کدنویسی لازم نیست و با هر قالب وردپرسی کار می‌کند.</div>
+      </details>
+      <details>
+        <summary>روی هاست ایرانی هم کار می‌کند؟</summary>
+        <div class="a">بله. اگر هاست شما به سرورهای خارجی دسترسی ندارد، کافی است سرویس‌دهنده هوش مصنوعی را روی <b>GapGPT</b> بگذارید — گیت‌وی در دسترس از داخل ایران، بدون نیاز به تحریم‌شکن.</div>
+      </details>
+      <details>
+        <summary>داده‌های بیماران کجا ذخیره می‌شود؟</summary>
+        <div class="a">همه گفتگوها و لیدها در دیتابیس خود سایت شما ذخیره می‌شوند. کلیدهای API با AES-256-GCM رمزنگاری می‌شوند و لاگ امنیتی کامل نگه داشته می‌شود.</div>
+      </details>
+      <details>
+        <summary>حتماً باید پنل پیامک داشته باشم؟</summary>
+        <div class="a">خیر، پیامک کاملاً اختیاری است. اگر پنل دارید (کاوه‌نگار، ملی‌پیامک، SMS.ir، قاصدک یا هر سرویس دیگری با حالت سفارشی)، فقط APIKey را وارد می‌کنید و قالب‌های آماده فعال می‌شوند.</div>
+      </details>
+      <details>
+        <summary>ionCube چیست و چرا لازم است؟</summary>
+        <div class="a">بخش کوچکی از فایل فعال‌سازی لایسنس مارکت با ionCube محافظت شده است. اکثر هاست‌های ایرانی ionCube Loader را به‌صورت پیش‌فرض دارند؛ اگر نداشت، با یک تیکت به هاستینگ در چند دقیقه فعال می‌شود.</div>
+      </details>
+      <details>
+        <summary>آیا امکانات اصلی پشت افزونه‌های جانبی پولی است؟</summary>
+        <div class="a">خیر. چت هوش مصنوعی، CRM، پیامک، اعلان پیام‌رسان‌ها، مرکز سئو و خروجی‌ها همه در همان یک لایسنس هستند — بدون افزونه جانبی پولی.</div>
+      </details>
+      <details>
+        <summary>اگر مدل هوش مصنوعی جواب اشتباه پزشکی بدهد چه؟</summary>
+        <div class="a">لایه ایمنی Medora AI دولایه و غیرقابل‌حذف است: هم دستور سیستمی مدل را محدود می‌کند و هم فیلتر خروجی، پاسخ‌ها را بررسی می‌کند. تشخیص قطعی و تجویز دارو هرگز ارائه نمی‌شود و موارد اورژانسی به شماره اورژانس هدایت می‌شوند.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Final CTA ======================= -->
+<section class="final" id="buy">
+  <div class="container">
+    <h2>همین امشب هم بیماری در سایت شماست.<br>بگذارید Medora AI جوابش را بدهد.</h2>
+    <p>افزونه را از مارکت دریافت کنید و در ۵ دقیقه روی سایت‌تان فعال کنید — یا برای مشاوره رایگان با ما در تماس باشید.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-gold" href="https://www.rtl-theme.com/" target="_blank" rel="noopener">🛒 خرید از مارکت</a>
+      <a class="btn btn-ghost" href="https://signteb.com" target="_blank" rel="noopener">💬 مشاوره رایگان</a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Footer ======================= -->
+<div class="swcl-footer">
+  <div class="container foot-row">
+    <div>Medora AI — دستیار هوشمند جذب بیمار · ساخته‌شده توسط <a href="https://signteb.com" target="_blank" rel="noopener">signteb.com</a></div>
+    <div>© <span id="y">2026</span> — همه حقوق محفوظ است.</div>
+  </div>
+</div>
+
+<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+
+</div>
