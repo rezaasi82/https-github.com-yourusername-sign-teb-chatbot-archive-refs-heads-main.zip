@@ -22,6 +22,37 @@ pre{background:#000;color:#0f0;padding:1rem;border-radius:8px;overflow:auto;dire
 echo '</head><body>';
 echo '<h1>🔍 ابزار تشخیص خطا</h1>';
 
+// ── مرحله ۰: پیش‌بررسی نصب (بدون نیاز به بارگذاری وردپرس) ─────────────────────
+// این بخش دقیقاً حالتی را پوشش می‌دهد که کاربر به صفحه‌ی setup-config.php برخورد
+// می‌کند: یعنی wp-config.php وجود ندارد. در آن حالت require کردن wp-load.php خودش
+// به setup-config.php ریدایرکت می‌شود و این ابزار بی‌فایده می‌ماند — پس اول
+// وضعیت فایل‌ها و دسترسی نوشتن را بدون بارگذاری وردپرس گزارش می‌کنیم.
+
+echo '<div class="box"><strong>مرحله ۰: پیش‌بررسی نصب</strong><br>';
+
+$root_writable = is_writable( __DIR__ );
+$has_config    = file_exists( __DIR__ . '/wp-config.php' );
+$has_sample    = file_exists( __DIR__ . '/wp-config-sample.php' );
+$has_load      = file_exists( __DIR__ . '/wp-load.php' );
+$has_subfolder = is_dir( __DIR__ . '/wordpress' ) && file_exists( __DIR__ . '/wordpress/wp-load.php' );
+
+printf( 'روت قابل نوشتن است؟ %s<br>', $root_writable ? '<span class="ok">✅ بله</span>' : '<span class="fail">❌ خیر — این مانع ساخت wp-config.php می‌شود. دسترسی پوشه را به 0755/0775 تغییر دهید.</span>' );
+printf( 'wp-config.php موجود است؟ %s<br>', $has_config ? '<span class="ok">✅ بله</span>' : '<span class="fail">❌ خیر — به همین دلیل به صفحه‌ی setup-config.php می‌رسید.</span>' );
+printf( 'wp-config-sample.php در روت؟ %s<br>', $has_sample ? '<span class="ok">✅ بله</span>' : '<span class="fail">❌ خیر</span>' );
+printf( 'wp-load.php در روت؟ %s<br>', $has_load ? '<span class="ok">✅ بله</span>' : '<span class="fail">❌ خیر</span>' );
+
+if ( ! $has_load && $has_subfolder ) {
+	echo '<span class="fail">⚠️ فایل‌های وردپرس داخل زیرپوشه‌ی <code>wordpress/</code> هستند، نه در روت. «محتویات» آن پوشه را به روت (کنار install.php) منتقل کنید، یا دوباره از مرحله‌ی «اطلاعات سایت» نصب‌کننده ادامه دهید تا خودکار منتقل شود.</span><br>';
+}
+
+if ( ! $has_config ) {
+	echo '<hr style="border-color:#334155;"><strong class="fail">نتیجه:</strong> نصب وردپرس کامل نشده (wp-config.php ساخته نشده). ';
+	echo 'به نصب‌کننده بازگردید و مرحله‌ی «اطلاعات سایت» را دوباره اجرا کنید. اگر روت قابل نوشتن نیست، ابتدا دسترسی پوشه را اصلاح کنید.';
+	echo '</div></body></html>';
+	exit;
+}
+echo '</div>';
+
 // ── مرحله ۱: بررسی بارگذاری وردپرس ──────────────────────────────────────────
 
 echo '<div class="box"><strong>مرحله ۱: بارگذاری وردپرس</strong><br>';

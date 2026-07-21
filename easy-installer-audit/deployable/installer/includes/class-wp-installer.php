@@ -27,15 +27,29 @@ function ezi_run_wp_install( array $post ): array {
 		return ezi_json( false, 'ایمیل مدیر سایت معتبر نیست.' );
 	}
 
+	// ── ۰. اطمینان از حضور هسته‌ی وردپرس در روت ──────────────────────────────
+	// پوشش حالت رایج آپلود دستی: کاربر کل پوشه‌ی wordpress/ را آپلود کرده و
+	// فایل‌های هسته یک سطح پایین‌تر از روت هستند. در این صورت آن‌ها را بالا می‌آورد.
+	$relocate = ezi_ensure_wp_core_at_root();
+	if ( '' !== $relocate['error'] ) {
+		return ezi_json( false, $relocate['error'] );
+	}
+
 	// ── ۱. نوشتن wp-config.php ──────────────────────────────────────────────
 
 	$config_path = EZI_ROOT . '/wp-config.php';
 
 	if ( ! file_exists( EZI_ROOT . '/wp-config-sample.php' ) ) {
-		return ezi_json( false, 'فایل wp-config-sample.php یافت نشد. آیا وردپرس به‌درستی استخراج شده است؟' );
+		return ezi_json( false, 'فایل wp-config-sample.php در روت سایت یافت نشد. لطفاً مطمئن شوید «محتویات» پوشه‌ی وردپرس (نه خودِ پوشه‌ی wordpress) را کنار install.php آپلود کرده‌اید و دوباره تلاش کنید.' );
 	}
 
 	if ( ! file_exists( $config_path ) ) {
+		// بررسی قابلیت نوشتن در روت پیش از تلاش — تا در صورت مشکل دسترسی، یک
+		// پیام روشن بدهیم به‌جای شکست بی‌صدا و ریدایرکت وردپرس به setup-config.php.
+		if ( ! is_writable( EZI_ROOT ) ) {
+			return ezi_json( false, 'روت سایت قابل نوشتن نیست؛ امکان ساخت wp-config.php وجود ندارد. دسترسی (permission) پوشه‌ی روت را به 0755 (یا در صورت نیاز 0775) تغییر دهید و دوباره تلاش کنید.' );
+		}
+
 		$sample = file_get_contents( EZI_ROOT . '/wp-config-sample.php' );
 
 		// مقادیر دیتابیس درون رشته‌های تک‌کوتیشن PHP در wp-config-sample.php
@@ -81,7 +95,23 @@ function ezi_run_wp_install( array $post ): array {
 			}
 		}
 
-		file_put_contents( $config_path, $config );
+		// نوشتن با بررسی خطا — شکست بی‌صدای این خط ریشه‌ی باگ «صفحه‌ی
+		// setup-config.php» بود: اگر روت قابل نوشتن نباشد، file_put_contents
+		// مقدار false برمی‌گرداند، wp-config.php ساخته نمی‌شود، و بارگذاری بعدی
+		// wp-load.php باعث ریدایرکت وردپرس به setup-config.php می‌شود.
+		$written = file_put_contents( $config_path, $config );
+		if ( false === $written || ! file_exists( $config_path ) || filesize( $config_path ) < 100 ) {
+			@unlink( $config_path );
+			return ezi_json( false, 'نوشتن فایل wp-config.php ناموفق بود (مشکل دسترسی نوشتن در روت سایت). دسترسی پوشه‌ی روت را بررسی کنید و دوباره تلاش کنید.' );
+		}
+	}
+
+	// ── گاردِ حیاتی ─────────────────────────────────────────────────────────
+	// بدون وجود wp-config.php هرگز wp-load.php را بارگذاری نکن. در غیر این صورت
+	// خودِ وردپرس به wp-admin/setup-config.php ریدایرکت می‌کند و پاسخ JSON این
+	// درخواست AJAX را با HTML خراب می‌کند — همان ریشه‌ی باگی که کاربر گزارش داد.
+	if ( ! file_exists( $config_path ) ) {
+		return ezi_json( false, 'wp-config.php ساخته نشد؛ نصب برای جلوگیری از خطای پیکربندی وردپرس متوقف شد. دسترسی نوشتن روت را بررسی کنید و دوباره تلاش کنید.' );
 	}
 
 	// ── ۲. بارگذاری وردپرس و اجرای نصب ─────────────────────────────────────

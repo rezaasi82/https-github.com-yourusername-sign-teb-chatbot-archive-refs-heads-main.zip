@@ -23,7 +23,7 @@ ini_set( 'display_errors', '1' );
 
 define( 'EZI_ROOT', __DIR__ );
 define( 'EZI_DIR', __DIR__ . '/installer' );
-define( 'EZI_VERSION', '1.0.1' );
+define( 'EZI_VERSION', '1.0.2' );
 
 if ( ! is_dir( EZI_DIR ) ) {
 	die( 'خطا: پوشه installer/ یافت نشد. لطفاً تمام فایل‌های بسته نصبی را به‌درستی آپلود کنید.' );

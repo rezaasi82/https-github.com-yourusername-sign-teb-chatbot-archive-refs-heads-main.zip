@@ -226,6 +226,65 @@ function ezi_download_file( string $url, string $dest_path ): bool {
 }
 
 /**
+ * اطمینان از اینکه فایل‌های هسته‌ی وردپرس در روت دامنه (کنار install.php) هستند.
+ *
+ * وقتی دانلود خودکار در ایران شکست می‌خورد و کاربر وردپرس را «دستی» آپلود می‌کند،
+ * تقریباً همیشه کل پوشه‌ی `wordpress/` را (که مستقیماً از باز کردن zip رسمی
+ * fa.wordpress.org به‌دست می‌آید) آپلود می‌کند — یعنی فایل‌ها در
+ * `EZI_ROOT/wordpress/` می‌نشینند، نه در خود روت. در این حالت wp-config-sample.php
+ * و wp-load.php در روت پیدا نمی‌شوند و نصب می‌شکند (کاربر در انتها به صفحه‌ی
+ * setup-config.php وردپرس برخورد می‌کند). این تابع همان حالت را تشخیص می‌دهد و
+ * محتویات `wordpress/` را یک سطح بالا به روت منتقل می‌کند — دقیقاً همان کاری که
+ * دانلودر خودکار (ezi_download_wordpress) در مسیر خودکار انجام می‌دهد.
+ *
+ * @return array{relocated: bool, error: string}
+ */
+function ezi_ensure_wp_core_at_root(): array {
+	// اگر هسته از قبل در روت است، کاری لازم نیست.
+	if ( file_exists( EZI_ROOT . '/wp-load.php' ) || file_exists( EZI_ROOT . '/wp-config-sample.php' ) ) {
+		return [ 'relocated' => false, 'error' => '' ];
+	}
+
+	$sub = EZI_ROOT . '/wordpress';
+
+	// نشانه‌ی معتبر بودن پوشه‌ی wordpress: وجود wp-load.php داخل آن.
+	if ( ! is_dir( $sub ) || ! file_exists( $sub . '/wp-load.php' ) ) {
+		return [ 'relocated' => false, 'error' => '' ];
+	}
+
+	$items = array_diff( scandir( $sub ) ?: [], [ '.', '..' ] );
+	foreach ( $items as $item ) {
+		$src = $sub . '/' . $item;
+		$dst = EZI_ROOT . '/' . $item;
+
+		if ( file_exists( $dst ) ) {
+			continue; // فایل‌های نصب‌کننده (install.php / installer/) را هرگز رونویسی نکن
+		}
+
+		// ابتدا rename (سریع و اتمیک)؛ اگر به‌خاطر تفاوت مالکیت/فایل‌سیستم ممکن
+		// نبود، به کپی بازگشتی برگرد.
+		if ( ! @rename( $src, $dst ) ) {
+			if ( is_dir( $src ) ) {
+				ezi_rcopy( $src, $dst );
+			} else {
+				@copy( $src, $dst );
+			}
+		}
+	}
+
+	@ezi_rrmdir( $sub );
+
+	if ( ! file_exists( EZI_ROOT . '/wp-load.php' ) ) {
+		return [
+			'relocated' => false,
+			'error'     => 'فایل‌های وردپرس داخل پوشه‌ی wordpress/ پیدا شدند، اما انتقال آن‌ها به روت دامنه ممکن نشد (مشکل دسترسی نوشتن در روت). لطفاً محتویات پوشه‌ی wordpress را دستی به روت (کنار install.php) منتقل کنید و دوباره تلاش کنید.',
+		];
+	}
+
+	return [ 'relocated' => true, 'error' => '' ];
+}
+
+/**
  * غیرفعال‌سازی کامل ارسال ایمیل وردپرس برای کل فرآیند نصب
  *
  * روی بسیاری از هاست‌های اشتراکی (به‌خصوص هاست‌های ایرانی)، تابع PHP

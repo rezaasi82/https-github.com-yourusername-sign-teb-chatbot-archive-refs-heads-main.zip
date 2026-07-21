@@ -37,12 +37,13 @@
 	</form>
 
 	<div id="ezi-site-manual" style="display:none;margin-top:1rem;">
-		<div class="ezi-notice ezi-notice--info">
-			اگر مطمئن هستید نصب در پس‌زمینه انجام شده (مثلاً با ورود به
-			<code>/wp-admin/</code> در تب جدید تأیید کرده‌اید)، می‌توانید
-			به‌صورت دستی ادامه دهید.
+		<div class="ezi-notice ezi-notice--warning">
+			سرور پاسخ نامنتظره‌ای برگرداند. این معمولاً یعنی روت سایت قابل
+			نوشتن نیست و فایل <code>wp-config.php</code> ساخته نشده است. لطفاً
+			دسترسی (permission) پوشه‌ی روت را به <code>0755</code> (یا در صورت
+			نیاز <code>0775</code>) تغییر دهید و دوباره «نصب وردپرس» را بزنید.
+			<br>برای بررسی دقیق‌تر می‌توانید <a href="diagnose.php" target="_blank"><code>diagnose.php</code></a> را باز کنید.
 		</div>
-		<a href="?step=install_package" class="ezi-btn ezi-btn--ghost">نصب انجام شد — ادامه بده</a>
 	</div>
 </div>
 
@@ -79,14 +80,16 @@ document.getElementById('ezi-site-form').addEventListener('submit', function () 
 			try {
 				data = JSON.parse(rawText);
 			} catch (parseErr) {
-				// پاسخ سرور JSON معتبر نبود — اما این به معنای شکست نصب نیست؛
-				// معمولاً یعنی نصب در پس‌زمینه انجام شده ولی خروجی غیرمنتظره‌ای
-				// (مثل یک هشدار PHP) قبل از JSON چاپ شده است.
+				// پاسخ سرور JSON معتبر نبود. نصب‌کننده به‌گونه‌ای طراحی شده که
+				// همیشه JSON معتبر برمی‌گرداند (چه موفق چه ناموفق)، پس پاسخ
+				// غیر-JSON یعنی چیزی واقعاً اشتباه است — تقریباً همیشه یعنی روت
+				// قابل نوشتن نیست و wp-config.php ساخته نشده. این را صادقانه
+				// نشان بده و اجازه‌ی ادامه‌ی اشتباه (که به setup-config.php ختم
+				// می‌شد) را نده.
 				errorBox.innerHTML = `
-					<div class="ezi-notice ezi-notice--warning">
-						پاسخ سرور نامعتبر بود، اما نصب احتمالاً با موفقیت انجام شده
-						است. لطفاً با باز کردن <code>/wp-admin/</code> در یک تب
-						جدید بررسی کنید. در صورت تأیید، از دکمه زیر ادامه دهید.
+					<div class="ezi-notice ezi-notice--error">
+						نصب کامل نشد: سرور پاسخ نامعتبری برگرداند. راهنمای رفع
+						مشکل در کادر زیر آمده است.
 					</div>`;
 				manualBox.style.display = 'block';
 				btn.disabled = false;
@@ -106,9 +109,9 @@ document.getElementById('ezi-site-form').addEventListener('submit', function () 
 			if (e.name === 'AbortError') {
 				errorBox.innerHTML = `
 					<div class="ezi-notice ezi-notice--warning">
-						سرور بیش از حد انتظار طول کشید، اما نصب ممکن است در
-						پس‌زمینه کامل شده باشد. <code>/wp-admin/</code> را در
-						تب جدید بررسی کنید.
+						سرور بیش از حد انتظار طول کشید. ممکن است نصب هنوز در حال
+						انجام باشد؛ چند لحظه صبر کنید و دوباره «نصب وردپرس» را بزنید.
+						اگر تکرار شد، <code>/wp-admin/</code> را در تب جدید بررسی کنید.
 					</div>`;
 				manualBox.style.display = 'block';
 			} else {
