@@ -120,6 +120,17 @@ final class Controller {
 			}
 			wp_print_styles( 'stwiz-wizard' );
 			?>
+			<script>
+			/* stWizData باید قبل از محتوای مرحله تعریف شود: اسکریپت درون‌خطیِ
+			   مرحله‌ی «راه‌اندازی خودکار» (step-install) بلافاصله هنگام parse
+			   اجرا می‌شود؛ وقتی این متغیر پایین صفحه بود، ReferenceError می‌داد
+			   و اولین تسک برای همیشه روی ⏳ می‌ماند. */
+			var stWizData = {
+				ajaxUrl: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
+				nonce:   '<?php echo wp_create_nonce( 'stwiz_nonce' ); ?>',
+				step:    '<?php echo esc_js( $current_step ); ?>'
+			};
+			</script>
 		</head>
 		<body class="stwiz-body">
 
@@ -233,13 +244,6 @@ final class Controller {
 		}
 		wp_print_scripts( 'stwiz-wizard' );
 		?>
-		<script>
-		var stWizData = {
-			ajaxUrl: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
-			nonce:   '<?php echo wp_create_nonce( 'stwiz_nonce' ); ?>',
-			step:    '<?php echo esc_js( $current_step ); ?>'
-		};
-		</script>
 
 		</body>
 		</html>

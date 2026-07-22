@@ -62,6 +62,15 @@ foreach ( $stwiz_steps as $stwiz_key ) {
 		return row;
 	}
 
+	function showFatal(row, message) {
+		if (row) {
+			row.className = 'stwiz-req-item fail';
+			row.innerHTML = '<span class="stwiz-channel-icon">❌</span> ' + message;
+		}
+		errEl.style.display = 'block';
+		errEl.textContent = '❌ ' + message;
+	}
+
 	function runTask(index) {
 		if (index >= total) {
 			fillEl.style.width = '100%';
@@ -71,6 +80,14 @@ foreach ( $stwiz_steps as $stwiz_key ) {
 		var task = tasks[index];
 		var row  = addRow(task.label);
 
+		// دفاع: هر خطای همگام (مثل تعریف‌نشدن stWizData) باید پیام روشن بدهد،
+		// نه ساعت‌شنیِ ابدی روی اولین تسک.
+		if (typeof stWizData === 'undefined' || !stWizData.ajaxUrl) {
+			showFatal(row, 'خطای داخلی: تنظیمات AJAX دستیار بارگذاری نشده (stWizData). صفحه را رفرش کنید؛ اگر تکرار شد، افزونه‌ی ویزارد را به آخرین نسخه به‌روزرسانی کنید.');
+			return;
+		}
+
+		try {
 		fetch(stWizData.ajaxUrl, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -103,6 +120,9 @@ foreach ( $stwiz_steps as $stwiz_key ) {
 			errEl.style.display = 'block';
 			errEl.textContent = '❌ خطای شبکه در ارتباط با سرور. صفحه را رفرش کنید تا از همان مرحله ادامه یابد.';
 		});
+		} catch (e) {
+			showFatal(row, 'خطای غیرمنتظره: ' + e.message);
+		}
 	}
 
 	runTask(0);
