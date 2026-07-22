@@ -739,6 +739,70 @@ a.stmc-header-cta {
    خودکار از --vip-gold پیروی می‌کند؛ این‌جا فقط برای دموهای «مینیمال» ضخیم‌تر. */
 .stwiz-hero--minimal .wp-block-post-content > h2.has-text-align-center::after { height: 4px; width: 64px; }
 
+/* =============================================================================
+   15) واریانت‌های چیدمان (کارت solid، قبل/بعد، اورژانس، فیلتر پزشک)
+   ============================================================================= */
+
+/* کارت خدمتِ solid — برای دموهای enterprise/agency/results (ظاهرِ متفاوت با glass) */
+.stmb-service-card--solid {
+  background: #fff;
+  border: 1px solid var(--vip-line);
+  border-top: 3px solid var(--vip-blue);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.stmb-service-card--solid:hover { border-top-color: var(--vip-gold); }
+
+/* اسلایدر قبل/بعد — قاب VIP */
+.stmb-before-after,
+.wp-block-signteb-before-after-slider {
+  max-width: 920px;
+  margin: 2rem auto;
+  border-radius: var(--vip-radius);
+  overflow: hidden;
+  box-shadow: var(--vip-shadow);
+}
+.stmb-ba__caption,
+.stmb-before-after figcaption {
+  text-align: center;
+  color: var(--vip-muted);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+/* CTA تماس وقتی به‌عنوان «اورژانس» استفاده می‌شود (چیدمان enterprise) */
+.stwiz-demo--multi-hospital .stmb-contact-cta {
+  background:
+    radial-gradient(600px 300px at 20% 0%, color-mix(in srgb, var(--vip-blue) 22%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--vip-navy), var(--vip-navy-2));
+}
+.stwiz-demo--multi-hospital .stmb-contact-cta__title,
+.stwiz-demo--multi-hospital .stmb-contact-cta__subtitle { color: #fff; }
+
+/* فیلتر پزشکان (showFilter) — دکمه‌های قرصی هماهنگ با پالت */
+.stmb-doctor-filter__btn,
+.stmb-doctors-filter button {
+  border-radius: 999px;
+  border: 1px solid var(--vip-line);
+  background: #fff;
+  color: var(--vip-ink);
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.stmb-doctor-filter__btn.is-active,
+.stmb-doctors-filter button.is-active {
+  background: var(--vip-blue);
+  color: #fff;
+  border-color: var(--vip-blue);
+}
+
+/* لهجه‌ی چیدمان agency: تیترهای سکشن راست‌چین‌ترِ جسورانه + خط طلایی ضخیم‌تر */
+.stwiz-demo--branding-agency .wp-block-post-content > h2.has-text-align-center { letter-spacing: -0.03em; }
+.stwiz-demo--branding-agency .wp-block-post-content > h2.has-text-align-center::after { width: 80px; height: 4px; }
+
 /* حرکت‌کاهی برای کاربرانی که انیمیشن نمی‌خواهند */
 @media (prefers-reduced-motion: reduce) {
   .stmb-service-card, .stmb-doctor-card, .stmb-review-card, .stmb-stat-card,

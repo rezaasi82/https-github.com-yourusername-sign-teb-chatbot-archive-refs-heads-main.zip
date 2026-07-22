@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'showcase',
 	'headline' => 'زیبایی طبیعی، با دستان متخصص',
 	'sub'      => 'کلینیک زیبایی رز با جراحان مجرب و جدیدترین تکنیک‌ها، نتیجه‌ای طبیعی و ایمن را برای شما به ارمغان می‌آورد.',
 	'cta_label'=> 'مشاوره‌ی رایگان',

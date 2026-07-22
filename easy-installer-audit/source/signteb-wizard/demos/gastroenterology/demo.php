@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'educational',
 	'headline' => 'سلامت دستگاه گوارش شما، تخصص ماست',
 	'sub'      => 'کلینیک گوارش سلامت با خدمات آندوسکوپی، کولونوسکوپی و درمان بیماری‌های گوارشی، در کنار شماست.',
 	'cta_label'=> 'رزرو نوبت',

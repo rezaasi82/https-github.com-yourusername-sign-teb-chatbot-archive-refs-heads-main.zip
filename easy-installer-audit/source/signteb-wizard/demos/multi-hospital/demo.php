@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'enterprise',
 	'headline' => 'مراقبت جامع سلامت، زیر یک سقف',
 	'sub'      => 'بیمارستان آریا با بیش از ۲۰ بخش تخصصی، اورژانس ۲۴ ساعته و کادر مجرب، سلامت شما و خانواده‌تان را تضمین می‌کند.',
 	'cta_label'=> 'رزرو نوبت / پذیرش',

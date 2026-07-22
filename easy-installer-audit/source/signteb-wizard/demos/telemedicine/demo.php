@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'tech',
 	'headline' => 'پزشک متخصص، همین حالا و آنلاین',
 	'sub'      => 'ویزیت‌مِد؛ پلتفرم ویزیت آنلاین با پزشکان متخصص، مشاوره‌ی تصویری، نسخه‌ی الکترونیک و پیگیری درمان از هر کجا.',
 	'cta_label'=> 'شروع ویزیت آنلاین',

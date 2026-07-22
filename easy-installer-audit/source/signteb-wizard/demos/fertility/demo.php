@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'journey',
 	'headline' => 'آرزوی فرزند، همراه شما تا لبخند',
 	'sub'      => 'مرکز ناباروری امید با جدیدترین روش‌های درمان ناباروری، IVF و مشاوره‌ی تخصصی، در کنار شماست.',
 	'cta_label'=> 'رزرو مشاوره',

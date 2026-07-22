@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'agency',
 	'headline' => 'برند پزشکی شما را می‌سازیم و رشد می‌دهیم',
 	'sub'      => 'آژانس مدیکال‌برند؛ تخصص در برندینگ، طراحی سایت، سئوی پزشکی و بازاریابی دیجیتال برای پزشکان و کلینیک‌ها.',
 	'cta_label'=> 'دریافت مشاوره‌ی رایگان',

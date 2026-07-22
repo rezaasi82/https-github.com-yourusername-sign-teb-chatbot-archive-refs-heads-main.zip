@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Setup Wizard
  * Plugin URI:        https://signteb.com/
  * Description:       ویزارد راه‌اندازی SignTeb MedCore — جمع‌آوری اطلاعات + راه‌اندازی خودکار ۸ مرحله‌ای (بررسی محیط، افزونه‌ها، دمو، تنظیمات، منوها، خانه، بلاگ، پایان)
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            رضا آسیابی
@@ -18,7 +18,7 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STWIZ_VERSION', '1.1.0' );
+define( 'STWIZ_VERSION', '1.1.1' );
 define( 'STWIZ_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'STWIZ_URI',     plugin_dir_url( __FILE__ ) );
 define( 'STWIZ_TEXT',    'signteb-wizard' );

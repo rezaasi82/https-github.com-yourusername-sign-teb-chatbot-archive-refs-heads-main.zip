@@ -20,59 +20,190 @@ if ( ! function_exists( 'stwiz_demo_homepage' ) ) {
 	 *                 contact_title, testimonials_title, extra(raw block markup)
 	 */
 	function stwiz_demo_homepage( array $a ): string {
-		// JSON_UNESCAPED_UNICODE حیاتی است: خروجی پیش‌فرض wp_json_encode متن فارسی
-		// را به \u06XX تبدیل می‌کند؛ اگر جایی در مسیر ذخیره بک‌اسلش‌ها حذف شوند
-		// (رفتار wp_insert_post با داده‌ی unslashed)، روی سایت «u0633u0627u0644»
-		// خام چاپ می‌شود — دقیقاً باگی که در بخش آمار دموها دیده شد.
+		// ── سکشن‌های قابل‌استفاده‌ی مجدد (هر کدام یک بلوک/ناحیه) ─────────────────
+		// JSON_UNESCAPED_UNICODE حیاتی است: در غیر این صورت متن فارسیِ آمار به
+		// \u06XX تبدیل و بعد از حذف بک‌اسلش‌ها به‌صورت خام چاپ می‌شود.
 		$stats_json = wp_json_encode( $a['stats'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
-		$tpl = '
+		$heading = static fn( string $t ): string =>
+			'<!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">' . $t . '</h2><!-- /wp:heading -->';
+
+		$hero = '
 <!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|8","bottom":"var:preset|spacing|8"}}},"backgroundColor":"trust-blue-light","layout":{"type":"constrained"}} -->
 <section class="wp-block-group alignfull has-trust-blue-light-background-color has-background" style="padding-top:var(--wp--preset--spacing--8);padding-bottom:var(--wp--preset--spacing--8)">
 <!-- wp:heading {"textAlign":"center","level":1} -->
-<h1 class="wp-block-heading has-text-align-center">{{HEADLINE}}</h1>
+<h1 class="wp-block-heading has-text-align-center">' . ( $a['headline'] ?? '' ) . '</h1>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"align":"center"} -->
-<p class="has-text-align-center">{{SUB}}</p>
+<p class="has-text-align-center">' . ( $a['sub'] ?? '' ) . '</p>
 <!-- /wp:paragraph -->
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
-<div class="wp-block-buttons"><!-- wp:button --><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="{{CTA_HREF}}">{{CTA_LABEL}}</a></div><!-- /wp:button --></div>
+<div class="wp-block-buttons"><!-- wp:button --><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="' . ( $a['cta_href'] ?? '/appointment' ) . '">' . ( $a['cta_label'] ?? 'رزرو نوبت' ) . '</a></div><!-- /wp:button --></div>
 <!-- /wp:buttons -->
 </section>
-<!-- /wp:group -->
+<!-- /wp:group -->';
 
-<!-- wp:signteb/stats-counter {"columns":4,"stats":{{STATS}}} /-->
+		// آمار: theme=dark پیش‌فرض؛ columns بسته به دمو.
+		$stats = static fn( int $cols = 4 ): string =>
+			'<!-- wp:signteb/stats-counter {"columns":' . $cols . ',"stats":' . $stats_json . '} /-->';
 
-<!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">{{SERVICES_TITLE}}</h2><!-- /wp:heading -->
-<!-- wp:signteb/service-grid {"columns":3,"showPrice":true} /-->
+		$services = static function ( string $title, int $cols = 3, string $style = 'glass' ) use ( $heading ): string {
+			return $heading( $title ) .
+				'<!-- wp:signteb/service-grid {"columns":' . $cols . ',"showPrice":true,"cardStyle":"' . $style . '"} /-->';
+		};
 
-<!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">{{DOCTORS_TITLE}}</h2><!-- /wp:heading -->
-<!-- wp:signteb/doctor-card-grid {"columns":3} /-->
-{{EXTRA}}
-<!-- wp:signteb/faq-accordion {"title":"{{FAQ_TITLE}}"} /-->
+		$doctors = static function ( string $title, int $cols = 3, bool $filter = false ) use ( $heading ): string {
+			$f = $filter ? ',"showFilter":true' : '';
+			return $heading( $title ) .
+				'<!-- wp:signteb/doctor-card-grid {"columns":' . $cols . $f . '} /-->';
+		};
 
-<!-- wp:signteb/testimonials-slider {"title":"{{TESTIMONIALS_TITLE}}"} /-->
+		$faq     = static fn( string $t ): string => '<!-- wp:signteb/faq-accordion {"title":"' . $t . '"} /-->';
+		$testi   = static fn( string $t ): string => '<!-- wp:signteb/testimonials-slider {"title":"' . $t . '"} /-->';
+		$appt    = static fn( string $t ): string => '<!-- wp:signteb/appointment-cta {"title":"' . $t . '"} /-->';
+		$contact = static fn( string $t ): string => '<!-- wp:signteb/contact-cta {"title":"' . $t . '"} /-->';
 
-<!-- wp:signteb/appointment-cta {"title":"{{APPT_TITLE}}"} /-->
+		// قبل/بعد — توکن‌هایش هنگام ایمپورت با URL تصویرِ واقعی جایگزین می‌شوند.
+		$beforeafter = static fn( string $caption = 'نتایج واقعی درمان' ): string =>
+			'<!-- wp:signteb/before-after-slider {"beforeImageUrl":"%%IMG_BEFORE%%","afterImageUrl":"%%IMG_AFTER%%","beforeLabel":"قبل","afterLabel":"بعد","caption":"' . $caption . '"} /-->';
 
-<!-- wp:signteb/contact-cta {"title":"{{CONTACT_TITLE}}"} /-->';
+		// عنوان‌های قابل‌override از تعریف دمو.
+		$t_services = $a['services_title']     ?? 'خدمات ما';
+		$t_doctors  = $a['doctors_title']      ?? 'پزشکان ما';
+		$t_faq      = $a['faq_title']          ?? 'سؤالات متداول';
+		$t_testi    = $a['testimonials_title'] ?? 'نظر بیماران ما';
+		$t_appt     = $a['appt_title']         ?? 'همین امروز نوبت بگیرید';
+		$t_contact  = $a['contact_title']      ?? 'تماس با ما';
+		$extra      = $a['extra']              ?? '';
 
-		$replace = [
-			'{{HEADLINE}}'          => $a['headline'] ?? '',
-			'{{SUB}}'               => $a['sub'] ?? '',
-			'{{CTA_HREF}}'          => $a['cta_href'] ?? '/appointment',
-			'{{CTA_LABEL}}'         => $a['cta_label'] ?? 'رزرو نوبت',
-			'{{STATS}}'             => $stats_json,
-			'{{SERVICES_TITLE}}'    => $a['services_title'] ?? 'خدمات ما',
-			'{{DOCTORS_TITLE}}'     => $a['doctors_title'] ?? 'پزشکان ما',
-			'{{EXTRA}}'             => $a['extra'] ?? '',
-			'{{FAQ_TITLE}}'         => $a['faq_title'] ?? 'سؤالات متداول',
-			'{{TESTIMONIALS_TITLE}}'=> $a['testimonials_title'] ?? 'نظر بیماران ما',
-			'{{APPT_TITLE}}'        => $a['appt_title'] ?? 'همین امروز نوبت بگیرید',
-			'{{CONTACT_TITLE}}'     => $a['contact_title'] ?? 'تماس با ما',
-		];
+		// ── چیدمان‌های مستقل — هر آرکی‌تایپ ترتیب/بلوک/تیتر متفاوتی دارد ──────────
+		// هدفِ صریح (معیار پذیرش کاربر): هیچ دو دمویی ساختار یکسان نداشته باشند.
+		$layout = $a['layout'] ?? 'clinic';
 
-		return strtr( $tpl, $replace );
+		switch ( $layout ) {
+
+			// بیمارستان چندتخصصی: بخش‌ها → آمار → پزشکان → اورژانس → نظرات
+			case 'enterprise':
+				$sections = [
+					$hero,
+					$services( $t_services ?: 'بخش‌های تخصصی بیمارستان', 4, 'solid' ),
+					$stats( 4 ),
+					$doctors( $t_doctors ?: 'کادر درمان', 3, true ),
+					$contact( $a['contact_title'] ?? 'اورژانس ۲۴ ساعته — همیشه در دسترس' ),
+					$testi( $t_testi ),
+					$extra,
+				];
+				break;
+
+			// جراحی زیبایی: قبل/بعد در مرکز توجه → خدمات → نظرات → آمار → رزرو
+			case 'showcase':
+				$sections = [
+					$hero,
+					$beforeafter( 'نتایج واقعی جراحی زیبایی' ),
+					$services( $t_services ?: 'خدمات زیبایی', 3, 'glass' ),
+					$testi( $t_testi ?: 'رضایت مراجعان' ),
+					$stats( 4 ),
+					$appt( $t_appt ),
+					$extra,
+				];
+				break;
+
+			// آژانس برندینگ: توانمندی‌ها → دستاوردها → فرآیند → مشتریان → تماس
+			case 'agency':
+				$sections = [
+					$hero,
+					$services( $t_services ?: 'توانمندی‌های ما', 3, 'solid' ),
+					$stats( 4 ),
+					$faq( $t_faq ?: 'فرآیند همکاری' ),
+					$testi( $t_testi ?: 'مشتریان ما' ),
+					$contact( $t_contact ?: 'بریفت را برای ما بفرست' ),
+					$extra,
+				];
+				break;
+
+			// تله‌مدیسین/تک: امکانات پلتفرم → آمار → چطور کار می‌کند → رزرو آنلاین
+			case 'tech':
+				$sections = [
+					$hero,
+					$services( $t_services ?: 'امکانات پلتفرم', 3, 'glass' ),
+					$stats( 4 ),
+					$faq( $t_faq ?: 'چطور کار می‌کند؟' ),
+					$appt( $a['appt_title'] ?? 'رزرو ویزیت آنلاین' ),
+					$contact( $t_contact ),
+					$extra,
+				];
+				break;
+
+			// ناباروری: آمار → مسیر درمان (steps) → پزشکان → نظرات → رزرو
+			case 'journey':
+				$sections = [
+					$hero,
+					$stats( 4 ),
+					$faq( $a['faq_title'] ?? 'مسیر درمان، گام‌به‌گام' ),
+					$doctors( $t_doctors, 3 ),
+					$testi( $t_testi ?: 'داستان موفقیت مراجعان' ),
+					$appt( $t_appt ),
+					$extra,
+				];
+				break;
+
+			// گوارش: آموزش‌محور — خدمات → سؤالات شایع → پزشکان → آمار → رزرو
+			case 'educational':
+				$sections = [
+					$hero,
+					$services( $t_services, 3, 'glass' ),
+					$faq( $a['faq_title'] ?? 'سؤالات شایع بیماران گوارش' ),
+					$doctors( $t_doctors, 3 ),
+					$stats( 4 ),
+					$appt( $t_appt ),
+					$extra,
+				];
+				break;
+
+			// ارتوپدی: نتیجه‌محور — خدمات → پزشکان → نتایج درمان → آمار → رزرو
+			case 'results':
+				$sections = [
+					$hero,
+					$services( $t_services ?: 'خدمات ارتوپدی', 3, 'solid' ),
+					$doctors( $t_doctors, 3 ),
+					$testi( $a['testimonials_title'] ?? 'نتایج درمان بیماران' ),
+					$stats( 4 ),
+					$appt( $t_appt ),
+					$extra,
+				];
+				break;
+
+			// قلب: اعتماد/تخصص‌محور — تیم فوق‌تخصص جلوتر از خدمات
+			case 'expertise':
+				$sections = [
+					$hero,
+					$doctors( $a['doctors_title'] ?? 'تیم فوق‌تخصص قلب', 3, true ),
+					$stats( 4 ),
+					$services( $t_services, 3, 'glass' ),
+					$testi( $t_testi ),
+					$appt( $t_appt ),
+					$extra,
+				];
+				break;
+
+			// پیش‌فرض (کلینیک استاندارد): چیدمان کاملِ متعادل
+			case 'clinic':
+			default:
+				$sections = [
+					$hero,
+					$stats( 4 ),
+					$services( $t_services, 3, 'glass' ),
+					$doctors( $t_doctors, 3 ),
+					$extra,
+					$faq( $t_faq ),
+					$testi( $t_testi ),
+					$appt( $t_appt ),
+					$contact( $t_contact ),
+				];
+				break;
+		}
+
+		return implode( "\n\n", array_filter( $sections ) );
 	}
 }
 

@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'results',
 	'headline' => 'حرکت بدون درد را دوباره تجربه کنید',
 	'sub'      => 'دکتر آرش کیانی، جراح و متخصص ارتوپدی، با تخصص در جراحی مفاصل، ستون فقرات و طب ورزشی در کنار شماست.',
 	'cta_label'=> 'رزرو نوبت ویزیت',

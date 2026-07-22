@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/../_shared/homepage.php';
 
 $home = stwiz_demo_homepage( [
+	'layout' => 'expertise',
 	'headline' => 'قلب شما، در دستان امن ما',
 	'sub'      => 'مرکز تخصصی قلب پارسیان با تجهیزات پیشرفته‌ی تشخیصی و تیم فوق‌تخصص، مراقبت جامع قلب و عروق را ارائه می‌دهد.',
 	'cta_label'=> 'رزرو نوبت',
