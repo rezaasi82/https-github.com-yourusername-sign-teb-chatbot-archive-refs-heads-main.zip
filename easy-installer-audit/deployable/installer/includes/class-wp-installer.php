@@ -8,6 +8,14 @@ declare( strict_types=1 );
 defined( 'EZI_ROOT' ) || exit;
 
 function ezi_run_wp_install( array $post ): array {
+	// ── مقاوم‌سازی در برابر قطع کلاینت و محدودیت زمانی هاست ──────────────────
+	// اگر مرورگر (به‌خاطر timeout سمت خودش) درخواست را قطع کند، وب‌سرورهای
+	// رایج (به‌خصوص LiteSpeed روی هاست‌های ایرانی) اسکریپت PHP را همان لحظه
+	// می‌کشند — حتی وسط نوشتن wp-config.php. ignore_user_abort تضمین می‌کند
+	// نصب تا انتها ادامه پیدا کند حتی اگر کلاینت منتظر نمانده باشد.
+	@set_time_limit( 0 );
+	@ignore_user_abort( true );
+
 	$db = $_SESSION['ezi_db'] ?? null;
 
 	if ( ! $db ) {
@@ -201,7 +209,19 @@ function ezi_run_wp_install( array $post ): array {
  * @return array<string,string> نگاشت نام کلید → خط کامل define(...)
  */
 function ezi_fetch_secret_keys(): array {
-	$remote = @file_get_contents( 'https://api.wordpress.org/secret-key/1.1/salt/' );
+	// ── نکته‌ی حیاتی برای سرورهای ایران ─────────────────────────────────────
+	// api.wordpress.org از بسیاری از سرورهای داخل ایران مسدود/بلک‌هول است.
+	// بدون timeout صریح، این درخواست تا default_socket_timeout (معمولاً ۶۰
+	// ثانیه) کل نصب را «معلق» نگه می‌دارد؛ مرورگر در همین حوالی درخواست را
+	// قطع می‌کند و وب‌سرور اسکریپت را قبل از نوشتن wp-config.php می‌کشد —
+	// نتیجه: روت قابل نوشتن است ولی فایل هرگز ساخته نمی‌شود. پس فقط ۵ ثانیه
+	// تلاش می‌کنیم؛ در صورت شکست، کلیدها به‌صورت محلی و کاملاً امن (random_int)
+	// تولید می‌شوند — از نظر امنیتی هیچ تفاوتی با کلیدهای API ندارد.
+	$ctx = stream_context_create( [
+		'http' => [ 'timeout' => 5 ],
+		'ssl'  => [ 'verify_peer' => true, 'verify_peer_name' => true ],
+	] );
+	$remote = @file_get_contents( 'https://api.wordpress.org/secret-key/1.1/salt/', false, $ctx );
 	$wanted = [ 'AUTH_KEY', 'SECURE_AUTH_KEY', 'LOGGED_IN_KEY', 'NONCE_KEY', 'AUTH_SALT', 'SECURE_AUTH_SALT', 'LOGGED_IN_SALT', 'NONCE_SALT' ];
 	$result = [];
 

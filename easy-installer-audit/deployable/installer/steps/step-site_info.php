@@ -38,11 +38,18 @@
 
 	<div id="ezi-site-manual" style="display:none;margin-top:1rem;">
 		<div class="ezi-notice ezi-notice--warning">
-			سرور پاسخ نامنتظره‌ای برگرداند. این معمولاً یعنی روت سایت قابل
-			نوشتن نیست و فایل <code>wp-config.php</code> ساخته نشده است. لطفاً
-			دسترسی (permission) پوشه‌ی روت را به <code>0755</code> (یا در صورت
-			نیاز <code>0775</code>) تغییر دهید و دوباره «نصب وردپرس» را بزنید.
-			<br>برای بررسی دقیق‌تر می‌توانید <a href="diagnose.php" target="_blank"><code>diagnose.php</code></a> را باز کنید.
+			<strong>راهنمای رفع مشکل — به ترتیب امتحان کنید:</strong><br>
+			۱) چند لحظه صبر کنید و دوباره «نصب وردپرس» را بزنید — اگر نصب در
+			پس‌زمینه کامل شده باشد، نصب‌کننده خودش تشخیص می‌دهد و رد نمی‌شود.<br>
+			۲) وضعیت دقیق را با
+			<a href="diagnose.php" target="_blank"><code>diagnose.php</code></a>
+			بررسی کنید (نشان می‌دهد wp-config.php ساخته شده یا نه، و روت قابل
+			نوشتن هست یا نه).<br>
+			۳) اگر روت قابل نوشتن نبود، دسترسی پوشه را به <code>0755</code>
+			(یا <code>0775</code>) تغییر دهید.<br>
+			۴) اگر کد HTTP خطا 403/406 بود، فایروال هاست (ModSecurity) درخواست
+			را مسدود می‌کند — از پشتیبانی هاست بخواهید آن را برای دامنه‌تان
+			موقتاً غیرفعال کند.
 		</div>
 	</div>
 </div>
@@ -73,13 +80,16 @@ document.getElementById('ezi-site-form').addEventListener('submit', function () 
 
 	const formData = new FormData(document.getElementById('ezi-site-form'));
 
-	fetchWithTimeout('?action=install_wp', { method: 'POST', body: formData }, 60000)
+	// مهلت ۱۵۰ ثانیه: نصب روی دیتابیس‌های کند هاست اشتراکی می‌تواند طول بکشد؛
+	// قطع زودهنگام درخواست باعث کشته شدن اسکریپت سمت سرور وسط نصب می‌شود.
+	fetchWithTimeout('?action=install_wp', { method: 'POST', body: formData }, 150000)
 		.then(async function (res) {
 			const rawText = await res.text();
 			let data;
 			try {
 				data = JSON.parse(rawText);
 			} catch (parseErr) {
+				console.error('EZI install_wp non-JSON response (HTTP ' + res.status + '):', rawText.slice(0, 500));
 				// پاسخ سرور JSON معتبر نبود. نصب‌کننده به‌گونه‌ای طراحی شده که
 				// همیشه JSON معتبر برمی‌گرداند (چه موفق چه ناموفق)، پس پاسخ
 				// غیر-JSON یعنی چیزی واقعاً اشتباه است — تقریباً همیشه یعنی روت
@@ -88,8 +98,10 @@ document.getElementById('ezi-site-form').addEventListener('submit', function () 
 				// می‌شد) را نده.
 				errorBox.innerHTML = `
 					<div class="ezi-notice ezi-notice--error">
-						نصب کامل نشد: سرور پاسخ نامعتبری برگرداند. راهنمای رفع
-						مشکل در کادر زیر آمده است.
+						نصب کامل نشد: سرور پاسخ نامعتبری برگرداند
+						(کد HTTP: ${Number(res.status)}). راهنمای رفع مشکل در
+						کادر زیر آمده است؛ جزئیات فنی پاسخ در Console مرورگر
+						(F12) ثبت شد.
 					</div>`;
 				manualBox.style.display = 'block';
 				btn.disabled = false;
