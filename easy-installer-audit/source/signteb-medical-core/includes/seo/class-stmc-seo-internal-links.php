@@ -30,7 +30,13 @@ final class InternalLinks {
 
 	// ─── Main Injector ────────────────────────────────────────────────────────
 
-	public function inject_links( string $content ): string {
+	public function inject_links( $content ) {
+		// دفاعی: بعضی افزونه‌ها روی فیلتر the_content مقدار null پاس می‌دهند؛
+		// type-hint سخت‌گیرانه در آن حالت TypeError کشنده می‌داد.
+		if ( ! is_string( $content ) || '' === $content ) {
+			return $content;
+		}
+
 		if ( ! is_singular() || is_admin() ) {
 			return $content;
 		}
@@ -127,8 +133,21 @@ final class InternalLinks {
 	// ─── Apply Links to Content ───────────────────────────────────────────────
 
 	private function apply_links( string $content, array $link_map ): string {
-		if ( empty( $link_map ) || empty( $content ) ) {
+		if ( empty( $link_map ) || '' === trim( $content ) ) {
 			return $content;
+		}
+
+		// محتوا به دو نوع قطعه تقسیم می‌شود: «انکرهای کامل/تگ‌های HTML» (که
+		// هرگز نباید دستکاری شوند) و «متن خالص» (که فقط همان‌جا لینک می‌سازیم).
+		//
+		// چرا بازنویسی شد: الگوی قبلی از lookbehind با طول متغیر استفاده می‌کرد
+		// — چیزی که PCRE اصلاً کامپایل نمی‌کند. preg_replace_callback در نتیجه
+		// null برمی‌گرداند، null در تکرار بعدی حلقه به‌عنوان subject پاس می‌شد
+		// و روی هر صفحه‌ی singular با نقشه‌ی لینک غیرخالی (یعنی به‌محض ایمپورت
+		// دمو) TypeError کشنده می‌داد: «خطای مهمی در این وب‌سایت رخ داده است».
+		$parts = preg_split( '~(<a\b[^>]*>.*?</a>|<[^>]+>)~isu', $content, -1, PREG_SPLIT_DELIM_CAPTURE );
+		if ( ! is_array( $parts ) ) {
+			return $content; // شکست preg_split — محتوای اصلی را دست‌نخورده برگردان
 		}
 
 		$links_added = 0;
@@ -139,39 +158,49 @@ final class InternalLinks {
 				break;
 			}
 
+			$keyword = (string) $keyword;
+			if ( '' === $keyword || ! is_string( $url ) || '' === $url ) {
+				continue;
+			}
+
 			// Skip if URL already linked in content
 			if ( in_array( $url, $used_urls, true ) ) {
 				continue;
 			}
 
-			// Skip if keyword already inside an anchor tag
-			$pattern = '~(?<!</?a[^>]*?>)(?<!href=["\'])' .
-				'(?<![class|id]=["\'][^"\']*?)' .
-				'(' . preg_quote( $keyword, '~' ) . ')' .
-				'(?![^<]*?>)(?![^<]*?</a>)~u';
+			$pattern = '~' . preg_quote( $keyword, '~' ) . '~u';
 
-			$replaced = preg_replace_callback(
-				$pattern,
-				function ( array $matches ) use ( $url, $keyword ): string {
-					return sprintf(
-						'<a href="%s" class="stmc-auto-link" title="%s">%s</a>',
-						esc_url( $url ),
-						esc_attr( $keyword ),
-						$matches[0]
-					);
-				},
-				$content,
-				1 // Replace only first occurrence
-			);
+			foreach ( $parts as $i => $part ) {
+				// ایندکس‌های فرد = تگ/انکر (delimiterهای capture شده) — دست نزن
+				if ( 1 === $i % 2 || '' === $part ) {
+					continue;
+				}
 
-			if ( $replaced !== $content ) {
-				$content     = $replaced;
-				$used_urls[] = $url;
-				$links_added++;
+				$replaced = preg_replace_callback(
+					$pattern,
+					function ( array $matches ) use ( $url, $keyword ): string {
+						return sprintf(
+							'<a href="%s" class="stmc-auto-link" title="%s">%s</a>',
+							esc_url( $url ),
+							esc_attr( $keyword ),
+							$matches[0]
+						);
+					},
+					$part,
+					1 // فقط اولین وقوع
+				);
+
+				// null یعنی خطای preg — قطعه را دست‌نخورده نگه می‌داریم
+				if ( null !== $replaced && $replaced !== $part ) {
+					$parts[ $i ] = $replaced;
+					$used_urls[] = $url;
+					$links_added++;
+					break; // این کلیدواژه فقط یک بار در کل محتوا لینک شود
+				}
 			}
 		}
 
-		return $content;
+		return implode( '', $parts );
 	}
 
 	// ─── Cache Invalidation ───────────────────────────────────────────────────
