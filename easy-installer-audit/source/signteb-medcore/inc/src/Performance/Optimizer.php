@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 final class Optimizer {
 
 	/** handleهای CSSِ قالب که نسخه‌ی .min.css دارند. */
-	private const MINIFIABLE = [ 'stmc-main', 'stmc-components', 'stmc-rtl', 'stmc-editor' ];
+	private const MINIFIABLE = [ 'stmc-main', 'stmc-components', 'stmc-rtl', 'stmc-editor', 'stmc-vip' ];
 
 	public function register(): void {
 		add_action( 'init',              [ $this, 'disable_emoji' ] );

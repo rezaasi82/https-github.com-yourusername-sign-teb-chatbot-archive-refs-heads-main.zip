@@ -65,6 +65,14 @@ class MedCore_Enqueue {
 			$ver
 		);
 
+		// ── VIP design layer (باید آخر از همه لود شود تا روی استایل بلوک‌ها بنشیند) ──
+		wp_enqueue_style(
+			'stmc-vip',
+			$uri . 'css/vip.css',
+			[ 'stmc-main', 'stmc-components' ],
+			$ver
+		);
+
 		// ── Navigation JS ──
 		wp_enqueue_script(
 			'stmc-navigation',

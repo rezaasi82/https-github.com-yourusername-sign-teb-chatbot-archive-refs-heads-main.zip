@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'MEDCORE_VERSION',   '1.0.9' );
+define( 'MEDCORE_VERSION',   '1.1.0' );
 define( 'MEDCORE_DIR',       get_template_directory() );
 define( 'MEDCORE_URI',       get_template_directory_uri() );
 define( 'MEDCORE_INC',       MEDCORE_DIR . '/inc/' );
@@ -138,6 +138,23 @@ try {
 	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Integration\ElementorLocations::class )->register();
 } catch ( \Throwable $e ) {
 	MedCore_Logger::log( 'Elementor integration failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
+}
+
+// ── Frontend VIP (منوی پایدار هدر + هاب ارتباطی شناور) ───────────────────────
+try {
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Frontend\NavMenu::class,
+		static fn() => new \SignTeb\MedCore\Frontend\NavMenu()
+	);
+	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Frontend\NavMenu::class )->register();
+
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Frontend\FloatingHub::class,
+		static fn() => new \SignTeb\MedCore\Frontend\FloatingHub()
+	);
+	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Frontend\FloatingHub::class )->register();
+} catch ( \Throwable $e ) {
+	MedCore_Logger::log( 'Frontend VIP failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
 }
 
 // ── Customizer + Design Tokens (فاز ۵) ───────────────────────────────────────

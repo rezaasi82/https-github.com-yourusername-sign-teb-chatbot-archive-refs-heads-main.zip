@@ -20,7 +20,11 @@ if ( ! function_exists( 'stwiz_demo_homepage' ) ) {
 	 *                 contact_title, testimonials_title, extra(raw block markup)
 	 */
 	function stwiz_demo_homepage( array $a ): string {
-		$stats_json = wp_json_encode( $a['stats'] ?? [] );
+		// JSON_UNESCAPED_UNICODE حیاتی است: خروجی پیش‌فرض wp_json_encode متن فارسی
+		// را به \u06XX تبدیل می‌کند؛ اگر جایی در مسیر ذخیره بک‌اسلش‌ها حذف شوند
+		// (رفتار wp_insert_post با داده‌ی unslashed)، روی سایت «u0633u0627u0644»
+		// خام چاپ می‌شود — دقیقاً باگی که در بخش آمار دموها دیده شد.
+		$stats_json = wp_json_encode( $a['stats'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
 		$tpl = '
 <!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|8","bottom":"var:preset|spacing|8"}}},"backgroundColor":"trust-blue-light","layout":{"type":"constrained"}} -->

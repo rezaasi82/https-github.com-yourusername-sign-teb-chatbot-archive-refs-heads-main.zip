@@ -56,13 +56,13 @@ final class DemoContentImporter {
 				$ids[ $i ] = $existing;
 				continue;
 			}
-			$pid = wp_insert_post( [
+			$pid = wp_insert_post( wp_slash( [
 				'post_type'    => 'doctor',
 				'post_title'   => $doc['name'] ?? 'پزشک',
 				'post_status'  => 'publish',
 				'post_content' => $doc['content'] ?? '',
 				'post_excerpt' => $doc['bio'] ?? '',
-			] );
+			] ) );
 			if ( is_wp_error( $pid ) ) {
 				continue;
 			}
@@ -89,14 +89,14 @@ final class DemoContentImporter {
 			if ( $this->find_by_key( 'medical-service', $key ) ) {
 				continue;
 			}
-			$pid = wp_insert_post( [
+			$pid = wp_insert_post( wp_slash( [
 				'post_type'    => 'medical-service',
 				'post_title'   => $svc['title'] ?? 'خدمت',
 				'post_status'  => 'publish',
 				'post_content' => $svc['content'] ?? '',
 				'post_excerpt' => $svc['excerpt'] ?? '',
 				'menu_order'   => $i,
-			] );
+			] ) );
 			if ( is_wp_error( $pid ) ) {
 				continue;
 			}
@@ -117,13 +117,13 @@ final class DemoContentImporter {
 			if ( $this->find_by_key( 'medical-faq', $key ) ) {
 				continue;
 			}
-			$pid = wp_insert_post( [
+			$pid = wp_insert_post( wp_slash( [
 				'post_type'    => 'medical-faq',
 				'post_title'   => $faq['q'] ?? '',
 				'post_content' => $faq['a'] ?? '',
 				'post_status'  => 'publish',
 				'menu_order'   => $i,
-			] );
+			] ) );
 			if ( ! is_wp_error( $pid ) ) {
 				$this->tag_demo( $pid, $key );
 			}
@@ -163,13 +163,13 @@ final class DemoContentImporter {
 			if ( $this->find_by_key( 'post', $key ) ) {
 				continue;
 			}
-			$pid = wp_insert_post( [
+			$pid = wp_insert_post( wp_slash( [
 				'post_type'    => 'post',
 				'post_title'   => $post['title'] ?? '',
 				'post_content' => $post['content'] ?? '',
 				'post_excerpt' => $post['excerpt'] ?? '',
 				'post_status'  => 'publish',
-			] );
+			] ) );
 			if ( ! is_wp_error( $pid ) ) {
 				$this->tag_demo( $pid, $key );
 			}
@@ -181,27 +181,41 @@ final class DemoContentImporter {
 		$front_id = 0;
 		foreach ( $pages as $page ) {
 			$slug = $page['slug'] ?? sanitize_title( $page['title'] ?? '' );
-			$existing = get_page_by_path( $slug );
-			if ( $existing ) {
-				if ( ! empty( $page['front'] ) ) {
-					$front_id = (int) $existing->ID;
-				}
-				continue;
-			}
+
 			// جایگزینی توکن‌های تصویرِ قبل/بعد با URL واقعیِ آپلودشده.
 			$content = strtr( (string) ( $page['content'] ?? '' ), [
 				'%%IMG_BEFORE%%' => $this->image_url( 'before.png' ),
 				'%%IMG_AFTER%%'  => $this->image_url( 'after.png' ),
 			] );
 
-			$pid = wp_insert_post( [
+			$existing = get_page_by_path( $slug );
+			if ( $existing ) {
+				// اگر صفحه‌ی موجود متعلق به خودِ دموست (تگ _stwiz_demo دارد)،
+				// محتوایش را با markup تازه به‌روزرسانی کن. این کار اجرای دوباره‌ی
+				// ویزارد را به یک «ابزار تعمیر» تبدیل می‌کند: صفحات دمویی که با
+				// نسخه‌های قبلی (مثلاً با باگ حذف بک‌اسلش در JSON آمار) ساخته
+				// شده‌اند، با یک بار اجرای مجدد مرحله‌ی دمو سالم می‌شوند.
+				// صفحات غیر-دمو (ساخته‌ی کاربر) دست‌نخورده می‌مانند.
+				if ( get_post_meta( $existing->ID, '_stwiz_demo', true ) ) {
+					wp_update_post( wp_slash( [
+						'ID'           => $existing->ID,
+						'post_content' => $content,
+					] ) );
+				}
+				if ( ! empty( $page['front'] ) ) {
+					$front_id = (int) $existing->ID;
+				}
+				continue;
+			}
+
+			$pid = wp_insert_post( wp_slash( [
 				'post_type'    => 'page',
 				'post_title'   => $page['title'] ?? '',
 				'post_name'    => $slug,
 				'post_content' => $content,
 				'post_status'  => 'publish',
 				'page_template'=> $page['template'] ?? '',
-			] );
+			] ) );
 			if ( is_wp_error( $pid ) ) {
 				continue;
 			}
@@ -270,12 +284,12 @@ final class DemoContentImporter {
 		if ( $existing ) {
 			$blog_id = (int) $existing->ID;
 		} else {
-			$blog_id = wp_insert_post( [
+			$blog_id = wp_insert_post( wp_slash( [
 				'post_type'   => 'page',
 				'post_title'  => $def['blog_title'] ?? __( 'بلاگ', STWIZ_TEXT ),
 				'post_name'   => $slug,
 				'post_status' => 'publish',
-			] );
+			] ) );
 			if ( is_wp_error( $blog_id ) ) {
 				return 0;
 			}
