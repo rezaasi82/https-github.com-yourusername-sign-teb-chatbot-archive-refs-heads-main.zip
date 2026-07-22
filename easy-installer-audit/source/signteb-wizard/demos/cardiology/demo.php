@@ -19,6 +19,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'cardiology', 'order' => 6, 'title' => 'مرکز قلب', 'icon' => '❤️', 'color' => '#dc2626',
+	'palette' => [ 'primary' => '#e11d48', 'accent' => '#f5b301', 'dark' => '#2a0a12' ],
+	'hero' => 'diagonal',
 	'description' => 'مرکز تخصصی قلب و عروق — تست ورزش، اکو، آنژیوگرافی، فوق‌تخصص‌ها، نوبت‌دهی.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

@@ -19,6 +19,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'multi-hospital', 'order' => 3, 'title' => 'بیمارستان چندتخصصی', 'icon' => '🏨', 'color' => '#0f3fa6',
+	'palette' => [ 'primary' => '#4338ca', 'accent' => '#38bdf8', 'dark' => '#10152e' ],
+	'hero' => 'minimal',
 	'description' => 'بیمارستان چندتخصصی — بخش‌های متعدد، اورژانس، کادر بزرگ پزشکی، پذیرش و نوبت‌دهی.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

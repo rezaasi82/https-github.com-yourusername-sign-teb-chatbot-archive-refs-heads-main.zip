@@ -20,6 +20,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'plastic-surgery', 'order' => 5, 'title' => 'جراحی زیبایی', 'icon' => '💎', 'color' => '#be185d',
+	'palette' => [ 'primary' => '#7c3aed', 'accent' => '#e9c46a', 'dark' => '#1a1030' ],
+	'hero' => 'spotlight',
 	'description' => 'کلینیک جراحی زیبایی — گالری قبل/بعد، خدمات زیبایی، جراحان، مشاوره و نوبت‌دهی.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

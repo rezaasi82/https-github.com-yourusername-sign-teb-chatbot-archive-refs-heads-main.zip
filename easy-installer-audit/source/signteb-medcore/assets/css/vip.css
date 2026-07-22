@@ -13,7 +13,11 @@
 
 :root {
   --vip-navy:   var(--stmc-navy, #0b1b33);
+  /* یک پله روشن‌ترِ رنگ تیره‌ی دمو — تا گرادیانِ هیرو تک‌رنگِ همان دمو باشد
+     (به‌جای سرمه‌ای ثابت). color-mix در مرورگرهای مدرن پشتیبانی می‌شود؛ در
+     نبودش مقدار fallback زیر اعمال می‌شود. */
   --vip-navy-2: #0e2242;
+  --vip-navy-2: color-mix(in srgb, var(--vip-navy) 84%, #ffffff);
   --vip-blue:   var(--stmc-blue, #2563eb);
   --vip-gold:   var(--stmc-gold, #d4af37);
   --vip-gold-2: var(--stmc-gold-light, #e8c96a);
@@ -682,6 +686,58 @@ a.stmc-header-cta {
   opacity: 1 !important;
   transform: none !important;
 }
+
+/* =============================================================================
+   14) سبک‌های هیرو مختص هر دمو (کلاس body: stwiz-hero--*)
+   ============================================================================= */
+/* رنگ‌ها از پالتِ دمو (theme_mods → --stmc-navy/blue/gold) می‌آیند؛ این‌جا فقط
+   «فرمِ» گرادیانِ هیرو عوض می‌شود تا هر دمو ظاهر ساختاریِ متفاوت داشته باشد. */
+
+/* aurora — پیش‌فرض: هاله‌ی طلایی بالا-راست + آبی پایین-چپ (همان پایه). */
+
+/* spotlight — نورافکنِ شعاعیِ مرکزی، لوکس و متمرکز */
+.stwiz-hero--spotlight .wp-block-post-content > .wp-block-group.has-trust-blue-light-background-color {
+  background:
+    radial-gradient(1100px 520px at 50% -20%, color-mix(in srgb, var(--vip-gold) 30%, transparent), transparent 62%),
+    radial-gradient(600px 400px at 50% 120%, color-mix(in srgb, var(--vip-blue) 40%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--vip-navy) 0%, var(--vip-navy-2) 100%) !important;
+}
+
+/* diagonal — گرادیانِ مورب دو-رنگ (پویا، برای دموهای پرانرژی مثل قلب/ارتوپدی) */
+.stwiz-hero--diagonal .wp-block-post-content > .wp-block-group.has-trust-blue-light-background-color {
+  background:
+    linear-gradient(125deg,
+      var(--vip-navy) 0%,
+      var(--vip-navy) 42%,
+      color-mix(in srgb, var(--vip-blue) 55%, var(--vip-navy)) 78%,
+      color-mix(in srgb, var(--vip-gold) 45%, var(--vip-navy)) 130%) !important;
+}
+.stwiz-hero--diagonal .wp-block-post-content > .wp-block-group.has-trust-blue-light-background-color::before {
+  content: "";
+  position: absolute;
+  inset-inline-end: -60px;
+  top: -60px;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--vip-gold) 40%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+/* minimal — تیره و تخت با یک نوارِ لهجه‌ی طلایی زیر عنوان (شیک/آژانسی) */
+.stwiz-hero--minimal .wp-block-post-content > .wp-block-group.has-trust-blue-light-background-color {
+  background: linear-gradient(180deg, var(--vip-navy) 0%, var(--vip-navy-2) 100%) !important;
+}
+.stwiz-hero--minimal .wp-block-post-content > .wp-block-group.has-trust-blue-light-background-color h1::after {
+  content: "";
+  display: block;
+  width: 72px; height: 4px;
+  margin: 1.1rem auto 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--vip-gold), var(--vip-gold-2));
+}
+
+/* لهجه‌ی مختص چند دمو: خط زیرِ تیترِ سکشن هم‌رنگِ پالت می‌ماند (accent). این
+   خودکار از --vip-gold پیروی می‌کند؛ این‌جا فقط برای دموهای «مینیمال» ضخیم‌تر. */
+.stwiz-hero--minimal .wp-block-post-content > h2.has-text-align-center::after { height: 4px; width: 64px; }
 
 /* حرکت‌کاهی برای کاربرانی که انیمیشن نمی‌خواهند */
 @media (prefers-reduced-motion: reduce) {

@@ -19,6 +19,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'branding-agency', 'order' => 10, 'title' => 'آژانس برندینگ پزشکی', 'icon' => '🚀', 'color' => '#C9A84C',
+	'palette' => [ 'primary' => '#111827', 'accent' => '#f5b301', 'dark' => '#0a0a0a' ],
+	'hero' => 'minimal',
 	'description' => 'آژانس برندینگ و بازاریابی پزشکی — برندینگ، طراحی سایت، سئو، بازاریابی، نمونه‌کارها.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

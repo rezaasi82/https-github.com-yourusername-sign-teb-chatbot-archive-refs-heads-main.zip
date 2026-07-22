@@ -19,6 +19,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'orthopedic', 'order' => 4, 'title' => 'ارتوپدی', 'icon' => '🦴', 'color' => '#b45309',
+	'palette' => [ 'primary' => '#ea580c', 'accent' => '#f59e0b', 'dark' => '#2a1408' ],
+	'hero' => 'diagonal',
 	'description' => 'مطب تخصصی جراح ارتوپد — جراحی مفاصل و ستون فقرات، طب ورزشی، فیزیوتراپی، نوبت‌دهی.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

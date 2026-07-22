@@ -19,6 +19,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'fertility', 'order' => 8, 'title' => 'مرکز ناباروری', 'icon' => '👶', 'color' => '#7c3aed',
+	'palette' => [ 'primary' => '#db2777', 'accent' => '#fb7185', 'dark' => '#2a0a1e' ],
+	'hero' => 'spotlight',
 	'description' => 'مرکز درمان ناباروری — IVF، IUI، مشاوره، تیم تخصصی، نوبت‌دهی.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

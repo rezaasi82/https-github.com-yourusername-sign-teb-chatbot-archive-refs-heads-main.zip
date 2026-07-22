@@ -29,6 +29,46 @@ final class DemoContentImporter {
 		foreach ( (array) ( $def['options'] ?? [] ) as $key => $val ) {
 			update_option( $key, $val );
 		}
+
+		$this->apply_palette( $def );
+
+		// دموی فعال + سبک هیرو را ذخیره کن تا قالب کلاس body و CSS مختص هر دمو
+		// را اعمال کند (هویت بصری مستقلِ هر دمو).
+		update_option( 'stwiz_active_demo',  (string) ( $def['id'] ?? '' ) );
+		update_option( 'stwiz_active_hero',  sanitize_key( (string) ( $def['hero'] ?? 'aurora' ) ) );
+	}
+
+	/**
+	 * اعمالِ پالتِ رنگیِ دمو به theme_modهایی که Design Tokens قالب می‌خواند
+	 * (stmc_color_primary/accent/dark) — به‌این‌ترتیب کلِ سایت (هدر، دکمه‌ها،
+	 * هیرو، کارت‌ها، فوتر) رنگِ همان دمو را می‌گیرد، نه فقط عنوان. این همان چیزی
+	 * است که هر دمو را واقعاً «متفاوت» می‌کند.
+	 */
+	private function apply_palette( array $def ): void {
+		if ( ! function_exists( 'set_theme_mod' ) ) {
+			return;
+		}
+		$palette = (array) ( $def['palette'] ?? [] );
+
+		// اگر پالت کامل تعریف نشده، از فیلد قدیمی color به‌عنوان primary استفاده کن.
+		$primary = $this->valid_hex( (string) ( $palette['primary'] ?? ( $def['color'] ?? '' ) ) );
+		$accent  = $this->valid_hex( (string) ( $palette['accent'] ?? '' ) );
+		$dark    = $this->valid_hex( (string) ( $palette['dark'] ?? '' ) );
+
+		if ( $primary ) {
+			set_theme_mod( 'stmc_color_primary', $primary );
+		}
+		if ( $accent ) {
+			set_theme_mod( 'stmc_color_accent', $accent );
+		}
+		if ( $dark ) {
+			set_theme_mod( 'stmc_color_dark', $dark );
+		}
+	}
+
+	/** اعتبارسنجی رنگ hex؛ رشته‌ی خالی اگر نامعتبر بود. */
+	private function valid_hex( string $hex ): string {
+		return preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $hex ) ? $hex : '';
 	}
 
 	// ─── Content: doctors + services + faqs + reviews + posts + pages ─────────
@@ -37,6 +77,12 @@ final class DemoContentImporter {
 	 * ساخت همه‌ی محتوای دمو. شناسه‌ی صفحه‌ی خانه را برمی‌گرداند.
 	 */
 	public function create_content( array $def ): int {
+		// سوییچ تمیز دمو: محتوای دموهای «دیگر» (تگ‌شده با _stwiz_demo ولی متعلق به
+		// دموی دیگری) حذف می‌شود تا گرید پزشکان/خدمات محتوای دموی قبلی را کنار
+		// دموی جدید نشان ندهد — دقیقاً همان «موارد همان قبلی است». محتوای واقعیِ
+		// کاربر (بدون تگ _stwiz_demo) هرگز حذف نمی‌شود.
+		$this->cleanup_other_demos();
+
 		$doctor_ids = $this->create_doctors( (array) ( $def['doctors'] ?? [] ) );
 		$this->create_services( (array) ( $def['services'] ?? [] ) );
 		$this->create_faqs( (array) ( $def['faqs'] ?? [] ) );
@@ -305,6 +351,38 @@ final class DemoContentImporter {
 	private function tag_demo( int $post_id, string $key ): void {
 		update_post_meta( $post_id, '_stwiz_demo', $this->demo_id );
 		update_post_meta( $post_id, '_stwiz_key', $key );
+	}
+
+	/**
+	 * حذف محتوای دموهای «دیگر» (نه دموی جاری). فقط پست‌هایی که با _stwiz_demo
+	 * تگ‌ شده‌اند و مقدارِ تگ‌شان با دموی جاری فرق دارد حذف می‌شوند — پس محتوای
+	 * واقعیِ کاربر و نیز خودِ دموی جاری (برای idempotency) دست‌نخورده می‌ماند.
+	 */
+	private function cleanup_other_demos(): void {
+		$types = [ 'doctor', 'medical-service', 'medical-faq', 'post', 'page' ];
+
+		$orphans = get_posts( [
+			'post_type'      => $types,
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_query'     => [
+				[
+					'key'     => '_stwiz_demo',
+					'value'   => $this->demo_id,
+					'compare' => '!=',
+				],
+			],
+		] );
+
+		foreach ( $orphans as $id ) {
+			// دفاع مضاعف: فقط اگر واقعاً تگ دمو دارد (get_posts با meta_query
+			// != پست‌های بدون متا را هم می‌تواند برگرداند) و تگش با جاری فرق دارد.
+			$tag = get_post_meta( (int) $id, '_stwiz_demo', true );
+			if ( $tag && $tag !== $this->demo_id ) {
+				wp_delete_post( (int) $id, true );
+			}
+		}
 	}
 
 	// ─── Media / تصاویر placeholder ──────────────────────────────────────────

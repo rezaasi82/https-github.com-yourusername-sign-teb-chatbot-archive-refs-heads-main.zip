@@ -19,6 +19,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'gastroenterology', 'order' => 7, 'title' => 'کلینیک گوارش', 'icon' => '🩺', 'color' => '#0891b2',
+	'palette' => [ 'primary' => '#059669', 'accent' => '#a3e635', 'dark' => '#052e1f' ],
+	'hero' => 'aurora',
 	'description' => 'کلینیک تخصصی گوارش و کبد — آندوسکوپی، کولونوسکوپی، درمان بیماری‌ها، نوبت‌دهی.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

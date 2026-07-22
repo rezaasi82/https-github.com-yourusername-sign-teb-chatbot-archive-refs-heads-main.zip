@@ -19,6 +19,8 @@ $home = stwiz_demo_homepage( [
 
 return [
 	'id' => 'telemedicine', 'order' => 9, 'title' => 'تله‌مدیسین', 'icon' => '📱', 'color' => '#0d9488',
+	'palette' => [ 'primary' => '#0284c7', 'accent' => '#34d399', 'dark' => '#0a1f33' ],
+	'hero' => 'aurora',
 	'description' => 'پلتفرم ویزیت آنلاین و مشاوره‌ی پزشکی از راه دور — مشاوره‌ی تصویری، نسخه‌ی الکترونیک، پیگیری.',
 	'pages_count' => '۷ صفحه', 'lang' => 'فارسی',
 	'options' => [

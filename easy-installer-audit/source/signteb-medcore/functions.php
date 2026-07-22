@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-define( 'MEDCORE_VERSION',   '1.1.0' );
+define( 'MEDCORE_VERSION',   '1.1.1' );
 define( 'MEDCORE_DIR',       get_template_directory() );
 define( 'MEDCORE_URI',       get_template_directory_uri() );
 define( 'MEDCORE_INC',       MEDCORE_DIR . '/inc/' );
@@ -153,6 +153,13 @@ try {
 		static fn() => new \SignTeb\MedCore\Frontend\FloatingHub()
 	);
 	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Frontend\FloatingHub::class )->register();
+
+	// کلاس body مختص دموی فعال (هویت بصری مستقل هر دمو).
+	$GLOBALS['medcore_container']->singleton(
+		\SignTeb\MedCore\Frontend\DemoStyle::class,
+		static fn() => new \SignTeb\MedCore\Frontend\DemoStyle()
+	);
+	$GLOBALS['medcore_container']->make( \SignTeb\MedCore\Frontend\DemoStyle::class )->register();
 } catch ( \Throwable $e ) {
 	MedCore_Logger::log( 'Frontend VIP failed to boot', 'warning', [ 'error' => $e->getMessage() ] );
 }
