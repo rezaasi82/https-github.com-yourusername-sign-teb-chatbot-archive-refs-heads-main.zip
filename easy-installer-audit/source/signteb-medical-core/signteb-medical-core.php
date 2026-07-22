@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       SignTeb Medical Core
- * Plugin URI:        https://signteb.com/medcore
+ * Plugin URI:        https://signteb.com/
  * Description:       موتور اصلی پزشکی برای SignTeb MedCore — Custom Post Types، Meta Fields، SEO Engine، و سیستم رزرو نوبت.
  * Version:           1.0.2
  * Requires at least: 6.4
  * Requires PHP:      8.1
- * Author:            SignTeb
- * Author URI:        https://signteb.com
+ * Author:            رضا آسیابی
+ * Author URI:        https://signteb.com/
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       signteb-medical-core
