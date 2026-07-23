@@ -1,0 +1,65 @@
+.qrcodr-wrap .qrcodr-kpi-row {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0 24px;
+}
+
+.qrcodr-wrap .qrcodr-kpi {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 16px 24px;
+    min-width: 140px;
+}
+
+.qrcodr-wrap .qrcodr-kpi-value {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.qrcodr-wrap .qrcodr-kpi-label {
+    display: block;
+    color: #646970;
+    font-size: 13px;
+}
+
+.qrcodr-wrap .qrcodr-trend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 120px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 24px;
+}
+
+.qrcodr-wrap .qrcodr-trend-bar {
+    flex: 1;
+    min-height: 2px;
+    background: #7e57c2;
+    border-radius: 2px 2px 0 0;
+}
+
+.qrcodr-wrap .qrcodr-breakdown-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.qrcodr-wrap .qrcodr-breakdown-row > div {
+    flex: 1;
+}
+
+.qrcodr-wrap .qrcodr-preview {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 20px;
+    max-width: 340px;
+    text-align: center;
+    margin: 16px 0;
+}

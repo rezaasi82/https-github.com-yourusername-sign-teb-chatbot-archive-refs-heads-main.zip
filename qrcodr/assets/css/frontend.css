@@ -1,0 +1,40 @@
+.qrcodr-frontend {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+}
+
+.qrcodr-frontend-canvas canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.qrcodr-frontend-download {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #7e57c2;
+    color: #fff;
+    cursor: pointer;
+}
+
+.qrcodr-frontend-download:hover {
+    background: #6a4bac;
+}
+
+.qrcodr-frontend-error {
+    color: #b32d2e;
+    background: #fbeaea;
+    border: 1px solid #e5a3a3;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+}
