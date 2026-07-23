@@ -6,19 +6,24 @@ $desc  = esc_html($attributes['description'] ?? '');
 $thumb = esc_url($attributes['thumbUrl']     ?? '');
 $schema= (bool)($attributes['autoSchema']   ?? true);
 
-if (!$url) {
-  if (is_admin() || defined('REST_REQUEST')) echo '<div style="padding:2rem;text-align:center;color:#999;border:2px dashed #ccc;border-radius:12px;">' . esc_html__('آدرس ویدیو را وارد کنید.','signteb-blocks') . '</div>';
-  return;
-}
+// نکته: بلوک همیشه یک «پوسترِ زیبا با دکمه‌ی پخش» نشان می‌دهد — حتی اگر هنوز
+// آدرس ویدیویی وارد نشده باشد. این‌طور در دموها یک سکشن ویدیوی کامل دیده می‌شود
+// و کاربر فقط کافی است آدرس یوتیوب/آپارات/ویمئوی خودش را در تنظیماتِ بلوک
+// (المنتور یا ویرایشگر) وارد کند تا با کلیک پخش شود.
 
-// Extract embed URL
+// Extract embed URL (YouTube / Vimeo / آپارات)
 $embed = '';
-if (strpos($url,'youtube') !== false || strpos($url,'youtu.be') !== false) {
-  preg_match('/(?:v=|youtu\.be\/)([^&\?\/]+)/', $url, $m);
-  if (!empty($m[1])) $embed = 'https://www.youtube-nocookie.com/embed/'.$m[1].'?autoplay=1&rel=0';
-} elseif (strpos($url,'vimeo') !== false) {
-  preg_match('/vimeo\.com\/(\d+)/', $url, $m);
-  if (!empty($m[1])) $embed = 'https://player.vimeo.com/video/'.$m[1].'?autoplay=1';
+if ($url) {
+  if (strpos($url,'youtube') !== false || strpos($url,'youtu.be') !== false) {
+    preg_match('/(?:v=|youtu\.be\/)([^&\?\/]+)/', $url, $m);
+    if (!empty($m[1])) $embed = 'https://www.youtube-nocookie.com/embed/'.$m[1].'?autoplay=1&rel=0';
+  } elseif (strpos($url,'vimeo') !== false) {
+    preg_match('/vimeo\.com\/(\d+)/', $url, $m);
+    if (!empty($m[1])) $embed = 'https://player.vimeo.com/video/'.$m[1].'?autoplay=1';
+  } elseif (strpos($url,'aparat.com') !== false) {
+    preg_match('#aparat\.com/v/([A-Za-z0-9]+)#', $url, $m);
+    if (!empty($m[1])) $embed = 'https://www.aparat.com/video/video/embed/videohash/'.$m[1].'/vt/frame';
+  }
 }
 
 $uid = 'stmb-vid-'.wp_unique_id();
@@ -42,7 +47,7 @@ $uid = 'stmb-vid-'.wp_unique_id();
   </div>
   <?php if ($title) : ?><figcaption class="stmb-video__caption"><strong><?php echo $title; ?></strong><?php if ($desc) echo ' — '.$desc; ?></figcaption><?php endif; ?>
 </figure>
-<?php if ($schema && $title) : ?>
+<?php if ($schema && $title && $url) : ?>
 <script type="application/ld+json">
 <?php // JSON_UNESCAPED_SLASHES استفاده نمی‌شود چون خروجی داخل تگ <script> است و "/" باید \/ بماند تا "</script>" نتواند تگ را ببندد.
 echo wp_json_encode(['@context'=>'https://schema.org','@type'=>'VideoObject','name'=>$title,'description'=>$desc,'contentUrl'=>$url,'thumbnailUrl'=>$thumb,'uploadDate'=>get_the_date('c')],JSON_UNESCAPED_UNICODE); ?>

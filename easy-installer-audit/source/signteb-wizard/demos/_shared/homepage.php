@@ -67,6 +67,13 @@ if ( ! function_exists( 'stwiz_demo_homepage' ) ) {
 		$beforeafter = static fn( string $caption = 'نتایج واقعی درمان' ): string =>
 			'<!-- wp:signteb/before-after-slider {"beforeImageUrl":"%%IMG_BEFORE%%","afterImageUrl":"%%IMG_AFTER%%","beforeLabel":"قبل","afterLabel":"بعد","caption":"' . $caption . '"} /-->';
 
+		// سکشن ویدیو — پوسترِ زیبا با دکمه‌ی پخش. آدرسِ ویدیو خالی است تا کاربر
+		// در المنتور آدرسِ یوتیوب/آپارات/ویمئوی خودش را بگذارد؛ %%IMG_VIDEO%% هنگام
+		// ایمپورت با URLِ پوسترِ همراهِ افزونه جایگزین می‌شود.
+		$video = static fn( string $title ): string =>
+			$heading( $title ) .
+			'<!-- wp:signteb/medical-video {"thumbUrl":"%%IMG_VIDEO%%","autoSchema":false} /-->';
+
 		// عنوان‌های قابل‌override از تعریف دمو.
 		$t_services = $a['services_title']     ?? 'خدمات ما';
 		$t_doctors  = $a['doctors_title']      ?? 'پزشکان ما';
@@ -121,11 +128,12 @@ if ( ! function_exists( 'stwiz_demo_homepage' ) ) {
 				];
 				break;
 
-			// تله‌مدیسین/تک: امکانات پلتفرم → آمار → چطور کار می‌کند → رزرو آنلاین
+			// تله‌مدیسین/تک: امکانات → ویدیوی اپ → آمار → چطور کار می‌کند → رزرو آنلاین
 			case 'tech':
 				$sections = [
 					$hero,
 					$services( $t_services ?: 'امکانات پلتفرم', 3, 'glass' ),
+					$video( 'ویزیت آنلاین چگونه انجام می‌شود؟' ),
 					$stats( 4 ),
 					$faq( $t_faq ?: 'چطور کار می‌کند؟' ),
 					$appt( $a['appt_title'] ?? 'رزرو ویزیت آنلاین' ),
@@ -173,10 +181,11 @@ if ( ! function_exists( 'stwiz_demo_homepage' ) ) {
 				];
 				break;
 
-			// قلب: اعتماد/تخصص‌محور — تیم فوق‌تخصص جلوتر از خدمات
+			// قلب: اعتماد/تخصص‌محور — ویدیوی معرفی + تیم فوق‌تخصص جلوتر از خدمات
 			case 'expertise':
 				$sections = [
 					$hero,
+					$video( 'معرفی مرکز و تور مجازی' ),
 					$doctors( $a['doctors_title'] ?? 'تیم فوق‌تخصص قلب', 3, true ),
 					$stats( 4 ),
 					$services( $t_services, 3, 'glass' ),

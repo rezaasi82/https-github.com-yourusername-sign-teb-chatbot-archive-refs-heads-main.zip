@@ -281,10 +281,11 @@ final class DemoContentImporter {
 		foreach ( $pages as $page ) {
 			$slug = $page['slug'] ?? sanitize_title( $page['title'] ?? '' );
 
-			// جایگزینی توکن‌های تصویرِ قبل/بعد با URL واقعیِ آپلودشده.
+			// جایگزینی توکن‌های تصویر (قبل/بعد + پوسترِ ویدیو) با URL واقعیِ آپلودشده.
 			$content = strtr( (string) ( $page['content'] ?? '' ), [
 				'%%IMG_BEFORE%%' => $this->image_url( 'before.png' ),
 				'%%IMG_AFTER%%'  => $this->image_url( 'after.png' ),
+				'%%IMG_VIDEO%%'  => $this->image_url( 'video-poster.png' ),
 			] );
 
 			$existing = get_page_by_path( $slug );

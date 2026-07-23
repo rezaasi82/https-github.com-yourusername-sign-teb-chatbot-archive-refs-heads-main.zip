@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Medical Blocks
  * Plugin URI:        https://signteb.com/
  * Description:       ۱۰ Gutenberg Block اختصاصی پزشکی برای SignTeb MedCore — Doctor Hero، Appointment CTA، Service Grid، Before/After، FAQ و بیشتر.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            رضا آسیابی
@@ -18,7 +18,7 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMB_VERSION', '1.0.2' );
+define( 'STMB_VERSION', '1.0.3' );
 define( 'STMB_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'STMB_URI',     plugin_dir_url( __FILE__ ) );
 define( 'STMB_TEXT',    'signteb-blocks' );
