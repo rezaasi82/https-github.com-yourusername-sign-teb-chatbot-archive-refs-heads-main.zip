@@ -506,12 +506,181 @@ html, body.stwiz-body {
   animation: stwiz-spin 0.8s linear infinite;
 }
 
+/* ── Demo Marketplace (مرحله‌ی انتخاب دمو) ─────────────────────────────────── */
+
+.stwiz-market__head { margin-bottom: 1.25rem; }
+
+.stwiz-market__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+}
+
+.stwiz-market__search {
+  position: relative;
+  flex: 1 1 220px;
+  display: flex;
+  align-items: center;
+}
+.stwiz-market__search svg {
+  position: absolute;
+  inset-inline-start: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  pointer-events: none;
+}
+.stwiz-market__search input {
+  width: 100%;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #fff;
+  padding: 0.6rem 2.4rem 0.6rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.stwiz-market__search input::placeholder { color: rgba(255,255,255,0.35); }
+.stwiz-market__search input:focus {
+  outline: none;
+  border-color: rgba(212,175,55,0.6);
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+}
+
+.stwiz-market__filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.stwiz-market__select {
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #fff;
+  padding: 0.55rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.stwiz-market__select:focus { outline: none; border-color: rgba(212,175,55,0.6); }
+.stwiz-market__select option { color: #111; }
+
+.stwiz-market__count {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  margin-inline-start: auto;
+}
+.stwiz-market__count span { color: #fff; font-weight: 700; }
+
+.stwiz-market__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+}
+
+.stwiz-tpl {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.03);
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(0.25,1,0.5,1), border-color 0.28s ease, box-shadow 0.28s ease;
+}
+.stwiz-tpl:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--tpl-primary) 55%, transparent);
+  box-shadow: 0 20px 44px -22px rgba(0,0,0,0.7);
+}
+.stwiz-tpl.is-installed { border-color: rgba(16,185,129,0.4); }
+
+/* ناحیه‌ی پیش‌نمایش — گرادیانِ برندِ همان دمو (تا فاز اسکرین‌شات واقعی) */
+.stwiz-tpl__preview {
+  position: relative;
+  height: 116px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(420px 160px at 80% -20%, color-mix(in srgb, var(--tpl-accent) 45%, transparent), transparent 60%),
+    linear-gradient(135deg, var(--tpl-primary), color-mix(in srgb, var(--tpl-primary) 55%, #000));
+  overflow: hidden;
+}
+.stwiz-tpl__preview::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: -30px; bottom: -40px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.stwiz-tpl__icon { font-size: 2.6rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); z-index: 1; }
+
+.stwiz-tpl__badge {
+  position: absolute;
+  top: 0.6rem; inset-inline-start: 0.6rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  z-index: 2;
+}
+.stwiz-tpl__badge--premium { background: linear-gradient(135deg,#f5b301,#e8c96a); color: #3a2c00; }
+.stwiz-tpl__badge--new     { background: #10b981; color: #04231a; }
+.stwiz-tpl__badge--active  { background: rgba(16,185,129,0.9); color: #fff; inset-inline-start: auto; inset-inline-end: 0.6rem; }
+
+.stwiz-tpl__body { display: flex; flex-direction: column; gap: 0.6rem; padding: 1.1rem 1.15rem 1.25rem; flex: 1; }
+.stwiz-tpl__titlerow { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.stwiz-tpl__title { font-size: 1rem; font-weight: 800; margin: 0; }
+.stwiz-tpl__cat {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--tpl-primary) 70%, #fff);
+  background: color-mix(in srgb, var(--tpl-primary) 18%, transparent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.stwiz-tpl__desc { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.7; margin: 0; }
+
+.stwiz-tpl__features { list-style: none; margin: 0.15rem 0 0; padding: 0; display: grid; gap: 0.3rem; }
+.stwiz-tpl__features li { display: flex; align-items: center; gap: 0.4rem; font-size: 0.76rem; color: rgba(255,255,255,0.72); }
+.stwiz-tpl__features svg { color: #10b981; flex-shrink: 0; }
+
+.stwiz-tpl__tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.2rem; }
+.stwiz-tpl__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.22rem 0.5rem;
+  border-radius: 8px;
+}
+.stwiz-tpl__swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+.stwiz-tpl__import { margin-top: auto; }
+
+.stwiz-market__empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(255,255,255,0.5);
+}
+.stwiz-market__empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
 /* ── Responsive ────────────────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
   .stwiz-wrap { grid-template-columns: 240px 1fr; }
   .stwiz-main { padding: 1.5rem 2rem; }
   .stwiz-demo-grid { grid-template-columns: 1fr; }
+  .stwiz-market__grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
@@ -519,4 +688,6 @@ html, body.stwiz-body {
   .stwiz-sidebar { display: none; }
   .stwiz-form-grid { grid-template-columns: 1fr; }
   .stwiz-next-actions { grid-template-columns: 1fr; }
+  .stwiz-market__grid { grid-template-columns: 1fr; }
+  .stwiz-market__count { margin-inline-start: 0; width: 100%; }
 }
