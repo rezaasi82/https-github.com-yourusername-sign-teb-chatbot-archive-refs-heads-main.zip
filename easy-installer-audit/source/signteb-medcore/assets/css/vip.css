@@ -677,14 +677,42 @@ a.stmc-header-cta {
 }
 
 /* =============================================================================
-   13) قابلیت اطمینان محتوا — هیچ کارتی نباید گروگان JS بماند
+   13) موشن: scroll-reveal ایمن + fade تصاویر + اسکرول نرم (TASK 5)
    ============================================================================= */
-/* الگوی will-animate بلوک‌ها محتوا را تا رسیدن IntersectionObserver با opacity:0
-   پنهان می‌کرد؛ اگر JS خطا بدهد یا غیرفعال باشد، کارت‌ها برای همیشه نامرئی
-   می‌ماندند. محتوا همیشه دیده می‌شود؛ جلوه‌ی ورود با ترنزیشن‌های hover حفظ است. */
+/* .will-animate فقط توسط animations.js (نه سرور) اضافه می‌شود؛ اگر JS اجرا نشود
+   کلاسی اضافه نمی‌شود و محتوا کامل دیده می‌شود. علاوه بر آن، animations.js
+   المان‌های «بالای fold» را بلافاصله is-visible می‌کند (بدون فلش) و یک failsafe
+   ۲٫۵ ثانیه‌ای همه‌چیز را نمایان می‌کند — پس محتوا هرگز گروگان نمی‌ماند. */
 .will-animate {
-  opacity: 1 !important;
-  transform: none !important;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform;
+}
+.will-animate.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* fade-inِ نرمِ تصاویر هنگام لود (کلاس فقط توسط JS اضافه می‌شود؛ بدون JS
+   تصاویر کامل دیده می‌شوند، و failsafe هم تضمینِ نمایش می‌دهد). */
+.stmc-imgfade {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.stmc-imgfade.is-loaded { opacity: 1; }
+
+/* اسکرول نرمِ کلِ صفحه (لینک‌های داخلی/بازگشت به بالا) */
+html { scroll-behavior: smooth; }
+
+/* ── احترام کامل به کاهش حرکت ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .will-animate, .will-animate.is-visible { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .stmc-imgfade { opacity: 1 !important; transition: none !important; }
+  .stmb-service-card, .stmb-doctor-card, .stmb-review-card, .stmb-stat-card,
+  .stmc-hub__btn, .stmc-header-cta, .stmc-tpl__shot { transition: none !important; animation: none !important; }
 }
 
 /* =============================================================================
