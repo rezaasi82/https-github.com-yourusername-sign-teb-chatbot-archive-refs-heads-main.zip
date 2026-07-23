@@ -3,41 +3,51 @@
 <!-- wp:group {"tagName":"main","className":"site-content","layout":{"type":"default"},"attributes":{"id":"main-content"}} -->
 <main class="wp-block-group site-content" id="main-content">
 
-  <!-- wp:group {"className":"stmc-container stmc-section stmc-single","layout":{"type":"constrained"}} -->
-  <div class="wp-block-group stmc-container stmc-section stmc-single">
+  <!-- wp:group {"className":"stmc-container stmc-section stmc-blog","layout":{"type":"constrained"}} -->
+  <div class="wp-block-group stmc-container stmc-section stmc-blog">
+
+    <!-- wp:heading {"level":1,"className":"stmc-blog__title"} -->
+    <h1 class="wp-block-heading stmc-blog__title">وبلاگ سلامت</h1>
+    <!-- /wp:heading -->
 
     <!-- wp:columns {"className":"stmc-blog__cols"} -->
     <div class="wp-block-columns stmc-blog__cols">
 
       <!-- wp:column {"width":"65%","className":"stmc-blog__main"} -->
       <div class="wp-block-column stmc-blog__main" style="flex-basis:65%">
+        <!-- wp:query {"queryId":10,"query":{"perPage":6,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true}} -->
+        <div class="wp-block-query">
+          <!-- wp:post-template {"className":"stmc-postlist"} -->
+            <!-- wp:group {"className":"stmc-card stmc-postcard","layout":{"type":"default"}} -->
+            <div class="wp-block-group stmc-card stmc-postcard">
+              <!-- wp:post-featured-image {"isLink":true,"height":"220px"} /-->
+              <!-- wp:group {"className":"stmc-postcard__body","style":{"spacing":{"padding":{"top":"var:preset|spacing|5","right":"var:preset|spacing|6","bottom":"var:preset|spacing|6","left":"var:preset|spacing|6"}}}} -->
+              <div class="wp-block-group stmc-postcard__body" style="padding:var(--wp--preset--spacing--5) var(--wp--preset--spacing--6) var(--wp--preset--spacing--6)">
+                <!-- wp:group {"className":"stmc-postcard__meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
+                <div class="wp-block-group stmc-postcard__meta">
+                  <!-- wp:post-date /-->
+                  <!-- wp:post-terms {"term":"category"} /-->
+                </div>
+                <!-- /wp:group -->
+                <!-- wp:post-title {"isLink":true,"level":2,"style":{"typography":{"fontSize":"1.3rem","fontWeight":"800"}}} /-->
+                <!-- wp:post-excerpt {"moreText":"ادامه مطلب ←","excerptLength":28} /-->
+              </div>
+              <!-- /wp:group -->
+            </div>
+            <!-- /wp:group -->
+          <!-- /wp:post-template -->
 
-        <!-- wp:group {"className":"stmc-single__meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
-        <div class="wp-block-group stmc-single__meta">
-          <!-- wp:post-terms {"term":"category"} /-->
-          <!-- wp:post-date /-->
+          <!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
+            <!-- wp:query-pagination-previous /-->
+            <!-- wp:query-pagination-numbers /-->
+            <!-- wp:query-pagination-next /-->
+          <!-- /wp:query-pagination -->
+
+          <!-- wp:query-no-results -->
+            <!-- wp:paragraph --><p>هنوز نوشته‌ای منتشر نشده است.</p><!-- /wp:paragraph -->
+          <!-- /wp:query-no-results -->
         </div>
-        <!-- /wp:group -->
-
-        <!-- wp:post-title {"level":1} /-->
-
-        <!-- wp:post-featured-image {"style":{"border":{"radius":"16px"}}} /-->
-
-        <!-- wp:post-content {"layout":{"type":"constrained"}} /-->
-
-        <!-- wp:group {"className":"stmc-single__footer","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"wrap"}} -->
-        <div class="wp-block-group stmc-single__footer">
-          <!-- wp:post-terms {"term":"post_tag","prefix":"برچسب‌ها: "} /-->
-        </div>
-        <!-- /wp:group -->
-
-        <!-- wp:group {"className":"stmc-related","layout":{"type":"default"}} -->
-        <div class="wp-block-group stmc-related">
-          <!-- wp:heading {"level":2} --><h2 class="wp-block-heading">مطالب مرتبط</h2><!-- /wp:heading -->
-          <!-- wp:latest-posts {"postsToShow":3,"displayFeaturedImage":true,"featuredImageSizeSlug":"medium","addLinkToFeaturedImage":true,"columns":3,"postLayout":"grid","displayPostDate":true,"className":"stmc-related__grid"} /-->
-        </div>
-        <!-- /wp:group -->
-
+        <!-- /wp:query -->
       </div>
       <!-- /wp:column -->
 
@@ -45,19 +55,23 @@
       <div class="wp-block-column stmc-blog__aside" style="flex-basis:35%">
         <!-- wp:group {"className":"stmc-sidebar","layout":{"type":"constrained"}} -->
         <div class="wp-block-group stmc-sidebar">
+
           <!-- wp:search {"label":"جست‌وجو","showLabel":false,"placeholder":"جست‌وجو در مقالات…","buttonText":"جست‌وجو","buttonPosition":"button-inside"} /-->
+
           <!-- wp:group {"className":"stmc-widget"} -->
           <div class="wp-block-group stmc-widget">
             <!-- wp:heading {"level":3,"className":"stmc-widget__title"} --><h3 class="wp-block-heading stmc-widget__title">دسته‌ها</h3><!-- /wp:heading -->
             <!-- wp:categories {"showPostCounts":true} /-->
           </div>
           <!-- /wp:group -->
+
           <!-- wp:group {"className":"stmc-widget"} -->
           <div class="wp-block-group stmc-widget">
             <!-- wp:heading {"level":3,"className":"stmc-widget__title"} --><h3 class="wp-block-heading stmc-widget__title">تازه‌ترین مقالات</h3><!-- /wp:heading -->
             <!-- wp:latest-posts {"postsToShow":4,"displayFeaturedImage":true,"featuredImageSizeSlug":"thumbnail","addLinkToFeaturedImage":true,"className":"stmc-recent"} /-->
           </div>
           <!-- /wp:group -->
+
           <!-- wp:group {"className":"stmc-widget stmc-widget--cta"} -->
           <div class="wp-block-group stmc-widget stmc-widget--cta">
             <!-- wp:heading {"level":3,"textColor":"white"} --><h3 class="wp-block-heading has-white-color has-text-color">نوبت آنلاین بگیرید</h3><!-- /wp:heading -->
@@ -65,6 +79,7 @@
             <!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button --><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/appointment">رزرو نوبت</a></div><!-- /wp:button --></div><!-- /wp:buttons -->
           </div>
           <!-- /wp:group -->
+
         </div>
         <!-- /wp:group -->
       </div>

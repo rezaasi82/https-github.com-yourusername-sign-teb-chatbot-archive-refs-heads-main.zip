@@ -213,13 +213,48 @@ if ( ! function_exists( 'stwiz_demo_pages' ) ) {
 	 * تماس + رزرو). هر دمو فقط home markup و متن about را می‌دهد.
 	 */
 	function stwiz_demo_pages( string $home, string $about, string $doctors_title = 'پزشکان' ): array {
+		$h = static fn( string $t ): string =>
+			'<!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">' . $t . '</h2><!-- /wp:heading -->';
+
+		// درباره‌ما: متنِ اختصاصیِ دمو + تیم + نظرات + دعوت به تماس (صفحه‌ی کامل).
+		$about_full = $about
+			. $h( 'تیم ما' )
+			. '<!-- wp:signteb/doctor-card-grid {"columns":3} /-->'
+			. '<!-- wp:signteb/testimonials-slider {"title":"نظر مراجعان"} /-->'
+			. '<!-- wp:signteb/contact-cta {"title":"سؤالی دارید؟ با ما در تماس باشید"} /-->';
+
+		// خدمات: مقدمه + گرید خدمات + سؤالات متداول + دعوت به رزرو.
+		$services_full = $h( 'خدمات ما' )
+			. '<!-- wp:paragraph {"align":"center"} --><p class="has-text-align-center">مجموعه‌ی کاملی از خدمات تخصصی با جدیدترین تجهیزات و تیمی مجرب، در کنار شما.</p><!-- /wp:paragraph -->'
+			. '<!-- wp:signteb/service-grid {"columns":3,"showPrice":true,"cardStyle":"glass"} /-->'
+			. '<!-- wp:signteb/faq-accordion {"title":"سؤالات متداول درباره‌ی خدمات","allowMultiple":true} /-->'
+			. '<!-- wp:signteb/appointment-cta {"title":"برای دریافت خدمات، نوبت بگیرید"} /-->';
+
+		// نمونه‌کار/گالری: قبل و بعد + گالریِ خدمات + نظرات.
+		$portfolio = $h( 'نمونه‌کارها و نتایج' )
+			. '<!-- wp:paragraph {"align":"center"} --><p class="has-text-align-center">نمونه‌ای از نتایج واقعی و پرونده‌های موفقِ مراجعان ما.</p><!-- /wp:paragraph -->'
+			. '<!-- wp:signteb/before-after-slider {"beforeImageUrl":"%%IMG_BEFORE%%","afterImageUrl":"%%IMG_AFTER%%","beforeLabel":"قبل","afterLabel":"بعد","caption":"نتیجه‌ی واقعی درمان"} /-->'
+			. '<!-- wp:signteb/service-grid {"columns":3,"showPrice":false,"cardStyle":"glass"} /-->'
+			. '<!-- wp:signteb/testimonials-slider {"title":"رضایت مراجعان"} /-->';
+
+		// تماس: اطلاعات تماس + ساعات کاری + فرم رزرو.
+		$contact_full = '<!-- wp:signteb/contact-cta {"title":"با ما در تماس باشید"} /-->'
+			. '<!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">ساعات کاری</h2><!-- /wp:heading -->'
+			. '<!-- wp:list {"className":"stmc-hours"} --><ul class="wp-block-list stmc-hours"><li>شنبه تا چهارشنبه: ۹ صبح تا ۸ شب</li><li>پنج‌شنبه: ۹ صبح تا ۲ بعدازظهر</li><li>جمعه: تعطیل (اورژانس فعال)</li></ul><!-- /wp:list -->'
+			. '<!-- wp:signteb/appointment-cta {"title":"رزرو نوبت آنلاین"} /-->';
+
 		return [
 			[ 'title' => 'خانه', 'slug' => 'home', 'front' => true, 'content' => $home ],
-			[ 'title' => 'درباره ما', 'slug' => 'about', 'content' => $about ],
-			[ 'title' => 'خدمات', 'slug' => 'services', 'content' => '<!-- wp:signteb/service-grid {"columns":3,"showPrice":true} /-->' ],
+			[ 'title' => 'درباره ما', 'slug' => 'about', 'content' => $about_full ],
+			[ 'title' => 'خدمات', 'slug' => 'services', 'content' => $services_full ],
 			[ 'title' => $doctors_title, 'slug' => 'doctors', 'content' => '<!-- wp:signteb/doctor-card-grid {"columns":3,"showFilter":true} /-->' ],
+			[ 'title' => 'نمونه‌کار', 'slug' => 'portfolio', 'content' => $portfolio ],
 			[ 'title' => 'سؤالات متداول', 'slug' => 'faq', 'content' => '<!-- wp:signteb/faq-accordion {"title":"سؤالات متداول","allowMultiple":true} /-->' ],
-			[ 'title' => 'تماس با ما', 'slug' => 'contact', 'content' => '<!-- wp:signteb/contact-cta {"title":"با ما در تماس باشید"} /-->' ],
+			// صفحه‌ی بلاگ همین‌جا (مرحله‌ی دمو) ساخته می‌شود تا در مرحله‌ی منوها
+			// موجود باشد؛ مرحله‌ی blog صرفاً آن را page_for_posts می‌کند. محتوایش
+			// نمایش داده نمی‌شود (وردپرس حلقه‌ی نوشته‌ها را نشان می‌دهد).
+			[ 'title' => 'وبلاگ', 'slug' => 'blog', 'content' => '' ],
+			[ 'title' => 'تماس با ما', 'slug' => 'contact', 'content' => $contact_full ],
 			[ 'title' => 'رزرو نوبت', 'slug' => 'appointment', 'template' => 'page-landing', 'content' => '<!-- wp:signteb/appointment-cta {"title":"رزرو نوبت آنلاین"} /-->' ],
 		];
 	}
@@ -231,10 +266,10 @@ if ( ! function_exists( 'stwiz_demo_menu' ) ) {
 			'home'        => 'خانه',
 			'services'    => 'خدمات',
 			'doctors'     => $doctors_label,
+			'portfolio'   => 'نمونه‌کار',
 			'about'       => 'درباره ما',
-			'faq'         => 'سؤالات متداول',
+			'blog'        => 'وبلاگ',
 			'contact'     => 'تماس با ما',
-			'appointment' => 'رزرو نوبت',
 		];
 	}
 }

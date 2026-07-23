@@ -87,7 +87,11 @@ final class DemoContentImporter {
 		$this->create_services( (array) ( $def['services'] ?? [] ) );
 		$this->create_faqs( (array) ( $def['faqs'] ?? [] ) );
 		$this->create_reviews( (array) ( $def['reviews'] ?? [] ), $doctor_ids );
-		$this->create_posts( (array) ( $def['posts'] ?? [] ) );
+
+		// نوشته‌های خودِ دمو + چند مقاله‌ی عمومیِ مشترک تا بلاگ/آرشیو پر دیده شوند.
+		$posts = (array) ( $def['posts'] ?? [] );
+		$posts = array_merge( $posts, $this->shared_posts() );
+		$this->create_posts( $posts );
 
 		return $this->create_pages( (array) ( $def['pages'] ?? [] ) );
 	}
@@ -205,8 +209,18 @@ final class DemoContentImporter {
 
 	private function create_posts( array $posts ): void {
 		foreach ( $posts as $i => $post ) {
-			$key = 'post-' . $this->demo_id . '-' . $i;
-			if ( $this->find_by_key( 'post', $key ) ) {
+			$key      = 'post-' . $this->demo_id . '-' . $i;
+			$existing = $this->find_by_key( 'post', $key );
+			$cat      = (string) ( $post['category'] ?? '' );
+			if ( '' === $cat ) {
+				$defaults = [ 'آموزش سلامت', 'راهنمای بیماران', 'اخبار مرکز' ];
+				$cat      = $defaults[ $i % count( $defaults ) ];
+			}
+			if ( $existing ) {
+				// نوشته از قبل هست (اجرای مجدد) — تصویرِ شاخص و دسته را ترمیم کن
+				// تا نصب‌های قدیمیِ بدونِ تصویر هم کامل شوند.
+				$this->set_featured( $existing, 'article-' . ( ( $i % 3 ) + 1 ) . '.png' );
+				$this->assign_category( $existing, $cat );
 				continue;
 			}
 			$pid = wp_insert_post( wp_slash( [
@@ -216,9 +230,48 @@ final class DemoContentImporter {
 				'post_excerpt' => $post['excerpt'] ?? '',
 				'post_status'  => 'publish',
 			] ) );
-			if ( ! is_wp_error( $pid ) ) {
-				$this->tag_demo( $pid, $key );
+			if ( is_wp_error( $pid ) ) {
+				continue;
 			}
+			$this->tag_demo( $pid, $key );
+			// تصویرِ شاخصِ مقاله (سه واریانتِ چرخشی) + دسته — تا بلاگ/آرشیو پر باشد.
+			$this->set_featured( $pid, 'article-' . ( ( $i % 3 ) + 1 ) . '.png' );
+			$this->assign_category( $pid, $cat );
+		}
+	}
+
+	/** مقاله‌های عمومیِ سلامت — به بلاگِ همه‌ی دموها اضافه می‌شوند تا کامل دیده شود. */
+	private function shared_posts(): array {
+		return [
+			[
+				'title'    => 'راهنمای کامل آماده‌شدن برای اولین ویزیت',
+				'excerpt'  => 'قبل از مراجعه چه مدارکی همراه داشته باشید و چه سؤالاتی بپرسید.',
+				'category' => 'راهنمای بیماران',
+				'content'  => '<!-- wp:paragraph --><p>اولین ویزیت پزشکی می‌تواند کمی استرس‌زا باشد. با کمی آمادگی، بیشترین بهره را از وقت خود می‌برید. سوابق پزشکی، فهرست داروهای مصرفی و نتایج آزمایش‌های قبلی را همراه داشته باشید.</p><!-- /wp:paragraph --><!-- wp:heading {"level":2} --><h2 class="wp-block-heading">چه بپرسیم؟</h2><!-- /wp:heading --><!-- wp:list --><ul><li>گزینه‌های درمانی و مدت زمان هرکدام</li><li>عوارض احتمالی و مراقبت‌های پس از درمان</li><li>هزینه‌ها و پوشش بیمه</li></ul><!-- /wp:list -->',
+			],
+			[
+				'title'    => '۵ عادت ساده برای حفظ سلامت در طول سال',
+				'excerpt'  => 'تغذیه، خواب، تحرک و چکاپ منظم؛ کوچک اما تأثیرگذار.',
+				'category' => 'آموزش سلامت',
+				'content'  => '<!-- wp:paragraph --><p>سلامت پایدار حاصلِ عادت‌های کوچکِ روزانه است. خواب کافی، نوشیدن آب کافی، تحرک منظم و کاهش استرس، پایه‌های یک زندگی سالم‌اند.</p><!-- /wp:paragraph --><!-- wp:quote --><blockquote class="wp-block-quote"><p>پیشگیری همیشه ساده‌تر و کم‌هزینه‌تر از درمان است.</p></blockquote><!-- /wp:quote --><!-- wp:paragraph --><p>یک چکاپ سالانه به تشخیص زودهنگام کمک می‌کند و خیال شما را آسوده نگه می‌دارد.</p><!-- /wp:paragraph -->',
+			],
+			[
+				'title'    => 'نوبت‌دهی آنلاین چگونه کار می‌کند؟',
+				'excerpt'  => 'در چند گام ساده و بدون تماس تلفنی، نوبت خود را رزرو کنید.',
+				'category' => 'اخبار مرکز',
+				'content'  => '<!-- wp:paragraph --><p>با سامانه‌ی نوبت‌دهی آنلاین، در هر ساعت از شبانه‌روز می‌توانید زمان مناسب خود را انتخاب و رزرو کنید. پس از ثبت، یک پیامک تأیید دریافت می‌کنید.</p><!-- /wp:paragraph --><!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button --><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/appointment">رزرو نوبت آنلاین</a></div><!-- /wp:button --></div><!-- /wp:buttons -->',
+			],
+		];
+	}
+
+	/** ساخت/اختصاصِ یک دسته‌ی استانداردِ وردپرس به نوشته (برای آرشیوِ دسته). */
+	private function assign_category( int $post_id, string $name ): void {
+		$term = term_exists( $name, 'category' );
+		if ( ! $term ) {
+			$term = wp_insert_term( $name, 'category' );
+		}
+		if ( ! is_wp_error( $term ) && ! empty( $term['term_id'] ) ) {
+			wp_set_post_terms( $post_id, [ (int) $term['term_id'] ], 'category', false );
 		}
 	}
 
