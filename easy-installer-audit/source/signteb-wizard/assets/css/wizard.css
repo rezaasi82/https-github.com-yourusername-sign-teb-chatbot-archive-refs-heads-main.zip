@@ -618,6 +618,97 @@ html, body.stwiz-body {
 }
 .stwiz-tpl__icon { font-size: 2.6rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); z-index: 1; }
 
+/* اسکرین‌شاتِ واقعیِ Full-page روی کارت (نمایش بخشِ بالا با اسکرول-هاور) */
+.stwiz-tpl__preview--shot { height: 190px; background: #0b1220; padding: 0; display: block; }
+.stwiz-tpl__shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: translateY(0);
+  transition: transform 3.2s ease;
+}
+.stwiz-tpl:hover .stwiz-tpl__shot {
+  /* اسکرولِ نرمِ صفحه‌ی کامل هنگام هاور — کاربر کلِ صفحه را حس می‌کند */
+  transform: translateY(calc(-100% + 190px));
+}
+.stwiz-tpl__preview-btn {
+  position: absolute;
+  bottom: 0.6rem; inset-inline-end: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(11,18,32,0.72);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.22s ease, transform 0.22s ease, background 0.2s ease;
+  z-index: 3;
+}
+.stwiz-tpl:hover .stwiz-tpl__preview-btn { opacity: 1; transform: translateY(0); }
+.stwiz-tpl__preview-btn:hover { background: var(--tpl-primary); border-color: transparent; }
+
+/* Lightbox */
+.stwiz-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5vh 2vw;
+}
+.stwiz-lightbox[hidden] { display: none; }
+.stwiz-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4,8,16,0.82);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.stwiz-lightbox__panel {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 96vw);
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  background: #0e1526;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,0.8);
+}
+.stwiz-lightbox__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 0.9rem;
+}
+.stwiz-lightbox__close {
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: #fff;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.stwiz-lightbox__close:hover { background: rgba(255,255,255,0.16); }
+.stwiz-lightbox__scroll { overflow-y: auto; overscroll-behavior: contain; }
+.stwiz-lightbox__scroll img { display: block; width: 100%; height: auto; }
+
 .stwiz-tpl__badge {
   position: absolute;
   top: 0.6rem; inset-inline-start: 0.6rem;

@@ -163,6 +163,12 @@ $total = count( $demos );
       $is_installed = ( $installed === $key );
       $search_blob  = mb_strtolower( trim( $d['title'] . ' ' . $d['desc'] . ' ' . $d['cat'] . ' ' . $d['lay_lbl'] . ' ' . implode( ' ', $d['features'] ) ) );
     ?>
+    <?php
+      // اسکرین‌شاتِ واقعیِ Full-page اگر همراهِ افزونه موجود باشد؛ وگرنه
+      // گرادیانِ برندِ دمو به‌عنوان fallback.
+      $shot_path = STWIZ_DIR . 'demos/_shared/previews/' . $key . '.jpg';
+      $shot_url  = is_file( $shot_path ) ? STWIZ_URI . 'demos/_shared/previews/' . $key . '.jpg' : '';
+    ?>
     <article
       class="stwiz-tpl <?php echo $is_installed ? 'is-installed' : ''; ?>"
       data-cat="<?php echo esc_attr( $d['cat'] ); ?>"
@@ -171,9 +177,17 @@ $total = count( $demos );
       data-search="<?php echo esc_attr( $search_blob ); ?>"
       style="--tpl-primary:<?php echo esc_attr( $d['primary'] ); ?>;--tpl-accent:<?php echo esc_attr( $d['accent'] ); ?>"
     >
-      <!-- Preview area (تا فاز اسکرین‌شات واقعی: پیش‌نمایشِ برندِ دمو) -->
-      <div class="stwiz-tpl__preview" aria-hidden="true">
-        <span class="stwiz-tpl__icon"><?php echo $d['icon']; ?></span>
+      <!-- ناحیه‌ی پیش‌نمایش: اسکرین‌شاتِ واقعیِ صفحه‌ی اصلیِ دمو (Full-page) -->
+      <div class="stwiz-tpl__preview<?php echo $shot_url ? ' stwiz-tpl__preview--shot' : ''; ?>">
+        <?php if ( $shot_url ) : ?>
+          <img class="stwiz-tpl__shot" src="<?php echo esc_url( $shot_url ); ?>" loading="lazy" decoding="async" alt="<?php echo esc_attr( sprintf( 'پیش‌نمایش دموی %s', $d['title'] ) ); ?>">
+          <button type="button" class="stwiz-tpl__preview-btn" data-shot="<?php echo esc_url( $shot_url ); ?>" data-title="<?php echo esc_attr( $d['title'] ); ?>" aria-label="<?php esc_attr_e( 'پیش‌نمایش کامل', STWIZ_TEXT ); ?>">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span><?php esc_html_e( 'پیش‌نمایش', STWIZ_TEXT ); ?></span>
+          </button>
+        <?php else : ?>
+          <span class="stwiz-tpl__icon" aria-hidden="true"><?php echo $d['icon']; ?></span>
+        <?php endif; ?>
         <?php if ( $d['badge'] ) : ?>
           <span class="stwiz-tpl__badge stwiz-tpl__badge--<?php echo esc_attr( strtolower( $d['badge'] ) ); ?>"><?php echo esc_html( $d['badge'] ); ?></span>
         <?php endif; ?>
@@ -216,6 +230,20 @@ $total = count( $demos );
     <div class="stwiz-market__empty-icon">🔍</div>
     <p><?php esc_html_e( 'دمویی با این فیلترها پیدا نشد.', STWIZ_TEXT ); ?></p>
     <button type="button" class="stwiz-btn stwiz-btn--ghost" id="stwiz-market-reset"><?php esc_html_e( 'پاک کردن فیلترها', STWIZ_TEXT ); ?></button>
+  </div>
+
+  <!-- Lightbox پیش‌نمایش کامل -->
+  <div class="stwiz-lightbox" id="stwiz-lightbox" hidden>
+    <div class="stwiz-lightbox__backdrop" data-close></div>
+    <div class="stwiz-lightbox__panel" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'پیش‌نمایش دمو', STWIZ_TEXT ); ?>">
+      <div class="stwiz-lightbox__bar">
+        <strong id="stwiz-lightbox-title"></strong>
+        <button type="button" class="stwiz-lightbox__close" data-close aria-label="<?php esc_attr_e( 'بستن', STWIZ_TEXT ); ?>">✕</button>
+      </div>
+      <div class="stwiz-lightbox__scroll">
+        <img id="stwiz-lightbox-img" src="" alt="">
+      </div>
+    </div>
   </div>
 
   <div class="stwiz-demo-status" id="demo-status" hidden>
@@ -279,5 +307,20 @@ $total = count( $demos );
       window.location.href = installBase + '&demo=' + encodeURIComponent(btn.dataset.demo);
     });
   });
+
+  // Lightbox پیش‌نمایش کامل
+  var lb      = document.getElementById('stwiz-lightbox');
+  var lbImg   = document.getElementById('stwiz-lightbox-img');
+  var lbTitle = document.getElementById('stwiz-lightbox-title');
+  function openLb(src, title) {
+    lbImg.src = src; lbImg.alt = title || ''; lbTitle.textContent = title || '';
+    lb.hidden = false; document.body.style.overflow = 'hidden';
+  }
+  function closeLb() { lb.hidden = true; lbImg.src = ''; document.body.style.overflow = ''; }
+  grid.querySelectorAll('.stwiz-tpl__preview-btn').forEach(function (b) {
+    b.addEventListener('click', function () { openLb(b.dataset.shot, b.dataset.title); });
+  });
+  lb.querySelectorAll('[data-close]').forEach(function (el) { el.addEventListener('click', closeLb); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) closeLb(); });
 })();
 </script>
