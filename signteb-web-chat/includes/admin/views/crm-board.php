@@ -17,9 +17,11 @@ $score_dot  = static function (?string $s): string {
     return $map[$s] ?? '';
 };
 ?>
-<div class="wrap swc-board-wrap" dir="rtl">
-    <h1><?php esc_html_e('بورد CRM — پایپ‌لاین بیماران', 'signteb-web-chat'); ?></h1>
-    <p class="description"><?php esc_html_e('برای تغییر وضعیت، کارت لید را بین ستون‌ها بکشید و رها کنید.', 'signteb-web-chat'); ?></p>
+<div class="wrap swc-admin swc-board-wrap" dir="rtl">
+    <?php \Medora\Admin\PageHeader::render(
+        __('بورد CRM', 'signteb-web-chat'),
+        __('برای تغییر وضعیت، کارت لید را بین ستون‌ها بکشید و رها کنید.', 'signteb-web-chat')
+    ); ?>
 
     <div class="swc-board" id="swc-board">
         <?php foreach ($columns as $key => $col) : ?>

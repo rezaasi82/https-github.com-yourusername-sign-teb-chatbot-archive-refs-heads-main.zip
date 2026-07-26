@@ -206,7 +206,28 @@ class SettingsPage
         $s       = new \Medora\Core\Settings();
 
         echo '<div class="wrap swc-admin" dir="rtl">';
-        echo '<h1>' . esc_html__('Medora AI — دستیار هوشمند جذب بیمار', 'signteb-web-chat') . '</h1>';
+
+        $enabled = (int) $s->get('enabled', 0) === 1;
+        $has_key = $s->has_api_key((string) $s->get('provider', 'anthropic'));
+        \Medora\Admin\PageHeader::render(
+            __('Medora AI', 'signteb-web-chat'),
+            __('دستیار هوشمند جذب بیمار', 'signteb-web-chat'),
+            [
+                [
+                    'label' => $enabled
+                        ? __('ویجت فعال', 'signteb-web-chat')
+                        : __('ویجت غیرفعال', 'signteb-web-chat'),
+                    'state' => $enabled ? 'on' : 'off',
+                ],
+                [
+                    'label' => $has_key
+                        ? __('کلید API تنظیم شده', 'signteb-web-chat')
+                        : __('کلید API تنظیم نشده', 'signteb-web-chat'),
+                    'state' => $has_key ? 'on' : 'off',
+                ],
+                ['label' => __('نسخه', 'signteb-web-chat') . ' ' . SWC_VERSION],
+            ]
+        );
 
         // Pistachio-green success toast after a save (auto-dismisses via CSS).
         if (\Medora\Core\Input::get_key('updated') === '1') {

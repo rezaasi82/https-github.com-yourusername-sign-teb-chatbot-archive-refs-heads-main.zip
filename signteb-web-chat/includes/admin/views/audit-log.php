@@ -14,7 +14,10 @@ if (! defined('ABSPATH')) {
 $sev_color = ['info' => '#50607a', 'warning' => '#8a6d1b', 'critical' => '#d63638'];
 ?>
 <div class="wrap swc-admin" dir="rtl">
-    <h1><?php esc_html_e('لاگ امنیت و رویدادها', 'signteb-web-chat'); ?></h1>
+    <?php \Medora\Admin\PageHeader::render(
+        __('لاگ امنیت و رویدادها', 'signteb-web-chat'),
+        __('رویدادهای حساس افزونه: ورود ناموفق، تغییر تنظیمات و ارجاع لید.', 'signteb-web-chat')
+    ); ?>
     <p class="description"><?php esc_html_e('رویدادهای امنیتی و مدیریتی (تغییر تنظیمات، لایسنس، خروجی، تلاش‌های ناموفق و قفل‌ها). نگهداری ۹۰ روز.', 'signteb-web-chat'); ?></p>
 
     <table class="widefat striped">

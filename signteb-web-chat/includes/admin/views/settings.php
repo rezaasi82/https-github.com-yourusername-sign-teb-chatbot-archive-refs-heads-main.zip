@@ -46,7 +46,7 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('مدل Anthropic', 'signteb-web-chat'); ?></th>
                 <td>
-                    <input list="swc-models-anthropic" name="model_anthropic" value="<?php echo esc_attr($s->get('model_anthropic', 'claude-haiku-4-5-20251001')); ?>" class="regular-text">
+                    <input type="text" list="swc-models-anthropic" name="model_anthropic" value="<?php echo esc_attr($s->get('model_anthropic', 'claude-haiku-4-5-20251001')); ?>" class="regular-text">
                     <datalist id="swc-models-anthropic">
                         <option value="claude-haiku-4-5-20251001"></option>
                         <option value="claude-sonnet-5"></option>
@@ -68,7 +68,7 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('مدل OpenAI', 'signteb-web-chat'); ?></th>
                 <td>
-                    <input list="swc-models-openai" name="model_openai" value="<?php echo esc_attr($s->get('model_openai', 'gpt-4o-mini')); ?>" class="regular-text">
+                    <input type="text" list="swc-models-openai" name="model_openai" value="<?php echo esc_attr($s->get('model_openai', 'gpt-4o-mini')); ?>" class="regular-text">
                     <datalist id="swc-models-openai">
                         <option value="gpt-4o-mini"></option>
                         <option value="gpt-4o"></option>
@@ -91,7 +91,7 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('مدل GapGPT', 'signteb-web-chat'); ?></th>
                 <td>
-                    <input list="swc-models-gapgpt" name="model_gapgpt" value="<?php echo esc_attr($s->get('model_gapgpt', 'gpt-4o-mini')); ?>" class="regular-text">
+                    <input type="text" list="swc-models-gapgpt" name="model_gapgpt" value="<?php echo esc_attr($s->get('model_gapgpt', 'gpt-4o-mini')); ?>" class="regular-text">
                     <datalist id="swc-models-gapgpt">
                         <option value="gpt-4o-mini"></option>
                         <option value="gpt-4o"></option>

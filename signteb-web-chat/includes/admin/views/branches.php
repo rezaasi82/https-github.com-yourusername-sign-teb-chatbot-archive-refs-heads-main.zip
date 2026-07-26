@@ -18,7 +18,10 @@ $action_url = admin_url('admin-post.php');
 $page_url   = admin_url('admin.php?page=swc-branches');
 ?>
 <div class="wrap swc-admin" dir="rtl">
-    <h1><?php esc_html_e('کلینیک‌ها و شعب', 'signteb-web-chat'); ?></h1>
+    <?php \Medora\Admin\PageHeader::render(
+        __('کلینیک‌ها و شعب', 'signteb-web-chat'),
+        __('تعریف شعب و انتساب لیدها به هر شعبه برای گزارش تفکیک‌شده.', 'signteb-web-chat')
+    ); ?>
     <p class="description"><?php esc_html_e('چند کلینیک/پزشک/شعبه را با یک نصب مدیریت کنید. هر لید می‌تواند به یک شعبه منتسب شود و آمار هر شعبه جداگانه محاسبه می‌شود.', 'signteb-web-chat'); ?></p>
 
     <?php if (\Medora\Core\Input::has_get('saved')) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e('ذخیره شد.', 'signteb-web-chat'); ?></p></div><?php endif; ?>

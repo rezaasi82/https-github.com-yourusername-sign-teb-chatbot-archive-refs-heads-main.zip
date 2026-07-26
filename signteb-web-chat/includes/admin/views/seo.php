@@ -18,8 +18,10 @@ if (! defined('ABSPATH')) {
 $kw_max = $keywords ? max($keywords) : 1;
 ?>
 <div class="wrap swc-admin" dir="rtl">
-    <h1><?php esc_html_e('مرکز هوش سئو', 'signteb-web-chat'); ?></h1>
-    <p class="description"><?php esc_html_e('تحلیل خودکار گفتگوهای بیماران برای کشف فرصت‌های محتوایی و سئو (۳۰ روز اخیر).', 'signteb-web-chat'); ?></p>
+    <?php \Medora\Admin\PageHeader::render(
+        __('مرکز هوش سئو', 'signteb-web-chat'),
+        __('تحلیل خودکار گفتگوهای بیماران برای کشف فرصت‌های محتوایی.', 'signteb-web-chat')
+    ); ?>
 
     <div class="swc-seo-ai" data-nonce="<?php echo esc_attr($nonce); ?>">
         <div class="swc-seo-ai-head">
