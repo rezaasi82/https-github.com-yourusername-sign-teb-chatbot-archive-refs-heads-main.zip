@@ -16,11 +16,49 @@ if (! defined('ABSPATH')) {
 
 class Plugin
 {
+    private const LICENSE_CLASS = 'RTL_License_0949e1086a8664d9';
+    private const LICENSE_HASH  = '7a08b73e61f2c61ca287e1f88650085a47328a54';
+
     private bool $booted = false;
+
+    /**
+     * Single entry point for the activation gate.
+     *
+     * The gate that calls this lives in an encoded file, and this method
+     * independently re-checks the purchase licence, so the plugin cannot be
+     * started by simply replacing that file.
+     */
+    public static function start(): void
+    {
+        if (! self::licensed()) {
+            return;
+        }
+
+        static $instance = null;
+        if ($instance === null) {
+            $instance = new self();
+        }
+        $instance->boot();
+    }
+
+    private static function licensed(): bool
+    {
+        $class = self::LICENSE_CLASS;
+        if (! class_exists($class) || ! method_exists($class, 'isActive')) {
+            return false;
+        }
+
+        $file = SWC_DIR . 'includes/' . $class . '.php';
+        if (! is_readable($file) || ! hash_equals(self::LICENSE_HASH, (string) @sha1_file($file))) {
+            return false;
+        }
+
+        return (new $class())->{'isActive'}() === true;
+    }
 
     public function boot(): void
     {
-        if ($this->booted) {
+        if ($this->booted || ! self::licensed()) {
             return;
         }
         $this->booted = true;

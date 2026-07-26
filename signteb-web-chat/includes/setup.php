@@ -3,6 +3,8 @@
  * Marketplace activation gate. The plugin core boots only after the product
  * has been activated with a valid purchase license.
  *
+ * This is the file that must be submitted for encoding before release.
+ *
  * @package Medora
  */
 
@@ -24,7 +26,7 @@ if ( $rtlLicenseFileHash === '7a08b73e61f2c61ca287e1f88650085a47328a54' && file_
 		if ( $rtlLicenseClass->{'isActive'}() === true ) {
 			// Product is Active Now, Enable Pro Features
 			add_action('plugins_loaded', static function (): void {
-				swc_plugin()->boot();
+				\Medora\Core\Plugin::start();
 			});
 		}
 	}

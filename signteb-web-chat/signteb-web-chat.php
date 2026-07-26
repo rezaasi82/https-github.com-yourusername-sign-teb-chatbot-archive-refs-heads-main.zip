@@ -30,16 +30,4 @@ require_once SWC_DIR . 'includes/class-autoloader.php';
 register_activation_hook(__FILE__, ['\Medora\Core\Activator', 'activate']);
 register_deactivation_hook(__FILE__, ['\Medora\Core\Deactivator', 'deactivate']);
 
-/**
- * Plugin singleton accessor.
- */
-function swc_plugin(): \Medora\Core\Plugin
-{
-    static $instance = null;
-    if ($instance === null) {
-        $instance = new \Medora\Core\Plugin();
-    }
-    return $instance;
-}
-
 require_once SWC_DIR . 'includes/setup.php';
