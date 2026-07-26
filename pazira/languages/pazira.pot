@@ -9,12 +9,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-26T16:56:01+00:00\n"
+"POT-Creation-Date: 2026-07-26T17:36:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pazira\n"
 
 #. Plugin Name of the plugin
+#. Author of the plugin
 #: pazira.php
 #: includes/admin/class-admin-menu.php:36
 #: includes/admin/class-admin-menu.php:44
@@ -25,11 +26,6 @@ msgstr ""
 #. Description of the plugin
 #: pazira.php
 msgid "Pazira — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی."
-msgstr ""
-
-#. Author of the plugin
-#: pazira.php
-msgid "Pazira"
 msgstr ""
 
 #: includes/admin/class-admin-menu.php:67
