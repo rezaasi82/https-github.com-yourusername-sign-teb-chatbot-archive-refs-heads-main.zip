@@ -190,7 +190,7 @@ class SettingsPage
     private function finish(string $tab): void
     {
         \Pazira\Security\AuditLog::record('settings_saved', ['object' => $tab, 'severity' => 'info']);
-        add_settings_error('swc', 'saved', __('تنظیمات ذخیره شد.', 'pazira'), 'updated');
+        add_settings_error('pzr', 'saved', __('تنظیمات ذخیره شد.', 'pazira'), 'updated');
         set_transient('settings_errors', get_settings_errors(), 30);
         wp_safe_redirect(admin_url('admin.php?page=pzr-chat&tab=' . $tab . '&updated=1'));
         exit;
@@ -236,7 +236,7 @@ class SettingsPage
                 . '<span>' . esc_html__('تغییرات با موفقیت ذخیره شد.', 'pazira') . '</span>'
                 . '</div>';
         } else {
-            settings_errors('swc');
+            settings_errors('pzr');
         }
         $this->render_tab_nav($tab);
 

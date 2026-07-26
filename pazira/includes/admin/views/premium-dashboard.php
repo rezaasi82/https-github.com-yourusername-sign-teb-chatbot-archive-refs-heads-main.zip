@@ -28,7 +28,7 @@ $int_class = 'is-' . preg_replace('/[^a-z]/', '', $integrity['level']);
         <div class="pzr-vipcard">
             <div class="pzr-vipcard-glow" aria-hidden="true"></div>
             <div class="pzr-vipcard-body">
-                <span class="pzr-eyebrow">MEDORA AI</span>
+                <span class="pzr-eyebrow">PAZIRA</span>
                 <h1><?php esc_html_e('به داشبورد هوشمند خوش آمدید', 'pazira'); ?></h1>
                 <p><?php echo esc_html(sprintf(
                     /* translators: 1: status, 2: provider */

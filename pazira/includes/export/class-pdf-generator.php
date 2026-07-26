@@ -196,7 +196,7 @@ class PdfGenerator
 <body>
 <div class="report">
     <div class="head">
-        <div class="brand"><?php echo esc_html($clinic); ?><small>MEDORA AI</small></div>
+        <div class="brand"><?php echo esc_html($clinic); ?><small>PAZIRA</small></div>
         <div class="doc-title">گزارش مکالمه بیمار</div>
     </div>
 
