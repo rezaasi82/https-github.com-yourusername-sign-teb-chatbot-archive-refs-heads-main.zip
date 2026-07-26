@@ -1,0 +1,65 @@
+/* Pazira — CRM Kanban board (scoped to .pzr-board-wrap). */
+
+.pzr-board-wrap { --navy: #0f1f3d; --gold: #c8a04e; margin-inline-end: 20px; }
+.pzr-board {
+	display: flex;
+	gap: 14px;
+	overflow-x: auto;
+	padding: 14px 2px 24px;
+	align-items: flex-start;
+}
+.pzr-col {
+	flex: 0 0 250px;
+	background: #f1f4fa;
+	border: 1px solid #e0e5ee;
+	border-radius: 14px;
+	max-height: 74vh;
+	display: flex;
+	flex-direction: column;
+}
+.pzr-col.pzr-col-over { outline: 2px dashed var(--gold); outline-offset: -2px; background: #fff8ec; }
+.pzr-col-head {
+	display: flex; align-items: center; justify-content: space-between;
+	padding: 12px 14px;
+	border-top: 4px solid var(--gold);
+	border-radius: 14px 14px 0 0;
+	background: #fff;
+}
+.pzr-col-title { font-weight: 800; font-size: 13.5px; color: var(--navy); }
+.pzr-col-count {
+	min-width: 22px; text-align: center;
+	font-size: 11px; font-weight: 700; color: #50607a;
+	background: #eef1f7; border-radius: 20px; padding: 2px 8px;
+}
+.pzr-col-body { padding: 10px; overflow-y: auto; flex: 1; min-height: 40px; }
+
+.pzr-card {
+	background: #fff;
+	border: 1px solid #e2e6ef;
+	border-radius: 11px;
+	padding: 11px 12px;
+	margin-bottom: 9px;
+	cursor: grab;
+	box-shadow: 0 1px 3px rgba(15,31,61,0.06);
+	transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.pzr-card:hover { box-shadow: 0 6px 16px rgba(15,31,61,0.12); transform: translateY(-1px); }
+.pzr-card.pzr-dragging { opacity: 0.5; }
+.pzr-card-name { font-weight: 700; font-size: 13px; color: var(--navy); }
+.pzr-card-phone { font-size: 12px; color: #50607a; margin-top: 3px; direction: ltr; text-align: start; }
+.pzr-card-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11px; color: #8090a8; }
+.pzr-card-foot a { text-decoration: none; }
+
+.pzr-board-toast {
+	position: fixed;
+	inset-block-end: 24px;
+	inset-inline-start: 24px;
+	background: var(--navy);
+	color: #fff;
+	padding: 10px 18px;
+	border-radius: 10px;
+	font-size: 13px;
+	font-weight: 700;
+	box-shadow: 0 10px 30px rgba(15,31,61,0.35);
+	z-index: 9999;
+}

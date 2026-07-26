@@ -1,0 +1,170 @@
+/* Pazira — premium dashboard. Deep navy + gold, glassmorphism. Scoped to
+   .pzr-dash so it never leaks into the rest of wp-admin. */
+
+.pzr-dash {
+	--navy: #0f1f3d;
+	--navy-2: #16294f;
+	--gold: #c8a04e;
+	--gold-2: #e6c476;
+	--ink: #eaf0fb;
+	margin: 20px 20px 40px 0;
+}
+.pzr-dash-inner {
+	max-width: 1080px;
+	padding: 26px;
+	border-radius: 22px;
+	background:
+		radial-gradient(1200px 400px at 90% -10%, rgba(200,160,78,0.16), transparent 60%),
+		linear-gradient(160deg, var(--navy), var(--navy-2));
+	box-shadow: 0 30px 70px rgba(15,31,61,0.35);
+	color: var(--ink);
+	font-family: Vazirmatn, Tahoma, system-ui, sans-serif;
+}
+
+/* VIP welcome card */
+.pzr-vipcard {
+	position: relative;
+	overflow: hidden;
+	border-radius: 18px;
+	padding: 28px 30px;
+	background: rgba(255,255,255,0.06);
+	border: 1px solid rgba(200,160,78,0.32);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+}
+.pzr-vipcard-glow {
+	position: absolute;
+	inset-block-start: -60%;
+	inset-inline-end: -10%;
+	width: 380px;
+	height: 380px;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(200,160,78,0.35), transparent 60%);
+	filter: blur(10px);
+	pointer-events: none;
+}
+.pzr-vipcard-body { position: relative; z-index: 1; }
+.pzr-eyebrow { font-size: 12px; letter-spacing: 3px; color: var(--gold-2); font-weight: 700; }
+.pzr-vipcard h1 { margin: 8px 0 6px; font-size: 26px; font-weight: 800; color: #fff; }
+.pzr-vipcard p { margin: 0 0 16px; font-size: 14px; color: rgba(234,240,251,0.8); }
+.pzr-chip {
+	display: inline-flex; align-items: center; gap: 8px;
+	padding: 7px 14px; border-radius: 30px; font-size: 13px; font-weight: 700;
+	border: 1px solid rgba(255,255,255,0.16);
+}
+.pzr-chip .pzr-dot { width: 9px; height: 9px; border-radius: 50%; }
+.pzr-chip-on { background: rgba(52,211,153,0.14); color: #6ee7b7; }
+.pzr-chip-on .pzr-dot { background: #34d399; box-shadow: 0 0 0 4px rgba(52,211,153,0.2); }
+.pzr-chip-off { background: rgba(214,54,56,0.14); color: #fca5a5; }
+.pzr-chip-off .pzr-dot { background: #f87171; }
+
+/* range selector */
+.pzr-range { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.pzr-range-btn {
+	text-decoration: none;
+	padding: 7px 16px;
+	border-radius: 30px;
+	font-size: 13px; font-weight: 700;
+	color: rgba(234,240,251,0.8);
+	background: rgba(255,255,255,0.05);
+	border: 1px solid rgba(255,255,255,0.12);
+	transition: all 0.15s ease;
+}
+.pzr-range-btn:hover { color: #fff; border-color: rgba(200,160,78,0.5); }
+.pzr-range-btn.is-active { color: var(--navy); background: linear-gradient(135deg, var(--gold), var(--gold-2)); border-color: transparent; }
+
+/* metric grid */
+.pzr-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 18px;
+	margin-top: 18px;
+}
+.pzr-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* revenue card */
+.pzr-revenue {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-top: 20px;
+	padding: 22px 26px;
+	border-radius: 18px;
+	background:
+		radial-gradient(600px 200px at 100% 0, rgba(200,160,78,0.22), transparent 60%),
+		linear-gradient(135deg, rgba(200,160,78,0.14), rgba(255,255,255,0.04));
+	border: 1px solid rgba(200,160,78,0.4);
+}
+.pzr-revenue-label { display: block; font-size: 13px; color: rgba(234,240,251,0.82); }
+.pzr-revenue-num { display: block; font-size: 32px; font-weight: 800; color: var(--gold-2); margin: 4px 0; }
+.pzr-revenue-formula { display: block; font-size: 11.5px; color: rgba(234,240,251,0.55); }
+.pzr-revenue-cta {
+	text-decoration: none; white-space: nowrap;
+	padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+	color: var(--navy); background: linear-gradient(135deg, var(--gold), var(--gold-2));
+}
+
+@media (max-width: 1100px) { .pzr-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+.pzr-tile {
+	border-radius: 16px;
+	padding: 24px 22px;
+	background: rgba(255,255,255,0.05);
+	border: 1px solid rgba(255,255,255,0.1);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	text-align: center;
+	transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.pzr-tile:hover { transform: translateY(-3px); border-color: rgba(200,160,78,0.5); }
+.pzr-tile-ico { font-size: 24px; display: block; }
+.pzr-tile-num { display: block; font-size: 40px; font-weight: 800; color: var(--gold-2); line-height: 1.2; margin-top: 6px; }
+.pzr-tile-label { display: block; font-size: 13px; color: rgba(234,240,251,0.72); margin-top: 6px; }
+
+/* integrity tile states */
+.pzr-int-badge {
+	display: inline-block; margin-top: 12px;
+	padding: 8px 16px; border-radius: 30px; font-size: 15px; font-weight: 800;
+}
+.pzr-tile-int.is-secure .pzr-int-badge { background: rgba(52,211,153,0.16); color: #6ee7b7; }
+.pzr-tile-int.is-grace .pzr-int-badge { background: rgba(200,160,78,0.18); color: var(--gold-2); }
+.pzr-tile-int.is-expired .pzr-int-badge,
+.pzr-tile-int.is-domain .pzr-int-badge,
+.pzr-tile-int.is-invalid .pzr-int-badge { background: rgba(214,54,56,0.16); color: #fca5a5; }
+
+/* CRM funnel */
+.pzr-funnel-wrap { margin-top: 26px; }
+.pzr-funnel-head { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+.pzr-funnel { display: flex; flex-wrap: wrap; gap: 10px; }
+.pzr-funnel-step {
+	flex: 1 1 110px;
+	border-radius: 14px;
+	padding: 16px 12px;
+	text-align: center;
+	color: #fff;
+	border: 1px solid rgba(255,255,255,0.14);
+	background: rgba(255,255,255,0.05);
+}
+.pzr-funnel-step b { display: block; font-size: 26px; font-weight: 800; line-height: 1.2; color: var(--gold-2); }
+.pzr-funnel-step span { display: block; font-size: 11.5px; margin-top: 4px; color: rgba(234,240,251,0.78); }
+.pzr-funnel-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-inline-end: 5px; vertical-align: middle; }
+
+/* quick links */
+.pzr-quicklinks { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.pzr-ql {
+	text-decoration: none;
+	padding: 11px 18px;
+	border-radius: 12px;
+	font-size: 13.5px; font-weight: 700;
+	color: var(--navy);
+	background: linear-gradient(135deg, var(--gold), var(--gold-2));
+	box-shadow: 0 8px 18px rgba(200,160,78,0.25);
+	transition: transform 0.15s ease, filter 0.15s ease;
+}
+.pzr-ql:hover { transform: translateY(-2px); filter: brightness(1.05); color: var(--navy); }
+
+@media (max-width: 782px) {
+	.pzr-grid { grid-template-columns: 1fr; }
+	.pzr-dash { margin-inline: 10px; }
+}
