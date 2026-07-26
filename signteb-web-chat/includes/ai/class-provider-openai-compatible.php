@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-abstract class SWC_OpenAI_Compatible_Provider implements SWC_AI_Provider_Interface
+abstract class ProviderOpenaiCompatible implements \Medora\Ai\AiProviderInterface
 {
     protected string $api_key;
 

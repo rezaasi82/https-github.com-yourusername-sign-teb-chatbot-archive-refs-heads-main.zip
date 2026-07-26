@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Export_Manager — orchestrates every export target.
+ * \Medora\Export\ExportManager — orchestrates every export target.
  *
  * Single entry point used by the REST controller, the admin-ajax handler and
  * the automatic event triggers. Owns the "generate PDF then sync" flow and the
@@ -9,21 +9,23 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Export;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Export_Manager
+class ExportManager
 {
-    private SWC_Settings $settings;
-    private SWC_Conversation_Repository $conversations;
-    private SWC_Sync_Log_Repository $logs;
+    private \Medora\Core\Settings $settings;
+    private \Medora\Database\ConversationRepository $conversations;
+    private \Medora\Database\SyncLogRepository $logs;
 
     public function __construct()
     {
-        $this->settings      = new SWC_Settings();
-        $this->conversations = new SWC_Conversation_Repository();
-        $this->logs          = new SWC_Sync_Log_Repository();
+        $this->settings      = new \Medora\Core\Settings();
+        $this->conversations = new \Medora\Database\ConversationRepository();
+        $this->logs          = new \Medora\Database\SyncLogRepository();
     }
 
     /**
@@ -39,7 +41,7 @@ class SWC_Export_Manager
 
     public function run_webhook_retry(int $lead_id, string $event, string $pdf_url = '', int $attempt = 2): void
     {
-        (new SWC_Webhook_Manager($this->settings))->handle_retry($lead_id, $event, $pdf_url, $attempt);
+        (new \Medora\Export\WebhookManager($this->settings))->handle_retry($lead_id, $event, $pdf_url, $attempt);
     }
 
     /**
@@ -47,12 +49,12 @@ class SWC_Export_Manager
      */
     public function on_lead_detected(int $lead_id, string $cta): void
     {
-        $webhook = new SWC_Webhook_Manager($this->settings);
+        $webhook = new \Medora\Export\WebhookManager($this->settings);
         if ($webhook->is_enabled() && $webhook->event_enabled('lead_created') && ! $this->logs->has_success($lead_id, 'webhook')) {
             $webhook->dispatch($lead_id, 'lead_created', (string) $this->pdf_url($lead_id));
         }
 
-        $sheets = new SWC_Google_Sheets($this->settings);
+        $sheets = new \Medora\Export\GoogleSheets($this->settings);
         if ($sheets->is_enabled() && (int) $this->settings->get('gsheet_auto', 0) === 1 && ! $this->logs->has_success($lead_id, 'google_sheets')) {
             $sheets->dispatch($lead_id, (string) $this->pdf_url($lead_id));
         }
@@ -65,11 +67,11 @@ class SWC_Export_Manager
      */
     public function export_pdf(int $lead_id): array
     {
-        $logger  = new SWC_Export_Logger();
+        $logger  = new \Medora\Export\ExportLogger();
         $log_id  = $logger->begin($lead_id, 'pdf', 'manual');
         $started = microtime(true);
 
-        $result = (new SWC_PDF_Generator($this->settings))->generate($lead_id);
+        $result = (new \Medora\Export\PdfGenerator($this->settings))->generate($lead_id);
 
         if (empty($result['ok'])) {
             $logger->finish($log_id, 'failed', ['response' => $result['error'] ?? 'error', 'attempts' => 1, 'started' => $started]);
@@ -88,7 +90,7 @@ class SWC_Export_Manager
      */
     public function export_webhook(int $lead_id, string $event = 'manual'): array
     {
-        return (new SWC_Webhook_Manager($this->settings))->dispatch($lead_id, $event, (string) $this->pdf_url($lead_id));
+        return (new \Medora\Export\WebhookManager($this->settings))->dispatch($lead_id, $event, (string) $this->pdf_url($lead_id));
     }
 
     /**
@@ -96,7 +98,7 @@ class SWC_Export_Manager
      */
     public function export_google_sheet(int $lead_id): array
     {
-        return (new SWC_Google_Sheets($this->settings))->dispatch($lead_id, (string) $this->pdf_url($lead_id));
+        return (new \Medora\Export\GoogleSheets($this->settings))->dispatch($lead_id, (string) $this->pdf_url($lead_id));
     }
 
     private function pdf_url(int $lead_id): string

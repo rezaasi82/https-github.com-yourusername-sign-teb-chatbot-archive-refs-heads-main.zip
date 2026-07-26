@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Google_Sheets — appends leads to a Google Sheet.
+ * \Medora\Export\GoogleSheets — appends leads to a Google Sheet.
  *
  * Writes go through a Google Apps Script Web App URL (deployed by the clinic),
  * which is the supported keyless way to append rows — the Google Sheets REST
@@ -10,11 +10,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Export;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Google_Sheets
+class GoogleSheets
 {
     public const OPTION_SECRET = 'swc_gsheet_secret_enc';
 
@@ -23,15 +25,15 @@ class SWC_Google_Sheets
         'Lead Status', 'Created Date', 'Summary', 'PDF URL', 'Sync Status',
     ];
 
-    private SWC_Settings $settings;
-    private SWC_Export_Logger $logger;
-    private SWC_Lead_Payload $payloads;
+    private \Medora\Core\Settings $settings;
+    private \Medora\Export\ExportLogger $logger;
+    private \Medora\Export\LeadPayload $payloads;
 
-    public function __construct(?SWC_Settings $settings = null, ?SWC_Export_Logger $logger = null, ?SWC_Lead_Payload $payloads = null)
+    public function __construct(?\Medora\Core\Settings $settings = null, ?\Medora\Export\ExportLogger $logger = null, ?\Medora\Export\LeadPayload $payloads = null)
     {
-        $this->settings = $settings ?? new SWC_Settings();
-        $this->logger   = $logger ?? new SWC_Export_Logger();
-        $this->payloads = $payloads ?? new SWC_Lead_Payload();
+        $this->settings = $settings ?? new \Medora\Core\Settings();
+        $this->logger   = $logger ?? new \Medora\Export\ExportLogger();
+        $this->payloads = $payloads ?? new \Medora\Export\LeadPayload();
     }
 
     public function is_enabled(): bool
@@ -52,7 +54,7 @@ class SWC_Google_Sheets
     public function secret(): string
     {
         $enc = get_option(self::OPTION_SECRET, '');
-        return is_string($enc) && $enc !== '' ? SWC_Encryption::decrypt($enc) : '';
+        return is_string($enc) && $enc !== '' ? \Medora\Core\Encryption::decrypt($enc) : '';
     }
 
     public static function save_secret(string $plain): void
@@ -62,7 +64,7 @@ class SWC_Google_Sheets
             delete_option(self::OPTION_SECRET);
             return;
         }
-        update_option(self::OPTION_SECRET, SWC_Encryption::encrypt($plain), false);
+        update_option(self::OPTION_SECRET, \Medora\Core\Encryption::encrypt($plain), false);
     }
 
     /**

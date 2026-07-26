@@ -1,18 +1,20 @@
 <?php
 /**
- * SWC_Sms_Provider_Base — shared plumbing for the concrete SMS gateways
+ * \Medora\Notifications\SmsProviderBase — shared plumbing for the concrete SMS gateways
  * (config access, phone normalisation, a single wp_remote_* wrapper).
  *
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Notifications;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-abstract class SWC_Sms_Provider_Base implements SWC_Sms_Provider_Interface
+abstract class SmsProviderBase implements \Medora\Notifications\SmsProviderInterface
 {
-    protected SWC_Settings $settings;
+    protected \Medora\Core\Settings $settings;
 
     /** Most panels support pattern SMS; individual providers override. */
     public function supports_pattern(): bool
@@ -26,21 +28,21 @@ abstract class SWC_Sms_Provider_Base implements SWC_Sms_Provider_Interface
         return ['ok' => false, 'error' => __('این سرویس از ارسال الگو پشتیبانی نمی‌کند.', 'signteb-web-chat')];
     }
 
-    public function __construct(?SWC_Settings $settings = null)
+    public function __construct(?\Medora\Core\Settings $settings = null)
     {
-        $this->settings = $settings ?? new SWC_Settings();
+        $this->settings = $settings ?? new \Medora\Core\Settings();
     }
 
     /** Decrypted API key / activation code entered from the panel. */
     protected function api_key(): string
     {
-        return SWC_Sms_Manager::key();
+        return \Medora\Notifications\SmsManager::key();
     }
 
     /** Optional second credential (e.g. MeliPayamak password). */
     protected function api_secret(): string
     {
-        return SWC_Sms_Manager::secret();
+        return \Medora\Notifications\SmsManager::secret();
     }
 
     /** Configured sender line / originator number. */

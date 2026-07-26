@@ -6,7 +6,7 @@
  * @package SignTeb_Web_Chat
  */
 
-if (! defined('WP_UNINSTALL_PLUGIN')) {
+if (! defined('WP_UNINSTALL_PLUGIN') || ! defined('ABSPATH')) {
     exit;
 }
 
@@ -15,10 +15,10 @@ if (! defined('SWC_DIR')) {
 }
 
 require_once __DIR__ . '/includes/class-autoloader.php';
-SWC_Autoloader::register();
+\Medora\Autoloader::register();
 
-if (class_exists('SWC_Schema')) {
-    SWC_Schema::uninstall();
+if (class_exists('\Medora\Database\Schema')) {
+    \Medora\Database\Schema::uninstall();
 }
 
 $options = [

@@ -1,21 +1,23 @@
 <?php
 /**
- * SWC_Sync_Status — resolves the latest sync state per lead for the admin UI.
+ * \Medora\Export\SyncStatus — resolves the latest sync state per lead for the admin UI.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Export;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Sync_Status
+class SyncStatus
 {
-    private SWC_Sync_Log_Repository $logs;
+    private \Medora\Database\SyncLogRepository $logs;
 
-    public function __construct(?SWC_Sync_Log_Repository $logs = null)
+    public function __construct(?\Medora\Database\SyncLogRepository $logs = null)
     {
-        $this->logs = $logs ?? new SWC_Sync_Log_Repository();
+        $this->logs = $logs ?? new \Medora\Database\SyncLogRepository();
     }
 
     /**

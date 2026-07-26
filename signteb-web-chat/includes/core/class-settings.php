@@ -1,19 +1,21 @@
 <?php
 /**
- * SWC_Settings — typed accessor over the swc_settings option array.
+ * \Medora\Core\Settings — typed accessor over the swc_settings option array.
  *
  * Provider API keys are stored in their own options, encrypted (see
- * SWC_Encryption), one per provider so the admin can configure both Anthropic
+ * \Medora\Core\Encryption), one per provider so the admin can configure both Anthropic
  * and OpenAI and switch between them without re-entering keys.
  *
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Core;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Settings
+class Settings
 {
     public const OPTION = 'swc_settings';
 
@@ -59,7 +61,7 @@ class SWC_Settings
      */
     public function active_model(): string
     {
-        return (new SWC_Provider_Factory($this))->model_for($this->active_provider());
+        return (new \Medora\Ai\ProviderFactory($this))->model_for($this->active_provider());
     }
 
     /**
@@ -73,7 +75,7 @@ class SWC_Settings
             return '';
         }
         $encrypted = get_option($option, '');
-        return is_string($encrypted) ? SWC_Encryption::decrypt($encrypted) : '';
+        return is_string($encrypted) ? \Medora\Core\Encryption::decrypt($encrypted) : '';
     }
 
     public function has_api_key(?string $provider = null): bool
@@ -92,6 +94,6 @@ class SWC_Settings
             delete_option($option);
             return;
         }
-        update_option($option, SWC_Encryption::encrypt($plain), false);
+        update_option($option, \Medora\Core\Encryption::encrypt($plain), false);
     }
 }

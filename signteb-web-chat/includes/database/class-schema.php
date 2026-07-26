@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Schema — owns table names and the dbDelta schema.
+ * \Medora\Database\Schema — owns table names and the dbDelta schema.
  *
  * Repositories depend only on this. dbDelta adds any new columns on upgrade,
  * so bumping DB_VERSION is enough to migrate an existing install in place.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Database;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Schema
+class Schema
 {
     public const DB_VERSION = '3.4.0';
 

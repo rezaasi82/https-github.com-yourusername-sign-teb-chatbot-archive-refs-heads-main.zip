@@ -1,9 +1,11 @@
 <?php
 /**
- * SWC_Provider_Anthropic — Anthropic Claude Messages API provider.
+ * \Medora\Ai\ProviderAnthropic — Anthropic Claude Messages API provider.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Ai;
 
 if (! defined('ABSPATH')) {
     exit;
@@ -14,7 +16,7 @@ if (! defined('ABSPATH')) {
  * and returns a structured result on every path, including errors, so the
  * caller can fall back gracefully.
  */
-class SWC_Provider_Anthropic implements SWC_AI_Provider_Interface
+class ProviderAnthropic implements \Medora\Ai\AiProviderInterface
 {
     private const ENDPOINT      = 'https://api.anthropic.com/v1/messages';
     private const API_VERSION   = '2023-06-01';

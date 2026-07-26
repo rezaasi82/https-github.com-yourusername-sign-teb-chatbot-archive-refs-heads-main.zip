@@ -1,24 +1,26 @@
 <?php
 /**
- * SWC_Export_Logger — records the lifecycle of an export job.
+ * \Medora\Export\ExportLogger — records the lifecycle of an export job.
  *
- * Thin layer over SWC_Sync_Log_Repository that also measures execution time
+ * Thin layer over \Medora\Database\SyncLogRepository that also measures execution time
  * and mirrors failures to the PHP error log when WP_DEBUG is on.
  *
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Export;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Export_Logger
+class ExportLogger
 {
-    private SWC_Sync_Log_Repository $repo;
+    private \Medora\Database\SyncLogRepository $repo;
 
-    public function __construct(?SWC_Sync_Log_Repository $repo = null)
+    public function __construct(?\Medora\Database\SyncLogRepository $repo = null)
     {
-        $this->repo = $repo ?? new SWC_Sync_Log_Repository();
+        $this->repo = $repo ?? new \Medora\Database\SyncLogRepository();
     }
 
     /**

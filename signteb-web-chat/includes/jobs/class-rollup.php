@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Rollup — daily analytics rollup worker.
+ * \Medora\Jobs\Rollup — daily analytics rollup worker.
  *
  * Runs on the swc_daily_rollup cron and writes one aggregated row per
  * (day, metric) into swc_analytics, so long-range dashboards read a few
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Jobs;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Rollup
+class Rollup
 {
     public const CRON = 'swc_daily_rollup';
 
@@ -28,7 +30,7 @@ class SWC_Rollup
     public function run(): void
     {
         try {
-            $repo = new SWC_Analytics_Repository();
+            $repo = new \Medora\Database\AnalyticsRepository();
             foreach ([gmdate('Y-m-d', time() - DAY_IN_SECONDS), gmdate('Y-m-d')] as $day) {
                 $repo->record_day($day, $this->day_metrics($day));
             }
@@ -45,8 +47,8 @@ class SWC_Rollup
     private function day_metrics(string $day): array
     {
         global $wpdb;
-        $conv   = SWC_Schema::conversations_table();
-        $events = SWC_Schema::events_table();
+        $conv   = \Medora\Database\Schema::conversations_table();
+        $events = \Medora\Database\Schema::events_table();
         $start  = $day . ' 00:00:00';
         $end    = $day . ' 23:59:59';
 

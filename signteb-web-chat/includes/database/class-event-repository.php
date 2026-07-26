@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Event_Repository — records CTA/channel click events for analytics.
+ * \Medora\Database\EventRepository — records CTA/channel click events for analytics.
  *
  * One row per tracked interaction (booking / whatsapp / call / bale). Powers
  * the professional analytics dashboard (conversion + channel breakdown).
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Database;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Event_Repository
+class EventRepository
 {
     /** Allowed event types (whitelist — never trust the client). */
     public const TYPES = ['booking', 'whatsapp', 'call', 'bale'];
@@ -24,7 +26,7 @@ class SWC_Event_Repository
         }
         global $wpdb;
         $wpdb->insert(
-            SWC_Schema::events_table(),
+            \Medora\Database\Schema::events_table(),
             [
                 'conversation_id' => $conversation_id ?: null,
                 'type'            => $type,
@@ -43,7 +45,7 @@ class SWC_Event_Repository
     public function counts(int $days = 30): array
     {
         global $wpdb;
-        $table = SWC_Schema::events_table();
+        $table = \Medora\Database\Schema::events_table();
         $since = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
 
         $rows = $wpdb->get_results(
@@ -70,7 +72,7 @@ class SWC_Event_Repository
     public function daily(int $days = 14): array
     {
         global $wpdb;
-        $table = SWC_Schema::events_table();
+        $table = \Medora\Database\Schema::events_table();
         $since = gmdate('Y-m-d 00:00:00', time() - (($days - 1) * DAY_IN_SECONDS));
 
         $rows = $wpdb->get_results(

@@ -1,20 +1,22 @@
 <?php
 /**
- * SWC_Message_Repository — repository for individual chat messages.
+ * \Medora\Database\MessageRepository — repository for individual chat messages.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Database;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Message_Repository
+class MessageRepository
 {
     public function add(int $conversation_id, string $role, string $content, bool $flagged = false, ?int $tokens = null): int
     {
         global $wpdb;
-        $table = SWC_Schema::messages_table();
+        $table = \Medora\Database\Schema::messages_table();
         $wpdb->insert(
             $table,
             [
@@ -39,7 +41,7 @@ class SWC_Message_Repository
     public function history(int $conversation_id, int $limit = 12): array
     {
         global $wpdb;
-        $table = SWC_Schema::messages_table();
+        $table = \Medora\Database\Schema::messages_table();
 
         $rows = $wpdb->get_results(
             $wpdb->prepare(
@@ -68,7 +70,7 @@ class SWC_Message_Repository
     public function user_texts(int $conversation_id): array
     {
         global $wpdb;
-        $table = SWC_Schema::messages_table();
+        $table = \Medora\Database\Schema::messages_table();
         $rows  = $wpdb->get_col(
             $wpdb->prepare(
                 "SELECT content FROM {$table} WHERE conversation_id = %d AND role = 'user' ORDER BY id ASC",
@@ -82,7 +84,7 @@ class SWC_Message_Repository
     public function for_conversation(int $conversation_id): array
     {
         global $wpdb;
-        $table = SWC_Schema::messages_table();
+        $table = \Medora\Database\Schema::messages_table();
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$table} WHERE conversation_id = %d ORDER BY id ASC",

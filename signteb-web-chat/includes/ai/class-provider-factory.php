@@ -3,17 +3,19 @@
  * Builds AI providers from the stored settings.
  *
  * The single place that knows which concrete provider class maps to each id,
- * so the rest of the plugin depends only on the SWC_AI_Provider_Interface
+ * so the rest of the plugin depends only on the \Medora\Ai\AiProviderInterface
  * abstraction and never needs to change when a provider is added.
  *
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Provider_Factory
+class ProviderFactory
 {
     /** Default model per provider when the admin hasn't chosen one. */
     private const DEFAULT_MODELS = [
@@ -25,9 +27,9 @@ class SWC_Provider_Factory
     /** Order in which a fallback provider is tried when the primary fails. */
     private const FALLBACK_ORDER = ['gapgpt', 'anthropic', 'openai'];
 
-    private SWC_Settings $settings;
+    private \Medora\Core\Settings $settings;
 
-    public function __construct(SWC_Settings $settings)
+    public function __construct(\Medora\Core\Settings $settings)
     {
         $this->settings = $settings;
     }
@@ -35,7 +37,7 @@ class SWC_Provider_Factory
     /**
      * Create a provider by id, or null when its API key is not configured.
      */
-    public function create(string $id): ?SWC_AI_Provider_Interface
+    public function create(string $id): ?\Medora\Ai\AiProviderInterface
     {
         $key = $this->settings->get_api_key($id);
         if ($key === '') {
@@ -43,17 +45,17 @@ class SWC_Provider_Factory
         }
         switch ($id) {
             case 'openai':
-                return new SWC_Provider_OpenAI($key);
+                return new \Medora\Ai\ProviderOpenai($key);
             case 'gapgpt':
-                return new SWC_Provider_GapGPT($key);
+                return new \Medora\Ai\ProviderGapgpt($key);
             case 'anthropic':
-                return new SWC_Provider_Anthropic($key);
+                return new \Medora\Ai\ProviderAnthropic($key);
             default:
                 return null;
         }
     }
 
-    public function create_active(): ?SWC_AI_Provider_Interface
+    public function create_active(): ?\Medora\Ai\AiProviderInterface
     {
         return $this->create($this->settings->active_provider());
     }
@@ -61,7 +63,7 @@ class SWC_Provider_Factory
     /**
      * First configured provider other than the one that just failed.
      */
-    public function create_fallback(string $primary_id): ?SWC_AI_Provider_Interface
+    public function create_fallback(string $primary_id): ?\Medora\Ai\AiProviderInterface
     {
         foreach (self::FALLBACK_ORDER as $id) {
             if ($id === $primary_id) {

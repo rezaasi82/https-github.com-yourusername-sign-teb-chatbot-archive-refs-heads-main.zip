@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Cta_Detector — detects booking/contact intent in a turn.
+ * \Medora\Ai\CtaDetector — detects booking/contact intent in a turn.
  *
  * When intent is found the frontend renders an inline CTA card and the
  * conversation is logged as a converted lead (the ROI signal the clinic owner
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Cta_Detector
+class CtaDetector
 {
     private const BOOKING_TERMS = [
         'رزرو', 'نوبت', 'وقت بگیرم', 'وقت می‌خوام', 'وقت میخوام', 'appointment', 'book', 'بوک', 'حجز', 'موعد',

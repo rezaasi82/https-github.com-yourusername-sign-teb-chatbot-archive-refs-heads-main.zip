@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Messenger_Notifier — server-side lead alerts to the clinic's own
+ * \Medora\Notifications\MessengerNotifier — server-side lead alerts to the clinic's own
  * Bale / Telegram group or channel via their Bot APIs.
  *
  * Unlike the SMS gateway (which texts a customer's phone), this pushes an
@@ -13,11 +13,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Notifications;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Messenger_Notifier
+class MessengerNotifier
 {
     private const NONCE = 'swc_export';
 
@@ -27,11 +29,11 @@ class SWC_Messenger_Notifier
         'telegram' => ['https://api.telegram.org', 'swc_msgr_tg_token_enc', 'Telegram'],
     ];
 
-    private SWC_Settings $settings;
+    private \Medora\Core\Settings $settings;
 
-    public function __construct(?SWC_Settings $settings = null)
+    public function __construct(?\Medora\Core\Settings $settings = null)
     {
-        $this->settings = $settings ?? new SWC_Settings();
+        $this->settings = $settings ?? new \Medora\Core\Settings();
     }
 
     public function register(): void
@@ -71,7 +73,7 @@ class SWC_Messenger_Notifier
             return '';
         }
         $enc = get_option($option, '');
-        return is_string($enc) && $enc !== '' ? SWC_Encryption::decrypt($enc) : '';
+        return is_string($enc) && $enc !== '' ? \Medora\Core\Encryption::decrypt($enc) : '';
     }
 
     public static function save_token(string $channel, string $plain): void
@@ -85,7 +87,7 @@ class SWC_Messenger_Notifier
             delete_option($option);
             return;
         }
-        update_option($option, SWC_Encryption::encrypt($plain), false);
+        update_option($option, \Medora\Core\Encryption::encrypt($plain), false);
     }
 
     public static function token_options(): array
@@ -138,20 +140,20 @@ class SWC_Messenger_Notifier
         if ($enabled === []) {
             return;
         }
-        $c = (new SWC_Conversation_Repository())->get($conversation_id);
+        $c = (new \Medora\Database\ConversationRepository())->get($conversation_id);
         if (! $c) {
             return;
         }
         $text = $this->lead_text($c, $cta);
         foreach ($enabled as $channel) {
             $r = $this->send($channel, $text);
-            SWC_Audit_Log::record('messenger_notify', ['object' => $channel, 'severity' => ! empty($r['ok']) ? 'info' : 'warning']);
+            \Medora\Security\AuditLog::record('messenger_notify', ['object' => $channel, 'severity' => ! empty($r['ok']) ? 'info' : 'warning']);
         }
     }
 
     private function lead_text(object $c, string $cta): string
     {
-        $sms    = new SWC_Sms_Manager();
+        $sms    = new \Medora\Notifications\SmsManager();
         $vars   = $sms->vars_for_lead($c);
         $clinic = $vars['clinic'];
         $lines  = [
@@ -173,12 +175,12 @@ class SWC_Messenger_Notifier
 
     public function ajax_test(): void
     {
-        SWC_Json_Guard::arm();
-        if (SWC_Security::is_locked()) {
+        \Medora\Core\JsonGuard::arm();
+        if (\Medora\Security\Security::is_locked()) {
             wp_send_json(['ok' => false, 'error' => 'locked'], 429);
         }
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
-            SWC_Security::note_failure('messenger_test');
+            \Medora\Security\Security::note_failure('messenger_test');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
         $channel = sanitize_key(wp_unslash($_POST['channel'] ?? ''));

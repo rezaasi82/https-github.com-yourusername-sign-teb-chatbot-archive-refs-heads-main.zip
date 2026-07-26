@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Chat_Notifier — surfaces new (unseen) conversations across wp-admin.
+ * \Medora\Admin\ChatNotifier — surfaces new (unseen) conversations across wp-admin.
  *
  * Three touchpoints, all driven by a per-user "last seen" marker:
  *   1. an admin-bar bubble (top of every admin screen), kept live via the
@@ -14,11 +14,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Admin;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Chat_Notifier
+class ChatNotifier
 {
     private const META = 'swc_chats_seen_at';
 
@@ -52,7 +54,7 @@ class SWC_Chat_Notifier
             $this->mark_seen();
             return 0;
         }
-        return (new SWC_Conversation_Repository())->count_since($seen);
+        return (new \Medora\Database\ConversationRepository())->count_since($seen);
     }
 
     public function mark_seen(): void
@@ -79,7 +81,7 @@ class SWC_Chat_Notifier
      * Admin-bar bubble. Always rendered (hidden at zero) so the Heartbeat
      * updater has a node to reveal when a chat arrives mid-session.
      */
-    public function admin_bar(WP_Admin_Bar $bar): void
+    public function admin_bar(\WP_Admin_Bar $bar): void
     {
         if (! current_user_can('manage_options')) {
             return;

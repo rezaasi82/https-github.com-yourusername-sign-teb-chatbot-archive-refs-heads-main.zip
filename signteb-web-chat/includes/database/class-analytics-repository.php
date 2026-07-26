@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Analytics_Repository — pre-aggregated daily metrics (rollup).
+ * \Medora\Database\AnalyticsRepository — pre-aggregated daily metrics (rollup).
  *
  * Instead of scanning conversations/messages for every dashboard view, a daily
  * cron writes one row per (day, metric). Long-range reads become an indexed
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Database;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Analytics_Repository
+class AnalyticsRepository
 {
     /**
      * Upsert a set of metrics for a single day.
@@ -23,7 +25,7 @@ class SWC_Analytics_Repository
     public function record_day(string $day, array $metrics): void
     {
         global $wpdb;
-        $table = SWC_Schema::analytics_table();
+        $table = \Medora\Database\Schema::analytics_table();
         foreach ($metrics as $metric => $value) {
             $metric = substr((string) $metric, 0, 32);
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -45,7 +47,7 @@ class SWC_Analytics_Repository
     public function sum(string $metric, int $days): int
     {
         global $wpdb;
-        $table = SWC_Schema::analytics_table();
+        $table = \Medora\Database\Schema::analytics_table();
         $since = gmdate('Y-m-d', time() - (($days - 1) * DAY_IN_SECONDS));
         return (int) $wpdb->get_var(
             $wpdb->prepare(
@@ -64,7 +66,7 @@ class SWC_Analytics_Repository
     public function series(string $metric, int $days): array
     {
         global $wpdb;
-        $table = SWC_Schema::analytics_table();
+        $table = \Medora\Database\Schema::analytics_table();
         $since = gmdate('Y-m-d', time() - (($days - 1) * DAY_IN_SECONDS));
         $rows  = $wpdb->get_results(
             $wpdb->prepare(

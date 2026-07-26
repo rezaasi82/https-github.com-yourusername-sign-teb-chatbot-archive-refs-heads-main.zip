@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_PDF_Generator — builds a professional RTL patient-conversation report.
+ * \Medora\Export\PdfGenerator — builds a professional RTL patient-conversation report.
  *
  * Produces a real PDF when a PDF engine (mPDF or Dompdf) is installed on the
  * site; otherwise it writes a print-optimized HTML document (the browser
@@ -10,19 +10,21 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Export;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_PDF_Generator
+class PdfGenerator
 {
-    private SWC_Settings $settings;
-    private SWC_Lead_Payload $payloads;
+    private \Medora\Core\Settings $settings;
+    private \Medora\Export\LeadPayload $payloads;
 
-    public function __construct(?SWC_Settings $settings = null, ?SWC_Lead_Payload $payloads = null)
+    public function __construct(?\Medora\Core\Settings $settings = null, ?\Medora\Export\LeadPayload $payloads = null)
     {
-        $this->settings = $settings ?? new SWC_Settings();
-        $this->payloads = $payloads ?? new SWC_Lead_Payload();
+        $this->settings = $settings ?? new \Medora\Core\Settings();
+        $this->payloads = $payloads ?? new \Medora\Export\LeadPayload();
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Lead_Payload — assembles a normalized export payload for one lead.
+ * \Medora\Export\LeadPayload — assembles a normalized export payload for one lead.
  *
  * A lead is a conversation (swc_conversations) plus its messages
  * (swc_messages). This is the single representation consumed by every export
@@ -9,19 +9,21 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Export;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Lead_Payload
+class LeadPayload
 {
-    private SWC_Conversation_Repository $conversations;
-    private SWC_Message_Repository $messages;
+    private \Medora\Database\ConversationRepository $conversations;
+    private \Medora\Database\MessageRepository $messages;
 
-    public function __construct(?SWC_Conversation_Repository $conversations = null, ?SWC_Message_Repository $messages = null)
+    public function __construct(?\Medora\Database\ConversationRepository $conversations = null, ?\Medora\Database\MessageRepository $messages = null)
     {
-        $this->conversations = $conversations ?? new SWC_Conversation_Repository();
-        $this->messages      = $messages ?? new SWC_Message_Repository();
+        $this->conversations = $conversations ?? new \Medora\Database\ConversationRepository();
+        $this->messages      = $messages ?? new \Medora\Database\MessageRepository();
     }
 
     /**

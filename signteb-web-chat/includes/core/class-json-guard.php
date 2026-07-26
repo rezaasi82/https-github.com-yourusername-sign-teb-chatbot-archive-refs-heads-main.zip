@@ -1,9 +1,11 @@
 <?php
 /**
- * SWC_Json_Guard — protects JSON responses from stray PHP notices.
+ * \Medora\Core\JsonGuard — protects JSON responses from stray PHP notices.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Core;
 
 if (! defined('ABSPATH')) {
     exit;
@@ -14,7 +16,7 @@ if (! defined('ABSPATH')) {
  * buffer before producing output; the shutdown handler discards any leaked bytes
  * so the response stays valid JSON.
  */
-class SWC_Json_Guard
+class JsonGuard
 {
     private static bool $armed = false;
 

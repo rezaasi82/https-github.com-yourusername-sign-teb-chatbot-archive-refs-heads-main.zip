@@ -1,9 +1,11 @@
 <?php
 /**
- * SWC_Encryption — symmetric encryption for API keys at rest.
+ * \Medora\Core\Encryption — symmetric encryption for API keys at rest.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Core;
 
 if (! defined('ABSPATH')) {
     exit;
@@ -17,7 +19,7 @@ if (! defined('ABSPATH')) {
  * upgrades are seamless. If OpenSSL is missing it degrades to reversible
  * obfuscation — it never throws.
  */
-class SWC_Encryption
+class Encryption
 {
     private const CIPHER_GCM = 'aes-256-gcm';
     private const CIPHER_CBC = 'aes-256-cbc';

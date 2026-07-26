@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_AI_Manager — the conversation engine.
+ * \Medora\Ai\AiManager — the conversation engine.
  *
  * The single entry point used by both the REST controller and the admin-ajax
  * handler. Coordinates rate limiting, the safety
@@ -11,35 +11,37 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_AI_Manager
+class AiManager
 {
-    private SWC_Settings $settings;
-    private SWC_Medical_Safety_Filter $safety;
-    private SWC_System_Prompt_Builder $prompt;
-    private SWC_Language_Detector $language;
-    private SWC_Cta_Detector $cta;
-    private SWC_Lead_Scorer $scorer;
-    private SWC_Summary_Builder $summary;
-    private SWC_Provider_Factory $providers;
-    private SWC_Conversation_Repository $conversations;
-    private SWC_Message_Repository $messages;
+    private \Medora\Core\Settings $settings;
+    private \Medora\Safety\MedicalSafetyFilter $safety;
+    private \Medora\Ai\SystemPromptBuilder $prompt;
+    private \Medora\Ai\LanguageDetector $language;
+    private \Medora\Ai\CtaDetector $cta;
+    private \Medora\Ai\LeadScorer $scorer;
+    private \Medora\Ai\SummaryBuilder $summary;
+    private \Medora\Ai\ProviderFactory $providers;
+    private \Medora\Database\ConversationRepository $conversations;
+    private \Medora\Database\MessageRepository $messages;
 
     public function __construct()
     {
-        $this->settings      = new SWC_Settings();
-        $this->safety        = new SWC_Medical_Safety_Filter($this->settings);
-        $this->prompt        = new SWC_System_Prompt_Builder($this->settings);
-        $this->language      = new SWC_Language_Detector();
-        $this->cta           = new SWC_Cta_Detector();
-        $this->scorer        = new SWC_Lead_Scorer();
-        $this->summary       = new SWC_Summary_Builder($this->settings);
-        $this->providers     = new SWC_Provider_Factory($this->settings);
-        $this->conversations = new SWC_Conversation_Repository();
-        $this->messages      = new SWC_Message_Repository();
+        $this->settings      = new \Medora\Core\Settings();
+        $this->safety        = new \Medora\Safety\MedicalSafetyFilter($this->settings);
+        $this->prompt        = new \Medora\Ai\SystemPromptBuilder($this->settings);
+        $this->language      = new \Medora\Ai\LanguageDetector();
+        $this->cta           = new \Medora\Ai\CtaDetector();
+        $this->scorer        = new \Medora\Ai\LeadScorer();
+        $this->summary       = new \Medora\Ai\SummaryBuilder($this->settings);
+        $this->providers     = new \Medora\Ai\ProviderFactory($this->settings);
+        $this->conversations = new \Medora\Database\ConversationRepository();
+        $this->messages      = new \Medora\Database\MessageRepository();
     }
 
     /**
@@ -63,7 +65,7 @@ class SWC_AI_Manager
         }
 
         // --- Rate limit (per IP + session) ---
-        $limiter = new SWC_Rate_Limiter((int) $this->settings->get('rate_limit_per_min', 8));
+        $limiter = new \Medora\Ratelimit\RateLimiter((int) $this->settings->get('rate_limit_per_min', 8));
         if (! $limiter->allow($req['ip'] . '|' . $req['session_id'])) {
             return ['ok' => false, 'code' => 'rate_limited', 'error' => __('لطفاً کمی صبر کنید و دوباره تلاش کنید.', 'signteb-web-chat')];
         }

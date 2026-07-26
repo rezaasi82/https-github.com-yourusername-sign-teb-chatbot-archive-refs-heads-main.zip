@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Rate_Limiter — per-IP / per-session throttle on a public endpoint.
+ * \Medora\Ratelimit\RateLimiter — per-IP / per-session throttle on a public endpoint.
  *
  * Backed by the transient API (object cache when available) to protect the API
  * budget against abuse on an anonymous endpoint.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ratelimit;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Rate_Limiter
+class RateLimiter
 {
     private int $max_per_minute;
 

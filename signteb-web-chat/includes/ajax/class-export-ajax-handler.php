@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Export_Ajax_Handler — admin-ajax endpoints for the export module.
+ * \Medora\Ajax\ExportAjaxHandler — admin-ajax endpoints for the export module.
  *
  * Every handler is capability-checked and nonce-verified. The PDF download
  * streams the stored file after validating it lives inside the plugin's upload
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ajax;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Export_Ajax_Handler
+class ExportAjaxHandler
 {
     private const NONCE = 'swc_export';
 
@@ -36,9 +38,9 @@ class SWC_Export_Ajax_Handler
      */
     public function sms_diag(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
-        $diag = (new SWC_Sms_Manager())->diagnose();
+        $diag = (new \Medora\Notifications\SmsManager())->diagnose();
         wp_send_json(['ok' => $diag['ok'], 'report' => implode("\n", $diag['lines'])]);
     }
 
@@ -49,14 +51,14 @@ class SWC_Export_Ajax_Handler
      */
     public function test_sms(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
         $to = sanitize_text_field(wp_unslash($_POST['to'] ?? ''));
         if ($to === '') {
             wp_send_json(['ok' => false, 'error' => __('شماره مقصد را وارد کنید.', 'signteb-web-chat')], 400);
         }
 
-        $sms = new SWC_Sms_Manager();
+        $sms = new \Medora\Notifications\SmsManager();
         if ($sms->template_code('welcome') !== '') {
             $sample = (object) [
                 'patient_name'  => __('کاربر آزمایشی', 'signteb-web-chat'),
@@ -68,7 +70,7 @@ class SWC_Export_Ajax_Handler
             wp_send_json($sms->send_lead($to, 'welcome', $sms->vars_for_lead($sample)));
         }
 
-        $clinic = (string) (new SWC_Settings())->get('clinic_name', get_bloginfo('name'));
+        $clinic = (string) (new \Medora\Core\Settings())->get('clinic_name', get_bloginfo('name'));
         $text   = sprintf(__('پیام آزمایشی از %s (Medora AI).', 'signteb-web-chat'), $clinic);
         wp_send_json($sms->send($to, $text));
     }
@@ -78,7 +80,7 @@ class SWC_Export_Ajax_Handler
      */
     public function send_sms(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
 
         $lead_id  = absint($_POST['lead_id'] ?? 0);
@@ -88,67 +90,67 @@ class SWC_Export_Ajax_Handler
             wp_send_json(['ok' => false, 'error' => __('لید یا شماره مقصد نامعتبر است.', 'signteb-web-chat')], 400);
         }
 
-        $c = (new SWC_Conversation_Repository())->get($lead_id);
+        $c = (new \Medora\Database\ConversationRepository())->get($lead_id);
         if (! $c) {
             wp_send_json(['ok' => false, 'error' => 'not_found'], 404);
         }
 
-        $sms = new SWC_Sms_Manager();
+        $sms = new \Medora\Notifications\SmsManager();
         wp_send_json($sms->send_lead($to, $tpl_key, $sms->vars_for_lead($c)));
     }
 
     private function guard(): void
     {
-        if (SWC_Security::is_locked()) {
+        if (\Medora\Security\Security::is_locked()) {
             wp_send_json(['ok' => false, 'error' => 'locked'], 429);
         }
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
-            SWC_Security::note_failure('export_ajax');
+            \Medora\Security\Security::note_failure('export_ajax');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
     }
 
     public function export_pdf(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
         $lead_id = absint($_POST['lead_id'] ?? 0);
-        wp_send_json((new SWC_Export_Manager())->export_pdf($lead_id));
+        wp_send_json((new \Medora\Export\ExportManager())->export_pdf($lead_id));
     }
 
     public function export_webhook(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
         $lead_id = absint($_POST['lead_id'] ?? 0);
-        wp_send_json((new SWC_Export_Manager())->export_webhook($lead_id, 'manual'));
+        wp_send_json((new \Medora\Export\ExportManager())->export_webhook($lead_id, 'manual'));
     }
 
     public function export_gsheet(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
         $lead_id = absint($_POST['lead_id'] ?? 0);
-        wp_send_json((new SWC_Export_Manager())->export_google_sheet($lead_id));
+        wp_send_json((new \Medora\Export\ExportManager())->export_google_sheet($lead_id));
     }
 
     public function test_webhook(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
-        wp_send_json((new SWC_Webhook_Manager())->test());
+        wp_send_json((new \Medora\Export\WebhookManager())->test());
     }
 
     public function test_gsheet(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
-        wp_send_json((new SWC_Google_Sheets())->test());
+        wp_send_json((new \Medora\Export\GoogleSheets())->test());
     }
 
     public function bulk(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         $this->guard();
 
         $op  = sanitize_key($_POST['op'] ?? '');
@@ -174,7 +176,7 @@ class SWC_Export_Ajax_Handler
             wp_send_json(['ok' => false, 'error' => 'bad_op'], 400);
         }
 
-        $queue = new SWC_Job_Queue();
+        $queue = new \Medora\Jobs\JobQueue();
         foreach ($ids as $id) {
             $queue->enqueue('export', ['op' => $op, 'lead_id' => $id]);
         }
@@ -188,17 +190,17 @@ class SWC_Export_Ajax_Handler
      */
     public function download_pdf(): void
     {
-        if (SWC_Security::is_locked()) {
+        if (\Medora\Security\Security::is_locked()) {
             wp_die(esc_html__('دسترسی موقتاً مسدود شده است.', 'signteb-web-chat'), '', ['response' => 429]);
         }
         if (! current_user_can('manage_options') || ! check_admin_referer(self::NONCE, 'nonce')) {
-            SWC_Security::note_failure('pdf_download');
+            \Medora\Security\Security::note_failure('pdf_download');
             wp_die(esc_html__('دسترسی غیرمجاز.', 'signteb-web-chat'), '', ['response' => 403]);
         }
         $lead_id = absint($_GET['lead_id'] ?? 0);
 
-        $manager = new SWC_Export_Manager();
-        $conv    = (new SWC_Conversation_Repository())->get($lead_id);
+        $manager = new \Medora\Export\ExportManager();
+        $conv    = (new \Medora\Database\ConversationRepository())->get($lead_id);
         $url     = $conv ? (string) ($conv->pdf_url ?? '') : '';
         if ($url === '') {
             $gen = $manager->export_pdf($lead_id);
@@ -244,13 +246,13 @@ class SWC_Export_Ajax_Handler
 
     private function delete_files(int $lead_id): bool
     {
-        $conv = (new SWC_Conversation_Repository())->get($lead_id);
+        $conv = (new \Medora\Database\ConversationRepository())->get($lead_id);
         $url  = $conv ? (string) ($conv->pdf_url ?? '') : '';
         $path = $this->url_to_path($url);
         if ($path !== '' && is_writable($path)) {
             @unlink($path);
         }
-        (new SWC_Conversation_Repository())->set_pdf_url($lead_id, '');
+        (new \Medora\Database\ConversationRepository())->set_pdf_url($lead_id, '');
         return true;
     }
 }

@@ -1,15 +1,17 @@
 <?php
 /**
- * SWC_Sanitizer — shared input sanitization for both transports.
+ * \Medora\Rest\Sanitizer — shared input sanitization for both transports.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Rest;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Sanitizer
+class Sanitizer
 {
     public static function session_id(string $raw): string
     {

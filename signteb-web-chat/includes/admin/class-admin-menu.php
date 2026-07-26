@@ -1,23 +1,25 @@
 <?php
 /**
- * SWC_Admin_Menu — registers the "Medora AI" menu and a single tabbed page.
+ * \Medora\Admin\AdminMenu — registers the "Medora AI" menu and a single tabbed page.
  *
  * Tabs: AI Provider | Clinic | Appearance | Conversations | Stats | License.
  *
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Admin;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Admin_Menu
+class AdminMenu
 {
-    private SWC_Settings_Page $page;
+    private \Medora\Admin\SettingsPage $page;
 
     public function __construct()
     {
-        $this->page = new SWC_Settings_Page();
+        $this->page = new \Medora\Admin\SettingsPage();
     }
 
     public function register(): void
@@ -30,7 +32,7 @@ class SWC_Admin_Menu
     public function menu(): void
     {
         // Unseen-chat badge, same pattern as the core Comments bubble.
-        $unseen = (new SWC_Chat_Notifier())->unseen_count();
+        $unseen = (new \Medora\Admin\ChatNotifier())->unseen_count();
         $title  = __('Medora AI', 'signteb-web-chat');
         $badge  = sprintf(
             ' <span class="awaiting-mod swc-menu-count"%s>%s</span>',

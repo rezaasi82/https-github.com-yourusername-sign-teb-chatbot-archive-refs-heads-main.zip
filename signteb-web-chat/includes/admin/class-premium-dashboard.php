@@ -1,20 +1,22 @@
 <?php
 /**
- * SWC_Premium_Dashboard — the premium admin landing page and integrity gate.
+ * \Medora\Admin\PremiumDashboard — the premium admin landing page and integrity gate.
  *
  * Self-registering service: it wires its own menu, conditionally-loaded assets
- * and AJAX endpoint. Wire it once from SWC_Plugin::boot() with:
+ * and AJAX endpoint. Wire it once from \Medora\Core\Plugin::boot() with:
  *
- *     ( new SWC_Premium_Dashboard() )->register();
+ *     ( new \Medora\Admin\PremiumDashboard() )->register();
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Admin;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Premium_Dashboard
+class PremiumDashboard
 {
     private const PAGE  = 'swc-dashboard';
     private const NONCE = 'swc_dashboard';
@@ -68,7 +70,7 @@ class SWC_Premium_Dashboard
 
         $integrity = $this->verify_integrity_gate();
         $metrics   = $this->metrics($days);
-        $settings  = new SWC_Settings();
+        $settings  = new \Medora\Core\Settings();
 
         include SWC_DIR . 'includes/admin/views/premium-dashboard.php';
     }
@@ -78,7 +80,7 @@ class SWC_Premium_Dashboard
      */
     public function ajax_integrity(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
             wp_send_json(['ok' => false], 403);
         }
@@ -97,7 +99,7 @@ class SWC_Premium_Dashboard
         try {
             $env_ok = defined('SWC_VERSION')
                 && defined('SWC_FILE')
-                && class_exists('SWC_Plugin');
+                && class_exists('\Medora\Core\Plugin');
 
             if ($env_ok === true) {
                 $verdict = ['ok' => true, 'level' => 'secure', 'label' => __('فعال و ایمن', 'signteb-web-chat'), 'code' => 200];
@@ -119,7 +121,7 @@ class SWC_Premium_Dashboard
     {
         // DB-derived numbers are cached briefly; the integrity gate is always
         // evaluated fresh (cheap + security-sensitive).
-        $data = SWC_Cache::remember('dash_metrics_' . $days, 300, function () use ($days) {
+        $data = \Medora\Core\Cache::remember('dash_metrics_' . $days, 300, function () use ($days) {
             $m = [
                 'active_chats' => 0, 'conversations' => 0, 'leads' => 0, 'hot_leads' => 0,
                 'conversion' => 0.0, 'booked' => 0,
@@ -127,8 +129,8 @@ class SWC_Premium_Dashboard
                 'revenue' => 0, 'funnel' => [],
             ];
             try {
-                $repo   = new SWC_Conversation_Repository();
-                $events = new SWC_Event_Repository();
+                $repo   = new \Medora\Database\ConversationRepository();
+                $events = new \Medora\Database\EventRepository();
                 $stats  = $repo->stats($days);
 
                 $m['active_chats']  = $repo->active_count(24);
@@ -141,7 +143,7 @@ class SWC_Premium_Dashboard
                 $m['funnel']        = $repo->funnel_counts($days);
 
                 // Revenue estimate = Leads × Conversion Rate × Average Service Price.
-                $avg_price    = (int) (new SWC_Settings())->get('avg_service_price', 0);
+                $avg_price    = (int) (new \Medora\Core\Settings())->get('avg_service_price', 0);
                 $m['revenue'] = (int) round($m['leads'] * ($m['conversion'] / 100) * $avg_price);
             } catch (\Throwable $e) {
                 $this->log_anomaly('metrics', $e);

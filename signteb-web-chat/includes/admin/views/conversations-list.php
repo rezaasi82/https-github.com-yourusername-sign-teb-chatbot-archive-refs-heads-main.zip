@@ -24,7 +24,7 @@ $dl_nonce = wp_create_nonce('swc_export');
 
 // Batched sync-status for the whole page (single query, no N+1).
 $lead_ids   = array_map(static fn($c) => (int) $c->id, $items);
-$status_map = (new SWC_Sync_Status())->for_leads($lead_ids);
+$status_map = (new \Medora\Export\SyncStatus())->for_leads($lead_ids);
 
 $score_badge = static function (?string $level): string {
     switch ($level) {
@@ -97,15 +97,15 @@ $score_badge = static function (?string $level): string {
                 <?php $lead_status = (string) ($c->lead_status ?? 'new'); ?>
                 <td>
                     <strong><?php echo esc_html($label); ?></strong>
-                    <span class="swc-status-pill" style="background:<?php echo esc_attr(SWC_Lead_CRM::color($lead_status)); ?>"><?php echo esc_html(SWC_Lead_CRM::label($lead_status)); ?></span>
+                    <span class="swc-status-pill" style="background:<?php echo esc_attr(\Medora\Crm\LeadCrm::color($lead_status)); ?>"><?php echo esc_html(\Medora\Crm\LeadCrm::label($lead_status)); ?></span>
                     <div class="swc-row-sub">#<?php echo esc_html($c->id); ?> · <?php echo esc_html($c->language); ?></div>
                 </td>
                 <td><?php echo $phone !== '' ? esc_html($phone) : '—'; ?></td>
                 <td><?php echo esc_html(mysql2date('Y/m/d H:i', $c->created_at)); ?></td>
                 <td><?php echo wp_kses_post($score_badge($c->lead_score ?? null)); ?></td>
-                <td><?php echo SWC_Sync_Status::badge($st['pdf']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
-                <td><?php echo SWC_Sync_Status::badge($st['google_sheets']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
-                <td><?php echo SWC_Sync_Status::badge($st['webhook']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+                <td><?php echo \Medora\Export\SyncStatus::badge($st['pdf']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+                <td><?php echo \Medora\Export\SyncStatus::badge($st['google_sheets']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+                <td><?php echo \Medora\Export\SyncStatus::badge($st['webhook']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
                 <td class="swc-actions">
                     <a class="button button-small" href="<?php echo esc_url($dl); ?>" target="_blank"><?php esc_html_e('دانلود PDF', 'signteb-web-chat'); ?></a>
                     <button type="button" class="button button-small swc-act" data-op="webhook" data-lead="<?php echo esc_attr($c->id); ?>">Webhook</button>

@@ -17,11 +17,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Notifications\Providers;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
+class SmsMelipayamak extends \Medora\Notifications\SmsProviderBase
 {
     private const CONSOLE = 'https://console.melipayamak.com/api/send';
     private const LEGACY  = 'https://rest.payamak-panel.com/api/SendSMS';
@@ -115,8 +117,8 @@ class SWC_Sms_Melipayamak extends SWC_Sms_Provider_Base
             if ($this->looks_like_webservice_key($key) && ! $this->looks_like_webservice_key($secret)) {
                 $swapped = $this->get_credit($secret, $key);
                 if ($swapped['ok']) {
-                    SWC_Sms_Manager::save_key($secret);
-                    SWC_Sms_Manager::save_secret($key);
+                    \Medora\Notifications\SmsManager::save_key($secret);
+                    \Medora\Notifications\SmsManager::save_secret($key);
                     return ['ok' => true, 'detail' => sprintf(__('جای دو فیلد برعکس بود؛ به‌طور خودکار اصلاح و ذخیره شد ✓ — اعتبار پنل: %s', 'signteb-web-chat'), $swapped['credit'])];
                 }
             }

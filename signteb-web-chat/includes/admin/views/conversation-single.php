@@ -49,13 +49,13 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
         <?php endif; ?>
     </div>
 
-    <div class="swc-crm-panel" data-lead="<?php echo esc_attr($conversation->id); ?>" data-nonce="<?php echo esc_attr(SWC_Lead_CRM::nonce()); ?>">
+    <div class="swc-crm-panel" data-lead="<?php echo esc_attr($conversation->id); ?>" data-nonce="<?php echo esc_attr(\Medora\Crm\LeadCrm::nonce()); ?>">
         <div class="swc-crm-title"><?php esc_html_e('مدیریت لید (CRM)', 'signteb-web-chat'); ?></div>
         <div class="swc-crm-grid">
             <label>
                 <span><?php esc_html_e('وضعیت لید', 'signteb-web-chat'); ?></span>
                 <select class="swc-crm-status">
-                    <?php foreach (SWC_Lead_CRM::STATUSES as $key => $def) : ?>
+                    <?php foreach (\Medora\Crm\LeadCrm::STATUSES as $key => $def) : ?>
                         <option value="<?php echo esc_attr($key); ?>" <?php selected((string) ($conversation->lead_status ?? 'new'), $key); ?>><?php echo esc_html($def[0]); ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -90,10 +90,10 @@ $back = admin_url('admin.php?page=swc-chat&tab=conversations');
         </div>
 
         <?php
-        $ref_text  = SWC_Lead_CRM::referral_text($conversation);
-        $sms_mgr   = new SWC_Sms_Manager();
+        $ref_text  = \Medora\Crm\LeadCrm::referral_text($conversation);
+        $sms_mgr   = new \Medora\Notifications\SmsManager();
         $sms_ready = $sms_mgr->is_configured();
-        $messengers = SWC_Sms_Manager::messenger_links((string) ($conversation->patient_phone ?? ''), $ref_text);
+        $messengers = \Medora\Notifications\SmsManager::messenger_links((string) ($conversation->patient_phone ?? ''), $ref_text);
         ?>
         <div class="swc-refer" data-lead="<?php echo esc_attr($conversation->id); ?>" data-text="<?php echo esc_attr($ref_text); ?>">
             <div class="swc-crm-title"><?php esc_html_e('ارجاع لید به همکار', 'signteb-web-chat'); ?></div>

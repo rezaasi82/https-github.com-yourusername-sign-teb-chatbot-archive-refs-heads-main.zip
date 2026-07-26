@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_System_Prompt_Builder — builds the per-request system prompt.
+ * \Medora\Ai\SystemPromptBuilder — builds the per-request system prompt.
  *
  * Everything is sourced from the plugin's own settings (this product is
  * standalone — it never reads from another plugin's CPTs or tables): clinic
@@ -10,15 +10,17 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_System_Prompt_Builder
+class SystemPromptBuilder
 {
-    private SWC_Settings $settings;
+    private \Medora\Core\Settings $settings;
 
-    public function __construct(SWC_Settings $settings)
+    public function __construct(\Medora\Core\Settings $settings)
     {
         $this->settings = $settings;
     }

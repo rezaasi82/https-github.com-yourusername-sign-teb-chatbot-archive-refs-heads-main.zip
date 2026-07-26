@@ -1,18 +1,20 @@
 <?php
 /**
- * SWC_Chat_Ajax_Handler — admin-ajax.php fallback transport.
+ * \Medora\Ajax\ChatAjaxHandler — admin-ajax.php fallback transport.
  *
  * For hosts that restrict the REST API. Same contract and security posture as
- * SWC_Chat_Controller.
+ * \Medora\Rest\ChatController.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Ajax;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Chat_Ajax_Handler
+class ChatAjaxHandler
 {
     public function register(): void
     {
@@ -24,18 +26,18 @@ class SWC_Chat_Ajax_Handler
 
     public function handle(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
 
         if (! check_ajax_referer('swc_chat_nonce', 'nonce', false)) {
             wp_send_json(['ok' => false, 'code' => 'bad_nonce', 'error' => __('درخواست نامعتبر است.', 'signteb-web-chat')], 403);
         }
 
-        $result = (new SWC_AI_Manager())->handle([
-            'session_id' => SWC_Sanitizer::session_id((string) ($_POST['session_id'] ?? '')),
+        $result = (new \Medora\Ai\AiManager())->handle([
+            'session_id' => \Medora\Rest\Sanitizer::session_id((string) ($_POST['session_id'] ?? '')),
             'message'    => sanitize_textarea_field(wp_unslash((string) ($_POST['message'] ?? ''))),
-            'name'       => SWC_Sanitizer::name(wp_unslash((string) ($_POST['name'] ?? ''))),
-            'phone'      => SWC_Sanitizer::phone(wp_unslash((string) ($_POST['phone'] ?? ''))),
-            'ip'         => SWC_Sanitizer::client_ip(),
+            'name'       => \Medora\Rest\Sanitizer::name(wp_unslash((string) ($_POST['name'] ?? ''))),
+            'phone'      => \Medora\Rest\Sanitizer::phone(wp_unslash((string) ($_POST['phone'] ?? ''))),
+            'ip'         => \Medora\Rest\Sanitizer::client_ip(),
             'page_url'   => esc_url_raw(wp_unslash((string) ($_POST['page_url'] ?? ''))),
             'branch'     => absint($_POST['branch'] ?? 0),
             'user_id'    => get_current_user_id() ?: null,
@@ -47,20 +49,20 @@ class SWC_Chat_Ajax_Handler
 
     public function handle_event(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
 
         if (! check_ajax_referer('swc_chat_nonce', 'nonce', false)) {
             wp_send_json(['ok' => false], 403);
         }
-        if (! SWC_Security::rate_limit('event', 60, MINUTE_IN_SECONDS)) {
+        if (! \Medora\Security\Security::rate_limit('event', 60, MINUTE_IN_SECONDS)) {
             wp_send_json(['ok' => false, 'error' => 'rate_limited'], 429);
         }
 
         $type = sanitize_key((string) ($_POST['type'] ?? ''));
         $cid  = absint($_POST['conversation_id'] ?? 0);
-        $ok   = (new SWC_Event_Repository())->record($type, $cid);
+        $ok   = (new \Medora\Database\EventRepository())->record($type, $cid);
         if ($ok && $type === 'booking' && $cid > 0) {
-            (new SWC_Conversation_Repository())->set_booking_status($cid, 'clicked');
+            (new \Medora\Database\ConversationRepository())->set_booking_status($cid, 'clicked');
         }
         wp_send_json(['ok' => $ok], $ok ? 200 : 400);
     }

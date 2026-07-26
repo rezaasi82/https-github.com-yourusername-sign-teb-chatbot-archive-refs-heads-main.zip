@@ -2,7 +2,7 @@
 /**
  * Tabbed settings content (provider | clinic | appearance | integrations).
  *
- * @var SWC_Settings        $s
+ * @var \Medora\Core\Settings        $s
  * @var string              $tab
  *
  * @package SignTeb_Web_Chat
@@ -221,8 +221,8 @@ if (! defined('ABSPATH')) {
 
     <?php elseif ($tab === 'integrations') : ?>
         <?php
-        $webhook = new SWC_Webhook_Manager();
-        $gsheet  = new SWC_Google_Sheets();
+        $webhook = new \Medora\Export\WebhookManager();
+        $gsheet  = new \Medora\Export\GoogleSheets();
         ?>
         <h2 class="title"><?php esc_html_e('Webhook (n8n / Make / Zapier / CRM)', 'signteb-web-chat'); ?></h2>
         <table class="form-table" role="presentation">
@@ -259,10 +259,10 @@ if (! defined('ABSPATH')) {
         <table class="form-table" role="presentation">
             <tr><th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="cloud_enabled" value="1" <?php checked($s->get('cloud_enabled', 0), 1); ?>> <?php esc_html_e('ارسال heartbeat روزانه به Medora Cloud', 'signteb-web-chat'); ?></label></td></tr>
             <tr><th><?php esc_html_e('آدرس Cloud', 'signteb-web-chat'); ?></th><td><input type="url" name="cloud_endpoint" value="<?php echo esc_attr($s->get('cloud_endpoint')); ?>" class="large-text" placeholder="https://cloud.medora.ai/v1/heartbeat"></td></tr>
-            <tr><th><?php esc_html_e('کلید امنیتی', 'signteb-web-chat'); ?></th><td><input type="password" name="cloud_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo (new SWC_Cloud_Client())->secret() !== '' ? '••••••••' : ''; ?>"></td></tr>
+            <tr><th><?php esc_html_e('کلید امنیتی', 'signteb-web-chat'); ?></th><td><input type="password" name="cloud_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo (new \Medora\Cloud\CloudClient())->secret() !== '' ? '••••••••' : ''; ?>"></td></tr>
         </table>
 
-        <?php $sms = new SWC_Sms_Manager(); $sms_active = $sms->active_id(); ?>
+        <?php $sms = new \Medora\Notifications\SmsManager(); $sms_active = $sms->active_id(); ?>
         <h2 class="title"><?php esc_html_e('پنل پیامک و پیام‌رسان', 'signteb-web-chat'); ?></h2>
         <p class="description"><?php esc_html_e('اتصال به پنل‌های پیامکی ایرانی یا سرویس خارجی. فقط کافی است سرویس را انتخاب و «کد فعال‌سازی/کلید API» پنل خود را وارد کنید.', 'signteb-web-chat'); ?></p>
         <table class="form-table" role="presentation">
@@ -284,13 +284,13 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('APIKey (کد فعال‌سازی وب‌سرویس)', 'signteb-web-chat'); ?></th>
                 <td>
-                    <input type="password" name="sms_key" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::key() !== '' ? '•••••••• (ذخیره شده)' : esc_attr__('APIKey دریافتی از پنل پیامکی', 'signteb-web-chat'); ?>">
+                    <input type="password" name="sms_key" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo \Medora\Notifications\SmsManager::key() !== '' ? '•••••••• (ذخیره شده)' : esc_attr__('APIKey دریافتی از پنل پیامکی', 'signteb-web-chat'); ?>">
                     <p class="description"><?php esc_html_e('همان کلید وب‌سرویس که پنل پیامکی در بخش «وب‌سرویس/توسعه‌دهندگان» می‌دهد. رمزنگاری‌شده ذخیره می‌شود و فقط با وارد کردن مقدار جدید تغییر می‌کند.', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
             <tr class="swc-sms-secret-row">
                 <th><?php esc_html_e('رمز عبور (ملی‌پیامک — حالت نام‌کاربری/رمز)', 'signteb-web-chat'); ?></th>
-                <td><input type="password" name="sms_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Sms_Manager::secret() !== '' ? '••••••••' : ''; ?>"></td>
+                <td><input type="password" name="sms_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo \Medora\Notifications\SmsManager::secret() !== '' ? '••••••••' : ''; ?>"></td>
             </tr>
             <tr>
                 <th><?php esc_html_e('شماره فرستنده (خط) — اختیاری', 'signteb-web-chat'); ?></th>
@@ -386,7 +386,7 @@ if (! defined('ABSPATH')) {
 
         <h2 class="title"><?php esc_html_e('اعلان لید در پیام‌رسان (بله / تلگرام)', 'signteb-web-chat'); ?></h2>
         <p class="description"><?php esc_html_e('با هر لید جدید، یک اعلان فوری به گروه یا کانال کلینیک شما در بله/تلگرام ارسال می‌شود. کافی است یک ربات بسازید و توکن + شناسه چت را وارد کنید.', 'signteb-web-chat'); ?></p>
-        <?php $msgr = new SWC_Messenger_Notifier(); ?>
+        <?php $msgr = new \Medora\Notifications\MessengerNotifier(); ?>
         <table class="form-table" role="presentation">
             <?php foreach ($msgr->channels() as $ch => $cdef) : ?>
                 <tr>
@@ -394,7 +394,7 @@ if (! defined('ABSPATH')) {
                     <td>
                         <label><input type="checkbox" name="msgr_<?php echo esc_attr($ch); ?>_enabled" value="1" <?php checked($s->get('msgr_' . $ch . '_enabled', 0), 1); ?>> <?php esc_html_e('فعال', 'signteb-web-chat'); ?></label>
                         <br>
-                        <input type="password" name="msgr_<?php echo esc_attr($ch); ?>_token" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo SWC_Messenger_Notifier::token($ch) !== '' ? '•••••••• (توکن ربات)' : esc_attr__('توکن ربات', 'signteb-web-chat'); ?>" style="margin:4px 0">
+                        <input type="password" name="msgr_<?php echo esc_attr($ch); ?>_token" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo \Medora\Notifications\MessengerNotifier::token($ch) !== '' ? '•••••••• (توکن ربات)' : esc_attr__('توکن ربات', 'signteb-web-chat'); ?>" style="margin:4px 0">
                         <input type="text" name="msgr_<?php echo esc_attr($ch); ?>_chat" value="<?php echo esc_attr($s->get('msgr_' . $ch . '_chat')); ?>" class="regular-text" placeholder="<?php esc_attr_e('شناسه چت (chat_id)', 'signteb-web-chat'); ?>" style="margin:4px 0">
                         <button type="button" class="button swc-msgr-test-btn" data-channel="<?php echo esc_attr($ch); ?>"><?php esc_html_e('تست', 'signteb-web-chat'); ?></button>
                         <span class="swc-test-result" data-for="msgr-<?php echo esc_attr($ch); ?>"></span>

@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Sync_Log_Repository — records export / integration attempts and results.
+ * \Medora\Database\SyncLogRepository — records export / integration attempts and results.
  *
  * One row per attempt to send a lead to an external target (webhook, Google
  * Sheets) or to generate a PDF. Powers the sync-status badges and the retry
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Database;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Sync_Log_Repository
+class SyncLogRepository
 {
     public const PROVIDERS = ['webhook', 'google_sheets', 'pdf'];
     public const STATUSES  = ['pending', 'queued', 'success', 'failed'];
@@ -26,7 +28,7 @@ class SWC_Sync_Log_Repository
         global $wpdb;
         $now = current_time('mysql');
         $wpdb->insert(
-            SWC_Schema::sync_logs_table(),
+            \Medora\Database\Schema::sync_logs_table(),
             [
                 'lead_id'     => $lead_id,
                 'provider'    => $provider,
@@ -60,7 +62,7 @@ class SWC_Sync_Log_Repository
             $data['duration_ms'] = (int) $extra['duration_ms'];
             $formats[]           = '%d';
         }
-        $wpdb->update(SWC_Schema::sync_logs_table(), $data, ['id' => $id], $formats, ['%d']);
+        $wpdb->update(\Medora\Database\Schema::sync_logs_table(), $data, ['id' => $id], $formats, ['%d']);
     }
 
     /**
@@ -71,7 +73,7 @@ class SWC_Sync_Log_Repository
     public function latest_for_lead(int $lead_id): array
     {
         global $wpdb;
-        $table = SWC_Schema::sync_logs_table();
+        $table = \Medora\Database\Schema::sync_logs_table();
         $rows  = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT s.* FROM {$table} s
@@ -104,7 +106,7 @@ class SWC_Sync_Log_Repository
             return [];
         }
         global $wpdb;
-        $table        = SWC_Schema::sync_logs_table();
+        $table        = \Medora\Database\Schema::sync_logs_table();
         $placeholders = implode(',', array_fill(0, count($lead_ids), '%d'));
 
         // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -129,7 +131,7 @@ class SWC_Sync_Log_Repository
     public function has_success(int $lead_id, string $provider): bool
     {
         global $wpdb;
-        $table = SWC_Schema::sync_logs_table();
+        $table = \Medora\Database\Schema::sync_logs_table();
         return (bool) $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT 1 FROM {$table} WHERE lead_id = %d AND provider = %s AND status = 'success' LIMIT 1",
@@ -143,7 +145,7 @@ class SWC_Sync_Log_Repository
     public function failed(string $provider, int $limit = 50): array
     {
         global $wpdb;
-        $table = SWC_Schema::sync_logs_table();
+        $table = \Medora\Database\Schema::sync_logs_table();
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$table} WHERE provider = %s AND status = 'failed' ORDER BY id DESC LIMIT %d",
@@ -157,7 +159,7 @@ class SWC_Sync_Log_Repository
     public function recent(int $limit = 100): array
     {
         global $wpdb;
-        $table = SWC_Schema::sync_logs_table();
+        $table = \Medora\Database\Schema::sync_logs_table();
         return $wpdb->get_results(
             $wpdb->prepare("SELECT * FROM {$table} ORDER BY id DESC LIMIT %d", $limit)
         ) ?: [];

@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Cache — small caching helper over the transient / object cache.
+ * \Medora\Core\Cache — small caching helper over the transient / object cache.
  *
  * Keys are namespaced by a version counter so a single bump invalidates every
  * cached value at once (called when leads/messages change). Uses the object
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Core;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Cache
+class Cache
 {
     private const VERSION_OPTION = 'swc_cache_version';
 

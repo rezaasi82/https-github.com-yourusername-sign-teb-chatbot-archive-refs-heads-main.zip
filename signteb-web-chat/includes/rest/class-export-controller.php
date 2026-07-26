@@ -1,18 +1,20 @@
 <?php
 /**
- * SWC_Export_Controller — admin REST API for leads and exports.
+ * \Medora\Rest\ExportController — admin REST API for leads and exports.
  *
  * All routes require the manage_options capability. Read routes return lead
- * data; write routes trigger an export target through SWC_Export_Manager.
+ * data; write routes trigger an export target through \Medora\Export\ExportManager.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Rest;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Export_Controller
+class ExportController
 {
     private const REST_NAMESPACE = 'medora/v1';
 
@@ -54,10 +56,10 @@ class SWC_Export_Controller
         return current_user_can('manage_options');
     }
 
-    public function get_leads(WP_REST_Request $request): WP_REST_Response
+    public function get_leads(\WP_REST_Request $request): \WP_REST_Response
     {
-        SWC_Json_Guard::arm();
-        $repo     = new SWC_Conversation_Repository();
+        \Medora\Core\JsonGuard::arm();
+        $repo     = new \Medora\Database\ConversationRepository();
         $page     = max(1, (int) $request->get_param('page'));
         $per_page = min(100, max(1, (int) ($request->get_param('per_page') ?: 20)));
         $filters  = ['leads_only' => (bool) $request->get_param('leads_only')];
@@ -74,7 +76,7 @@ class SWC_Export_Controller
             ];
         }, $repo->paginate($page, $per_page, $filters));
 
-        return new WP_REST_Response([
+        return new \WP_REST_Response([
             'ok'    => true,
             'total' => $repo->count($filters),
             'page'  => $page,
@@ -82,31 +84,31 @@ class SWC_Export_Controller
         ]);
     }
 
-    public function get_lead(WP_REST_Request $request): WP_REST_Response
+    public function get_lead(\WP_REST_Request $request): \WP_REST_Response
     {
-        SWC_Json_Guard::arm();
-        $payload = (new SWC_Lead_Payload())->build((int) $request['id']);
+        \Medora\Core\JsonGuard::arm();
+        $payload = (new \Medora\Export\LeadPayload())->build((int) $request['id']);
         if ($payload === null) {
-            return new WP_REST_Response(['ok' => false, 'error' => 'not_found'], 404);
+            return new \WP_REST_Response(['ok' => false, 'error' => 'not_found'], 404);
         }
-        return new WP_REST_Response(['ok' => true, 'lead' => $payload]);
+        return new \WP_REST_Response(['ok' => true, 'lead' => $payload]);
     }
 
-    public function export_pdf(WP_REST_Request $request): WP_REST_Response
+    public function export_pdf(\WP_REST_Request $request): \WP_REST_Response
     {
-        SWC_Json_Guard::arm();
-        return new WP_REST_Response((new SWC_Export_Manager())->export_pdf((int) $request->get_param('lead_id')));
+        \Medora\Core\JsonGuard::arm();
+        return new \WP_REST_Response((new \Medora\Export\ExportManager())->export_pdf((int) $request->get_param('lead_id')));
     }
 
-    public function export_webhook(WP_REST_Request $request): WP_REST_Response
+    public function export_webhook(\WP_REST_Request $request): \WP_REST_Response
     {
-        SWC_Json_Guard::arm();
-        return new WP_REST_Response((new SWC_Export_Manager())->export_webhook((int) $request->get_param('lead_id'), 'manual'));
+        \Medora\Core\JsonGuard::arm();
+        return new \WP_REST_Response((new \Medora\Export\ExportManager())->export_webhook((int) $request->get_param('lead_id'), 'manual'));
     }
 
-    public function export_google_sheet(WP_REST_Request $request): WP_REST_Response
+    public function export_google_sheet(\WP_REST_Request $request): \WP_REST_Response
     {
-        SWC_Json_Guard::arm();
-        return new WP_REST_Response((new SWC_Export_Manager())->export_google_sheet((int) $request->get_param('lead_id')));
+        \Medora\Core\JsonGuard::arm();
+        return new \WP_REST_Response((new \Medora\Export\ExportManager())->export_google_sheet((int) $request->get_param('lead_id')));
     }
 }

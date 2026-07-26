@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Deactivator — deactivation cleanup.
+ * \Medora\Core\Deactivator — deactivation cleanup.
  *
  * Tables are intentionally NOT dropped here; data is only removed on uninstall
  * (uninstall.php) so a deactivate/reactivate cycle never destroys history.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Core;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Deactivator
+class Deactivator
 {
     public static function deactivate(): void
     {

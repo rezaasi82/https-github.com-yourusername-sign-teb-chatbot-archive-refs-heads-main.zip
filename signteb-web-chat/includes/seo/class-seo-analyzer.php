@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Seo_Analyzer — mines the conversation history for SEO signals.
+ * \Medora\Seo\SeoAnalyzer — mines the conversation history for SEO signals.
  *
  * Extracts the most frequent opening questions, high-value keywords (stopwords
  * removed), and which of the clinic's services are trending in chats. Heavy
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Seo;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Seo_Analyzer
+class SeoAnalyzer
 {
     /** Words to ignore when ranking keywords (Persian + generic). */
     private const STOPWORDS = [
@@ -31,9 +33,9 @@ class SWC_Seo_Analyzer
      */
     public function top_questions(int $days = 30, int $limit = 15): array
     {
-        return SWC_Cache::remember('seo_q_' . $days . '_' . $limit, 600, function () use ($days, $limit) {
+        return \Medora\Core\Cache::remember('seo_q_' . $days . '_' . $limit, 600, function () use ($days, $limit) {
             global $wpdb;
-            $messages = SWC_Schema::messages_table();
+            $messages = \Medora\Database\Schema::messages_table();
             $since    = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
             return $wpdb->get_results(
                 $wpdb->prepare(
@@ -54,7 +56,7 @@ class SWC_Seo_Analyzer
      */
     public function keywords(int $days = 30, int $limit = 30): array
     {
-        return SWC_Cache::remember('seo_kw_' . $days . '_' . $limit, 600, function () use ($days, $limit) {
+        return \Medora\Core\Cache::remember('seo_kw_' . $days . '_' . $limit, 600, function () use ($days, $limit) {
             $counts = [];
             foreach ($this->recent_user_texts($days) as $text) {
                 $tokens = preg_split('/[^\p{L}\p{N}\x{200c}]+/u', mb_strtolower($text)) ?: [];
@@ -78,10 +80,10 @@ class SWC_Seo_Analyzer
      */
     public function topics(int $days = 30): array
     {
-        return SWC_Cache::remember('seo_topics_' . $days, 600, function () use ($days) {
+        return \Medora\Core\Cache::remember('seo_topics_' . $days, 600, function () use ($days) {
             $services = array_map(
                 static fn($s) => (string) $s['name'],
-                (new SWC_System_Prompt_Builder(new SWC_Settings()))->services()
+                (new \Medora\Ai\SystemPromptBuilder(new \Medora\Core\Settings()))->services()
             );
             if ($services === []) {
                 return [];
@@ -109,7 +111,7 @@ class SWC_Seo_Analyzer
     private function recent_user_texts(int $days, int $cap = 3000): array
     {
         global $wpdb;
-        $messages = SWC_Schema::messages_table();
+        $messages = \Medora\Database\Schema::messages_table();
         $since    = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
         $rows     = $wpdb->get_col(
             $wpdb->prepare(

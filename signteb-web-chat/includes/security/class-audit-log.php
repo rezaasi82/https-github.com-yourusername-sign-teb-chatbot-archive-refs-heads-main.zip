@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Audit_Log — security & admin event trail.
+ * \Medora\Security\AuditLog — security & admin event trail.
  *
  * Records who did what (settings changes, exports, branch
  * edits, denied/locked-out attempts, integrity anomalies) with IP and time.
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Security;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Audit_Log
+class AuditLog
 {
     private const PAGE = 'swc-security';
 
@@ -38,13 +40,13 @@ class SWC_Audit_Log
         $severity = in_array($args['severity'] ?? 'info', self::SEVERITIES, true) ? $args['severity'] : 'info';
 
         $wpdb->insert(
-            SWC_Schema::audit_logs_table(),
+            \Medora\Database\Schema::audit_logs_table(),
             [
                 'user_id'    => get_current_user_id() ?: null,
                 'action'     => substr($action, 0, 48),
                 'object'     => isset($args['object']) ? substr((string) $args['object'], 0, 64) : null,
                 'severity'   => $severity,
-                'ip'         => class_exists('SWC_Security') ? SWC_Security::ip() : null,
+                'ip'         => class_exists('\Medora\Security\Security') ? \Medora\Security\Security::ip() : null,
                 'detail'     => isset($args['detail']) ? substr((string) $args['detail'], 0, 255) : null,
                 'created_at' => current_time('mysql'),
             ],
@@ -53,7 +55,7 @@ class SWC_Audit_Log
 
         // Cheap probabilistic retention (~90 days).
         if (wp_rand(1, 50) === 1) {
-            $table = SWC_Schema::audit_logs_table();
+            $table = \Medora\Database\Schema::audit_logs_table();
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->query("DELETE FROM {$table} WHERE created_at < UTC_TIMESTAMP() - INTERVAL 90 DAY");
         }
@@ -63,7 +65,7 @@ class SWC_Audit_Log
     public static function recent(int $limit = 100): array
     {
         global $wpdb;
-        $table = SWC_Schema::audit_logs_table();
+        $table = \Medora\Database\Schema::audit_logs_table();
         return $wpdb->get_results(
             $wpdb->prepare("SELECT * FROM {$table} ORDER BY id DESC LIMIT %d", $limit)
         ) ?: [];

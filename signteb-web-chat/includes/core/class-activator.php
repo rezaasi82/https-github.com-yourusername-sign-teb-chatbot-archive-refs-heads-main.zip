@@ -1,22 +1,24 @@
 <?php
 /**
- * SWC_Activator — runs on activation: builds tables and seeds defaults.
+ * \Medora\Core\Activator — runs on activation: builds tables and seeds defaults.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Core;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Activator
+class Activator
 {
     public static function activate(): void
     {
-        SWC_Schema::install();
+        \Medora\Database\Schema::install();
         self::seed_default_settings();
-        if (! wp_next_scheduled(SWC_Rollup::CRON)) {
-            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', SWC_Rollup::CRON);
+        if (! wp_next_scheduled(\Medora\Jobs\Rollup::CRON)) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', \Medora\Jobs\Rollup::CRON);
         }
         flush_rewrite_rules();
     }
@@ -26,11 +28,11 @@ class SWC_Activator
      */
     public static function maybe_upgrade(): void
     {
-        if (get_option('swc_db_version') !== SWC_Schema::DB_VERSION) {
-            SWC_Schema::install();
+        if (get_option('swc_db_version') !== \Medora\Database\Schema::DB_VERSION) {
+            \Medora\Database\Schema::install();
         }
-        if (! wp_next_scheduled(SWC_Rollup::CRON)) {
-            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', SWC_Rollup::CRON);
+        if (! wp_next_scheduled(\Medora\Jobs\Rollup::CRON)) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', \Medora\Jobs\Rollup::CRON);
         }
     }
 
@@ -88,10 +90,10 @@ class SWC_Activator
 
     private static function seed_default_settings(): void
     {
-        $existing = get_option(SWC_Settings::OPTION, []);
+        $existing = get_option(\Medora\Core\Settings::OPTION, []);
         if (! is_array($existing)) {
             $existing = [];
         }
-        update_option(SWC_Settings::OPTION, array_merge(self::default_settings(), $existing));
+        update_option(\Medora\Core\Settings::OPTION, array_merge(self::default_settings(), $existing));
     }
 }

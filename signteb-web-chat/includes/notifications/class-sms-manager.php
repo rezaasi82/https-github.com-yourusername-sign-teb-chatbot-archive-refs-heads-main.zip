@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Sms_Manager — the SMS/messaging hub.
+ * \Medora\Notifications\SmsManager — the SMS/messaging hub.
  *
  * - Factory for the configured SMS gateway (Iranian panels + a custom HTTP
  *   provider for foreign services).
@@ -14,29 +14,31 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Notifications;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Sms_Manager
+class SmsManager
 {
     public const OPTION_KEY    = 'swc_sms_key_enc';
     public const OPTION_SECRET = 'swc_sms_secret_enc';
 
     /** id => provider class. Add a panel by adding one line + one class. */
     private const PROVIDERS = [
-        'kavenegar'   => 'SWC_Sms_Kavenegar',
-        'melipayamak' => 'SWC_Sms_Melipayamak',
-        'smsir'       => 'SWC_Sms_Smsir',
-        'ghasedak'    => 'SWC_Sms_Ghasedak',
-        'custom'      => 'SWC_Sms_Custom',
+        'kavenegar'   => '\Medora\Notifications\Providers\SmsKavenegar',
+        'melipayamak' => '\Medora\Notifications\Providers\SmsMelipayamak',
+        'smsir'       => '\Medora\Notifications\Providers\SmsSmsir',
+        'ghasedak'    => '\Medora\Notifications\Providers\SmsGhasedak',
+        'custom'      => '\Medora\Notifications\Providers\SmsCustom',
     ];
 
-    private SWC_Settings $settings;
+    private \Medora\Core\Settings $settings;
 
-    public function __construct(?SWC_Settings $settings = null)
+    public function __construct(?\Medora\Core\Settings $settings = null)
     {
-        $this->settings = $settings ?? new SWC_Settings();
+        $this->settings = $settings ?? new \Medora\Core\Settings();
     }
 
     /* -------------------- providers -------------------- */
@@ -57,7 +59,7 @@ class SWC_Sms_Manager
         return isset(self::PROVIDERS[$id]) ? $id : 'kavenegar';
     }
 
-    public function active(): ?SWC_Sms_Provider_Interface
+    public function active(): ?\Medora\Notifications\SmsProviderInterface
     {
         $class = self::PROVIDERS[$this->active_id()] ?? '';
         return $class !== '' ? new $class($this->settings) : null;
@@ -93,7 +95,7 @@ class SWC_Sms_Manager
         if ($text === '') {
             return ['ok' => false, 'error' => __('متن پیام خالی است.', 'signteb-web-chat')];
         }
-        return $this->dispatch(static fn(SWC_Sms_Provider_Interface $p) => $p->send($to, $text));
+        return $this->dispatch(static fn(\Medora\Notifications\SmsProviderInterface $p) => $p->send($to, $text));
     }
 
     /**
@@ -111,7 +113,7 @@ class SWC_Sms_Manager
         $code     = $this->template_code($template_key);
         $order    = $this->template_vars($template_key);
 
-        return $this->dispatch(function (SWC_Sms_Provider_Interface $p) use ($to, $tpl_text, $code, $vars, $order) {
+        return $this->dispatch(function (\Medora\Notifications\SmsProviderInterface $p) use ($to, $tpl_text, $code, $vars, $order) {
             if ($code !== '' && $p->supports_pattern()) {
                 return $p->send_pattern($to, $code, $this->ordered_params($tpl_text, $vars, $order));
             }
@@ -138,7 +140,7 @@ class SWC_Sms_Manager
     /**
      * Shared guard + provider resolution + audit around any send call.
      *
-     * @param callable(SWC_Sms_Provider_Interface):array $call
+     * @param callable(\Medora\Notifications\SmsProviderInterface):array $call
      * @return array{ok:bool,error?:string,code?:int}
      */
     private function dispatch(callable $call): array
@@ -151,7 +153,7 @@ class SWC_Sms_Manager
             return ['ok' => false, 'error' => __('سرویس پیامک نامعتبر است.', 'signteb-web-chat')];
         }
         $result = $call($provider);
-        SWC_Audit_Log::record('sms_send', ['object' => $provider->id(), 'severity' => ! empty($result['ok']) ? 'info' : 'warning']);
+        \Medora\Security\AuditLog::record('sms_send', ['object' => $provider->id(), 'severity' => ! empty($result['ok']) ? 'info' : 'warning']);
         return $result;
     }
 
@@ -217,13 +219,13 @@ class SWC_Sms_Manager
     public static function key(): string
     {
         $enc = get_option(self::OPTION_KEY, '');
-        return is_string($enc) && $enc !== '' ? SWC_Encryption::decrypt($enc) : '';
+        return is_string($enc) && $enc !== '' ? \Medora\Core\Encryption::decrypt($enc) : '';
     }
 
     public static function secret(): string
     {
         $enc = get_option(self::OPTION_SECRET, '');
-        return is_string($enc) && $enc !== '' ? SWC_Encryption::decrypt($enc) : '';
+        return is_string($enc) && $enc !== '' ? \Medora\Core\Encryption::decrypt($enc) : '';
     }
 
     public static function save_key(string $plain): void
@@ -243,7 +245,7 @@ class SWC_Sms_Manager
             delete_option($option);
             return;
         }
-        update_option($option, SWC_Encryption::encrypt($plain), false);
+        update_option($option, \Medora\Core\Encryption::encrypt($plain), false);
     }
 
     /* -------------------- templates -------------------- */
@@ -346,7 +348,7 @@ class SWC_Sms_Manager
             'name'    => trim((string) ($c->patient_name ?? '')) ?: __('کاربر', 'signteb-web-chat'),
             'phone'   => trim((string) ($c->patient_phone ?? '')),
             'score'   => $scores[$c->lead_score ?? ''] ?? '—',
-            'status'  => SWC_Lead_CRM::label((string) ($c->lead_status ?? 'new')),
+            'status'  => \Medora\Crm\LeadCrm::label((string) ($c->lead_status ?? 'new')),
             'clinic'  => (string) $this->settings->get('clinic_name', get_bloginfo('name')),
             'summary' => trim((string) ($c->summary ?? '')),
             'optout'  => $this->optout_text(),

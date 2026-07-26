@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Summary_Builder — builds a structured conversation summary for the
+ * \Medora\Ai\SummaryBuilder — builds a structured conversation summary for the
  * dashboard (name, phone, topic, needed services, booking probability, status).
  *
  * Heuristic and instant (no extra API call): the topic is derived from the
@@ -11,15 +11,17 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Summary_Builder
+class SummaryBuilder
 {
-    private SWC_Settings $settings;
+    private \Medora\Core\Settings $settings;
 
-    public function __construct(SWC_Settings $settings)
+    public function __construct(\Medora\Core\Settings $settings)
     {
         $this->settings = $settings;
     }
@@ -62,7 +64,7 @@ class SWC_Summary_Builder
     {
         $text = mb_strtolower($text);
         $out  = [];
-        foreach ((new SWC_System_Prompt_Builder($this->settings))->services() as $service) {
+        foreach ((new \Medora\Ai\SystemPromptBuilder($this->settings))->services() as $service) {
             $name = trim((string) $service['name']);
             if ($name !== '' && mb_strpos($text, mb_strtolower($name)) !== false) {
                 $out[] = $name;

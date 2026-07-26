@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Stats_Page — dashboard: conversation volume, CTA conversion rate, and
+ * \Medora\Admin\StatsPage — dashboard: conversation volume, CTA conversion rate, and
  * the most frequent opening questions (a Content-Gap signal for SEO).
  *
  * Rendered inside the tabbed settings screen.
@@ -8,20 +8,22 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Admin;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Stats_Page
+class StatsPage
 {
     public function render_inner(): void
     {
         if (! current_user_can('manage_options')) {
             return;
         }
-        $repo     = new SWC_Conversation_Repository();
-        $events   = new SWC_Event_Repository();
-        $settings = new SWC_Settings();
+        $repo     = new \Medora\Database\ConversationRepository();
+        $events   = new \Medora\Database\EventRepository();
+        $settings = new \Medora\Core\Settings();
         $stats    = $repo->stats(30);
         $clicks   = $events->counts(30);
         $daily    = $repo->daily(14);
@@ -29,7 +31,7 @@ class SWC_Stats_Page
         $top      = $this->top_questions();
         $services = array_map(
             static fn($s) => (string) $s['name'],
-            (new SWC_System_Prompt_Builder($settings))->services()
+            (new \Medora\Ai\SystemPromptBuilder($settings))->services()
         );
         $demand  = $repo->service_demand($services, 30);
 
@@ -44,7 +46,7 @@ class SWC_Stats_Page
     private function top_questions(int $limit = 10): array
     {
         global $wpdb;
-        $messages = SWC_Schema::messages_table();
+        $messages = \Medora\Database\Schema::messages_table();
         $since    = gmdate('Y-m-d H:i:s', time() - (30 * DAY_IN_SECONDS));
 
         return $wpdb->get_results(

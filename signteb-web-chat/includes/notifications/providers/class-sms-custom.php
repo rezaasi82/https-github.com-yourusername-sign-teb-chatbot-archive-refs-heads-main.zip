@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Notifications\Providers;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Sms_Custom extends SWC_Sms_Provider_Base
+class SmsCustom extends \Medora\Notifications\SmsProviderBase
 {
     public function id(): string
     {

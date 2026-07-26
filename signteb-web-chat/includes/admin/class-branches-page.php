@@ -1,16 +1,18 @@
 <?php
 /**
- * SWC_Branches_Page — manage clinics / doctors / branches and show each
+ * \Medora\Admin\BranchesPage — manage clinics / doctors / branches and show each
  * branch's own statistics (multi-clinic support).
  *
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Admin;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Branches_Page
+class BranchesPage
 {
     private const NONCE = 'swc_branches';
 
@@ -49,14 +51,14 @@ class SWC_Branches_Page
         ];
 
         if ($data['name'] !== '') {
-            $repo = new SWC_Branch_Repository();
+            $repo = new \Medora\Database\BranchRepository();
             $id   = absint($in['branch_id'] ?? 0);
             if ($id > 0 && $repo->exists($id)) {
                 $repo->update($id, $data);
-                SWC_Audit_Log::record('branch_updated', ['object' => 'branch#' . $id]);
+                \Medora\Security\AuditLog::record('branch_updated', ['object' => 'branch#' . $id]);
             } else {
                 $new = $repo->create($data);
-                SWC_Audit_Log::record('branch_created', ['object' => 'branch#' . $new]);
+                \Medora\Security\AuditLog::record('branch_created', ['object' => 'branch#' . $new]);
             }
         }
 
@@ -73,8 +75,8 @@ class SWC_Branches_Page
 
         $id = absint($_POST['branch_id'] ?? 0);
         if ($id > 0) {
-            (new SWC_Branch_Repository())->delete($id);
-            SWC_Audit_Log::record('branch_deleted', ['object' => 'branch#' . $id, 'severity' => 'warning']);
+            (new \Medora\Database\BranchRepository())->delete($id);
+            \Medora\Security\AuditLog::record('branch_deleted', ['object' => 'branch#' . $id, 'severity' => 'warning']);
         }
         wp_safe_redirect(admin_url('admin.php?page=swc-branches&deleted=1'));
         exit;
@@ -85,7 +87,7 @@ class SWC_Branches_Page
         if (! current_user_can('manage_options')) {
             return;
         }
-        $repo     = new SWC_Branch_Repository();
+        $repo     = new \Medora\Database\BranchRepository();
         $branches = $repo->all();
         $stats    = $repo->lead_stats();
         $editing  = isset($_GET['edit']) ? $repo->get(absint($_GET['edit'])) : null;

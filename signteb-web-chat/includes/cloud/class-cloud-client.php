@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Cloud_Client — the plugin side of the Medora Cloud platform (Level 2).
+ * \Medora\Cloud\CloudClient — the plugin side of the Medora Cloud platform (Level 2).
  *
  * Opt-in telemetry only. When enabled with an endpoint it registers the
  * installation once and sends a signed daily heartbeat with technical counters
@@ -10,22 +10,24 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Cloud;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Cloud_Client
+class CloudClient
 {
     public const OPTION_SECRET   = 'swc_cloud_secret_enc';
     public const OPTION_REGISTERED = 'swc_cloud_registered';
     private const CRON_HEARTBEAT = 'swc_cloud_heartbeat';
     private const CRON_INSTALL   = 'swc_cloud_install';
 
-    private SWC_Settings $settings;
+    private \Medora\Core\Settings $settings;
 
-    public function __construct(?SWC_Settings $settings = null)
+    public function __construct(?\Medora\Core\Settings $settings = null)
     {
-        $this->settings = $settings ?? new SWC_Settings();
+        $this->settings = $settings ?? new \Medora\Core\Settings();
     }
 
     public function register(): void
@@ -59,7 +61,7 @@ class SWC_Cloud_Client
     public function secret(): string
     {
         $enc = get_option(self::OPTION_SECRET, '');
-        return is_string($enc) && $enc !== '' ? SWC_Encryption::decrypt($enc) : '';
+        return is_string($enc) && $enc !== '' ? \Medora\Core\Encryption::decrypt($enc) : '';
     }
 
     public static function save_secret(string $plain): void
@@ -69,7 +71,7 @@ class SWC_Cloud_Client
             delete_option(self::OPTION_SECRET);
             return;
         }
-        update_option(self::OPTION_SECRET, SWC_Encryption::encrypt($plain), false);
+        update_option(self::OPTION_SECRET, \Medora\Core\Encryption::encrypt($plain), false);
     }
 
     public function register_install(): void
@@ -118,13 +120,13 @@ class SWC_Cloud_Client
     private function counts(): array
     {
         global $wpdb;
-        $conv = SWC_Schema::conversations_table();
-        $msg  = SWC_Schema::messages_table();
+        $conv = \Medora\Database\Schema::conversations_table();
+        $msg  = \Medora\Database\Schema::messages_table();
         return [
             'messages'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$msg}"),           // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             'leads'      => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$conv} WHERE is_lead = 1"), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             'bookings'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$conv} WHERE booking_status <> 'none'"), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            'active_24h' => (new SWC_Conversation_Repository())->active_count(24),
+            'active_24h' => (new \Medora\Database\ConversationRepository())->active_count(24),
         ];
     }
 

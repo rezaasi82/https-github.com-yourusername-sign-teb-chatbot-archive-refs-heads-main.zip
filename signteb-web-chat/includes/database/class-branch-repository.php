@@ -1,21 +1,23 @@
 <?php
 /**
- * SWC_Branch_Repository — clinics / doctors / branches (multi-clinic support).
+ * \Medora\Database\BranchRepository — clinics / doctors / branches (multi-clinic support).
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Database;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Branch_Repository
+class BranchRepository
 {
     /** @return array<int,object> */
     public function all(): array
     {
         global $wpdb;
-        $table = SWC_Schema::branches_table();
+        $table = \Medora\Database\Schema::branches_table();
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results("SELECT * FROM {$table} ORDER BY name ASC") ?: [];
     }
@@ -23,7 +25,7 @@ class SWC_Branch_Repository
     public function get(int $id): ?object
     {
         global $wpdb;
-        $table = SWC_Schema::branches_table();
+        $table = \Medora\Database\Schema::branches_table();
         $row   = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $id));
         return $row ?: null;
     }
@@ -34,7 +36,7 @@ class SWC_Branch_Repository
             return false;
         }
         global $wpdb;
-        $table = SWC_Schema::branches_table();
+        $table = \Medora\Database\Schema::branches_table();
         return (bool) $wpdb->get_var($wpdb->prepare("SELECT 1 FROM {$table} WHERE id = %d", $id));
     }
 
@@ -43,7 +45,7 @@ class SWC_Branch_Repository
         global $wpdb;
         $now = current_time('mysql');
         $wpdb->insert(
-            SWC_Schema::branches_table(),
+            \Medora\Database\Schema::branches_table(),
             [
                 'name'       => $data['name'],
                 'doctor'     => $data['doctor'] ?? null,
@@ -61,7 +63,7 @@ class SWC_Branch_Repository
     {
         global $wpdb;
         $wpdb->update(
-            SWC_Schema::branches_table(),
+            \Medora\Database\Schema::branches_table(),
             [
                 'name'       => $data['name'],
                 'doctor'     => $data['doctor'] ?? null,
@@ -81,9 +83,9 @@ class SWC_Branch_Repository
     public function delete(int $id): void
     {
         global $wpdb;
-        $wpdb->delete(SWC_Schema::branches_table(), ['id' => $id], ['%d']);
+        $wpdb->delete(\Medora\Database\Schema::branches_table(), ['id' => $id], ['%d']);
         $wpdb->update(
-            SWC_Schema::conversations_table(),
+            \Medora\Database\Schema::conversations_table(),
             ['branch_id' => null],
             ['branch_id' => $id],
             ['%d'],
@@ -99,7 +101,7 @@ class SWC_Branch_Repository
     public function lead_stats(): array
     {
         global $wpdb;
-        $conv = SWC_Schema::conversations_table();
+        $conv = \Medora\Database\Schema::conversations_table();
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $rows = $wpdb->get_results(
             "SELECT branch_id, COUNT(*) AS total, SUM(is_lead) AS leads

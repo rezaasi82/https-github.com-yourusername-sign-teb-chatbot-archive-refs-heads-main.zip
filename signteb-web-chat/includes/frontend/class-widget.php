@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Widget — floating chat widget.
+ * \Medora\Frontend\Widget — floating chat widget.
  *
  * Enqueues vanilla JS/CSS (no jQuery) and prints the markup in the footer.
  * Assets load ONLY when the widget actually renders, so an install never slows
@@ -9,17 +9,19 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Frontend;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Widget
+class Widget
 {
-    private SWC_Settings $settings;
+    private \Medora\Core\Settings $settings;
 
     public function __construct()
     {
-        $this->settings = new SWC_Settings();
+        $this->settings = new \Medora\Core\Settings();
     }
 
     public function register(): void

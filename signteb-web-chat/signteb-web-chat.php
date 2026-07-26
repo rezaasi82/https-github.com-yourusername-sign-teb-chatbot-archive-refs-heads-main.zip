@@ -27,19 +27,19 @@ define('SWC_URL', plugin_dir_url(__FILE__));
 define('SWC_BASENAME', plugin_basename(__FILE__));
 
 require_once SWC_DIR . 'includes/class-autoloader.php';
-SWC_Autoloader::register();
+\Medora\Autoloader::register();
 
-register_activation_hook(__FILE__, ['SWC_Activator', 'activate']);
-register_deactivation_hook(__FILE__, ['SWC_Deactivator', 'deactivate']);
+register_activation_hook(__FILE__, ['\Medora\Core\Activator', 'activate']);
+register_deactivation_hook(__FILE__, ['\Medora\Core\Deactivator', 'deactivate']);
 
 /**
  * Plugin singleton accessor.
  */
-function swc_plugin(): SWC_Plugin
+function swc_plugin(): \Medora\Core\Plugin
 {
     static $instance = null;
     if ($instance === null) {
-        $instance = new SWC_Plugin();
+        $instance = new \Medora\Core\Plugin();
     }
     return $instance;
 }

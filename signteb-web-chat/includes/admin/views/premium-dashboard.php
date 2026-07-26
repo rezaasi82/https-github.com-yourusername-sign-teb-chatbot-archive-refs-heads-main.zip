@@ -4,7 +4,7 @@
  *
  * @var array         $integrity
  * @var array         $metrics
- * @var SWC_Settings  $settings
+ * @var \Medora\Core\Settings  $settings
  *
  * @package SignTeb_Web_Chat
  */
@@ -79,7 +79,7 @@ $int_class = 'is-' . preg_replace('/[^a-z]/', '', $integrity['level']);
         <div class="swc-funnel-wrap">
             <div class="swc-funnel-head"><?php esc_html_e('قیف تبدیل بیمار (۳۰ روز)', 'signteb-web-chat'); ?></div>
             <div class="swc-funnel">
-                <?php foreach (SWC_Lead_CRM::STATUSES as $key => $def) : ?>
+                <?php foreach (\Medora\Crm\LeadCrm::STATUSES as $key => $def) : ?>
                     <div class="swc-funnel-step">
                         <b><?php echo esc_html(number_format_i18n($metrics['funnel'][$key] ?? 0)); ?></b>
                         <span><span class="swc-funnel-dot" style="background:<?php echo esc_attr($def[1]); ?>"></span><?php echo esc_html($def[0]); ?></span>

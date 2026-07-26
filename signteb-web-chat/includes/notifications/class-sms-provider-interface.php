@@ -1,18 +1,20 @@
 <?php
 /**
- * SWC_Sms_Provider_Interface — contract every SMS gateway implements.
+ * \Medora\Notifications\SmsProviderInterface — contract every SMS gateway implements.
  *
  * Adding a new panel means writing one class that implements this interface and
- * registering it in SWC_Sms_Manager::PROVIDERS — no change to the callers.
+ * registering it in \Medora\Notifications\SmsManager::PROVIDERS — no change to the callers.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Notifications;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-interface SWC_Sms_Provider_Interface
+interface SmsProviderInterface
 {
     /** Stable machine id, e.g. "kavenegar". */
     public function id(): string;

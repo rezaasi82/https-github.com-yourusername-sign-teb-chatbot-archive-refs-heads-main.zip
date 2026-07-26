@@ -7,11 +7,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Provider_GapGPT extends SWC_OpenAI_Compatible_Provider
+class ProviderGapgpt extends \Medora\Ai\ProviderOpenaiCompatible
 {
     public function id(): string
     {

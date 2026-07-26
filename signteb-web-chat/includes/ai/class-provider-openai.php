@@ -5,11 +5,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Provider_OpenAI extends SWC_OpenAI_Compatible_Provider
+class ProviderOpenai extends \Medora\Ai\ProviderOpenaiCompatible
 {
     public function id(): string
     {

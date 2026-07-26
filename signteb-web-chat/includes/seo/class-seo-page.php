@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Seo_Page — the SEO Intelligence Center.
+ * \Medora\Seo\SeoPage — the SEO Intelligence Center.
  *
  * Surfaces the conversation-mined SEO signals and, on demand, asks the active
  * AI provider to turn them into blog titles, FAQ ideas and SEO recommendations.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Seo;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Seo_Page
+class SeoPage
 {
     private const NONCE = 'swc_seo';
 
@@ -39,7 +41,7 @@ class SWC_Seo_Page
         if (! current_user_can('manage_options')) {
             return;
         }
-        $analyzer  = new SWC_Seo_Analyzer();
+        $analyzer  = new \Medora\Seo\SeoAnalyzer();
         $questions = $analyzer->top_questions(30, 15);
         $keywords  = $analyzer->keywords(30, 30);
         $topics    = $analyzer->topics(30);
@@ -51,17 +53,17 @@ class SWC_Seo_Page
 
     public function ajax_generate(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
 
-        if (SWC_Security::is_locked()) {
+        if (\Medora\Security\Security::is_locked()) {
             wp_send_json(['ok' => false, 'error' => 'locked'], 429);
         }
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
-            SWC_Security::note_failure('seo_generate');
+            \Medora\Security\Security::note_failure('seo_generate');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
         // Protect the API budget: a few generations per hour is plenty.
-        if (! SWC_Security::rate_limit('seo_generate', 10, HOUR_IN_SECONDS)) {
+        if (! \Medora\Security\Security::rate_limit('seo_generate', 10, HOUR_IN_SECONDS)) {
             wp_send_json(['ok' => false, 'error' => __('محدودیت درخواست. کمی بعد دوباره تلاش کنید.', 'signteb-web-chat')], 429);
         }
 
@@ -71,7 +73,7 @@ class SWC_Seo_Page
         }
 
         set_transient('swc_seo_ideas', $result['ideas'], 6 * HOUR_IN_SECONDS);
-        SWC_Audit_Log::record('seo_generate', ['object' => 'ideas']);
+        \Medora\Security\AuditLog::record('seo_generate', ['object' => 'ideas']);
         wp_send_json(['ok' => true, 'ideas' => $result['ideas']]);
     }
 
@@ -80,13 +82,13 @@ class SWC_Seo_Page
      */
     private function generate(): array
     {
-        $settings = new SWC_Settings();
-        $provider = (new SWC_Provider_Factory($settings))->create_active();
+        $settings = new \Medora\Core\Settings();
+        $provider = (new \Medora\Ai\ProviderFactory($settings))->create_active();
         if ($provider === null) {
             return ['ok' => false, 'error' => __('کلید API تنظیم نشده است.', 'signteb-web-chat')];
         }
 
-        $analyzer  = new SWC_Seo_Analyzer();
+        $analyzer  = new \Medora\Seo\SeoAnalyzer();
         $questions = array_map(static fn($r) => trim((string) $r->q), $analyzer->top_questions(30, 12));
         $keywords  = array_keys($analyzer->keywords(30, 25));
 

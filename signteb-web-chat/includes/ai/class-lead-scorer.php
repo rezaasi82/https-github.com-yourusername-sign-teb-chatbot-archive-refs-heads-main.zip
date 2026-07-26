@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Lead_Scorer — classifies a conversation as hot / warm / cold.
+ * \Medora\Ai\LeadScorer — classifies a conversation as hot / warm / cold.
  *
  * A deterministic heuristic over intent signals (no extra API call, so it is
  * free and instant). It runs after every turn so the dashboard always shows a
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Lead_Scorer
+class LeadScorer
 {
     private const HOT_TERMS = [
         'رزرو', 'نوبت', 'وقت بگیرم', 'وقت میخوام', 'وقت می‌خوام', 'ثبت نوبت', 'می‌خوام بیام', 'کی بیام',

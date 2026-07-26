@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Webhook_Manager — generic outbound webhook engine.
+ * \Medora\Export\WebhookManager — generic outbound webhook engine.
  *
  * Sends a signed JSON payload to a configured endpoint (n8n, Make.com, Zapier,
  * a custom CRM, …) on lead events. Failures are logged and optionally retried
@@ -9,24 +9,26 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Export;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Webhook_Manager
+class WebhookManager
 {
     public const OPTION_SECRET = 'swc_webhook_secret_enc';
     public const MAX_ATTEMPTS  = 3;
 
-    private SWC_Settings $settings;
-    private SWC_Export_Logger $logger;
-    private SWC_Lead_Payload $payloads;
+    private \Medora\Core\Settings $settings;
+    private \Medora\Export\ExportLogger $logger;
+    private \Medora\Export\LeadPayload $payloads;
 
-    public function __construct(?SWC_Settings $settings = null, ?SWC_Export_Logger $logger = null, ?SWC_Lead_Payload $payloads = null)
+    public function __construct(?\Medora\Core\Settings $settings = null, ?\Medora\Export\ExportLogger $logger = null, ?\Medora\Export\LeadPayload $payloads = null)
     {
-        $this->settings = $settings ?? new SWC_Settings();
-        $this->logger   = $logger ?? new SWC_Export_Logger();
-        $this->payloads = $payloads ?? new SWC_Lead_Payload();
+        $this->settings = $settings ?? new \Medora\Core\Settings();
+        $this->logger   = $logger ?? new \Medora\Export\ExportLogger();
+        $this->payloads = $payloads ?? new \Medora\Export\LeadPayload();
     }
 
     public function is_enabled(): bool
@@ -61,7 +63,7 @@ class SWC_Webhook_Manager
     public function secret(): string
     {
         $enc = get_option(self::OPTION_SECRET, '');
-        return is_string($enc) && $enc !== '' ? SWC_Encryption::decrypt($enc) : '';
+        return is_string($enc) && $enc !== '' ? \Medora\Core\Encryption::decrypt($enc) : '';
     }
 
     public static function save_secret(string $plain): void
@@ -71,7 +73,7 @@ class SWC_Webhook_Manager
             delete_option(self::OPTION_SECRET);
             return;
         }
-        update_option(self::OPTION_SECRET, SWC_Encryption::encrypt($plain), false);
+        update_option(self::OPTION_SECRET, \Medora\Core\Encryption::encrypt($plain), false);
     }
 
     /**

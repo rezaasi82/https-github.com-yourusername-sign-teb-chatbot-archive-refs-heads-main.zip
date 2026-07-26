@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Settings_Page — the single tabbed admin screen and its save handler.
+ * \Medora\Admin\SettingsPage — the single tabbed admin screen and its save handler.
  *
  * Each tab posts only its own fields; the handler updates just those keys so
  * one tab never clobbers another's settings. API keys are stored encrypted and
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Admin;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Settings_Page
+class SettingsPage
 {
     private const TABS = ['provider', 'clinic', 'appearance', 'integrations', 'conversations', 'stats'];
 
@@ -41,7 +43,7 @@ class SWC_Settings_Page
             $this->finish($tab);
         }
 
-        $existing = get_option(SWC_Settings::OPTION, []);
+        $existing = get_option(\Medora\Core\Settings::OPTION, []);
         $existing = is_array($existing) ? $existing : [];
         $update   = [];
 
@@ -56,13 +58,13 @@ class SWC_Settings_Page
             $update['rate_limit_per_min'] = max(1, (int) ($in['rate_limit_per_min'] ?? 8));
 
             if (isset($in['api_key_anthropic']) && trim((string) $in['api_key_anthropic']) !== '') {
-                SWC_Settings::save_api_key('anthropic', (string) $in['api_key_anthropic']);
+                \Medora\Core\Settings::save_api_key('anthropic', (string) $in['api_key_anthropic']);
             }
             if (isset($in['api_key_openai']) && trim((string) $in['api_key_openai']) !== '') {
-                SWC_Settings::save_api_key('openai', (string) $in['api_key_openai']);
+                \Medora\Core\Settings::save_api_key('openai', (string) $in['api_key_openai']);
             }
             if (isset($in['api_key_gapgpt']) && trim((string) $in['api_key_gapgpt']) !== '') {
-                SWC_Settings::save_api_key('gapgpt', (string) $in['api_key_gapgpt']);
+                \Medora\Core\Settings::save_api_key('gapgpt', (string) $in['api_key_gapgpt']);
             }
         } elseif ($tab === 'clinic') {
             $update['clinic_name']      = sanitize_text_field($in['clinic_name'] ?? '');
@@ -97,7 +99,7 @@ class SWC_Settings_Page
             $update['teaser_sound']     = isset($in['teaser_sound']) ? 1 : 0;
         }
 
-        update_option(SWC_Settings::OPTION, array_merge($existing, $update));
+        update_option(\Medora\Core\Settings::OPTION, array_merge($existing, $update));
         $this->finish($tab);
     }
 
@@ -107,7 +109,7 @@ class SWC_Settings_Page
      */
     private function save_integrations(array $in): void
     {
-        $existing = get_option(SWC_Settings::OPTION, []);
+        $existing = get_option(\Medora\Core\Settings::OPTION, []);
         $existing = is_array($existing) ? $existing : [];
 
         $update = [
@@ -156,38 +158,38 @@ class SWC_Settings_Page
         }
         $update['sms_template_codes'] = $codes;
 
-        update_option(SWC_Settings::OPTION, array_merge($existing, $update));
+        update_option(\Medora\Core\Settings::OPTION, array_merge($existing, $update));
 
         // Activation code (API key) + optional second credential — encrypted,
         // only overwritten when a new value is typed.
         if (isset($in['sms_key']) && trim((string) $in['sms_key']) !== '') {
-            SWC_Sms_Manager::save_key((string) $in['sms_key']);
+            \Medora\Notifications\SmsManager::save_key((string) $in['sms_key']);
         }
         if (isset($in['sms_secret']) && trim((string) $in['sms_secret']) !== '') {
-            SWC_Sms_Manager::save_secret((string) $in['sms_secret']);
+            \Medora\Notifications\SmsManager::save_secret((string) $in['sms_secret']);
         }
 
         // Messenger bot tokens — encrypted, only overwritten when re-typed.
         foreach (['bale', 'telegram'] as $ch) {
             if (isset($in['msgr_' . $ch . '_token']) && trim((string) $in['msgr_' . $ch . '_token']) !== '') {
-                SWC_Messenger_Notifier::save_token($ch, (string) $in['msgr_' . $ch . '_token']);
+                \Medora\Notifications\MessengerNotifier::save_token($ch, (string) $in['msgr_' . $ch . '_token']);
             }
         }
 
         if (isset($in['webhook_secret']) && trim((string) $in['webhook_secret']) !== '') {
-            SWC_Webhook_Manager::save_secret((string) $in['webhook_secret']);
+            \Medora\Export\WebhookManager::save_secret((string) $in['webhook_secret']);
         }
         if (isset($in['gsheet_secret']) && trim((string) $in['gsheet_secret']) !== '') {
-            SWC_Google_Sheets::save_secret((string) $in['gsheet_secret']);
+            \Medora\Export\GoogleSheets::save_secret((string) $in['gsheet_secret']);
         }
         if (isset($in['cloud_secret']) && trim((string) $in['cloud_secret']) !== '') {
-            SWC_Cloud_Client::save_secret((string) $in['cloud_secret']);
+            \Medora\Cloud\CloudClient::save_secret((string) $in['cloud_secret']);
         }
     }
 
     private function finish(string $tab): void
     {
-        SWC_Audit_Log::record('settings_saved', ['object' => $tab, 'severity' => 'info']);
+        \Medora\Security\AuditLog::record('settings_saved', ['object' => $tab, 'severity' => 'info']);
         add_settings_error('swc', 'saved', __('تنظیمات ذخیره شد.', 'signteb-web-chat'), 'updated');
         set_transient('settings_errors', get_settings_errors(), 30);
         wp_safe_redirect(admin_url('admin.php?page=swc-chat&tab=' . $tab . '&updated=1'));
@@ -201,7 +203,7 @@ class SWC_Settings_Page
         }
 
         $tab     = $this->current_tab();
-        $s       = new SWC_Settings();
+        $s       = new \Medora\Core\Settings();
 
         echo '<div class="wrap swc-admin" dir="rtl">';
         echo '<h1>' . esc_html__('Medora AI — دستیار هوشمند جذب بیمار', 'signteb-web-chat') . '</h1>';
@@ -220,9 +222,9 @@ class SWC_Settings_Page
         if (in_array($tab, ['provider', 'clinic', 'appearance', 'integrations'], true)) {
             include SWC_DIR . 'includes/admin/views/settings.php';
         } elseif ($tab === 'conversations') {
-            (new SWC_Conversations_Page())->render_inner();
+            (new \Medora\Admin\ConversationsPage())->render_inner();
         } elseif ($tab === 'stats') {
-            (new SWC_Stats_Page())->render_inner();
+            (new \Medora\Admin\StatsPage())->render_inner();
         }
 
         echo '</div>';

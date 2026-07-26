@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Job_Queue — lightweight background job queue.
+ * \Medora\Jobs\JobQueue — lightweight background job queue.
  *
  * Heavy bulk work (generating many PDFs, syncing many leads) is enqueued and
  * drained in small batches on the swc_process_jobs cron, so an admin request
@@ -10,11 +10,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Jobs;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Job_Queue
+class JobQueue
 {
     public const CRON  = 'swc_process_jobs';
     private const BATCH = 10;
@@ -33,7 +35,7 @@ class SWC_Job_Queue
         global $wpdb;
         $now = current_time('mysql');
         $wpdb->insert(
-            SWC_Schema::jobs_table(),
+            \Medora\Database\Schema::jobs_table(),
             [
                 'type'       => substr($type, 0, 32),
                 'payload'    => wp_json_encode($payload),
@@ -60,7 +62,7 @@ class SWC_Job_Queue
     public function pending_count(): int
     {
         global $wpdb;
-        $table = SWC_Schema::jobs_table();
+        $table = \Medora\Database\Schema::jobs_table();
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE status = 'queued'");
     }
@@ -71,7 +73,7 @@ class SWC_Job_Queue
     public function process(): void
     {
         global $wpdb;
-        $table = SWC_Schema::jobs_table();
+        $table = \Medora\Database\Schema::jobs_table();
 
         $jobs = $wpdb->get_results(
             $wpdb->prepare("SELECT * FROM {$table} WHERE status = 'queued' ORDER BY id ASC LIMIT %d", self::BATCH)
@@ -122,7 +124,7 @@ class SWC_Job_Queue
             return false;
         }
 
-        $manager = new SWC_Export_Manager();
+        $manager = new \Medora\Export\ExportManager();
         switch ($op) {
             case 'pdf':
                 return ! empty($manager->export_pdf($lead_id)['ok']);

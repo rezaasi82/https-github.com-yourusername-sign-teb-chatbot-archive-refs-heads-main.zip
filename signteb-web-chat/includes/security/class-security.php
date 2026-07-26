@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Security — generic rate limiting and brute-force lockout.
+ * \Medora\Security\Security — generic rate limiting and brute-force lockout.
  *
  * Sensitive endpoints call guard()/note_failure() so repeated invalid or
  * unauthorized requests from one IP get throttled and then temporarily locked
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Security;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Security
+class Security
 {
     private const MAX_FAILURES = 8;      // failures within the window before lockout
     private const WINDOW       = 600;    // 10 minutes
@@ -21,7 +23,7 @@ class SWC_Security
 
     public static function ip(): string
     {
-        return class_exists('SWC_Sanitizer') ? SWC_Sanitizer::client_ip() : '0.0.0.0';
+        return class_exists('\Medora\Rest\Sanitizer') ? \Medora\Rest\Sanitizer::client_ip() : '0.0.0.0';
     }
 
     /**
@@ -56,11 +58,11 @@ class SWC_Security
         if ($count >= self::MAX_FAILURES) {
             set_transient('swc_lock_' . md5($ip), 1, self::LOCK);
             delete_transient($key);
-            if (class_exists('SWC_Audit_Log')) {
-                SWC_Audit_Log::record('security_lockout', ['object' => $context, 'severity' => 'critical', 'detail' => 'IP temporarily locked after repeated failures']);
+            if (class_exists('\Medora\Security\AuditLog')) {
+                \Medora\Security\AuditLog::record('security_lockout', ['object' => $context, 'severity' => 'critical', 'detail' => 'IP temporarily locked after repeated failures']);
             }
-        } elseif (class_exists('SWC_Audit_Log')) {
-            SWC_Audit_Log::record('auth_denied', ['object' => $context, 'severity' => 'warning', 'detail' => 'attempt ' . $count]);
+        } elseif (class_exists('\Medora\Security\AuditLog')) {
+            \Medora\Security\AuditLog::record('auth_denied', ['object' => $context, 'severity' => 'warning', 'detail' => 'attempt ' . $count]);
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Chat_Shortcode — embeds the chat inline via [medora_chat].
+ * \Medora\Frontend\ChatShortcode — embeds the chat inline via [medora_chat].
  *
  * Lets a site owner drop the assistant into a sidebar, a widget area or the
  * body of any post/page, in addition to (or instead of) the floating launcher.
@@ -12,11 +12,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Frontend;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Chat_Shortcode
+class ChatShortcode
 {
     public function register(): void
     {
@@ -37,6 +39,6 @@ class SWC_Chat_Shortcode
         if (is_feed()) {
             return '';
         }
-        return (new SWC_Widget())->render_inline();
+        return (new \Medora\Frontend\Widget())->render_inline();
     }
 }

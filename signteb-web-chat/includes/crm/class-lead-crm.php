@@ -1,19 +1,21 @@
 <?php
 /**
- * SWC_Lead_CRM — lead pipeline vocabulary and the secure save endpoint.
+ * \Medora\Crm\LeadCrm — lead pipeline vocabulary and the secure save endpoint.
  *
  * Self-registering admin service: owns the CRM lead statuses and the AJAX
  * handler that persists status / email / notes / tags for a lead. Wire once
- * from SWC_Plugin::boot() with ( new SWC_Lead_CRM() )->register().
+ * from \Medora\Core\Plugin::boot() with ( new \Medora\Crm\LeadCrm() )->register().
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace Medora\Crm;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Lead_CRM
+class LeadCrm
 {
     private const NONCE = 'swc_crm';
 
@@ -65,13 +67,13 @@ class SWC_Lead_CRM
      */
     public function ajax_refer(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
 
-        if (SWC_Security::is_locked()) {
+        if (\Medora\Security\Security::is_locked()) {
             wp_send_json(['ok' => false, 'error' => 'locked'], 429);
         }
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
-            SWC_Security::note_failure('crm_refer');
+            \Medora\Security\Security::note_failure('crm_refer');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
 
@@ -84,17 +86,17 @@ class SWC_Lead_CRM
             wp_send_json(['ok' => false, 'error' => __('ایمیل مقصد نامعتبر است.', 'signteb-web-chat')], 400);
         }
 
-        $c = (new SWC_Conversation_Repository())->get($lead_id);
+        $c = (new \Medora\Database\ConversationRepository())->get($lead_id);
         if (! $c) {
             wp_send_json(['ok' => false, 'error' => 'not_found'], 404);
         }
 
-        $clinic  = (string) (new SWC_Settings())->get('clinic_name', get_bloginfo('name'));
+        $clinic  = (string) (new \Medora\Core\Settings())->get('clinic_name', get_bloginfo('name'));
         $subject = sprintf(__('[%s] ارجاع لید — %s', 'signteb-web-chat'), $clinic, trim((string) ($c->patient_name ?? '')) ?: ('#' . $lead_id));
         $body    = self::referral_text($c) . "\n\n" . admin_url('admin.php?page=swc-chat&tab=conversations&conversation=' . $lead_id);
 
         $sent = wp_mail($to, $subject, $body);
-        SWC_Audit_Log::record('lead_refer', ['object' => (string) $lead_id, 'severity' => $sent ? 'info' : 'warning']);
+        \Medora\Security\AuditLog::record('lead_refer', ['object' => (string) $lead_id, 'severity' => $sent ? 'info' : 'warning']);
 
         if (! $sent) {
             wp_send_json(['ok' => false, 'error' => __('ارسال ایمیل ناموفق بود. تنظیمات ایمیل سایت را بررسی کنید.', 'signteb-web-chat')], 500);
@@ -124,13 +126,13 @@ class SWC_Lead_CRM
 
     public function ajax_update(): void
     {
-        SWC_Json_Guard::arm();
+        \Medora\Core\JsonGuard::arm();
 
-        if (SWC_Security::is_locked()) {
+        if (\Medora\Security\Security::is_locked()) {
             wp_send_json(['ok' => false, 'error' => 'locked'], 429);
         }
         if (! current_user_can('manage_options') || ! check_ajax_referer(self::NONCE, 'nonce', false)) {
-            SWC_Security::note_failure('crm_update');
+            \Medora\Security\Security::note_failure('crm_update');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
 
@@ -139,7 +141,7 @@ class SWC_Lead_CRM
             wp_send_json(['ok' => false, 'error' => 'bad_lead'], 400);
         }
 
-        $repo   = new SWC_Conversation_Repository();
+        $repo   = new \Medora\Database\ConversationRepository();
         $fields = [];
 
         if (isset($_POST['lead_status'])) {
@@ -159,7 +161,7 @@ class SWC_Lead_CRM
         }
         if (isset($_POST['branch_id'])) {
             $branch = absint($_POST['branch_id']);
-            if ($branch === 0 || (new SWC_Branch_Repository())->exists($branch)) {
+            if ($branch === 0 || (new \Medora\Database\BranchRepository())->exists($branch)) {
                 $fields['branch_id'] = $branch;
             }
         }

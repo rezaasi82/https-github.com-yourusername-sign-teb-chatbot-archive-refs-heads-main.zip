@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Conversations_Page — conversation history with a lead filter and a
+ * \Medora\Admin\ConversationsPage — conversation history with a lead filter and a
  * per-conversation transcript (the ROI-proof feature for the clinic owner).
  *
  * Rendered inside the tabbed settings screen.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Admin;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Conversations_Page
+class ConversationsPage
 {
     public function render_inner(): void
     {
@@ -20,14 +22,14 @@ class SWC_Conversations_Page
             return;
         }
 
-        $repo     = new SWC_Conversation_Repository();
-        $branches = (new SWC_Branch_Repository())->all();
+        $repo     = new \Medora\Database\ConversationRepository();
+        $branches = (new \Medora\Database\BranchRepository())->all();
 
         // Single-conversation transcript view.
         $view_id = isset($_GET['conversation']) ? absint($_GET['conversation']) : 0;
         if ($view_id > 0) {
             $conversation = $repo->get($view_id);
-            $messages     = (new SWC_Message_Repository())->for_conversation($view_id);
+            $messages     = (new \Medora\Database\MessageRepository())->for_conversation($view_id);
             include SWC_DIR . 'includes/admin/views/conversation-single.php';
             return;
         }

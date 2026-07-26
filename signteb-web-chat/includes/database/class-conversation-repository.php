@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Conversation_Repository — repository for chat conversations.
+ * \Medora\Database\ConversationRepository — repository for chat conversations.
  *
  * All SQL is prepared and centralized here (Repository pattern, not Active
  * Record) so query logic lives in one place.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Database;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Conversation_Repository
+class ConversationRepository
 {
     /**
      * Find an open conversation by session id, or create one.
@@ -22,7 +24,7 @@ class SWC_Conversation_Repository
     public function find_or_create(string $session_id, array $meta = []): int
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
 
         $existing = $wpdb->get_var(
             $wpdb->prepare(
@@ -60,7 +62,7 @@ class SWC_Conversation_Repository
     public function touch(int $conversation_id): void
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $wpdb->query(
             $wpdb->prepare(
                 "UPDATE {$table} SET message_count = message_count + 1, updated_at = %s WHERE id = %d",
@@ -73,7 +75,7 @@ class SWC_Conversation_Repository
     public function mark_lead(int $conversation_id, string $cta_type): void
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $wpdb->update(
             $table,
             ['is_lead' => 1, 'cta_type' => $cta_type, 'updated_at' => current_time('mysql')],
@@ -102,14 +104,14 @@ class SWC_Conversation_Repository
             return;
         }
         global $wpdb;
-        $wpdb->update(SWC_Schema::conversations_table(), $data, ['id' => $conversation_id], $formats, ['%d']);
+        $wpdb->update(\Medora\Database\Schema::conversations_table(), $data, ['id' => $conversation_id], $formats, ['%d']);
     }
 
     public function set_score(int $conversation_id, string $level): void
     {
         global $wpdb;
         $wpdb->update(
-            SWC_Schema::conversations_table(),
+            \Medora\Database\Schema::conversations_table(),
             ['lead_score' => $level, 'updated_at' => current_time('mysql')],
             ['id' => $conversation_id],
             ['%s', '%s'],
@@ -121,7 +123,7 @@ class SWC_Conversation_Repository
     {
         global $wpdb;
         $wpdb->update(
-            SWC_Schema::conversations_table(),
+            \Medora\Database\Schema::conversations_table(),
             ['summary' => $summary, 'updated_at' => current_time('mysql')],
             ['id' => $conversation_id],
             ['%s', '%s'],
@@ -133,7 +135,7 @@ class SWC_Conversation_Repository
     {
         global $wpdb;
         $wpdb->update(
-            SWC_Schema::conversations_table(),
+            \Medora\Database\Schema::conversations_table(),
             ['booking_status' => $status, 'updated_at' => current_time('mysql')],
             ['id' => $conversation_id],
             ['%s', '%s'],
@@ -161,7 +163,7 @@ class SWC_Conversation_Repository
             return;
         }
         global $wpdb;
-        $wpdb->update(SWC_Schema::conversations_table(), $data, ['id' => $conversation_id], $formats, ['%d']);
+        $wpdb->update(\Medora\Database\Schema::conversations_table(), $data, ['id' => $conversation_id], $formats, ['%d']);
     }
 
     /**
@@ -173,7 +175,7 @@ class SWC_Conversation_Repository
     public function by_status(string $status, int $limit = 40): array
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT id, patient_name, patient_phone, lead_score, lead_status, created_at
@@ -194,7 +196,7 @@ class SWC_Conversation_Repository
     public function funnel_counts(int $days = 30): array
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $since = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
         $rows  = $wpdb->get_results(
             $wpdb->prepare(
@@ -215,7 +217,7 @@ class SWC_Conversation_Repository
     {
         global $wpdb;
         $wpdb->update(
-            SWC_Schema::conversations_table(),
+            \Medora\Database\Schema::conversations_table(),
             ['pdf_url' => $url, 'updated_at' => current_time('mysql')],
             ['id' => $conversation_id],
             ['%s', '%s'],
@@ -246,7 +248,7 @@ class SWC_Conversation_Repository
     public function paginate(int $page = 1, int $per_page = 20, array $filters = []): array
     {
         global $wpdb;
-        $table  = SWC_Schema::conversations_table();
+        $table  = \Medora\Database\Schema::conversations_table();
         $offset = max(0, ($page - 1) * $per_page);
         $where  = $this->where($filters);
 
@@ -263,7 +265,7 @@ class SWC_Conversation_Repository
     public function count(array $filters = []): int
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $where = $this->where($filters);
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE {$where}");
@@ -272,7 +274,7 @@ class SWC_Conversation_Repository
     public function get(int $conversation_id): ?object
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $row   = $wpdb->get_row(
             $wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $conversation_id)
         );
@@ -286,7 +288,7 @@ class SWC_Conversation_Repository
     public function count_since(string $since): int
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         return (int) $wpdb->get_var(
             $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE created_at > %s", $since)
         );
@@ -298,7 +300,7 @@ class SWC_Conversation_Repository
     public function active_count(int $hours = 24): int
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $since = gmdate('Y-m-d H:i:s', time() - ($hours * HOUR_IN_SECONDS));
         return (int) $wpdb->get_var(
             $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE updated_at >= %s", $since)
@@ -313,7 +315,7 @@ class SWC_Conversation_Repository
     public function stats(int $days = 30): array
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $since = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
 
         $total = (int) $wpdb->get_var(
@@ -348,7 +350,7 @@ class SWC_Conversation_Repository
     public function service_demand(array $names, int $days = 30): array
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $since = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
 
         $out = [];
@@ -381,7 +383,7 @@ class SWC_Conversation_Repository
     public function daily(int $days = 14): array
     {
         global $wpdb;
-        $table = SWC_Schema::conversations_table();
+        $table = \Medora\Database\Schema::conversations_table();
         $since = gmdate('Y-m-d 00:00:00', time() - (($days - 1) * DAY_IN_SECONDS));
 
         $rows = $wpdb->get_results(

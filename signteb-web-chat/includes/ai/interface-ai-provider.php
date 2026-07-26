@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_AI_Provider_Interface — provider abstraction.
+ * \Medora\Ai\AiProviderInterface — provider abstraction.
  *
  * Adding a new AI backend means adding one class that implements this
  * interface; nothing else in the plugin changes.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace Medora\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-interface SWC_AI_Provider_Interface
+interface AiProviderInterface
 {
     /**
      * Generate a reply.
