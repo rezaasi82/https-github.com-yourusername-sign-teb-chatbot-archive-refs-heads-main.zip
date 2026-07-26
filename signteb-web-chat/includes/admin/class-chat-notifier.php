@@ -1,6 +1,6 @@
 <?php
 /**
- * \Medora\Admin\ChatNotifier — surfaces new (unseen) conversations across wp-admin.
+ * Surfaces new (unseen) conversations across wp-admin.
  *
  * Three touchpoints, all driven by a per-user "last seen" marker:
  *   1. an admin-bar bubble (top of every admin screen), kept live via the
@@ -11,7 +11,7 @@
  * Visiting the leads & conversations list marks everything as seen. The
  * marker is user meta, so each admin tracks their own unread state.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;

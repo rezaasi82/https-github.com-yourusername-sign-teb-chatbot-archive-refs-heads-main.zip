@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Ai\LeadScorer — classifies a conversation as hot / warm / cold.
+ * Classifies a conversation as hot / warm / cold.
  *
  * A deterministic heuristic over intent signals (no extra API call, so it is
  * free and instant). It runs after every turn so the dashboard always shows a
  * live lead temperature, and estimates a booking probability for the summary.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

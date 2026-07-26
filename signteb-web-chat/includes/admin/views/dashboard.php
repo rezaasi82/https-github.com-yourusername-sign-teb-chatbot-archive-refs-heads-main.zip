@@ -9,7 +9,7 @@
  * @var array<int,object>   $top
  * @var array<string,int>   $demand   Most-requested services.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Core\Encryption — symmetric encryption for API keys at rest.
+ * Symmetric encryption for API keys at rest.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Core;

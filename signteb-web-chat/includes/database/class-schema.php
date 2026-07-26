@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Database\Schema — owns table names and the dbDelta schema.
+ * Owns table names and the dbDelta schema.
  *
  * Repositories depend only on this. dbDelta adds any new columns on upgrade,
  * so bumping DB_VERSION is enough to migrate an existing install in place.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Database;

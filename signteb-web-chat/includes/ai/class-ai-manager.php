@@ -1,6 +1,6 @@
 <?php
 /**
- * \Medora\Ai\AiManager — the conversation engine.
+ * The conversation engine.
  *
  * The single entry point used by both the REST controller and the admin-ajax
  * handler. Coordinates rate limiting, the safety
@@ -8,7 +8,7 @@
  * and CTA/lead detection. Every failure path returns a structured fallback
  * rather than an error.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

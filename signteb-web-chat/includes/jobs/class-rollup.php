@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Jobs\Rollup — daily analytics rollup worker.
+ * Daily analytics rollup worker.
  *
  * Runs on the swc_daily_rollup cron and writes one aggregated row per
  * (day, metric) into swc_analytics, so long-range dashboards read a few
  * indexed rows instead of scanning the raw tables.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Jobs;
@@ -53,7 +53,7 @@ class Rollup
         $end    = $day . ' 23:59:59';
 
         $conv_where = static function (string $extra) use ($wpdb, $conv, $start, $end) {
-            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
             return (int) $wpdb->get_var(
                 $wpdb->prepare("SELECT COUNT(*) FROM {$conv} WHERE created_at BETWEEN %s AND %s {$extra}", $start, $end)
             );

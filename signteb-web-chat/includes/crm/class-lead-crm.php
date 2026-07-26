@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Crm\LeadCrm — lead pipeline vocabulary and the secure save endpoint.
+ * Lead pipeline vocabulary and the secure save endpoint.
  *
  * Self-registering admin service: owns the CRM lead statuses and the AJAX
  * handler that persists status / email / notes / tags for a lead. Wire once
- * from \Medora\Core\Plugin::boot() with ( new \Medora\Crm\LeadCrm() )->register().
+ * from Plugin::boot() with ( new LeadCrm() )->register().
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Crm;

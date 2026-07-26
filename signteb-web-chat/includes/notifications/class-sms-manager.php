@@ -1,6 +1,6 @@
 <?php
 /**
- * \Medora\Notifications\SmsManager — the SMS/messaging hub.
+ * The SMS/messaging hub.
  *
  * - Factory for the configured SMS gateway (Iranian panels + a custom HTTP
  *   provider for foreign services).
@@ -11,7 +11,7 @@
  * Only the panel's activation code (API key) and sender line are needed to go
  * live; everything else has sensible defaults.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications;
@@ -140,7 +140,7 @@ class SmsManager
     /**
      * Shared guard + provider resolution + audit around any send call.
      *
-     * @param callable(\Medora\Notifications\SmsProviderInterface):array $call
+     * @param callable(SmsProviderInterface):array $call
      * @return array{ok:bool,error?:string,code?:int}
      */
     private function dispatch(callable $call): array

@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Export\ExportManager — orchestrates every export target.
+ * Orchestrates every export target.
  *
  * Single entry point used by the REST controller, the admin-ajax handler and
  * the automatic event triggers. Owns the "generate PDF then sync" flow and the
  * guard that stops a lead being sent to the same target twice automatically.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Export;

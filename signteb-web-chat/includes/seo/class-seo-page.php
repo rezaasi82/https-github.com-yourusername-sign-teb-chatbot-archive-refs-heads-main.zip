@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Seo\SeoPage — the SEO Intelligence Center.
+ * The SEO Intelligence Center.
  *
  * Surfaces the conversation-mined SEO signals and, on demand, asks the active
  * AI provider to turn them into blog titles, FAQ ideas and SEO recommendations.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Seo;
@@ -20,7 +20,7 @@ class SeoPage
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
+        add_action('admin_menu', [$this, 'menu'], 20);
         add_action('wp_ajax_swc_seo_generate', [$this, 'ajax_generate']);
     }
 

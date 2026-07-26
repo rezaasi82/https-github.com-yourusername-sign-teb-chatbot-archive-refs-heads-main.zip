@@ -1,13 +1,13 @@
 <?php
 /**
- * \Medora\Ai\SystemPromptBuilder — builds the per-request system prompt.
+ * Builds the per-request system prompt.
  *
  * Everything is sourced from the plugin's own settings (this product is
  * standalone — it never reads from another plugin's CPTs or tables): clinic
  * identity, manual services/prices, contact info, response language,
  * sales-assistant behavior, and the non-negotiable medical safety rules.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

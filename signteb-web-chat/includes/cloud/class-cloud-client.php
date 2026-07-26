@@ -1,13 +1,13 @@
 <?php
 /**
- * \Medora\Cloud\CloudClient — the plugin side of the Medora Cloud platform (Level 2).
+ * The plugin side of the Medora Cloud platform (Level 2).
  *
  * Opt-in telemetry only. When enabled with an endpoint it registers the
  * installation once and sends a signed daily heartbeat with technical counters
  * (no patient data ever). When disabled it is a complete no-op and clears its
  * own cron. The transmitted payload is signed so the cloud can verify origin.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Cloud;
@@ -123,9 +123,9 @@ class CloudClient
         $conv = \Medora\Database\Schema::conversations_table();
         $msg  = \Medora\Database\Schema::messages_table();
         return [
-            'messages'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$msg}"),           // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            'leads'      => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$conv} WHERE is_lead = 1"), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            'bookings'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$conv} WHERE booking_status <> 'none'"), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            'messages'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$msg}"),
+            'leads'      => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$conv} WHERE is_lead = 1"),
+            'bookings'   => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$conv} WHERE booking_status <> 'none'"),
             'active_24h' => (new \Medora\Database\ConversationRepository())->active_count(24),
         ];
     }

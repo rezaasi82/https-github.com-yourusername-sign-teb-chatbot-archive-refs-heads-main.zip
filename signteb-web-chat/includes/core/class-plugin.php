@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Core\Plugin — main orchestrator. Wires WordPress hooks to subsystems.
+ * Main orchestrator. Wires WordPress hooks to subsystems.
  *
  * The plugin is fully standalone: it never assumes any other plugin or theme
  * is present, and reads all clinic content from its own settings.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Core;

@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Frontend\Widget — floating chat widget.
+ * Floating chat widget.
  *
  * Enqueues vanilla JS/CSS (no jQuery) and prints the markup in the footer.
  * Assets load ONLY when the widget actually renders, so an install never slows
  * down pages where the widget is not shown.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Frontend;

@@ -4,7 +4,7 @@
  *
  * @var array<int,object> $rows
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

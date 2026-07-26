@@ -3,7 +3,7 @@
  * Fired when the plugin is deleted from the WordPress admin.
  * Drops the plugin tables and removes every option it created.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('WP_UNINSTALL_PLUGIN') || ! defined('ABSPATH')) {

@@ -5,7 +5,7 @@
  * Concrete providers only declare their id, endpoint and default model; the
  * request/response handling lives here so it is written once.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

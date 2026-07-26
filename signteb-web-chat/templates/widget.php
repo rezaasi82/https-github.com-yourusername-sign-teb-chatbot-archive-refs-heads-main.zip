@@ -3,9 +3,9 @@
  * Frontend widget markup. White-label + Medora AI redesign: premium AI icon,
  * lead-capture step, professional booking CTA and communication channels.
  *
- * @var array $config Provided by \Medora\Frontend\Widget::render().
+ * @var array $config Provided by Widget::render().
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

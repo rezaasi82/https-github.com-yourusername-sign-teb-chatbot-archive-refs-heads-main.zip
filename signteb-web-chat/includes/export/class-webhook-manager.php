@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Export\WebhookManager — generic outbound webhook engine.
+ * Generic outbound webhook engine.
  *
  * Sends a signed JSON payload to a configured endpoint (n8n, Make.com, Zapier,
  * a custom CRM, …) on lead events. Failures are logged and optionally retried
  * on a scheduled single event.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Export;

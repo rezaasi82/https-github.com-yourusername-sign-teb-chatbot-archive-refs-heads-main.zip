@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Ai\CtaDetector — detects booking/contact intent in a turn.
+ * Detects booking/contact intent in a turn.
  *
  * When intent is found the frontend renders an inline CTA card and the
  * conversation is logged as a converted lead (the ROI signal the clinic owner
  * sees in the admin).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

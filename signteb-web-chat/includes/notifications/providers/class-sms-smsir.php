@@ -4,7 +4,7 @@
  * Auth: a single API key sent in the X-API-KEY header. The sender line goes in
  * "lineNumber".
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications\Providers;

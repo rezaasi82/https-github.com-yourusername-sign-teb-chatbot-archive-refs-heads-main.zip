@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Rest\ExportController — admin REST API for leads and exports.
+ * Admin REST API for leads and exports.
  *
  * All routes require the manage_options capability. Read routes return lead
- * data; write routes trigger an export target through \Medora\Export\ExportManager.
+ * data; write routes trigger an export target through ExportManager.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Rest;

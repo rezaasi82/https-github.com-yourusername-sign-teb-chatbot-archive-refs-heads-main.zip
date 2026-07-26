@@ -1,6 +1,6 @@
 <?php
 /**
- * \Medora\Notifications\MessengerNotifier — server-side lead alerts to the clinic's own
+ * Server-side lead alerts to the clinic's own
  * Bale / Telegram group or channel via their Bot APIs.
  *
  * Unlike the SMS gateway (which texts a customer's phone), this pushes an
@@ -10,7 +10,7 @@
  * Bale mirrors the Telegram Bot API shape, so one implementation covers both:
  *   POST {base}/bot{token}/sendMessage  { chat_id, text }
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications;

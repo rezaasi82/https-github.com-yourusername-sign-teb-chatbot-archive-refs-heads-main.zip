@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Rest\ChatController — REST transport for the chat.
+ * REST transport for the chat.
  *
  * Mirrors the admin-ajax handler so hosts that block the REST API still work.
- * Nonce-protected; rate-limited and license-gated downstream in \Medora\Ai\AiManager.
+ * Nonce-protected; rate-limited and license-gated downstream in AiManager.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Rest;

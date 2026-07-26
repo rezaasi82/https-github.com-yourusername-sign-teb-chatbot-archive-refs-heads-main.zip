@@ -1,9 +1,9 @@
 <?php
 /**
- * \Medora\Notifications\SmsProviderBase — shared plumbing for the concrete SMS gateways
+ * Shared plumbing for the concrete SMS gateways
  * (config access, phone normalisation, a single wp_remote_* wrapper).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications;

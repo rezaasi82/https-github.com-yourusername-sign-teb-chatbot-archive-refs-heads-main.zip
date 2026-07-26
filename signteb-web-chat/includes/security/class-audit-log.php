@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Security\AuditLog — security & admin event trail.
+ * Security & admin event trail.
  *
  * Records who did what (settings changes, exports, branch
  * edits, denied/locked-out attempts, integrity anomalies) with IP and time.
  * Self-registering: hooks existing plugin actions and adds an admin viewer.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Security;
@@ -23,7 +23,7 @@ class AuditLog
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
+        add_action('admin_menu', [$this, 'menu'], 20);
 
         // Hook existing plugin events into the trail.
         add_action('swc_pdf_generated', static function ($lead_id): void {
@@ -56,7 +56,7 @@ class AuditLog
         // Cheap probabilistic retention (~90 days).
         if (wp_rand(1, 50) === 1) {
             $table = \Medora\Database\Schema::audit_logs_table();
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
             $wpdb->query("DELETE FROM {$table} WHERE created_at < UTC_TIMESTAMP() - INTERVAL 90 DAY");
         }
     }

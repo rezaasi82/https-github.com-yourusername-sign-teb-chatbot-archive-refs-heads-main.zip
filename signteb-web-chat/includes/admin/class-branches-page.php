@@ -1,9 +1,9 @@
 <?php
 /**
- * \Medora\Admin\BranchesPage — manage clinics / doctors / branches and show each
+ * Manage clinics / doctors / branches and show each
  * branch's own statistics (multi-clinic support).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;
@@ -18,7 +18,7 @@ class BranchesPage
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
+        add_action('admin_menu', [$this, 'menu'], 20);
         add_action('admin_post_swc_branch_save', [$this, 'handle_save']);
         add_action('admin_post_swc_branch_delete', [$this, 'handle_delete']);
     }

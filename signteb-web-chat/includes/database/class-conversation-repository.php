@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Database\ConversationRepository — repository for chat conversations.
+ * Repository for chat conversations.
  *
  * All SQL is prepared and centralized here (Repository pattern, not Active
  * Record) so query logic lives in one place.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Database;

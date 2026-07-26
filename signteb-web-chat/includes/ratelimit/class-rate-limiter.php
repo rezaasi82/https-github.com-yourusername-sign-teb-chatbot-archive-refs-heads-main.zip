@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Ratelimit\RateLimiter — per-IP / per-session throttle on a public endpoint.
+ * Per-IP / per-session throttle on a public endpoint.
  *
  * Backed by the transient API (object cache when available) to protect the API
  * budget against abuse on an anonymous endpoint.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ratelimit;

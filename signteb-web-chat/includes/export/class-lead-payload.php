@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Export\LeadPayload — assembles a normalized export payload for one lead.
+ * Assembles a normalized export payload for one lead.
  *
  * A lead is a conversation (swc_conversations) plus its messages
  * (swc_messages). This is the single representation consumed by every export
  * target (PDF, webhook, Google Sheets) so they never diverge.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Export;

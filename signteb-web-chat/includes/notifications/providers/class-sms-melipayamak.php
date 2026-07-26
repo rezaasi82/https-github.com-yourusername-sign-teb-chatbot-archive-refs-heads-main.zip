@@ -14,7 +14,7 @@
  *
  * The password field being filled selects legacy mode; otherwise token mode.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications\Providers;

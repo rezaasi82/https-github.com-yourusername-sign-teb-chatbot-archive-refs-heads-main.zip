@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Database\AnalyticsRepository — pre-aggregated daily metrics (rollup).
+ * Pre-aggregated daily metrics (rollup).
  *
  * Instead of scanning conversations/messages for every dashboard view, a daily
  * cron writes one row per (day, metric). Long-range reads become an indexed
  * sum over a handful of rows — the foundation for 10k+ leads / 100k+ messages.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Database;
@@ -28,7 +28,7 @@ class AnalyticsRepository
         $table = \Medora\Database\Schema::analytics_table();
         foreach ($metrics as $metric => $value) {
             $metric = substr((string) $metric, 0, 32);
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
             $wpdb->query(
                 $wpdb->prepare(
                     "INSERT INTO {$table} (day, metric, value) VALUES (%s, %s, %d)

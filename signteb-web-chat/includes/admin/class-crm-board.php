@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Admin\CrmBoard — the Kanban pipeline board.
+ * The Kanban pipeline board.
  *
  * Self-registering admin service. Renders one column per lead status and lets
  * the admin drag a lead card between columns; the drop persists via the shared
- * \Medora\Crm\LeadCrm AJAX endpoint (nonce + capability enforced there).
+ * LeadCrm AJAX endpoint (nonce + capability enforced there).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;
@@ -21,7 +21,7 @@ class CrmBoard
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
+        add_action('admin_menu', [$this, 'menu'], 20);
         add_action('admin_enqueue_scripts', [$this, 'enqueue']);
     }
 

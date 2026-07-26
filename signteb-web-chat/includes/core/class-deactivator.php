@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Core\Deactivator — deactivation cleanup.
+ * Deactivation cleanup.
  *
  * Tables are intentionally NOT dropped here; data is only removed on uninstall
  * (uninstall.php) so a deactivate/reactivate cycle never destroys history.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Core;

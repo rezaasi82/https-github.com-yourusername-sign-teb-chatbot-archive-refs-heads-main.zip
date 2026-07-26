@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Core\Cache — small caching helper over the transient / object cache.
+ * Small caching helper over the transient / object cache.
  *
  * Keys are namespaced by a version counter so a single bump invalidates every
  * cached value at once (called when leads/messages change). Uses the object
  * cache transparently when the host provides one.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Core;

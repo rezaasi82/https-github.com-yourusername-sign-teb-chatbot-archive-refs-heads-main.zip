@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Export\SyncStatus — resolves the latest sync state per lead for the admin UI.
+ * Resolves the latest sync state per lead for the admin UI.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Export;

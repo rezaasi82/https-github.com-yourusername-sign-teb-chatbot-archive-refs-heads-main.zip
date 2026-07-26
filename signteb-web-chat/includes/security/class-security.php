@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Security\Security — generic rate limiting and brute-force lockout.
+ * Generic rate limiting and brute-force lockout.
  *
  * Sensitive endpoints call guard()/note_failure() so repeated invalid or
  * unauthorized requests from one IP get throttled and then temporarily locked
  * out, with the event written to the audit log.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Security;

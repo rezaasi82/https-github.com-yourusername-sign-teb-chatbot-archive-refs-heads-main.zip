@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Database\SyncLogRepository — records export / integration attempts and results.
+ * Records export / integration attempts and results.
  *
  * One row per attempt to send a lead to an external target (webhook, Google
  * Sheets) or to generate a PDF. Powers the sync-status badges and the retry
  * of failed jobs.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Database;
@@ -109,7 +109,7 @@ class SyncLogRepository
         $table        = \Medora\Database\Schema::sync_logs_table();
         $placeholders = implode(',', array_fill(0, count($lead_ids), '%d'));
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT s.lead_id, s.provider, s.status FROM {$table} s

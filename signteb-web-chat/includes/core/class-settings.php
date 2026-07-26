@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Core\Settings — typed accessor over the swc_settings option array.
+ * Typed accessor over the swc_settings option array.
  *
  * Provider API keys are stored in their own options, encrypted (see
- * \Medora\Core\Encryption), one per provider so the admin can configure both Anthropic
+ * Encryption), one per provider so the admin can configure both Anthropic
  * and OpenAI and switch between them without re-entering keys.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Core;

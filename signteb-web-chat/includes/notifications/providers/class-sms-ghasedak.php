@@ -3,7 +3,7 @@
  * Ghasedak (قاصدک) — simple send API.
  * Auth: a single API key in the "apikey" header.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications\Providers;

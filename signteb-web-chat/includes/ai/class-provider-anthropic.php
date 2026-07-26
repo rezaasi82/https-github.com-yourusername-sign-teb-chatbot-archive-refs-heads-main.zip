@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Ai\ProviderAnthropic — Anthropic Claude Messages API provider.
+ * Anthropic Claude Messages API provider.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

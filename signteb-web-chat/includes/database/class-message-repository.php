@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Database\MessageRepository — repository for individual chat messages.
+ * Repository for individual chat messages.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Database;

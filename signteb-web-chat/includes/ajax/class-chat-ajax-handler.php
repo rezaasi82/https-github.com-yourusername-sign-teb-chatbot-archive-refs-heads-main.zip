@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Ajax\ChatAjaxHandler — admin-ajax.php fallback transport.
+ * Admin-ajax.php fallback transport.
  *
  * For hosts that restrict the REST API. Same contract and security posture as
- * \Medora\Rest\ChatController.
+ * ChatController.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ajax;

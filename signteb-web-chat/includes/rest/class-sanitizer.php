@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Rest\Sanitizer — shared input sanitization for both transports.
+ * Shared input sanitization for both transports.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Rest;

@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Admin\ConversationsPage — conversation history with a lead filter and a
+ * Conversation history with a lead filter and a
  * per-conversation transcript (the ROI-proof feature for the clinic owner).
  *
  * Rendered inside the tabbed settings screen.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;

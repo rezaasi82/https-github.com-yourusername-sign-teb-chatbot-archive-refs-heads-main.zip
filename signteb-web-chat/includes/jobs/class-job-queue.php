@@ -1,13 +1,13 @@
 <?php
 /**
- * \Medora\Jobs\JobQueue — lightweight background job queue.
+ * Lightweight background job queue.
  *
  * Heavy bulk work (generating many PDFs, syncing many leads) is enqueued and
  * drained in small batches on the swc_process_jobs cron, so an admin request
  * never blocks or times out at scale. Each firing processes a chunk and
  * reschedules itself while jobs remain.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Jobs;
@@ -63,7 +63,7 @@ class JobQueue
     {
         global $wpdb;
         $table = \Medora\Database\Schema::jobs_table();
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE status = 'queued'");
     }
 
@@ -102,7 +102,7 @@ class JobQueue
         }
 
         // Housekeeping: trim old finished jobs.
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
         $wpdb->query("DELETE FROM {$table} WHERE status IN ('done','failed') AND updated_at < UTC_TIMESTAMP() - INTERVAL 7 DAY");
 
         if ($this->pending_count() > 0) {

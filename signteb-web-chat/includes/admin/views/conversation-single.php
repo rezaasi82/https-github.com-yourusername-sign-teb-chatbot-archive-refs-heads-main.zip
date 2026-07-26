@@ -5,7 +5,7 @@
  * @var ?object           $conversation
  * @var array<int,object> $messages
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

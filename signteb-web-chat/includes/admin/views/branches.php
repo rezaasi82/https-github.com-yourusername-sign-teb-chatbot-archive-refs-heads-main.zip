@@ -7,7 +7,7 @@
  * @var ?object                    $editing
  * @var string                     $nonce
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

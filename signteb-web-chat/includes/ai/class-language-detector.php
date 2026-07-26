@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Ai\LanguageDetector — resolves the reply language.
+ * Resolves the reply language.
  *
  * Honors the admin setting; when "auto" it detects from the message and falls
  * back to the site locale so multilingual sites answer in the page language.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

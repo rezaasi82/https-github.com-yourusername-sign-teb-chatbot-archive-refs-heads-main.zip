@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Safety\MedicalSafetyFilter — post-processing safety layer.
+ * Post-processing safety layer.
  *
  * Runs in addition to the system-prompt rules. It screens the user message (to
  * short-circuit emergencies before spending an API call) and the model reply
  * (to append the medical disclaimer when symptoms/illness are discussed).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Safety;

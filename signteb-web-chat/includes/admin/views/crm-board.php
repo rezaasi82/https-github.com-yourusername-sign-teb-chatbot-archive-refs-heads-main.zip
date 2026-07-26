@@ -4,7 +4,7 @@
  *
  * @var array<string,array{label:string,color:string,leads:array<int,object>}> $columns
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

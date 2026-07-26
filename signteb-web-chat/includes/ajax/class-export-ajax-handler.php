@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Ajax\ExportAjaxHandler — admin-ajax endpoints for the export module.
+ * Admin-ajax endpoints for the export module.
  *
  * Every handler is capability-checked and nonce-verified. The PDF download
  * streams the stored file after validating it lives inside the plugin's upload
  * folder (no arbitrary file access).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ajax;

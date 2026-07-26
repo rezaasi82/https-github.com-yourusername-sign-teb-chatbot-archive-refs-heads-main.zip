@@ -1,10 +1,10 @@
 <?php
 /**
- * \Medora\Admin\AdminMenu — registers the "Medora AI" menu and a single tabbed page.
+ * Registers the "Medora AI" menu and a single tabbed page.
  *
  * Tabs: AI Provider | Clinic | Appearance | Conversations | Stats | License.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;

@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Admin\StatsPage — dashboard: conversation volume, CTA conversion rate, and
+ * Dashboard: conversation volume, CTA conversion rate, and
  * the most frequent opening questions (a Content-Gap signal for SEO).
  *
  * Rendered inside the tabbed settings screen.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;

@@ -3,7 +3,7 @@
  * Kavenegar (کاوه‌نگار) — one of the most widely used Iranian SMS panels.
  * Auth: a single API key (activation code) from the panel dashboard.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications\Providers;

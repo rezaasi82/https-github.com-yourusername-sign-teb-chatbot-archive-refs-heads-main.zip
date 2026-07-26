@@ -1,6 +1,6 @@
 <?php
 /**
- * \Medora\Frontend\ChatShortcode — embeds the chat inline via [medora_chat].
+ * Embeds the chat inline via [medora_chat].
  *
  * Lets a site owner drop the assistant into a sidebar, a widget area or the
  * body of any post/page, in addition to (or instead of) the floating launcher.
@@ -9,7 +9,7 @@
  *
  * Usage: [medora_chat]  (alias: [signteb_chat])
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Frontend;

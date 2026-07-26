@@ -3,7 +3,7 @@
  * Marketplace activation gate. The plugin core boots only after the product
  * has been activated with a valid purchase license.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

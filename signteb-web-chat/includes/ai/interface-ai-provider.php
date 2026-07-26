@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Ai\AiProviderInterface — provider abstraction.
+ * Provider abstraction.
  *
  * Adding a new AI backend means adding one class that implements this
  * interface; nothing else in the plugin changes.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

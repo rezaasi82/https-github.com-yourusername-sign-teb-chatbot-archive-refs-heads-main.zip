@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Database\EventRepository — records CTA/channel click events for analytics.
+ * Records CTA/channel click events for analytics.
  *
  * One row per tracked interaction (booking / whatsapp / call / bale). Powers
  * the professional analytics dashboard (conversion + channel breakdown).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Database;

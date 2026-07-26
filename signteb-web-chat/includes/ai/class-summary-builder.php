@@ -1,6 +1,6 @@
 <?php
 /**
- * \Medora\Ai\SummaryBuilder — builds a structured conversation summary for the
+ * Builds a structured conversation summary for the
  * dashboard (name, phone, topic, needed services, booking probability, status).
  *
  * Heuristic and instant (no extra API call): the topic is derived from the
@@ -8,7 +8,7 @@
  * own configured service list. Stored on the conversation and shown to the
  * clinic so a human can follow up (ROI / lead quality).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

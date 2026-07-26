@@ -11,7 +11,7 @@
  * @var int               $branch
  * @var array<int,object> $branches
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

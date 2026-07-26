@@ -1,13 +1,13 @@
 <?php
 /**
- * \Medora\Export\GoogleSheets — appends leads to a Google Sheet.
+ * Appends leads to a Google Sheet.
  *
  * Writes go through a Google Apps Script Web App URL (deployed by the clinic),
  * which is the supported keyless way to append rows — the Google Sheets REST
  * API requires OAuth for writes, so a bare API key cannot append. The tiny
  * Apps Script to deploy is documented in the integration guide.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Export;

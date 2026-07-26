@@ -1,13 +1,13 @@
 <?php
 /**
- * \Medora\Admin\PremiumDashboard — the premium admin landing page and integrity gate.
+ * The premium admin landing page and integrity gate.
  *
  * Self-registering service: it wires its own menu, conditionally-loaded assets
- * and AJAX endpoint. Wire it once from \Medora\Core\Plugin::boot() with:
+ * and AJAX endpoint. Wire it once from Plugin::boot() with:
  *
- *     ( new \Medora\Admin\PremiumDashboard() )->register();
+ *     ( new PremiumDashboard() )->register();
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;
@@ -23,7 +23,7 @@ class PremiumDashboard
 
     public function register(): void
     {
-        add_action('admin_menu', [$this, 'menu'], 20); // after the parent menu (priority 10).
+        add_action('admin_menu', [$this, 'menu'], 20);
         add_action('admin_enqueue_scripts', [$this, 'enqueue']);
         add_action('wp_ajax_swc_integrity_check', [$this, 'ajax_integrity']);
     }

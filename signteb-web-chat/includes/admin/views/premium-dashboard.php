@@ -4,9 +4,9 @@
  *
  * @var array         $integrity
  * @var array         $metrics
- * @var \Medora\Core\Settings  $settings
+ * @var Settings  $settings
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

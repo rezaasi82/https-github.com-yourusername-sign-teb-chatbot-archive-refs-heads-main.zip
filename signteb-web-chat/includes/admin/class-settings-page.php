@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Admin\SettingsPage — the single tabbed admin screen and its save handler.
+ * The single tabbed admin screen and its save handler.
  *
  * Each tab posts only its own fields; the handler updates just those keys so
  * one tab never clobbers another's settings. API keys are stored encrypted and
  * only overwritten when a new value is actually typed.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Admin;

@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Database\BranchRepository — clinics / doctors / branches (multi-clinic support).
+ * Clinics / doctors / branches (multi-clinic support).
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Database;
@@ -18,7 +18,7 @@ class BranchRepository
     {
         global $wpdb;
         $table = \Medora\Database\Schema::branches_table();
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
         return $wpdb->get_results("SELECT * FROM {$table} ORDER BY name ASC") ?: [];
     }
 
@@ -102,7 +102,7 @@ class BranchRepository
     {
         global $wpdb;
         $conv = \Medora\Database\Schema::conversations_table();
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
         $rows = $wpdb->get_results(
             "SELECT branch_id, COUNT(*) AS total, SUM(is_lead) AS leads
              FROM {$conv} GROUP BY branch_id"

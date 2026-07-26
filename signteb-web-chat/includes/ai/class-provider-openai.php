@@ -2,7 +2,7 @@
 /**
  * OpenAI Chat Completions provider.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

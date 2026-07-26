@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Export\ExportLogger — records the lifecycle of an export job.
+ * Records the lifecycle of an export job.
  *
- * Thin layer over \Medora\Database\SyncLogRepository that also measures execution time
+ * Thin layer over SyncLogRepository that also measures execution time
  * and mirrors failures to the PHP error log when WP_DEBUG is on.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Export;

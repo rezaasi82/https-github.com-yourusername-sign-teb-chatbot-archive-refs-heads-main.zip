@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Core\JsonGuard — protects JSON responses from stray PHP notices.
+ * Protects JSON responses from stray PHP notices.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Core;

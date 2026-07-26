@@ -1,11 +1,11 @@
 <?php
 /**
- * \Medora\Notifications\SmsProviderInterface — contract every SMS gateway implements.
+ * Contract every SMS gateway implements.
  *
  * Adding a new panel means writing one class that implements this interface and
- * registering it in \Medora\Notifications\SmsManager::PROVIDERS — no change to the callers.
+ * registering it in SmsManager::PROVIDERS — no change to the callers.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications;

@@ -5,7 +5,7 @@
  * and a body template. Placeholders {to} {text} {key} {secret} {sender} are
  * substituted (URL-encoded inside the body). Success = any 2xx response.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Notifications\Providers;

@@ -8,7 +8,7 @@
  * @var string              $nonce
  * @var string|false        $cached
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 if (! defined('ABSPATH')) {

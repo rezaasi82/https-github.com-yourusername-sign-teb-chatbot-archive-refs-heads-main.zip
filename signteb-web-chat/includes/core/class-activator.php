@@ -1,8 +1,8 @@
 <?php
 /**
- * \Medora\Core\Activator — runs on activation: builds tables and seeds defaults.
+ * Runs on activation: builds tables and seeds defaults.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Core;

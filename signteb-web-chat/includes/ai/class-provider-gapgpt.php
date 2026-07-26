@@ -4,7 +4,7 @@
  * where the OpenAI and Anthropic endpoints are frequently blocked. Serves both
  * GPT and Claude models through the same protocol.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;

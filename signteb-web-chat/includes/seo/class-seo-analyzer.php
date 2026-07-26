@@ -1,12 +1,12 @@
 <?php
 /**
- * \Medora\Seo\SeoAnalyzer — mines the conversation history for SEO signals.
+ * Mines the conversation history for SEO signals.
  *
  * Extracts the most frequent opening questions, high-value keywords (stopwords
  * removed), and which of the clinic's services are trending in chats. Heavy
  * scans are cached briefly.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Seo;

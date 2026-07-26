@@ -3,10 +3,10 @@
  * Builds AI providers from the stored settings.
  *
  * The single place that knows which concrete provider class maps to each id,
- * so the rest of the plugin depends only on the \Medora\Ai\AiProviderInterface
+ * so the rest of the plugin depends only on the AiProviderInterface
  * abstraction and never needs to change when a provider is added.
  *
- * @package SignTeb_Web_Chat
+ * @package Medora
  */
 
 namespace Medora\Ai;
