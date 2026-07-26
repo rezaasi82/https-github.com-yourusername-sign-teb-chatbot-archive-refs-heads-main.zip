@@ -103,9 +103,9 @@ $score_badge = static function (?string $level): string {
                 <td><?php echo $phone !== '' ? esc_html($phone) : '—'; ?></td>
                 <td><?php echo esc_html(mysql2date('Y/m/d H:i', $c->created_at)); ?></td>
                 <td><?php echo wp_kses_post($score_badge($c->lead_score ?? null)); ?></td>
-                <td><?php echo \Medora\Export\SyncStatus::badge($st['pdf']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
-                <td><?php echo \Medora\Export\SyncStatus::badge($st['google_sheets']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
-                <td><?php echo \Medora\Export\SyncStatus::badge($st['webhook']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+                <td><?php echo wp_kses_post(\Medora\Export\SyncStatus::badge($st['pdf'])); ?></td>
+                <td><?php echo wp_kses_post(\Medora\Export\SyncStatus::badge($st['google_sheets'])); ?></td>
+                <td><?php echo wp_kses_post(\Medora\Export\SyncStatus::badge($st['webhook'])); ?></td>
                 <td class="swc-actions">
                     <a class="button button-small" href="<?php echo esc_url($dl); ?>" target="_blank"><?php esc_html_e('دانلود PDF', 'signteb-web-chat'); ?></a>
                     <button type="button" class="button button-small swc-act" data-op="webhook" data-lead="<?php echo esc_attr($c->id); ?>">Webhook</button>

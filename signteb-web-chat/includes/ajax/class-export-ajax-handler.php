@@ -53,7 +53,7 @@ class ExportAjaxHandler
     {
         \Medora\Core\JsonGuard::arm();
         $this->guard();
-        $to = sanitize_text_field(wp_unslash($_POST['to'] ?? ''));
+        $to = \Medora\Core\Input::post_text('to');
         if ($to === '') {
             wp_send_json(['ok' => false, 'error' => __('شماره مقصد را وارد کنید.', 'signteb-web-chat')], 400);
         }
@@ -83,9 +83,9 @@ class ExportAjaxHandler
         \Medora\Core\JsonGuard::arm();
         $this->guard();
 
-        $lead_id  = absint($_POST['lead_id'] ?? 0);
-        $to       = sanitize_text_field(wp_unslash($_POST['to'] ?? ''));
-        $tpl_key  = sanitize_key(wp_unslash($_POST['template'] ?? 'referral'));
+        $lead_id  = \Medora\Core\Input::post_int('lead_id');
+        $to       = \Medora\Core\Input::post_text('to');
+        $tpl_key  = \Medora\Core\Input::post_key('template', 'referral');
         if ($lead_id <= 0 || $to === '') {
             wp_send_json(['ok' => false, 'error' => __('لید یا شماره مقصد نامعتبر است.', 'signteb-web-chat')], 400);
         }
@@ -114,7 +114,7 @@ class ExportAjaxHandler
     {
         \Medora\Core\JsonGuard::arm();
         $this->guard();
-        $lead_id = absint($_POST['lead_id'] ?? 0);
+        $lead_id = \Medora\Core\Input::post_int('lead_id');
         wp_send_json((new \Medora\Export\ExportManager())->export_pdf($lead_id));
     }
 
@@ -122,7 +122,7 @@ class ExportAjaxHandler
     {
         \Medora\Core\JsonGuard::arm();
         $this->guard();
-        $lead_id = absint($_POST['lead_id'] ?? 0);
+        $lead_id = \Medora\Core\Input::post_int('lead_id');
         wp_send_json((new \Medora\Export\ExportManager())->export_webhook($lead_id, 'manual'));
     }
 
@@ -130,7 +130,7 @@ class ExportAjaxHandler
     {
         \Medora\Core\JsonGuard::arm();
         $this->guard();
-        $lead_id = absint($_POST['lead_id'] ?? 0);
+        $lead_id = \Medora\Core\Input::post_int('lead_id');
         wp_send_json((new \Medora\Export\ExportManager())->export_google_sheet($lead_id));
     }
 
@@ -153,8 +153,8 @@ class ExportAjaxHandler
         \Medora\Core\JsonGuard::arm();
         $this->guard();
 
-        $op  = sanitize_key($_POST['op'] ?? '');
-        $ids = array_map('absint', (array) ($_POST['ids'] ?? []));
+        $op  = \Medora\Core\Input::post_key('op');
+        $ids = array_map('absint', (array) (\Medora\Core\Input::post_fields()['ids'] ?? []));
         $ids = array_filter($ids);
         if ($ids === []) {
             wp_send_json(['ok' => false, 'error' => 'no_ids'], 400);
@@ -197,7 +197,7 @@ class ExportAjaxHandler
             \Medora\Security\Security::note_failure('pdf_download');
             wp_die(esc_html__('دسترسی غیرمجاز.', 'signteb-web-chat'), '', ['response' => 403]);
         }
-        $lead_id = absint($_GET['lead_id'] ?? 0);
+        $lead_id = \Medora\Core\Input::get_int('lead_id');
 
         $manager = new \Medora\Export\ExportManager();
         $conv    = (new \Medora\Database\ConversationRepository())->get($lead_id);

@@ -77,8 +77,8 @@ class LeadCrm
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
 
-        $lead_id = absint($_POST['lead_id'] ?? 0);
-        $to      = sanitize_email(wp_unslash($_POST['to'] ?? ''));
+        $lead_id = \Medora\Core\Input::post_int('lead_id');
+        $to      = \Medora\Core\Input::post_email('to');
         if ($lead_id <= 0) {
             wp_send_json(['ok' => false, 'error' => 'bad_lead'], 400);
         }
@@ -136,7 +136,7 @@ class LeadCrm
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
 
-        $lead_id = absint($_POST['lead_id'] ?? 0);
+        $lead_id = \Medora\Core\Input::post_int('lead_id');
         if ($lead_id <= 0) {
             wp_send_json(['ok' => false, 'error' => 'bad_lead'], 400);
         }
@@ -144,23 +144,23 @@ class LeadCrm
         $repo   = new \Medora\Database\ConversationRepository();
         $fields = [];
 
-        if (isset($_POST['lead_status'])) {
-            $status = sanitize_key(wp_unslash($_POST['lead_status']));
+        if (\Medora\Core\Input::has_post('lead_status')) {
+            $status = \Medora\Core\Input::post_key('lead_status');
             if (self::is_valid($status)) {
                 $fields['lead_status'] = $status;
             }
         }
-        if (isset($_POST['email'])) {
-            $fields['email'] = sanitize_email(wp_unslash($_POST['email']));
+        if (\Medora\Core\Input::has_post('email')) {
+            $fields['email'] = \Medora\Core\Input::post_email('email');
         }
-        if (isset($_POST['tags'])) {
-            $fields['tags'] = sanitize_text_field(wp_unslash($_POST['tags']));
+        if (\Medora\Core\Input::has_post('tags')) {
+            $fields['tags'] = \Medora\Core\Input::post_text('tags');
         }
-        if (isset($_POST['notes'])) {
-            $fields['notes'] = sanitize_textarea_field(wp_unslash($_POST['notes']));
+        if (\Medora\Core\Input::has_post('notes')) {
+            $fields['notes'] = \Medora\Core\Input::post_textarea('notes');
         }
-        if (isset($_POST['branch_id'])) {
-            $branch = absint($_POST['branch_id']);
+        if (\Medora\Core\Input::has_post('branch_id')) {
+            $branch = \Medora\Core\Input::post_int('branch_id');
             if ($branch === 0 || (new \Medora\Database\BranchRepository())->exists($branch)) {
                 $fields['branch_id'] = $branch;
             }

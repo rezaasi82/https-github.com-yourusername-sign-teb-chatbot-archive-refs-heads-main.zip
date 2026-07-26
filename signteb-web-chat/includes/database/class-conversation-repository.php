@@ -226,38 +226,45 @@ class ConversationRepository
     }
 
     /**
-     * WHERE clause from filters. Only fixed, whitelisted fragments are used
-     * (no user input reaches SQL here), so the concatenation is safe.
+     * Build the WHERE clause as placeholders plus their bound values, so no
+     * filter value is ever concatenated into SQL.
+     *
+     * @return array{0:string,1:array<int,scalar>}
      */
-    private function where(array $filters): string
+    private function where(array $filters): array
     {
         $clauses = [];
+        $params  = [];
+
         if (! empty($filters['leads_only'])) {
             $clauses[] = 'is_lead = 1';
         }
         if (! empty($filters['score']) && in_array($filters['score'], ['hot', 'warm', 'cold'], true)) {
-            $clauses[] = "lead_score = '" . $filters['score'] . "'";
+            $clauses[] = 'lead_score = %s';
+            $params[]  = (string) $filters['score'];
         }
         if (! empty($filters['branch'])) {
-            $clauses[] = 'branch_id = ' . (int) $filters['branch']; // int-cast, safe
+            $clauses[] = 'branch_id = %d';
+            $params[]  = (int) $filters['branch'];
         }
-        return $clauses ? implode(' AND ', $clauses) : '1=1';
+
+        return [$clauses ? implode(' AND ', $clauses) : '1=1', $params];
     }
 
     /** @return array<int,object> */
     public function paginate(int $page = 1, int $per_page = 20, array $filters = []): array
     {
         global $wpdb;
-        $table  = \Medora\Database\Schema::conversations_table();
-        $offset = max(0, ($page - 1) * $per_page);
-        $where  = $this->where($filters);
+        $table              = \Medora\Database\Schema::conversations_table();
+        $offset             = max(0, ($page - 1) * $per_page);
+        [$where, $params]   = $this->where($filters);
+        $params[]           = $per_page;
+        $params[]           = $offset;
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$table} WHERE {$where} ORDER BY id DESC LIMIT %d OFFSET %d",
-                $per_page,
-                $offset
+                $params
             )
         ) ?: [];
     }
@@ -265,10 +272,15 @@ class ConversationRepository
     public function count(array $filters = []): int
     {
         global $wpdb;
-        $table = \Medora\Database\Schema::conversations_table();
-        $where = $this->where($filters);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE {$where}");
+        $table            = \Medora\Database\Schema::conversations_table();
+        [$where, $params] = $this->where($filters);
+        $sql              = "SELECT COUNT(*) FROM {$table} WHERE {$where}";
+
+        if ($params) {
+            $sql = $wpdb->prepare($sql, $params);
+        }
+
+        return (int) $wpdb->get_var($sql);
     }
 
     public function get(int $conversation_id): ?object

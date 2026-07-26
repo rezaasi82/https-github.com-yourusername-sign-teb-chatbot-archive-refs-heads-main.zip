@@ -22,7 +22,7 @@ class Sanitizer
 
     public static function client_ip(): string
     {
-        $ip = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+        $ip = \Medora\Core\Input::client_ip();
         return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : '0.0.0.0';
     }
 

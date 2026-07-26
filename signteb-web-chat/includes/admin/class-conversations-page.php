@@ -26,7 +26,7 @@ class ConversationsPage
         $branches = (new \Medora\Database\BranchRepository())->all();
 
         // Single-conversation transcript view.
-        $view_id = isset($_GET['conversation']) ? absint($_GET['conversation']) : 0;
+        $view_id = \Medora\Core\Input::get_int('conversation');
         if ($view_id > 0) {
             $conversation = $repo->get($view_id);
             $messages     = (new \Medora\Database\MessageRepository())->for_conversation($view_id);
@@ -34,10 +34,10 @@ class ConversationsPage
             return;
         }
 
-        $leads_only = ! empty($_GET['leads']);
-        $score      = isset($_GET['score']) ? sanitize_key((string) $_GET['score']) : '';
-        $branch     = isset($_GET['branch']) ? absint($_GET['branch']) : 0;
-        $page       = max(1, isset($_GET['paged']) ? absint($_GET['paged']) : 1);
+        $leads_only = \Medora\Core\Input::get_text('leads') !== '';
+        $score      = \Medora\Core\Input::get_key('score');
+        $branch     = \Medora\Core\Input::get_int('branch');
+        $page       = max(1, \Medora\Core\Input::get_int('paged', 1));
         $per_page   = 20;
 
         $filters = ['leads_only' => $leads_only, 'score' => $score, 'branch' => $branch];

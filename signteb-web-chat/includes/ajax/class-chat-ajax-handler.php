@@ -33,13 +33,13 @@ class ChatAjaxHandler
         }
 
         $result = (new \Medora\Ai\AiManager())->handle([
-            'session_id' => \Medora\Rest\Sanitizer::session_id((string) ($_POST['session_id'] ?? '')),
-            'message'    => sanitize_textarea_field(wp_unslash((string) ($_POST['message'] ?? ''))),
-            'name'       => \Medora\Rest\Sanitizer::name(wp_unslash((string) ($_POST['name'] ?? ''))),
-            'phone'      => \Medora\Rest\Sanitizer::phone(wp_unslash((string) ($_POST['phone'] ?? ''))),
+            'session_id' => \Medora\Rest\Sanitizer::session_id(\Medora\Core\Input::post_text('session_id')),
+            'message'    => \Medora\Core\Input::post_textarea('message'),
+            'name'       => \Medora\Rest\Sanitizer::name(\Medora\Core\Input::post_text('name')),
+            'phone'      => \Medora\Rest\Sanitizer::phone(\Medora\Core\Input::post_text('phone')),
             'ip'         => \Medora\Rest\Sanitizer::client_ip(),
-            'page_url'   => esc_url_raw(wp_unslash((string) ($_POST['page_url'] ?? ''))),
-            'branch'     => absint($_POST['branch'] ?? 0),
+            'page_url'   => \Medora\Core\Input::post_url('page_url'),
+            'branch'     => \Medora\Core\Input::post_int('branch'),
             'user_id'    => get_current_user_id() ?: null,
         ]);
 
@@ -58,8 +58,8 @@ class ChatAjaxHandler
             wp_send_json(['ok' => false, 'error' => 'rate_limited'], 429);
         }
 
-        $type = sanitize_key((string) ($_POST['type'] ?? ''));
-        $cid  = absint($_POST['conversation_id'] ?? 0);
+        $type = \Medora\Core\Input::post_key('type');
+        $cid  = \Medora\Core\Input::post_int('conversation_id');
         $ok   = (new \Medora\Database\EventRepository())->record($type, $cid);
         if ($ok && $type === 'booking' && $cid > 0) {
             (new \Medora\Database\ConversationRepository())->set_booking_status($cid, 'clicked');

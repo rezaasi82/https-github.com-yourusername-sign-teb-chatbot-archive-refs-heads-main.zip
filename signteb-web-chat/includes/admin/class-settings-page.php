@@ -21,13 +21,13 @@ class SettingsPage
 
     public function current_tab(): string
     {
-        $tab = isset($_GET['tab']) ? sanitize_key((string) $_GET['tab']) : 'provider';
+        $tab = \Medora\Core\Input::get_key('tab', 'provider');
         return in_array($tab, self::TABS, true) ? $tab : 'provider';
     }
 
     public function handle_save(): void
     {
-        if (! isset($_POST['swc_settings_submit'])) {
+        if (! \Medora\Core\Input::has_post('swc_settings_submit')) {
             return;
         }
         if (! current_user_can('manage_options')) {
@@ -35,7 +35,7 @@ class SettingsPage
         }
         check_admin_referer('swc_settings');
 
-        $in  = wp_unslash($_POST);
+        $in  = \Medora\Core\Input::post_fields();
         $tab = isset($in['tab']) && in_array($in['tab'], self::TABS, true) ? $in['tab'] : 'provider';
 
         if ($tab === 'integrations') {
@@ -58,13 +58,13 @@ class SettingsPage
             $update['rate_limit_per_min'] = max(1, (int) ($in['rate_limit_per_min'] ?? 8));
 
             if (isset($in['api_key_anthropic']) && trim((string) $in['api_key_anthropic']) !== '') {
-                \Medora\Core\Settings::save_api_key('anthropic', (string) $in['api_key_anthropic']);
+                \Medora\Core\Settings::save_api_key('anthropic', sanitize_text_field((string) $in['api_key_anthropic']));
             }
             if (isset($in['api_key_openai']) && trim((string) $in['api_key_openai']) !== '') {
-                \Medora\Core\Settings::save_api_key('openai', (string) $in['api_key_openai']);
+                \Medora\Core\Settings::save_api_key('openai', sanitize_text_field((string) $in['api_key_openai']));
             }
             if (isset($in['api_key_gapgpt']) && trim((string) $in['api_key_gapgpt']) !== '') {
-                \Medora\Core\Settings::save_api_key('gapgpt', (string) $in['api_key_gapgpt']);
+                \Medora\Core\Settings::save_api_key('gapgpt', sanitize_text_field((string) $in['api_key_gapgpt']));
             }
         } elseif ($tab === 'clinic') {
             $update['clinic_name']      = sanitize_text_field($in['clinic_name'] ?? '');
@@ -209,7 +209,7 @@ class SettingsPage
         echo '<h1>' . esc_html__('Medora AI — دستیار هوشمند جذب بیمار', 'signteb-web-chat') . '</h1>';
 
         // Pistachio-green success toast after a save (auto-dismisses via CSS).
-        if (isset($_GET['updated']) && $_GET['updated'] === '1') {
+        if (\Medora\Core\Input::get_key('updated') === '1') {
             echo '<div class="swc-saved-toast" role="status">'
                 . '<span class="swc-saved-ico" aria-hidden="true">✓</span>'
                 . '<span>' . esc_html__('تغییرات با موفقیت ذخیره شد.', 'signteb-web-chat') . '</span>'

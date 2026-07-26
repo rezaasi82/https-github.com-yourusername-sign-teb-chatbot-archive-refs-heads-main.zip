@@ -42,7 +42,7 @@ class BranchesPage
         }
         check_admin_referer(self::NONCE);
 
-        $in   = wp_unslash($_POST);
+        $in   = \Medora\Core\Input::post_fields();
         $data = [
             'name'    => sanitize_text_field($in['name'] ?? ''),
             'doctor'  => sanitize_text_field($in['doctor'] ?? ''),
@@ -73,7 +73,7 @@ class BranchesPage
         }
         check_admin_referer(self::NONCE);
 
-        $id = absint($_POST['branch_id'] ?? 0);
+        $id = \Medora\Core\Input::post_int('branch_id');
         if ($id > 0) {
             (new \Medora\Database\BranchRepository())->delete($id);
             \Medora\Security\AuditLog::record('branch_deleted', ['object' => 'branch#' . $id, 'severity' => 'warning']);
@@ -90,7 +90,8 @@ class BranchesPage
         $repo     = new \Medora\Database\BranchRepository();
         $branches = $repo->all();
         $stats    = $repo->lead_stats();
-        $editing  = isset($_GET['edit']) ? $repo->get(absint($_GET['edit'])) : null;
+        $edit_id  = \Medora\Core\Input::get_int('edit');
+        $editing  = $edit_id > 0 ? $repo->get($edit_id) : null;
         $nonce    = self::NONCE;
 
         include SWC_DIR . 'includes/admin/views/branches.php';

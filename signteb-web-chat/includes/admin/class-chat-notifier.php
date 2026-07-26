@@ -70,8 +70,8 @@ class ChatNotifier
         if (! current_user_can('manage_options')) {
             return;
         }
-        $page = isset($_GET['page']) ? sanitize_key((string) $_GET['page']) : '';
-        $tab  = isset($_GET['tab']) ? sanitize_key((string) $_GET['tab']) : '';
+        $page = \Medora\Core\Input::get_key('page');
+        $tab  = \Medora\Core\Input::get_key('tab');
         if ($page === 'swc-chat' && $tab === 'conversations') {
             $this->mark_seen();
         }

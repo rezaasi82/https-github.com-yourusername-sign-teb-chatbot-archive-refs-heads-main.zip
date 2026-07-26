@@ -43,7 +43,7 @@ $int_class = 'is-' . preg_replace('/[^a-z]/', '', $integrity['level']);
         </div>
 
         <?php
-        $range   = isset($_GET['range']) ? sanitize_key((string) $_GET['range']) : 'month';
+        $range   = \Medora\Core\Input::get_key('range', 'month');
         $base    = admin_url('admin.php?page=swc-dashboard');
         $tabs    = ['day' => __('روزانه', 'signteb-web-chat'), 'week' => __('هفتگی', 'signteb-web-chat'), 'month' => __('ماهانه', 'signteb-web-chat'), 'year' => __('سالانه', 'signteb-web-chat')];
         $toman   = static fn($n) => number_format_i18n((int) $n) . ' ' . __('تومان', 'signteb-web-chat');

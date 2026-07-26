@@ -21,8 +21,8 @@ $page_url   = admin_url('admin.php?page=swc-branches');
     <h1><?php esc_html_e('کلینیک‌ها و شعب', 'signteb-web-chat'); ?></h1>
     <p class="description"><?php esc_html_e('چند کلینیک/پزشک/شعبه را با یک نصب مدیریت کنید. هر لید می‌تواند به یک شعبه منتسب شود و آمار هر شعبه جداگانه محاسبه می‌شود.', 'signteb-web-chat'); ?></p>
 
-    <?php if (isset($_GET['saved'])) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e('ذخیره شد.', 'signteb-web-chat'); ?></p></div><?php endif; ?>
-    <?php if (isset($_GET['deleted'])) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e('حذف شد.', 'signteb-web-chat'); ?></p></div><?php endif; ?>
+    <?php if (\Medora\Core\Input::has_get('saved')) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e('ذخیره شد.', 'signteb-web-chat'); ?></p></div><?php endif; ?>
+    <?php if (\Medora\Core\Input::has_get('deleted')) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e('حذف شد.', 'signteb-web-chat'); ?></p></div><?php endif; ?>
 
     <div class="swc-branch-layout">
         <div class="swc-branch-list">

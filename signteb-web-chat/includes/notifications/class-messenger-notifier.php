@@ -183,7 +183,7 @@ class MessengerNotifier
             \Medora\Security\Security::note_failure('messenger_test');
             wp_send_json(['ok' => false, 'error' => 'unauthorized'], 403);
         }
-        $channel = sanitize_key(wp_unslash($_POST['channel'] ?? ''));
+        $channel = \Medora\Core\Input::post_key('channel');
         if (! isset(self::CHANNELS[$channel])) {
             wp_send_json(['ok' => false, 'error' => 'bad_channel'], 400);
         }

@@ -74,7 +74,7 @@ class Widget
             'restNonce' => wp_create_nonce('wp_rest'),
             'ajaxUrl'   => esc_url_raw(admin_url('admin-ajax.php')),
             'ajaxNonce' => wp_create_nonce('swc_chat_nonce'),
-            'pageUrl'   => esc_url_raw((string) ($_SERVER['REQUEST_URI'] ?? '')),
+            'pageUrl'   => \Medora\Core\Input::request_uri(),
             'strings'   => [
                 'placeholder' => __('پیام خود را بنویسید…', 'signteb-web-chat'),
                 'send'        => __('ارسال', 'signteb-web-chat'),

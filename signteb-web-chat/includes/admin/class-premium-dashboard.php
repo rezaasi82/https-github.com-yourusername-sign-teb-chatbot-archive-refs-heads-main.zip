@@ -64,7 +64,7 @@ class PremiumDashboard
         }
 
         $ranges    = ['day' => 1, 'week' => 7, 'month' => 30, 'year' => 365];
-        $range     = isset($_GET['range']) ? sanitize_key((string) $_GET['range']) : 'month';
+        $range     = \Medora\Core\Input::get_key('range', 'month');
         $range     = isset($ranges[$range]) ? $range : 'month';
         $days      = $ranges[$range];
 
