@@ -12,7 +12,7 @@
 |---|---|---|
 | ۱ | اتصال به آپارات | فقط شناسه کانال (`drhamedzamani`) کافی است؛ عنوان، تصویر، مدت، تاریخ و کد نمایش خودکار دریافت می‌شود |
 | ۲ | همگام‌سازی خودکار | هر ۶ / ۱۲ / ۲۴ ساعت، با تشخیص تغییر (ویدئوی بدون تغییر دوباره نوشته نمی‌شود) |
-| ۳ | خلاصه هوشمند | خلاصه، نکات مهم و سوالات متداول با یک درخواست به مدل |
+| ۳ | خلاصه هوشمند | خلاصه، نکات مهم و سوالات متداول با یک درخواست به مدل — سرویس‌دهنده: GapGPT (قابل استفاده از ایران)، Anthropic، یا هر درگاه سازگار با OpenAI |
 | ۴ | لینک‌سازی داخلی | مدل فقط از فهرست آدرس‌های واقعی سایت انتخاب می‌کند — لینک ساختگی از نظر ساختاری غیرممکن است |
 | ۵ | تولید اسکیما | `VideoObject`, `MedicalWebPage`, `ItemList`, `FAQPage`, `BreadcrumbList`, `Physician` در یک `@graph` |
 | ۶ | ویجت المنتور | «ویدئوهای ساین‌طب» و «مرکز هوشمند پزشکی» به‌صورت Drag & Drop |
@@ -66,7 +66,7 @@ signteb-video-hub/
 │   ├── Core/        Plugin, Activator, Settings, Encryption, PostType, VideoMeta, Logger
 │   ├── Api/         VideoSourceInterface + Aparat/ + Youtube/ + SourceManager
 │   ├── Sync/        SyncManager (upsert با تشخیص تغییر)
-│   ├── Ai/          AiProviderInterface + Providers/ + Summary/InternalLinker/Article
+│   ├── Ai/          AiProviderInterface + Providers/{GapGpt,Anthropic,OpenAi} + generators
 │   ├── Cron/        Scheduler (۶/۱۲/۲۴ ساعت) + AiWorker (صف)
 │   ├── Cache/       CacheManager (کش داخلی + پاک‌سازی کش صفحه)
 │   ├── Schema/      SchemaGenerator + SeoCompat

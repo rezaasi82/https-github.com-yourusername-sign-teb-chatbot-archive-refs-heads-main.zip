@@ -36,8 +36,17 @@
   margin: 1rem 0 1.5rem;
 }
 
+/* Injected next to whichever button was clicked, so it needs to sit clear of
+   the button without disturbing the surrounding table layout. */
 .stvh-feedback {
+  display: inline-block;
   font-size: 0.9rem;
+  margin-inline-start: 0.6rem;
+  vertical-align: middle;
+}
+
+.stvh-feedback:empty {
+  margin-inline-start: 0;
 }
 
 .stvh-feedback.is-ok {
@@ -46,11 +55,6 @@
 
 .stvh-feedback.is-error {
   color: var(--stvh-a-err);
-}
-
-.stvh-feedback-row {
-  margin: 1rem 0 0;
-  min-height: 1.5em;
 }
 
 /* ---------- Stat tiles ---------- */

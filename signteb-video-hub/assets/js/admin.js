@@ -26,12 +26,32 @@
   }
 
   /**
-   * Feedback goes to the closest status element so a metabox button reports
-   * next to itself rather than at the top of the screen.
+   * Feedback must appear where the user is already looking.
+   *
+   * Scoping to the whole page found the first status element in the DOM,
+   * which on the settings screen sits next to the submit button — so a
+   * "تست اتصال" result rendered far below the fold and looked like nothing
+   * had happened. Prefer a status element that is a direct sibling of the
+   * button, and create one right after it when there is none.
    */
   function feedbackFor(element) {
-    var scope = element.closest('.stvh-metabox') || element.closest('.wrap') || document;
-    return scope.querySelector('[data-stvh-feedback]');
+    var parent = element.parentNode;
+
+    if (parent) {
+      var sibling = parent.querySelector(':scope > [data-stvh-feedback]');
+      if (sibling) {
+        return sibling;
+      }
+    }
+
+    var created = document.createElement('span');
+    created.className = 'stvh-feedback';
+    created.setAttribute('data-stvh-feedback', '');
+    created.setAttribute('role', 'status');
+    created.setAttribute('aria-live', 'polite');
+    element.insertAdjacentElement('afterend', created);
+
+    return created;
   }
 
   function report(element, message, ok) {

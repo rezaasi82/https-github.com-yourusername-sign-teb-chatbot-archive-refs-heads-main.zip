@@ -130,9 +130,13 @@ $checkbox = static function (string $key, string $label, array $values, string $
                 <th scope="row"><label for="ai_provider"><?php esc_html_e('سرویس‌دهنده', 'signteb-video-hub'); ?></label></th>
                 <td>
                     <select id="ai_provider" name="ai_provider">
+                        <option value="gapgpt" <?php selected($values['ai_provider'], 'gapgpt'); ?>><?php esc_html_e('GapGPT — پیشنهادی برای هاست ایران', 'signteb-video-hub'); ?></option>
                         <option value="anthropic" <?php selected($values['ai_provider'], 'anthropic'); ?>>Anthropic</option>
                         <option value="openai" <?php selected($values['ai_provider'], 'openai'); ?>><?php esc_html_e('سازگار با OpenAI', 'signteb-video-hub'); ?></option>
                     </select>
+                    <p class="description">
+                        <?php esc_html_e('روی بیشتر هاست‌های ایران، api.openai.com و api.anthropic.com در دسترس نیستند و اتصال مستقیم شکست می‌خورد. GapGPT درگاه سازگاری است که از ایران کار می‌کند و هم مدل‌های GPT و هم Claude را سرو می‌کند.', 'signteb-video-hub'); ?>
+                    </p>
                 </td>
             </tr>
             <tr>
@@ -148,8 +152,8 @@ $checkbox = static function (string $key, string $label, array $values, string $
             <tr>
                 <th scope="row"><label for="ai_base_url"><?php esc_html_e('آدرس پایه سرویس', 'signteb-video-hub'); ?></label></th>
                 <td>
-                    <input type="url" id="ai_base_url" name="ai_base_url" value="<?php echo esc_attr((string) $values['ai_base_url']); ?>" class="regular-text" dir="ltr">
-                    <p class="description"><?php esc_html_e('در صورت استفاده از واسط سازگار، آدرس پایه را وارد کنید؛ در غیر این صورت خالی بگذارید.', 'signteb-video-hub'); ?></p>
+                    <input type="url" id="ai_base_url" name="ai_base_url" value="<?php echo esc_attr((string) $values['ai_base_url']); ?>" class="regular-text" dir="ltr" placeholder="<?php echo esc_attr(\SignTeb\VideoHub\Ai\Providers\GapGptProvider::BASE_URL); ?>">
+                    <p class="description"><?php esc_html_e('برای GapGPT خالی بگذارید — آدرس پیش‌فرض خودکار استفاده می‌شود. فقط اگر از درگاه سازگار دیگری استفاده می‌کنید آدرس پایه را وارد کنید.', 'signteb-video-hub'); ?></p>
                 </td>
             </tr>
             <tr>
@@ -248,8 +252,7 @@ $checkbox = static function (string $key, string $label, array $values, string $
             </tr>
         </table>
 
-        <p class="stvh-feedback-row"><span class="stvh-feedback" data-stvh-feedback role="status" aria-live="polite"></span></p>
-
+        <?php // Test-connection results render inline next to their own button. ?>
         <?php submit_button(__('ذخیره تنظیمات', 'signteb-video-hub')); ?>
     </form>
 </div>
