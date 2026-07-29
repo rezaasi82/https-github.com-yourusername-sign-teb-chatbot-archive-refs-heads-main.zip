@@ -32,7 +32,7 @@ class Widget
 
     private function should_render(): bool
     {
-        if (! $this->settings->is_enabled()) {
+        if (! $this->settings->is_float_enabled()) {
             return false;
         }
         if (is_admin() || is_feed() || is_robots()) {
@@ -106,9 +106,8 @@ class Widget
      */
     public function render_inline(): string
     {
-        // Same gate as the floating widget, minus the "is this a normal page"
-        // checks — a shortcode is only reached on a rendered page anyway.
-        if (! $this->settings->is_enabled()) {
+        // The shortcode has its own switch, independent of the floating widget.
+        if (! $this->settings->is_shortcode_enabled()) {
             return '';
         }
         $this->enqueue_assets();

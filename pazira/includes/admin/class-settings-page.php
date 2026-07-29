@@ -48,7 +48,8 @@ class SettingsPage
         $update   = [];
 
         if ($tab === 'provider') {
-            $update['enabled']            = isset($in['enabled']) ? 1 : 0;
+            $update['float_enabled']      = isset($in['float_enabled']) ? 1 : 0;
+            $update['shortcode_enabled']  = isset($in['shortcode_enabled']) ? 1 : 0;
             $update['provider']           = in_array(($in['provider'] ?? 'anthropic'), ['anthropic', 'openai', 'gapgpt'], true) ? $in['provider'] : 'anthropic';
             $update['model_anthropic']    = sanitize_text_field($in['model_anthropic'] ?? 'claude-haiku-4-5-20251001');
             $update['model_openai']       = sanitize_text_field($in['model_openai'] ?? 'gpt-4o-mini');
@@ -207,17 +208,27 @@ class SettingsPage
 
         echo '<div class="wrap pzr-admin" dir="rtl">';
 
-        $enabled = (int) $s->get('enabled', 0) === 1;
-        $has_key = $s->has_api_key((string) $s->get('provider', 'anthropic'));
+        $float     = $s->is_float_enabled();
+        $shortcode = $s->is_shortcode_enabled();
+        $has_key   = $s->has_api_key((string) $s->get('provider', 'anthropic'));
+
+        if ($float && $shortcode) {
+            $display = __('ویجت شناور + شورت‌کد', 'pazira');
+        } elseif ($float) {
+            $display = __('فقط ویجت شناور', 'pazira');
+        } elseif ($shortcode) {
+            $display = __('فقط شورت‌کد', 'pazira');
+        } else {
+            $display = __('نمایش خاموش', 'pazira');
+        }
+
         \Pazira\Admin\PageHeader::render(
             __('Pazira', 'pazira'),
             __('دستیار هوشمند جذب بیمار', 'pazira'),
             [
                 [
-                    'label' => $enabled
-                        ? __('ویجت فعال', 'pazira')
-                        : __('ویجت غیرفعال', 'pazira'),
-                    'state' => $enabled ? 'on' : 'off',
+                    'label' => $display,
+                    'state' => ($float || $shortcode) ? 'on' : 'off',
                 ],
                 [
                     'label' => $has_key

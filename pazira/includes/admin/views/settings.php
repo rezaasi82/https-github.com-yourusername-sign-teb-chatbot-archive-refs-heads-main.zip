@@ -19,8 +19,32 @@ if (! defined('ABSPATH')) {
     <?php if ($tab === 'provider') : ?>
         <table class="form-table" role="presentation">
             <tr>
-                <th><?php esc_html_e('فعال‌سازی چت‌بات', 'pazira'); ?></th>
-                <td><label><input type="checkbox" name="enabled" value="1" <?php checked($s->get('enabled', 1), 1); ?>> <?php esc_html_e('نمایش ویجت در سایت', 'pazira'); ?></label></td>
+                <th><?php esc_html_e('نمایش ویجت در سایت', 'pazira'); ?></th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="float_enabled" value="1" <?php checked($s->is_float_enabled()); ?>>
+                        <?php esc_html_e('ویجت شناور روی همهٔ صفحه‌های سایت نمایش داده شود', 'pazira'); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e('آیکون گفتگو در گوشهٔ همهٔ صفحه‌ها ظاهر می‌شود.', 'pazira'); ?></p>
+
+                    <label style="margin-top:12px;display:inline-block">
+                        <input type="checkbox" name="shortcode_enabled" value="1" <?php checked($s->is_shortcode_enabled()); ?>>
+                        <?php esc_html_e('شورت‌کد فعال باشد', 'pazira'); ?>
+                    </label>
+                    <p class="description">
+                        <?php
+                        printf(
+                            /* translators: %s: the shortcode tag. */
+                            esc_html__('با %s گفتگو را داخل یک برگه، نوشته یا سایدبار قرار می‌دهید. مستقل از ویجت شناور کار می‌کند.', 'pazira'),
+                            '<code dir="ltr">[pazira_chat]</code>'
+                        );
+                        ?>
+                    </p>
+
+                    <p class="description">
+                        <?php esc_html_e('اگر هر دو گزینه خاموش باشند، چت در سایت نمایش داده نمی‌شود و پاسخ‌گویی هوش مصنوعی هم متوقف می‌ماند.', 'pazira'); ?>
+                    </p>
+                </td>
             </tr>
             <tr>
                 <th><?php esc_html_e('سرویس‌دهنده AI', 'pazira'); ?></th>

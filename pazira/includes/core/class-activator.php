@@ -39,7 +39,8 @@ class Activator
     public static function default_settings(): array
     {
         return [
-            'enabled'            => 1,
+            'float_enabled'      => 1,
+            'shortcode_enabled'  => 1,
 
             // --- AI provider ---
             'provider'           => 'anthropic', // anthropic | openai | gapgpt

@@ -45,9 +45,25 @@ class Settings
         return $this->data;
     }
 
+    /**
+     * True when the chat engine should run at all, i.e. when at least one of
+     * the two display modes is on.
+     */
     public function is_enabled(): bool
     {
-        return (bool) ($this->data['enabled'] ?? 1);
+        return $this->is_float_enabled() || $this->is_shortcode_enabled();
+    }
+
+    /** Floating launcher on every page of the site. */
+    public function is_float_enabled(): bool
+    {
+        return (bool) ($this->data['float_enabled'] ?? $this->data['enabled'] ?? 1);
+    }
+
+    /** The [pazira_chat] shortcode / block embed. */
+    public function is_shortcode_enabled(): bool
+    {
+        return (bool) ($this->data['shortcode_enabled'] ?? $this->data['enabled'] ?? 1);
     }
 
     public function active_provider(): string

@@ -38,6 +38,13 @@ class ChatShortcode
         if (is_feed()) {
             return '';
         }
+
+        // The shortcode stays registered even when switched off, so a page
+        // that contains it shows nothing rather than the raw tag text.
+        if (! (new \Pazira\Core\Settings())->is_shortcode_enabled()) {
+            return '';
+        }
+
         return (new \Pazira\Frontend\Widget())->render_inline();
     }
 }
