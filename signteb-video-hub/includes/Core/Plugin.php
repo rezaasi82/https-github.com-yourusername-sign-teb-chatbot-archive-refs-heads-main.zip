@@ -11,6 +11,7 @@ use SignTeb\VideoHub\Front\Assets;
 use SignTeb\VideoHub\Front\Shortcodes;
 use SignTeb\VideoHub\Front\TemplateLoader;
 use SignTeb\VideoHub\Rest\RestNamespace;
+use SignTeb\VideoHub\Schema\RankMathBridge;
 use SignTeb\VideoHub\Schema\SchemaGenerator;
 use SignTeb\VideoHub\Seo\IndexingQueue;
 use SignTeb\VideoHub\Seo\SocialMeta;
@@ -50,6 +51,9 @@ class Plugin
         (new RestNamespace($this->settings))->register();
         (new IndexingQueue($this->settings))->register();
         (new VideoSitemap($this->settings))->register();
+        // RankMath builds its sitemap from admin and cron too, so this cannot
+        // live in the front-end-only branch below.
+        (new RankMathBridge($this->settings))->register();
 
         Activator::maybe_upgrade();
 

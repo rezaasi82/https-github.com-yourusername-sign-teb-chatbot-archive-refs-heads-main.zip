@@ -3,6 +3,7 @@
 namespace SignTeb\VideoHub\Admin;
 
 use SignTeb\VideoHub\Core\Settings;
+use SignTeb\VideoHub\Helpers\Asset;
 use SignTeb\VideoHub\Rest\RestNamespace;
 
 if (! defined('ABSPATH')) {
@@ -92,8 +93,8 @@ class AdminMenu
             return;
         }
 
-        wp_enqueue_style('stvh-admin', STVH_URL . 'assets/css/admin.css', [], STVH_VERSION);
-        wp_enqueue_script('stvh-admin', STVH_URL . 'assets/js/admin.js', [], STVH_VERSION, true);
+        wp_enqueue_style('stvh-admin', Asset::url('assets/css/admin.css'), [], Asset::version('assets/css/admin.css'));
+        wp_enqueue_script('stvh-admin', Asset::url('assets/js/admin.js'), [], Asset::version('assets/js/admin.js'), true);
 
         wp_localize_script('stvh-admin', 'STVH_ADMIN', [
             'restUrl' => esc_url_raw(rest_url(RestNamespace::NAME . '/')),

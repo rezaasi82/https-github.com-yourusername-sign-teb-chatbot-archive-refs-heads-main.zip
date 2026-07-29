@@ -4,6 +4,7 @@ namespace SignTeb\VideoHub\Front;
 
 use SignTeb\VideoHub\Core\PostType;
 use SignTeb\VideoHub\Core\Settings;
+use SignTeb\VideoHub\Helpers\Asset;
 
 if (! defined('ABSPATH')) {
     exit;
@@ -93,16 +94,16 @@ class Assets
     {
         wp_enqueue_style(
             self::HANDLE,
-            STVH_URL . 'assets/css/front.css',
+            Asset::url('assets/css/front.css'),
             [],
-            STVH_VERSION
+            Asset::version('assets/css/front.css')
         );
 
         wp_enqueue_script(
             self::HANDLE,
-            STVH_URL . 'assets/js/front.js',
+            Asset::url('assets/js/front.js'),
             [],
-            STVH_VERSION,
+            Asset::version('assets/js/front.js'),
             true
         );
 
