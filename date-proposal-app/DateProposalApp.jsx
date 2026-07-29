@@ -97,30 +97,30 @@ const HOURS = Array.from({ length: 16 }, (_, i) => i + 8); // ۸ تا ۲۳
 const MINUTES = [0, 4, 15, 30, 45];
 
 const FOODS = [
-  { id: "pizza", emoji: "🍕", label: "پیتزا داغ", hint: "پنیرش کش بیاد", tone: "from-orange-300/70 to-rose-300/70" },
-  { id: "coffee", emoji: "☕", label: "قهوه و دسر", hint: "دنج و آروم", tone: "from-amber-300/70 to-pink-300/70" },
-  { id: "kabab", emoji: "🍢", label: "کوبیده مشتی", hint: "با دوغ، حتماً", tone: "from-red-300/70 to-fuchsia-300/70" },
+  { id: "pizza", emoji: "🍕", label: "پیتزا داغ", hint: "پنیرش کش بیاد تا آسمون", tone: "from-orange-300/70 to-rose-300/70" },
+  { id: "coffee", emoji: "☕", label: "قهوه و دسر", hint: "چیل و دنج", tone: "from-amber-300/70 to-pink-300/70" },
+  { id: "kabab", emoji: "🍢", label: "کوبیده مشتی", hint: "با دوغ، وگرنه نه", tone: "from-red-300/70 to-fuchsia-300/70" },
   { id: "pasta", emoji: "🍝", label: "پاستا آلفردو", hint: "خامه‌ای و لاکچری", tone: "from-yellow-300/70 to-purple-300/70" },
 ];
 
 const NO_TAUNTS = [
-  "این دکمه خرابه! فقط «آره» کار میکنه 😜",
-  "جدی؟ بازم؟ گفتم که خرابه 🙈",
-  "هرچی فشار بدی همون‌جا نمی‌مونه‌ها... 😏",
-  "داره فرار می‌کنه! ولش کن 😂",
-  "باشه باشه، تسلیم — تبدیلش کردم به «آره» 😈",
+  "بیخیال داداش، این خرابه 😜 فقط «آره» کار میده",
+  "جانم؟ بازم زدی؟ 🙈 گفتم که کار نمیده",
+  "هی بزن، تهش که هیچی 😏",
+  "دیدی؟ در رفت 😂 ولش کن دیگه",
+  "اوکی بردی 🥲 کردمش «آره»، دیگه کِرکِر نکن 😈",
 ];
 
 const MOODS = {
-  curious: { face: "🥺", line: "خب... جوابت چیه؟", glow: "bg-rose-300/60" },
-  shy: { face: "🙈", line: "وااای خجالت کشیدم!", glow: "bg-purple-300/60" },
-  love: { face: "🥰", line: "همینو بگو، همینو!", glow: "bg-pink-400/60" },
-  mischief: { face: "😈", line: "گفتم که فقط «آره» داریم", glow: "bg-fuchsia-400/60" },
-  think: { face: "🤔", line: "کِی وقتت آزاده؟", glow: "bg-indigo-300/60" },
-  excited: { face: "😍", line: "عالیه! بریم مرحله بعد", glow: "bg-rose-400/60" },
-  yum: { face: "😋", line: "از الان گشنمه‌ها...", glow: "bg-amber-300/60" },
-  star: { face: "🤩", line: "چه سلیقه‌ای داری تو!", glow: "bg-violet-400/60" },
-  party: { face: "🥳", line: "قرارمون رسماً ثبت شد!", glow: "bg-pink-500/60" },
+  curious: { face: "🥺", line: "خب؟ چی میگی؟ 👀", glow: "bg-rose-300/60" },
+  shy: { face: "🙈", line: "اوففف خجالت کشیدم", glow: "bg-purple-300/60" },
+  love: { face: "🥰", line: "ایوللل همینه 🔥", glow: "bg-pink-400/60" },
+  mischief: { face: "😈", line: "گفتم که فقط «آره» تو مرامه", glow: "bg-fuchsia-400/60" },
+  think: { face: "🤔", line: "خب کِی بیکاری؟", glow: "bg-indigo-300/60" },
+  excited: { face: "😍", line: "اوکی ترکوندی، بریم بعدی", glow: "bg-rose-400/60" },
+  yum: { face: "😋", line: "از الان ضعف کردم...", glow: "bg-amber-300/60" },
+  star: { face: "🤩", line: "سلیقت خفنه به خدا", glow: "bg-violet-400/60" },
+  party: { face: "🥳", line: "قرارمون سِت شد رسماً", glow: "bg-pink-500/60" },
 };
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -483,7 +483,8 @@ function PlayfulNoButton({ tries, onProvoke, onSurrender, converted, offset }) {
     showTip();
   };
 
-  const taunt = NO_TAUNTS[Math.min(tries, NO_TAUNTS.length - 1)];
+  // طعنه‌ی مربوط به همان تلاشی که همین الان انجام شد (tries از ۱ شروع می‌شود)
+  const taunt = NO_TAUNTS[Math.min(Math.max(tries - 1, 0), NO_TAUNTS.length - 1)];
 
   return (
     <div
@@ -491,7 +492,8 @@ function PlayfulNoButton({ tries, onProvoke, onSurrender, converted, offset }) {
       className={`relative flex items-center justify-center ${converted ? "" : "h-[62px] touch-manipulation"}`}
     >
       <AnimatePresence>
-        {tipOpen && !converted && (
+        {/* بعد از تبدیل هم نشان داده می‌شود، وگرنه جمله‌ی «تسلیم» هیچ‌وقت دیده نمی‌شد */}
+        {tipOpen && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -537,9 +539,9 @@ function PlayfulNoButton({ tries, onProvoke, onSurrender, converted, offset }) {
               "absolute w-[62%] cursor-not-allowed rounded-2xl border border-white/50 bg-white/25 px-4 py-3 text-base font-bold text-slate-400/90 shadow-inner backdrop-blur-md"
         }
       >
-        {converted ? "آره 💖" : "نه ❌"}
+        {converted ? "آره دیگه 💖" : "نچ ❌"}
         {!converted && (
-          <span className="mr-2 align-middle text-[10px] font-medium text-slate-400/80">(غیرفعال)</span>
+          <span className="mr-2 align-middle text-[10px] font-medium text-slate-400/80">(خرابه)</span>
         )}
       </motion.button>
     </div>
@@ -752,14 +754,14 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
   const shareText = useMemo(() => {
     const menu = foodLabels.length ? foodLabels.map((f) => `${f.emoji} ${f.label}`).join("، ") : "سورپرایز 🤫";
     return [
-      "قرارمون رسماً ثبت شد! 💌",
+      "قرارمون سِت شد رسماً 💌",
       "",
-      `📅 تاریخ: ${dateLabel}`,
+      `📅 کِی: ${dateLabel}`,
       `⏰ ساعت: ${timeLabel}`,
-      `🍽️ منو: ${menu}`,
-      extra ? "🎬 اکسترا: سینما / پیاده‌روی ✅" : "🎬 اکسترا: فعلاً نه",
+      `🍽️ چی بزنیم: ${menu}`,
+      extra ? "🎬 اکسترا: سینما / دور دور ✅" : "🎬 اکسترا: فعلاً بیخیال",
       "",
-      `🚗 ساعت ${timeLabel} دم درتم! 💖`,
+      `🚗 ساعت ${timeLabel} دم درم، لفتش نده! 💖`,
     ].join("\n");
   }, [dateLabel, timeLabel, foodLabels, extra]);
 
@@ -769,7 +771,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
     const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/")}&text=${encodeURIComponent(shareText)}`;
     try {
       if (navigator.share) {
-        navigator.share({ title: "قرار ما 💖", text: shareText }).catch(() => window.open(url, "_blank"));
+        navigator.share({ title: "قرارمون 💖", text: shareText }).catch(() => window.open(url, "_blank"));
       } else {
         window.open(url, "_blank", "noopener,noreferrer");
       }
@@ -813,10 +815,10 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
   const transition = { type: "spring", stiffness: 260, damping: 28, mass: 0.8 };
 
   const stepMeta = {
-    1: { title: "با من میای سر قرار؟", sub: "فقط یه سوال ساده‌ست... ولی سیستم گزینه «نه» رو پشتیبانی نمیکنه! 😜" },
-    2: { title: "کی وقت داری؟", sub: "یه روز و ساعت عالی برام انتخاب کن" },
-    3: { title: "برنامه‌مون چی باشه؟", sub: "منوی امشب دست توئه! چی سفارش بدیم؟" },
-    4: { title: "خوشحالم نگفتی نه!", sub: "(گرچه راه دیگه‌ای هم نداشتی 😈💖)" },
+    1: { title: "پایه‌ای بریم سر قرار؟", sub: "یه سوال ساده‌ست فقط 🙂 ولی خب سیستم گزینه «نه» رو ساپورت نمیکنه 😜" },
+    2: { title: "کِی بیکاری؟", sub: "یه روز و ساعت توپ بزن، بقیه‌ش با من" },
+    3: { title: "پلنمون چی باشه؟", sub: "منو دست توئه رفیق! چی بزنیم؟" },
+    4: { title: "دمت گرم که نگفتی نه!", sub: "(هرچند راه دیگه‌ای هم نداشتی 😈💖)" },
   }[step];
 
   return (
@@ -883,7 +885,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                     onHoverEnd={() => setMood(noTries > 0 ? "mischief" : "curious")}
                   >
                     <PrimaryButton onClick={sayYes} pulse>
-                      آره 💖
+                      آره دیگه 💖
                     </PrimaryButton>
                   </motion.div>
 
@@ -896,7 +898,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                   />
 
                   <p className="mt-1 text-center text-[10.5px] text-fuchsia-900/40">
-                    نکته: دکمه‌ی «نه» توی نسخه‌ی بتاست... تا ابد 🤭
+                    پ.ن: دکمه «نه» تو نسخه بتاست... تا ابد 🤭
                   </p>
                 </motion.div>
               )}
@@ -906,7 +908,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                 <motion.div key="step2" custom={dir} variants={variants} initial="enter" animate="center" exit="exit" transition={transition} className="flex flex-col gap-3">
                   {/* کارت‌های روز */}
                   <div>
-                    <p className="mb-2 text-[11px] font-bold text-fuchsia-800/70">📅 یه روز انتخاب کن</p>
+                    <p className="mb-2 text-[11px] font-bold text-fuchsia-800/70">📅 کدوم روز؟</p>
                     {/* pt برای اینکه نشان «امروز/فردا» بالای کارت بریده نشود */}
                     <div className="-mx-1 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-1 pb-2 pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                       {days.map((d) => {
@@ -947,7 +949,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
 
                   {/* چرخ ساعت */}
                   <div>
-                    <p className="mb-2 text-[11px] font-bold text-fuchsia-800/70">⏰ ساعت قرار</p>
+                    <p className="mb-2 text-[11px] font-bold text-fuchsia-800/70">⏰ ساعت چند؟</p>
                     <div className="flex items-center gap-2 rounded-3xl border border-white/50 bg-white/20 p-2.5 backdrop-blur-md">
                       <Wheel
                         label="ساعت"
@@ -984,7 +986,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                       />
                     </div>
                     <p className="mt-2 text-center text-[11px] font-bold text-fuchsia-700/80">
-                      انتخابت: <span className="text-fuchsia-900">{dateLabel !== "—" ? dateLabel : "روز؟"}</span>
+                      سِت شد: <span className="text-fuchsia-900">{dateLabel !== "—" ? dateLabel : "روز؟"}</span>
                       {" — "}
                       <span className="tabular-nums text-fuchsia-900">{timeLabel}</span>
                     </p>
@@ -1001,9 +1003,9 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                     <PrimaryButton
                       onClick={() => go(3, "yum")}
                       disabled={dayId === null || !timeTouched}
-                      hint={dayId === null ? "اول یه روز انتخاب کن 😊" : "ساعت رو هم تأیید کن (روی عدد بزن) ⏰"}
+                      hint={dayId === null ? "اول روزو بزن 😊" : "ساعتم بزن دیگه (رو عدد بزن) ⏰"}
                     >
-                      مرحله بعدی ✨
+                      بریم بعدی ✨
                     </PrimaryButton>
                   </div>
                 </motion.div>
@@ -1074,10 +1076,10 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                   >
                     <span className="text-right">
                       <span className="block text-[12.5px] font-extrabold text-fuchsia-950/85">
-                        سینما / پیاده‌روی هم باشه؟ 🎬🚶‍♂️
+                        سینما / دور دور هم باشه؟ 🎬🚶
                       </span>
                       <span className="block text-[10px] text-fuchsia-900/50">
-                        {extra ? "آره! شب طولانی‌تر می‌شه 🌙" : "فعلاً فقط غذا"}
+                        {extra ? "ایول! شب کش میاد 🌙" : "فعلاً فقط شیکم 😅"}
                       </span>
                     </span>
                     <span
@@ -1104,10 +1106,10 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                     <PrimaryButton
                       onClick={() => go(4, "party")}
                       disabled={foods.length === 0}
-                      hint="حداقل یه گزینه انتخاب کن، گشنه که نمی‌شه رفت! 😅"
+                      hint="حداقل یدونه بزن، گشنه که نمیشه رفت 😅"
                       pulse
                     >
-                      ثبت نهایی و ارسال 💌
+                      قطعیش کن و بفرست 💌
                     </PrimaryButton>
                   </div>
                 </motion.div>
@@ -1141,14 +1143,14 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
 
                     <dl className="space-y-2.5 pt-3 text-[12.5px]">
                       <div className="flex items-start justify-between gap-3">
-                        <dt className="shrink-0 text-fuchsia-900/55">📅 تاریخ و ساعت</dt>
+                        <dt className="shrink-0 text-fuchsia-900/55">📅 کِی</dt>
                         <dd className="text-left font-extrabold text-fuchsia-950">
                           {dateLabel}
                           <span className="mr-1.5 tabular-nums">— {timeLabel}</span>
                         </dd>
                       </div>
                       <div className="flex items-start justify-between gap-3">
-                        <dt className="shrink-0 text-fuchsia-900/55">🍽️ منوی انتخابی</dt>
+                        <dt className="shrink-0 text-fuchsia-900/55">🍽️ چی بزنیم</dt>
                         <dd className="text-left font-extrabold text-fuchsia-950">
                           {foodLabels.length ? foodLabels.map((f) => `${f.emoji} ${f.label}`).join(" + ") : "سورپرایز 🤫"}
                         </dd>
@@ -1156,14 +1158,14 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                       <div className="flex items-start justify-between gap-3">
                         <dt className="shrink-0 text-fuchsia-900/55">🎬 اکسترا</dt>
                         <dd className="text-left font-extrabold text-fuchsia-950">
-                          {extra ? "سینما / پیاده‌روی ✅" : "بدون برنامه‌ی اضافه"}
+                          {extra ? "سینما / دور دور ✅" : "بیخیال، فقط همین"}
                         </dd>
                       </div>
                       <div className="border-t border-dashed border-fuchsia-300/70 pt-2.5">
                         <div className="flex items-start justify-between gap-3">
                           <dt className="shrink-0 text-fuchsia-900/55">🚗 وضعیت</dt>
                           <dd className="text-left font-extrabold text-rose-600">
-                            آماده‌باش، ساعت <span className="tabular-nums">{timeLabel}</span> دم درتم!
+                            ساعت <span className="tabular-nums">{timeLabel}</span> دم درم، لفتش نده!
                           </dd>
                         </div>
                       </div>
@@ -1179,7 +1181,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                   </motion.div>
 
                   <PrimaryButton onClick={shareToTelegram} pulse>
-                    فرستادن پیام تو تلگرام 📲
+                    بفرست تو تلگرام 📲
                   </PrimaryButton>
 
                   <div className="flex items-center gap-2">
@@ -1188,7 +1190,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                       onClick={copyText}
                       className="flex-1 rounded-2xl border border-white/60 bg-white/40 px-4 py-2.5 text-[12px] font-bold text-fuchsia-800 backdrop-blur-md"
                     >
-                      {copied ? "کپی شد! ✅" : "کپی متن / اسکرین‌شات 📋"}
+                      {copied ? "کپی شد ✅" : "کپی کن / اسکرین‌شات 📋"}
                     </button>
                     <button
                       type="button"
@@ -1210,7 +1212,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
           transition={{ delay: 0.8 }}
           className="mt-4 text-center text-[10.5px] text-fuchsia-900/40"
         >
-          ساخته‌شده با کلی 💖 و کمی 😈
+          ساخته شده با کلی 💖 و یه ذره 😈
         </motion.p>
       </div>
     </div>
