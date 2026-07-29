@@ -18,6 +18,40 @@ import React, {
 import { motion, AnimatePresence } from "framer-motion";
 
 /* ────────────────────────────────────────────────────────────────────────────
+   تایپوگرافی فارسی — وزیرمتن
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * نسخه‌ی variable وزیرمتن: یک فایل ~۱۱۱KB که کل وزن‌های ۱۰۰ تا ۹۰۰ را پوشش
+ * می‌دهد (این کامپوننت از ۴۰۰ تا ۹۰۰ استفاده می‌کند) — یعنی فقط یک درخواست
+ * شبکه، نه شش تا.
+ *
+ * برای میزبانی محلی/آفلاین: `npm i vazirmatn` و بعد
+ * `<DateProposalApp fontUrl={new URL('vazirmatn/fonts/webfonts/Vazirmatn[wght].woff2', import.meta.url).href} />`
+ * یا هر آدرس دیگری از سرور خودت. با `fontUrl={null}` تزریق فونت خاموش می‌شود.
+ */
+const VAZIRMATN_WOFF2 =
+  "https://cdn.jsdelivr.net/npm/vazirmatn@33.0.3/fonts/webfonts/Vazirmatn%5Bwght%5D.woff2";
+
+const FONT_STACK =
+  "Vazirmatn, 'Vazir', 'IRANSans', 'IRANYekan', 'Segoe UI', Tahoma, system-ui, sans-serif";
+
+/** یک‌بار @font-face را به head تزریق می‌کند (بعد از unmount حذف نمی‌شود تا فونت دوباره fetch نشود) */
+function useVazirmatn(src) {
+  useEffect(() => {
+    if (!src || typeof document === "undefined") return;
+    if (document.getElementById("vazirmatn-face")) return;
+    const style = document.createElement("style");
+    style.id = "vazirmatn-face";
+    style.textContent =
+      "@font-face{font-family:'Vazirmatn';" +
+      `src:url("${src}") format("woff2-variations"),url("${src}") format("woff2");` +
+      "font-weight:100 900;font-style:normal;font-display:swap;}";
+    document.head.appendChild(style);
+  }, [src]);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
    ابزارهای کوچک
    ──────────────────────────────────────────────────────────────────────────── */
 
@@ -622,7 +656,8 @@ function PrimaryButton({ children, onClick, disabled, pulse = false, hint }) {
    کامپوننت اصلی
    ──────────────────────────────────────────────────────────────────────────── */
 
-export default function DateProposalApp() {
+export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
+  useVazirmatn(fontUrl);
   const { play, buzz } = useFx();
 
   const [step, setStep] = useState(1);
@@ -790,8 +825,7 @@ export default function DateProposalApp() {
       lang="fa"
       className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-rose-100 via-fuchsia-100 to-indigo-200 px-4 py-8"
       style={{
-        fontFamily:
-          "Vazirmatn, 'Vazir', 'IRANSans', 'IRANYekan', 'Segoe UI', Tahoma, system-ui, sans-serif",
+        fontFamily: FONT_STACK,
       }}
     >
       <AmbientBackdrop />

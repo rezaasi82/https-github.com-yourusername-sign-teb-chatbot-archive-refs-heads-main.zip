@@ -19,14 +19,29 @@ export default function App() {
 }
 ```
 
-## فونت فارسی (اختیاری)
+## فونت وزیرمتن
 
-کامپوننت هیچ فونتی را از شبکه لود نمی‌کند و روی استک `Vazirmatn → IRANSans → Tahoma` می‌افتد.
-برای ظاهر بهتر، Vazirmatn را در `index.html` خودت اضافه کن:
+کامپوننت خودش `@font-face` وزیرمتن را یک‌بار به `<head>` تزریق می‌کند — نیازی به دست‌زدن به `index.html` نیست.
 
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+نسخه‌ی **variable** استفاده می‌شود: یک فایل ~۱۱۱KB که کل وزن‌های ۱۰۰ تا ۹۰۰ را می‌دهد
+(کامپوننت از ۴۰۰ تا ۹۰۰ استفاده می‌کند) — یعنی یک درخواست شبکه به‌جای شش تا.
+
+با `font-display: swap`؛ اگر فونت لود نشود متن بلافاصله با استک
+`Vazirmatn → Vazir → IRANSans → IRANYekan → Tahoma` رندر می‌شود و چیزی نمی‌شکند.
+
+### میزبانی محلی (آفلاین / پروداکشن)
+
+```bash
+npm i vazirmatn
 ```
+
+```jsx
+import fontUrl from "vazirmatn/fonts/webfonts/Vazirmatn[wght].woff2?url"; // Vite
+
+<DateProposalApp fontUrl={fontUrl} />
+```
+
+`fontUrl={null}` تزریق فونت را کامل خاموش می‌کند (اگر خودت گلوبال ست کرده‌ای).
 
 ## بدون وابستگی اضافه
 
@@ -37,6 +52,7 @@ export default function App() {
 | کانفتی | Canvas + `requestAnimationFrame` (بدون `canvas-confetti`) |
 | تقویم جلالی | `Intl.DateTimeFormat('fa-IR-u-ca-persian')` (بدون `moment-jalaali`) |
 | افکت صوتی | نوسان‌ساز WebAudio + `navigator.vibrate` (بدون فایل صوتی) |
+| فونت | `@font-face` تزریق‌شده از خود کامپوننت (بدون تغییر در `index.html`) |
 
 ## جریان اپ
 
