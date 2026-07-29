@@ -30,6 +30,20 @@ class Renderer
     }
 
     /**
+     * The configured theme, normalized.
+     *
+     * Every `.stvh-scope` root must carry this — the dark rules are keyed on
+     * `[data-theme]`, so a scope without it is permanently stuck on the light
+     * palette no matter what the visitor or the setting says.
+     */
+    public function theme(): string
+    {
+        $theme = $this->settings->str('dark_mode');
+
+        return in_array($theme, ['auto', 'dark', 'light'], true) ? $theme : 'auto';
+    }
+
+    /**
      * Full hub component: toolbar (search + filters) plus the results grid.
      *
      * @param array<string,mixed> $args
@@ -181,10 +195,13 @@ class Renderer
             <a class="stvh-card__media" href="<?php echo esc_url($permalink); ?>" data-stvh-click
                aria-label="<?php echo esc_attr($title); ?>">
                 <?php if ($thumbnail !== '') : ?>
+                    <?php // The link already carries the title as its aria-label, so alt="" avoids ?>
+                    <?php // a duplicate announcement and a wall of alt text when the poster 404s. ?>
                     <img class="stvh-card__thumb"
                          src="<?php echo esc_url($thumbnail); ?>"
-                         alt="<?php echo esc_attr($title); ?>"
-                         loading="lazy" decoding="async" width="640" height="360">
+                         alt=""
+                         loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                         width="640" height="360">
                 <?php else : ?>
                     <span class="stvh-card__thumb stvh-card__thumb--empty" aria-hidden="true"></span>
                 <?php endif; ?>
@@ -241,14 +258,17 @@ class Renderer
         ob_start();
         ?>
         <div class="stvh-player stvh-scope"
+             data-theme="<?php echo esc_attr($this->theme()); ?>"
              data-stvh-player
              data-video-id="<?php echo esc_attr((string) $post_id); ?>"
              data-embed="<?php echo esc_url($embed); ?>"
              data-title="<?php echo esc_attr($title); ?>">
             <button type="button" class="stvh-player__facade" data-stvh-play>
                 <?php if ($thumbnail !== '') : ?>
-                    <img src="<?php echo esc_url($thumbnail); ?>" alt="<?php echo esc_attr($title); ?>"
-                         loading="lazy" decoding="async" width="1280" height="720">
+                    <?php // alt="" on purpose: the button already has an accessible name, and a ?>
+                    <?php // failed provider image would otherwise dump the whole title over the poster. ?>
+                    <img src="<?php echo esc_url($thumbnail); ?>" alt=""
+                         loading="lazy" decoding="async" referrerpolicy="no-referrer">
                 <?php endif; ?>
                 <span class="stvh-player__button" aria-hidden="true">
                     <svg viewBox="0 0 24 24" focusable="false"><path d="M8 5v14l11-7z"/></svg>
@@ -278,7 +298,7 @@ class Renderer
 
         ob_start();
         ?>
-        <div class="stvh-ai stvh-scope">
+        <div class="stvh-ai stvh-scope" data-theme="<?php echo esc_attr($this->theme()); ?>">
             <?php if ($summary !== '') : ?>
                 <section class="stvh-panel stvh-panel--summary">
                     <h2 class="stvh-panel__title"><?php esc_html_e('خلاصه ویدئو', 'signteb-video-hub'); ?></h2>

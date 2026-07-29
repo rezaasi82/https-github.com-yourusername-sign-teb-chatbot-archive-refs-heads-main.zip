@@ -103,6 +103,33 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * Broken posters
+   *
+   * Thumbnails come from a third-party CDN and can fail — hotlink rules, an
+   * expired URL, a video pulled at the source. CSS cannot detect that, so a
+   * failed image is flagged here and hidden, leaving the gradient placeholder
+   * instead of the browser's broken-image glyph.
+   * ------------------------------------------------------------------ */
+  function guardImages(root) {
+    root.querySelectorAll('.stvh-card__thumb, .stvh-player__facade img, .stvh-medhub__item img').forEach(function (img) {
+      if (img.dataset.stvhGuarded === '1') {
+        return;
+      }
+      img.dataset.stvhGuarded = '1';
+
+      // A cached image may already have failed before this script ran.
+      if (img.complete && img.naturalWidth === 0) {
+        img.setAttribute('data-stvh-broken', '');
+        return;
+      }
+
+      img.addEventListener('error', function () {
+        img.setAttribute('data-stvh-broken', '');
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * Hub: filters, live search, pagination
    * ------------------------------------------------------------------ */
   function initHub(hub) {
@@ -181,6 +208,7 @@
           toggleMore();
           observeImpressions(results);
           bindCardClicks(results);
+          guardImages(results);
         })
         .catch(function () {
           if (token === state.request) {
@@ -241,6 +269,7 @@
 
     observeImpressions(results);
     bindCardClicks(results);
+    guardImages(results);
   }
 
   function bindCardClicks(root) {
@@ -312,6 +341,7 @@
 
   /* ------------------------------------------------------------------ */
   function init() {
+    guardImages(document);
     document.querySelectorAll('[data-stvh-hub]').forEach(initHub);
     document.querySelectorAll('[data-stvh-player]').forEach(initPlayer);
     document.querySelectorAll('[data-stvh-click]').forEach(function (link) {

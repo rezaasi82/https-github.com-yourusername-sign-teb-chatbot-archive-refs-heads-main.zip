@@ -36,6 +36,35 @@
   box-sizing: inherit;
 }
 
+/* Theme bleed guard.
+   Inheritance alone is not enough: a dark theme styling `h2 { color: #fff }`
+   beats the inherited colour on .stvh-scope, which rendered white headings on
+   our light panels — invisible. Headings and form controls therefore state
+   their own colour.
+
+   Scoped to element selectors only, never to our own classes: a blanket
+   `.stvh-scope p` would outrank `.stvh-card__excerpt` and flatten every muted
+   tone in the component. */
+.stvh-scope h2,
+.stvh-scope h3,
+.stvh-scope h4,
+.stvh-scope summary,
+.stvh-scope button,
+.stvh-scope input {
+  color: var(--stvh-text);
+}
+
+/* Themes routinely give headings borders, uppercase and heavy margins that
+   wreck the panel rhythm. */
+.stvh-scope h2,
+.stvh-scope h3,
+.stvh-scope h4 {
+  border: 0;
+  letter-spacing: normal;
+  padding: 0;
+  text-transform: none;
+}
+
 /* Dark theme — explicit opt-in … */
 .stvh-scope[data-theme="dark"] {
   --stvh-surface: rgba(28, 28, 30, 0.72);
@@ -236,10 +265,23 @@
   text-decoration: none;
 }
 
+/* Same reasoning as the player poster: a failed card thumbnail must leave the
+   card's shape intact, with the gradient showing through. */
+.stvh-card__media {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--stvh-accent) 22%, transparent), transparent);
+}
+
+.stvh-card__thumb[data-stvh-broken],
+.stvh-player__facade img[data-stvh-broken] {
+  display: none;
+}
+
 .stvh-card__thumb {
   display: block;
   height: 100%;
+  inset: 0;
   object-fit: cover;
+  position: absolute;
   transition: transform 0.5s var(--stvh-ease);
   width: 100%;
 }
@@ -279,11 +321,11 @@
   transform: translate(50%, -50%) scale(1);
 }
 
+/* The triangle in the path already points right, and RTL does not mirror SVG
+   path data — flipping it here pointed the play button backwards. */
 .stvh-card__play svg {
   fill: #0f172a;
   height: 24px;
-  /* The glyph points left in RTL flow; force the play direction. */
-  transform: scaleX(-1);
   width: 24px;
 }
 
@@ -392,10 +434,19 @@
   width: 100%;
 }
 
+/* The poster comes from a third-party CDN and can fail (hotlink rules, an
+   expired URL). It must never resize the player when it does, so the image is
+   pinned to the box and the gradient underneath becomes the fallback. */
 .stvh-player__facade img {
   height: 100%;
+  inset: 0;
   object-fit: cover;
+  position: absolute;
   width: 100%;
+}
+
+.stvh-player__facade {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--stvh-accent) 30%, #000), #000);
 }
 
 .stvh-player__button {
@@ -423,7 +474,6 @@
 .stvh-player__button svg {
   fill: #0f172a;
   height: 34px;
-  transform: scaleX(-1);
   width: 34px;
 }
 
@@ -605,6 +655,7 @@
 }
 
 .stvh-medhub__item img {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--stvh-accent) 25%, transparent), transparent);
   border-radius: var(--stvh-radius-sm);
   flex: none;
   height: 45px;

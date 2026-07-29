@@ -74,7 +74,7 @@ class MedicalHub
                                     <a href="<?php echo esc_url((string) get_permalink($video_id)); ?>" data-stvh-click data-video-id="<?php echo esc_attr((string) $video_id); ?>">
                                         <?php $thumb = VideoMeta::thumbnail($video_id); ?>
                                         <?php if ($thumb !== '') : ?>
-                                            <img src="<?php echo esc_url($thumb); ?>" alt="" loading="lazy" decoding="async" width="160" height="90">
+                                            <img src="<?php echo esc_url($thumb); ?>" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="160" height="90">
                                         <?php endif; ?>
                                         <span class="stvh-medhub__item-title"><?php echo esc_html((string) get_the_title($video_id)); ?></span>
                                         <?php $duration = VideoMeta::duration_human($video_id); ?>
