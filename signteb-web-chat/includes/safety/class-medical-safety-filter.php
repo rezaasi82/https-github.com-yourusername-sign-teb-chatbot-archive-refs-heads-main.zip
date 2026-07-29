@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Medical_Safety_Filter — post-processing safety layer.
+ * Post-processing safety layer.
  *
  * Runs in addition to the system-prompt rules. It screens the user message (to
  * short-circuit emergencies before spending an API call) and the model reply
@@ -9,11 +9,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace SignTeb\WebChat\Safety;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Medical_Safety_Filter
+class MedicalSafetyFilter
 {
     /** High-risk terms that must halt the AI and surface emergency contact. */
     private const EMERGENCY_TERMS = [
@@ -30,9 +32,9 @@ class SWC_Medical_Safety_Filter
 
     private const DISCLAIMER = 'ℹ️ توجه: این اطلاعات عمومی است و جایگزین مشاوره و ویزیت حضوری پزشک نیست. برای بررسی دقیق وضعیت‌تان، رزرو نوبت را پیشنهاد می‌کنم.';
 
-    private SWC_Settings $settings;
+    private \SignTeb\WebChat\Core\Settings $settings;
 
-    public function __construct(SWC_Settings $settings)
+    public function __construct(\SignTeb\WebChat\Core\Settings $settings)
     {
         $this->settings = $settings;
     }

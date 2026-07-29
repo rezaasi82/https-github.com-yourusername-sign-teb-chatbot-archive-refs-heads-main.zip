@@ -1,20 +1,22 @@
 <?php
 /**
- * SWC_Provider_Anthropic — Anthropic Claude Messages API provider.
+ * Anthropic Claude Messages API provider.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace SignTeb\WebChat\Ai;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Uses wp_remote_post with a short timeout (host max_execution_time is ~30s)
- * and full error handling — it never crashes the request and always returns a
- * structured result the caller can fall back on.
+ * Uses a short request timeout (hosts commonly cap max_execution_time at 30s)
+ * and returns a structured result on every path, including errors, so the
+ * caller can fall back gracefully.
  */
-class SWC_Provider_Anthropic implements SWC_AI_Provider_Interface
+class ProviderAnthropic implements \SignTeb\WebChat\Ai\AiProviderInterface
 {
     private const ENDPOINT      = 'https://api.anthropic.com/v1/messages';
     private const API_VERSION   = '2023-06-01';
@@ -40,10 +42,11 @@ class SWC_Provider_Anthropic implements SWC_AI_Provider_Interface
 
         $messages   = $this->build_messages($message, $context['history'] ?? []);
         $body = [
-            'model'      => $context['model'] ?? self::DEFAULT_MODEL,
-            'max_tokens' => (int) ($context['max_tokens'] ?? 1024),
-            'system'     => (string) ($context['system'] ?? ''),
-            'messages'   => $messages,
+            'model'       => $context['model'] ?? self::DEFAULT_MODEL,
+            'max_tokens'  => (int) ($context['max_tokens'] ?? 1024),
+            'temperature' => (float) ($context['temperature'] ?? 0.8),
+            'system'      => (string) ($context['system'] ?? ''),
+            'messages'    => $messages,
         ];
 
         $response = wp_remote_post(

@@ -1,20 +1,22 @@
 <?php
 /**
- * SWC_Json_Guard — protects JSON responses from stray PHP notices.
+ * Protects JSON responses from stray PHP notices.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace SignTeb\WebChat\Core;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Some cheap shared hosts emit notices/warnings that corrupt a JSON body. Arm
- * the buffer before producing output; the shutdown handler discards any leaked
- * bytes so the JSON stays valid (a hard-won lesson from earlier SignTeb work).
+ * Some shared hosts emit PHP notices/warnings that corrupt a JSON body. Arm the
+ * buffer before producing output; the shutdown handler discards any leaked bytes
+ * so the response stays valid JSON.
  */
-class SWC_Json_Guard
+class JsonGuard
 {
     private static bool $armed = false;
 

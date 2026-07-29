@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Language_Detector — resolves the reply language.
+ * Resolves the reply language.
  *
  * Honors the admin setting; when "auto" it detects from the message and falls
  * back to the site locale so multilingual sites answer in the page language.
@@ -8,11 +8,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace SignTeb\WebChat\Ai;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Language_Detector
+class LanguageDetector
 {
     public function resolve(string $setting, string $message): string
     {

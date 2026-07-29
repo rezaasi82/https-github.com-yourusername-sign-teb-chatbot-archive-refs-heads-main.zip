@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_Stats_Page — dashboard: conversation volume, CTA conversion rate, and
+ * Dashboard: conversation volume, CTA conversion rate, and
  * the most frequent opening questions (a Content-Gap signal for SEO).
  *
  * Rendered inside the tabbed settings screen.
@@ -8,21 +8,32 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace SignTeb\WebChat\Admin;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Stats_Page
+class StatsPage
 {
     public function render_inner(): void
     {
         if (! current_user_can('manage_options')) {
             return;
         }
-        $repo    = new SWC_Conversation_Repository();
-        $stats   = $repo->stats(30);
-        $top     = $this->top_questions();
-        $license = new SWC_License_Manager();
+        $repo     = new \SignTeb\WebChat\Database\ConversationRepository();
+        $events   = new \SignTeb\WebChat\Database\EventRepository();
+        $settings = new \SignTeb\WebChat\Core\Settings();
+        $stats    = $repo->stats(30);
+        $clicks   = $events->counts(30);
+        $daily    = $repo->daily(14);
+        $daily_c  = $events->daily(14);
+        $top      = $this->top_questions();
+        $services = array_map(
+            static fn($s) => (string) $s['name'],
+            (new \SignTeb\WebChat\Ai\SystemPromptBuilder($settings))->services()
+        );
+        $demand  = $repo->service_demand($services, 30);
 
         include SWC_DIR . 'includes/admin/views/dashboard.php';
     }
@@ -35,7 +46,7 @@ class SWC_Stats_Page
     private function top_questions(int $limit = 10): array
     {
         global $wpdb;
-        $messages = SWC_Schema::messages_table();
+        $messages = \SignTeb\WebChat\Database\Schema::messages_table();
         $since    = gmdate('Y-m-d H:i:s', time() - (30 * DAY_IN_SECONDS));
 
         return $wpdb->get_results(

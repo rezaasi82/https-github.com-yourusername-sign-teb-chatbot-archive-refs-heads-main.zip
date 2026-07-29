@@ -1,25 +1,27 @@
 <?php
 /**
- * SWC_Widget — floating chat widget.
+ * Floating chat widget.
  *
  * Enqueues vanilla JS/CSS (no jQuery) and prints the markup in the footer.
  * Assets load ONLY when the widget actually renders, so an install never slows
- * down pages where the widget is hidden (a known competitor weakness).
+ * down pages where the widget is not shown.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace SignTeb\WebChat\Frontend;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Widget
+class Widget
 {
-    private SWC_Settings $settings;
+    private \SignTeb\WebChat\Core\Settings $settings;
 
     public function __construct()
     {
-        $this->settings = new SWC_Settings();
+        $this->settings = new \SignTeb\WebChat\Core\Settings();
     }
 
     public function register(): void
@@ -30,7 +32,7 @@ class SWC_Widget
 
     private function should_render(): bool
     {
-        if (! $this->settings->is_enabled()) {
+        if (! $this->settings->is_float_enabled()) {
             return false;
         }
         if (is_admin() || is_feed() || is_robots()) {
@@ -42,6 +44,18 @@ class SWC_Widget
     public function enqueue(): void
     {
         if (! $this->should_render()) {
+            return;
+        }
+        $this->enqueue_assets();
+    }
+
+    /**
+     * Register + enqueue the widget CSS/JS and localize config. Idempotent, so
+     * both the footer widget and the [signteb_chat] shortcode can call it.
+     */
+    public function enqueue_assets(): void
+    {
+        if (wp_script_is('swc-widget', 'enqueued')) {
             return;
         }
 
@@ -56,18 +70,22 @@ class SWC_Widget
 
         wp_localize_script('swc-widget', 'SWC_CONFIG', [
             'restUrl'   => esc_url_raw(rest_url('signteb-web-chat/v1/message')),
+            'eventUrl'  => esc_url_raw(rest_url('signteb-web-chat/v1/event')),
             'restNonce' => wp_create_nonce('wp_rest'),
             'ajaxUrl'   => esc_url_raw(admin_url('admin-ajax.php')),
             'ajaxNonce' => wp_create_nonce('swc_chat_nonce'),
-            'pageUrl'   => esc_url_raw((string) ($_SERVER['REQUEST_URI'] ?? '')),
+            'pageUrl'   => \SignTeb\WebChat\Core\Input::request_uri(),
             'strings'   => [
                 'placeholder' => __('پیام خود را بنویسید…', 'signteb-web-chat'),
                 'send'        => __('ارسال', 'signteb-web-chat'),
                 'typing'      => __('در حال نوشتن…', 'signteb-web-chat'),
-                'book'        => __('رزرو نوبت', 'signteb-web-chat'),
-                'whatsapp'    => __('واتس‌اپ', 'signteb-web-chat'),
-                'call'        => __('تماس تلفنی', 'signteb-web-chat'),
+                'book'        => __('رزرو نوبت آنلاین', 'signteb-web-chat'),
+                'whatsapp'    => __('واتساپ', 'signteb-web-chat'),
+                'call'        => __('تماس با مطب', 'signteb-web-chat'),
+                'bale'        => __('ارتباط در بله', 'signteb-web-chat'),
                 'error'       => __('خطا در ارتباط. دوباره تلاش کنید.', 'signteb-web-chat'),
+                'ctaTitle'    => __('آماده دریافت نوبت هستید؟', 'signteb-web-chat'),
+                'ctaText'     => __('برای رزرو آنلاین و انتخاب زمان مراجعه روی دکمه زیر کلیک کنید.', 'signteb-web-chat'),
             ],
         ]);
     }
@@ -77,9 +95,38 @@ class SWC_Widget
         if (! $this->should_render()) {
             return;
         }
+        $config = $this->build_config(false);
+        // Template handles all escaping.
+        include SWC_DIR . 'templates/widget.php';
+    }
 
-        $s      = $this->settings;
-        $config = [
+    /**
+     * Inline (embedded) render for the [signteb_chat] shortcode / sidebar block.
+     * Returns the markup instead of echoing so it can nest anywhere.
+     */
+    public function render_inline(): string
+    {
+        // The shortcode has its own switch, independent of the floating widget.
+        if (! $this->settings->is_shortcode_enabled()) {
+            return '';
+        }
+        $this->enqueue_assets();
+        $config = $this->build_config(true);
+
+        ob_start();
+        include SWC_DIR . 'templates/widget.php';
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * Assemble the view config shared by the floating and inline renders.
+     *
+     * @return array<string,mixed>
+     */
+    private function build_config(bool $inline): array
+    {
+        $s = $this->settings;
+        return [
             'direction'     => $s->get('direction', 'rtl') === 'ltr' ? 'ltr' : 'rtl',
             'widget_color'  => (string) $s->get('widget_color', '#0f1f3d'),
             'accent_color'  => (string) $s->get('accent_color', '#c8a04e'),
@@ -88,15 +135,25 @@ class SWC_Widget
             'brand_footer'  => (string) $s->get('brand_footer', ''),
             'welcome'       => (string) $s->get('welcome_message', ''),
             'offhours'      => (string) $s->get('offhours_message', ''),
+            'teaser'        => (string) $s->get('teaser_message', ''),
+            'teaser_delay'  => max(0, (int) $s->get('teaser_delay', 3)),
+            'teaser_sound'  => (int) $s->get('teaser_sound', 1) === 1,
+            'inline'        => $inline,
             'quick_replies' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $s->get('quick_replies', ''))))),
             'within_hours'  => $this->within_business_hours(),
             'booking_url'   => esc_url_raw((string) $s->get('booking_url', '')),
             'whatsapp'      => (string) $s->get('whatsapp', ''),
             'phone'         => (string) $s->get('phone', ''),
+            'bale_url'      => esc_url_raw((string) $s->get('bale_url', '')),
+            'branch'        => (int) apply_filters('swc_widget_branch', (int) $s->get('default_branch', 0)),
+            'lead_capture'  => (int) $s->get('lead_capture', 1) === 1,
+            'channels'      => [
+                'booking'  => (int) $s->get('ch_booking', 1) === 1 && (string) $s->get('booking_url', '') !== '',
+                'whatsapp' => (int) $s->get('ch_whatsapp', 1) === 1 && (string) $s->get('whatsapp', '') !== '',
+                'call'     => (int) $s->get('ch_call', 1) === 1 && (string) $s->get('phone', '') !== '',
+                'bale'     => (int) $s->get('ch_bale', 0) === 1 && (string) $s->get('bale_url', '') !== '',
+            ],
         ];
-
-        // Template handles all escaping.
-        include SWC_DIR . 'templates/widget.php';
     }
 
     private function within_business_hours(): bool

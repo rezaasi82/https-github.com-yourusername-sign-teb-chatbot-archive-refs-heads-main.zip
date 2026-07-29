@@ -1,6 +1,6 @@
 <?php
 /**
- * SWC_License_Manager — annual-license scaffold with a free trial gate.
+ * LicenseManager — annual-license scaffold with a free trial gate.
  *
  * The business model is an annual license sold per-site, plus a free trial
  * (default 50 messages) before activation is required. The activation-key
@@ -10,11 +10,13 @@
  * @package SignTeb_Web_Chat
  */
 
+namespace SignTeb\WebChat\License;
+
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_License_Manager
+class LicenseManager
 {
     private const OPTION       = 'swc_license';
     private const TRIAL_OPTION = 'swc_trial_used';

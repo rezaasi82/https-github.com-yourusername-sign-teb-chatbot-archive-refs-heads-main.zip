@@ -1,41 +1,49 @@
 <?php
 /**
- * SWC_AI_Manager — the conversation engine.
+ * The conversation engine.
  *
  * The single entry point used by both the REST controller and the admin-ajax
  * handler. Coordinates the license/trial gate, rate limiting, the safety
  * layer, the dynamic system prompt, the swappable AI provider, persistence,
- * and CTA/lead detection. Never crashes: every failure path returns a polite,
- * structured fallback.
+ * and CTA/lead detection. Every failure path returns a structured fallback
+ * rather than an error.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace SignTeb\WebChat\Ai;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_AI_Manager
+class AiManager
 {
-    private SWC_Settings $settings;
-    private SWC_Medical_Safety_Filter $safety;
-    private SWC_System_Prompt_Builder $prompt;
-    private SWC_Language_Detector $language;
-    private SWC_Cta_Detector $cta;
-    private SWC_Conversation_Repository $conversations;
-    private SWC_Message_Repository $messages;
-    private SWC_License_Manager $license;
+    private \SignTeb\WebChat\Core\Settings $settings;
+    private \SignTeb\WebChat\Safety\MedicalSafetyFilter $safety;
+    private \SignTeb\WebChat\Ai\SystemPromptBuilder $prompt;
+    private \SignTeb\WebChat\Ai\LanguageDetector $language;
+    private \SignTeb\WebChat\Ai\CtaDetector $cta;
+    private \SignTeb\WebChat\Ai\LeadScorer $scorer;
+    private \SignTeb\WebChat\Ai\SummaryBuilder $summary;
+    private \SignTeb\WebChat\Ai\ProviderFactory $providers;
+    private \SignTeb\WebChat\Database\ConversationRepository $conversations;
+    private \SignTeb\WebChat\Database\MessageRepository $messages;
+    private \SignTeb\WebChat\License\LicenseManager $license;
 
     public function __construct()
     {
-        $this->settings      = new SWC_Settings();
-        $this->safety        = new SWC_Medical_Safety_Filter($this->settings);
-        $this->prompt        = new SWC_System_Prompt_Builder($this->settings);
-        $this->language      = new SWC_Language_Detector();
-        $this->cta           = new SWC_Cta_Detector();
-        $this->conversations = new SWC_Conversation_Repository();
-        $this->messages      = new SWC_Message_Repository();
-        $this->license       = new SWC_License_Manager();
+        $this->settings      = new \SignTeb\WebChat\Core\Settings();
+        $this->safety        = new \SignTeb\WebChat\Safety\MedicalSafetyFilter($this->settings);
+        $this->prompt        = new \SignTeb\WebChat\Ai\SystemPromptBuilder($this->settings);
+        $this->language      = new \SignTeb\WebChat\Ai\LanguageDetector();
+        $this->cta           = new \SignTeb\WebChat\Ai\CtaDetector();
+        $this->scorer        = new \SignTeb\WebChat\Ai\LeadScorer();
+        $this->summary       = new \SignTeb\WebChat\Ai\SummaryBuilder($this->settings);
+        $this->providers     = new \SignTeb\WebChat\Ai\ProviderFactory($this->settings);
+        $this->conversations = new \SignTeb\WebChat\Database\ConversationRepository();
+        $this->messages      = new \SignTeb\WebChat\Database\MessageRepository();
+        $this->license       = new \SignTeb\WebChat\License\LicenseManager();
     }
 
     /**
@@ -50,6 +58,7 @@ class SWC_AI_Manager
             return ['ok' => false, 'code' => 'disabled', 'error' => __('چت‌بات غیرفعال است.', 'signteb-web-chat')];
         }
 
+        // --- License / free-trial gate ---
         if (! $this->license->can_send()) {
             return [
                 'ok'    => false,
@@ -67,7 +76,7 @@ class SWC_AI_Manager
         }
 
         // --- Rate limit (per IP + session) ---
-        $limiter = new SWC_Rate_Limiter((int) $this->settings->get('rate_limit_per_min', 8));
+        $limiter = new \SignTeb\WebChat\Ratelimit\RateLimiter((int) $this->settings->get('rate_limit_per_min', 8));
         if (! $limiter->allow($req['ip'] . '|' . $req['session_id'])) {
             return ['ok' => false, 'code' => 'rate_limited', 'error' => __('لطفاً کمی صبر کنید و دوباره تلاش کنید.', 'signteb-web-chat')];
         }
@@ -75,11 +84,19 @@ class SWC_AI_Manager
         $lang = $this->language->resolve((string) $this->settings->get('language', 'auto'), $message);
 
         $conversation_id = $this->conversations->find_or_create($req['session_id'], [
-            'ip'       => $req['ip'],
-            'user_id'  => $req['user_id'],
-            'language' => $lang,
-            'page_url' => $req['page_url'],
+            'ip'        => $req['ip'],
+            'user_id'   => $req['user_id'],
+            'language'  => $lang,
+            'page_url'  => $req['page_url'],
+            'branch_id' => (int) ($req['branch'] ?? 0),
         ]);
+
+        // Lead capture: persist any patient identity sent with the request.
+        $patient_name  = trim((string) ($req['name'] ?? ''));
+        $patient_phone = trim((string) ($req['phone'] ?? ''));
+        if ($patient_name !== '' || $patient_phone !== '') {
+            $this->conversations->set_patient($conversation_id, $patient_name, $patient_phone);
+        }
 
         // Persist the user turn early so history stays complete even on failure.
         $this->messages->add($conversation_id, 'user', $message);
@@ -95,25 +112,29 @@ class SWC_AI_Manager
         }
 
         // --- Provider call ---
-        $provider = $this->make_provider($this->settings->active_provider());
+        $provider = $this->providers->create_active();
         if ($provider === null) {
             return $this->graceful_fallback($conversation_id, 'no_provider');
         }
 
+        $conversation = $this->conversations->get($conversation_id);
+        $known_name   = $conversation ? (string) ($conversation->patient_name ?? '') : $patient_name;
+
         $context = [
-            'system'     => $this->prompt->build($lang),
-            'history'    => $this->messages->history($conversation_id, 12),
-            'model'      => $this->settings->active_model(),
-            'max_tokens' => 1024,
+            'system'      => $this->prompt->build($lang, $known_name),
+            'history'     => $this->messages->history($conversation_id, 20),
+            'model'       => $this->settings->active_model(),
+            'max_tokens'  => 1200,
+            'temperature' => (float) apply_filters('swc_temperature', 0.8),
         ];
 
         $result = $provider->generate_reply($message, $context);
 
         if (empty($result['ok'])) {
             // Try the other provider as a fallback if its key is configured.
-            $fallback = $this->make_fallback_provider($provider->id());
+            $fallback = $this->providers->create_fallback($provider->id());
             if ($fallback !== null) {
-                $context['model'] = $this->model_for($fallback->id());
+                $context['model'] = $this->providers->model_for($fallback->id());
                 $result           = $fallback->generate_reply($message, $context);
             }
         }
@@ -134,56 +155,55 @@ class SWC_AI_Manager
 
         $this->messages->add($conversation_id, 'assistant', $reply, false, $result['tokens'] ?? null);
         $this->license->record_usage();
-        do_action('swc_message_handled', $conversation_id, $cta);
+
+        // --- AI lead scoring + auto-summary (heuristic, no extra API call) ---
+        $score = $this->score_and_summarize($conversation_id, $cta, $known_name, (string) ($conversation->patient_phone ?? $patient_phone));
+        do_action('swc_message_handled', $conversation_id, $cta, $score['level']);
+
+        // --- Smart appointment trigger: only surface the booking card when the
+        // visitor shows genuine readiness (explicit booking intent, or a warm/
+        // hot lead) — never push it on a cold, purely-informational chat.
+        $show_card = $cta !== '' && ($cta === 'booking' || in_array($score['level'], ['hot', 'warm'], true));
 
         return [
-            'ok'       => true,
-            'reply'    => $reply,
-            'cta'      => $cta,
-            'cta_card' => $cta !== '' ? $this->cta_card($cta) : null,
+            'ok'              => true,
+            'reply'           => $reply,
+            'cta'             => $cta,
+            'cta_card'        => $show_card ? $this->cta_card($cta) : null,
+            'lead'            => ['level' => $score['level'], 'label' => $score['label'], 'emoji' => $score['emoji']],
+            'conversation_id' => $conversation_id,
         ];
     }
 
-    private function make_provider(string $id): ?SWC_AI_Provider_Interface
-    {
-        $key = $this->settings->get_api_key($id);
-        if ($key === '') {
-            return null;
-        }
-        switch ($id) {
-            case 'openai':
-                return new SWC_Provider_OpenAI($key);
-            case 'gapgpt':
-                return new SWC_Provider_GapGPT($key);
-            default:
-                return new SWC_Provider_Anthropic($key);
-        }
-    }
-
     /**
-     * First configured provider other than the one that just failed.
+     * Re-score the conversation and refresh its stored summary.
+     *
+     * @return array{level:string,label:string,emoji:string,probability:int}
      */
-    private function make_fallback_provider(string $primary_id): ?SWC_AI_Provider_Interface
+    private function score_and_summarize(int $conversation_id, string $cta, string $name, string $phone): array
     {
-        foreach (['gapgpt', 'anthropic', 'openai'] as $id) {
-            if ($id === $primary_id) {
-                continue;
-            }
-            $provider = $this->make_provider($id);
-            if ($provider !== null) {
-                return $provider;
-            }
-        }
-        return null;
-    }
+        $user_texts = $this->messages->user_texts($conversation_id);
+        $first      = $user_texts[0] ?? '';
+        $joined     = implode(' ', $user_texts);
 
-    private function model_for(string $provider_id): string
-    {
-        $model = trim((string) $this->settings->get('model_' . $provider_id, ''));
-        if ($model !== '') {
-            return $model;
-        }
-        return $provider_id === 'anthropic' ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
+        $score = $this->scorer->score([
+            'text'          => $joined,
+            'cta'           => $cta,
+            'has_phone'     => $phone !== '',
+            'has_name'      => $name !== '',
+            'message_count' => count($user_texts),
+        ]);
+
+        $this->conversations->set_score($conversation_id, $score['level']);
+        $this->conversations->set_summary(
+            $conversation_id,
+            $this->summary->build(
+                ['name' => $name, 'phone' => $phone, 'user_text' => $joined, 'first_message' => $first],
+                $score
+            )
+        );
+
+        return $score;
     }
 
     private function graceful_fallback(int $conversation_id, string $reason): array
