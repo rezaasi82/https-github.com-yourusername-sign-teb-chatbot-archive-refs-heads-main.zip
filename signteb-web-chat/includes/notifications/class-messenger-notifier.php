@@ -188,6 +188,6 @@ class MessengerNotifier
             wp_send_json(['ok' => false, 'error' => 'bad_channel'], 400);
         }
         $clinic = (string) $this->settings->get('clinic_name', get_bloginfo('name'));
-        wp_send_json($this->send($channel, sprintf(__('پیام آزمایشی %s از SignTeb Chat ✅', 'signteb-web-chat'), $clinic)));
+        wp_send_json($this->send($channel, sprintf(__('پیام آزمایشی %s از Medora AI ✅', 'signteb-web-chat'), $clinic)));
     }
 }

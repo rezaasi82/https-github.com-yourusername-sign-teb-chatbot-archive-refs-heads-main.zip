@@ -87,7 +87,7 @@ class JobQueue
             } catch (\Throwable $e) {
                 $ok = false;
                 if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log('[SignTeb Chat] job #' . $job->id . ' error: ' . $e->getMessage());
+                    error_log('[Medora] job #' . $job->id . ' error: ' . $e->getMessage());
                 }
             }
 

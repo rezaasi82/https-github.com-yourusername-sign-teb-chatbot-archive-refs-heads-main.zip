@@ -36,7 +36,7 @@ class Rollup
             }
         } catch (\Throwable $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[SignTeb Chat] rollup failed: ' . $e->getMessage());
+                error_log('[Medora] rollup failed: ' . $e->getMessage());
             }
         }
     }
@@ -69,6 +69,7 @@ class Rollup
             'leads'          => $conv_where('AND is_lead = 1'),
             'hot'            => $conv_where("AND lead_score = 'hot'"),
             'click_booking'  => $event_count('booking'),
+            'click_consult'  => $event_count('consult'),
             'click_whatsapp' => $event_count('whatsapp'),
             'click_call'     => $event_count('call'),
             'click_bale'     => $event_count('bale'),

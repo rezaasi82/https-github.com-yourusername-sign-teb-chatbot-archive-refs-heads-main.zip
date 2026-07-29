@@ -2,7 +2,7 @@
 /**
  * Records CTA/channel click events for analytics.
  *
- * One row per tracked interaction (booking / whatsapp / call / bale). Powers
+ * One row per tracked interaction (booking / consult / whatsapp / call / bale). Powers
  * the professional analytics dashboard (conversion + channel breakdown).
  *
  * @package SignTeb_Web_Chat
@@ -17,7 +17,7 @@ if (! defined('ABSPATH')) {
 class EventRepository
 {
     /** Allowed event types (whitelist — never trust the client). */
-    public const TYPES = ['booking', 'whatsapp', 'call', 'bale'];
+    public const TYPES = ['booking', 'consult', 'whatsapp', 'call', 'bale'];
 
     public function record(string $type, ?int $conversation_id = null): bool
     {

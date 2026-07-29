@@ -148,7 +148,7 @@ class PdfGenerator
         $rows = '';
         foreach ($payload['messages'] as $m) {
             $is_user = $m['role'] === 'user';
-            $who     = $is_user ? 'بیمار' : 'دستیار SignTeb Chat';
+            $who     = $is_user ? 'بیمار' : 'دستیار Medora AI';
             $side    = $is_user ? 'swc-p' : 'swc-a';
             $rows   .= '<div class="msg ' . $side . '">'
                 . '<div class="meta"><span class="who">' . esc_html($who) . '</span>'
@@ -196,7 +196,7 @@ class PdfGenerator
 <body>
 <div class="report">
     <div class="head">
-        <div class="brand"><?php echo esc_html($clinic); ?><small>SIGNTEB</small></div>
+        <div class="brand"><?php echo esc_html($clinic); ?><small>MEDORA</small></div>
         <div class="doc-title">گزارش مکالمه بیمار</div>
     </div>
 
@@ -215,7 +215,7 @@ class PdfGenerator
     <?php echo wp_kses_post($rows); ?>
 
     <div class="foot">
-        <span>SignTeb Chat · <?php echo esc_html($exported); ?></span>
+        <span>Medora AI · <?php echo esc_html($exported); ?></span>
         <span>Lead #<?php echo esc_html((string) $payload['lead_id']); ?></span>
     </div>
 </div>

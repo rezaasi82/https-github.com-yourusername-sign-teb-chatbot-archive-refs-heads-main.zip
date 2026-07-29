@@ -28,7 +28,7 @@ $int_class = 'is-' . preg_replace('/[^a-z]/', '', $integrity['level']);
         <div class="swc-vipcard">
             <div class="swc-vipcard-glow" aria-hidden="true"></div>
             <div class="swc-vipcard-body">
-                <span class="swc-eyebrow">SIGNTEB</span>
+                <span class="swc-eyebrow">MEDORA</span>
                 <h1><?php esc_html_e('به داشبورد هوشمند خوش آمدید', 'signteb-web-chat'); ?></h1>
                 <p><?php echo esc_html(sprintf(
                     /* translators: 1: status, 2: provider */
@@ -60,6 +60,7 @@ $int_class = 'is-' . preg_replace('/[^a-z]/', '', $integrity['level']);
             <div class="swc-tile"><span class="swc-tile-ico">🔥</span><span class="swc-tile-num" data-count="<?php echo esc_attr($metrics['hot_leads']); ?>">0</span><span class="swc-tile-label"><?php esc_html_e('لیدهای داغ', 'signteb-web-chat'); ?></span></div>
             <div class="swc-tile"><span class="swc-tile-ico">📈</span><span class="swc-tile-num"><?php echo esc_html($metrics['conversion']); ?>٪</span><span class="swc-tile-label"><?php esc_html_e('نرخ تبدیل', 'signteb-web-chat'); ?></span></div>
             <div class="swc-tile"><span class="swc-tile-ico">📅</span><span class="swc-tile-num" data-count="<?php echo esc_attr($metrics['clicks']['booking']); ?>">0</span><span class="swc-tile-label"><?php esc_html_e('کلیک رزرو', 'signteb-web-chat'); ?></span></div>
+            <div class="swc-tile"><span class="swc-tile-ico">🩺</span><span class="swc-tile-num" data-count="<?php echo esc_attr($metrics['clicks']['consult'] ?? 0); ?>">0</span><span class="swc-tile-label"><?php esc_html_e('کلیک مشاوره آنلاین', 'signteb-web-chat'); ?></span></div>
             <div class="swc-tile"><span class="swc-tile-ico">💬</span><span class="swc-tile-num" data-count="<?php echo esc_attr($metrics['clicks']['whatsapp']); ?>">0</span><span class="swc-tile-label"><?php esc_html_e('کلیک واتساپ', 'signteb-web-chat'); ?></span></div>
             <div class="swc-tile"><span class="swc-tile-ico">📞</span><span class="swc-tile-num" data-count="<?php echo esc_attr($metrics['clicks']['call']); ?>">0</span><span class="swc-tile-label"><?php esc_html_e('کلیک تماس', 'signteb-web-chat'); ?></span></div>
             <div class="swc-tile swc-tile-int <?php echo esc_attr($int_class); ?>"><span class="swc-tile-ico">🛡️</span><span class="swc-int-badge" id="swc-int-badge"><?php echo esc_html($integrity['label']); ?></span><span class="swc-tile-label"><?php esc_html_e('یکپارچگی و امنیت', 'signteb-web-chat'); ?></span></div>
@@ -67,7 +68,7 @@ $int_class = 'is-' . preg_replace('/[^a-z]/', '', $integrity['level']);
 
         <div class="swc-revenue">
             <div class="swc-revenue-body">
-                <span class="swc-revenue-label"><?php esc_html_e('برآورد درآمد تولیدشده توسط SignTeb Chat', 'signteb-web-chat'); ?></span>
+                <span class="swc-revenue-label"><?php esc_html_e('برآورد درآمد تولیدشده توسط Medora AI', 'signteb-web-chat'); ?></span>
                 <span class="swc-revenue-num"><?php echo esc_html($toman($metrics['revenue'])); ?></span>
                 <span class="swc-revenue-formula"><?php esc_html_e('لیدها × نرخ تبدیل × میانگین قیمت خدمت', 'signteb-web-chat'); ?></span>
             </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * The plugin side of the SignTeb Cloud platform (Level 2).
+ * The plugin side of the Medora Cloud platform (Level 2).
  *
  * Opt-in telemetry only. When enabled with an endpoint it registers the
  * installation once and sends a signed daily heartbeat with technical counters
@@ -144,11 +144,11 @@ class CloudClient
 
         $headers = [
             'Content-Type'   => 'application/json',
-            'X-SignTeb-Type'  => $type,
-            'X-SignTeb-Time'  => (string) time(),
+            'X-Medora-Type'  => $type,
+            'X-Medora-Time'  => (string) time(),
         ];
         if ($secret !== '') {
-            $headers['X-SignTeb-Sign'] = 'sha256=' . hash_hmac('sha256', $body, $secret);
+            $headers['X-Medora-Sign'] = 'sha256=' . hash_hmac('sha256', $body, $secret);
         }
 
         $response = wp_remote_post($this->endpoint(), [
@@ -174,7 +174,7 @@ class CloudClient
     private function log(\Throwable $e): void
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[SignTeb Chat] cloud client: ' . $e->getMessage());
+            error_log('[Medora] cloud client: ' . $e->getMessage());
         }
     }
 }

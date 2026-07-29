@@ -1,13 +1,14 @@
 <?php
 /**
- * Embeds the chat inline via [signteb_chat].
+ * Embeds the chat inline via [medora_chat].
  *
  * Lets a site owner drop the assistant into a sidebar, a widget area or the
  * body of any post/page, in addition to (or instead of) the floating launcher.
  * Assets load only when the shortcode actually renders, so pages without it
  * stay light.
  *
- * Usage: [signteb_chat]  (alias: [signteb_chat])
+ * Usage: [medora_chat]  (alias: [signteb_chat], kept so pages written against
+ * the pre-rebrand tag keep rendering)
  *
  * @package SignTeb_Web_Chat
  */
@@ -22,6 +23,7 @@ class ChatShortcode
 {
     public function register(): void
     {
+        add_shortcode('medora_chat', [$this, 'render']);
         add_shortcode('signteb_chat', [$this, 'render']);
 
         // Classic "Text" widgets don't run shortcodes by default; enable it so

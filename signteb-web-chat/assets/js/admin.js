@@ -1,5 +1,5 @@
 /**
- * SignTeb AI Web Chat — admin settings (Vanilla JS).
+ * Medora AI — admin settings (Vanilla JS).
  * Shows only the API-key + model fields for the currently selected provider,
  * updated live without a page refresh.
  */

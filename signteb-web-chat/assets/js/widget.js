@@ -1,5 +1,5 @@
 /**
- * SignTeb Chat — frontend widget (Vanilla JS, no jQuery).
+ * Medora AI — frontend widget (Vanilla JS, no jQuery).
  *
  * REST-first with automatic admin-ajax fallback. Lead capture (name + phone),
  * natural typing effect, professional booking CTA + communication channels,
@@ -15,7 +15,7 @@
 	var cfg = window.SWC_CONFIG;
 
 	// One page can host several widgets (the floating launcher plus any number
-	// of [signteb_chat] shortcodes), so initialise every instance independently.
+	// of [medora_chat] shortcodes), so initialise every instance independently.
 	var roots = document.querySelectorAll('.swc-root');
 	if (!roots.length) { return; }
 	Array.prototype.forEach.call(roots, initWidget);
@@ -99,7 +99,7 @@
 	})();
 	function log() {
 		if (!DEBUG || !window.console) { return; }
-		try { console.log.apply(console, ['[SignTeb Chat]'].concat([].slice.call(arguments))); } catch (e) {}
+		try { console.log.apply(console, ['[Medora]'].concat([].slice.call(arguments))); } catch (e) {}
 	}
 
 	function store(key, val) {
@@ -316,6 +316,7 @@
 
 	function renderCtaCard(card) {
 		var bookingUrl = (card && card.booking_url) || root.dataset.bookingUrl || '';
+		var consultUrl = (card && card.consult_url) || root.dataset.consultUrl || '';
 		var whatsapp = (card && card.whatsapp) || root.dataset.whatsapp || '';
 		var phone = (card && card.phone) || root.dataset.phone || '';
 		var baleUrl = root.dataset.baleUrl || '';
@@ -331,6 +332,12 @@
 			head.querySelector('.swc-cta-text').textContent = cfg.strings.ctaText;
 			wrap.appendChild(head);
 			wrap.appendChild(channelBtn(cfg.strings.book, bookingUrl, 'booking', '📅', true));
+		}
+
+		// Online consultation sits directly beside booking: same prominence when
+		// it is the only action configured, secondary when booking is present.
+		if (root.dataset.chConsult === '1' && consultUrl) {
+			wrap.appendChild(channelBtn(cfg.strings.consult, consultUrl, 'consult', '🩺', !wrap.children.length));
 		}
 
 		var row = document.createElement('div');

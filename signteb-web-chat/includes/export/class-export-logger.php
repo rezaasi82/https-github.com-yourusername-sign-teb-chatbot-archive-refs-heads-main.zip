@@ -52,7 +52,7 @@ class ExportLogger
         $this->repo->update($log_id, $status, $update);
 
         if ($status === 'failed' && defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[SignTeb Chat export] log #' . $log_id . ' failed: ' . ($update['response'] ?? ''));
+            error_log('[Medora export] log #' . $log_id . ' failed: ' . ($update['response'] ?? ''));
         }
     }
 }

@@ -118,7 +118,7 @@ class GoogleSheets
         $headers = ['Content-Type' => 'application/json'];
         $secret  = $this->secret();
         if ($secret !== '') {
-            $headers['X-SignTeb-Secret'] = $secret;
+            $headers['X-Medora-Secret'] = $secret;
         }
 
         $response = wp_remote_post($this->url(), [
@@ -145,7 +145,7 @@ class GoogleSheets
      */
     public function test(): array
     {
-        return $this->send(['TEST', 'SignTeb Chat', '-', 'test', '-', current_time('mysql'), 'connection test', '-', 'test']);
+        return $this->send(['TEST', 'Medora AI', '-', 'test', '-', current_time('mysql'), 'connection test', '-', 'test']);
     }
 
     private function one_line(string $text): string

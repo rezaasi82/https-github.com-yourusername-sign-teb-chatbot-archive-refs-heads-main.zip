@@ -3,7 +3,7 @@
  * The conversation engine.
  *
  * The single entry point used by both the REST controller and the admin-ajax
- * handler. Coordinates the license/trial gate, rate limiting, the safety
+ * handler. Coordinates rate limiting, the safety
  * layer, the dynamic system prompt, the swappable AI provider, persistence,
  * and CTA/lead detection. Every failure path returns a structured fallback
  * rather than an error.
@@ -29,7 +29,6 @@ class AiManager
     private \SignTeb\WebChat\Ai\ProviderFactory $providers;
     private \SignTeb\WebChat\Database\ConversationRepository $conversations;
     private \SignTeb\WebChat\Database\MessageRepository $messages;
-    private \SignTeb\WebChat\License\LicenseManager $license;
 
     public function __construct()
     {
@@ -43,7 +42,6 @@ class AiManager
         $this->providers     = new \SignTeb\WebChat\Ai\ProviderFactory($this->settings);
         $this->conversations = new \SignTeb\WebChat\Database\ConversationRepository();
         $this->messages      = new \SignTeb\WebChat\Database\MessageRepository();
-        $this->license       = new \SignTeb\WebChat\License\LicenseManager();
     }
 
     /**
@@ -56,15 +54,6 @@ class AiManager
     {
         if (! $this->settings->is_enabled()) {
             return ['ok' => false, 'code' => 'disabled', 'error' => __('چت‌بات غیرفعال است.', 'signteb-web-chat')];
-        }
-
-        // --- License / free-trial gate ---
-        if (! $this->license->can_send()) {
-            return [
-                'ok'    => false,
-                'code'  => 'trial_expired',
-                'error' => __('نسخه آزمایشی به پایان رسیده است. برای ادامه، لطفاً لایسنس را فعال کنید.', 'signteb-web-chat'),
-            ];
         }
 
         $message = trim((string) $req['message']);
@@ -154,7 +143,6 @@ class AiManager
         }
 
         $this->messages->add($conversation_id, 'assistant', $reply, false, $result['tokens'] ?? null);
-        $this->license->record_usage();
 
         // --- AI lead scoring + auto-summary (heuristic, no extra API call) ---
         $score = $this->score_and_summarize($conversation_id, $cta, $known_name, (string) ($conversation->patient_phone ?? $patient_phone));
@@ -224,13 +212,14 @@ class AiManager
     }
 
     /**
-     * @return array{type:string,booking_url:string,whatsapp:string,phone:string}
+     * @return array{type:string,booking_url:string,consult_url:string,whatsapp:string,phone:string}
      */
     private function cta_card(string $type): array
     {
         return [
             'type'        => $type,
             'booking_url' => (string) $this->settings->get('booking_url', ''),
+            'consult_url' => (string) $this->settings->get('consult_url', ''),
             'whatsapp'    => (string) $this->settings->get('whatsapp', ''),
             'phone'       => (string) $this->settings->get('phone', ''),
         ];

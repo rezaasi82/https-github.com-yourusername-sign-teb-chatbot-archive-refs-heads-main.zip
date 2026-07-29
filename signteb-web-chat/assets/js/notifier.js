@@ -3,7 +3,7 @@
  *
  * Piggybacks on the WordPress Heartbeat API: every tick asks the server for
  * the current unseen-conversation count and updates the admin-bar bubble
- * (and the SignTeb Chat menu badge) in place — no reload required.
+ * (and the Medora AI menu badge) in place — no reload required.
  */
 (function ($) {
 	'use strict';

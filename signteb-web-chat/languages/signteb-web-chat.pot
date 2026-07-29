@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SignTeb AI Web Chat 4.1.0\n"
+"Project-Id-Version: Medora AI 4.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,12 +20,12 @@ msgstr ""
 #: includes/admin/class-admin-menu.php:36
 #: includes/admin/class-admin-menu.php:44
 #: includes/admin/class-settings-page.php:226
-msgid "SignTeb Chat"
+msgid "Medora AI"
 msgstr ""
 
 #. Description of the plugin
 #: signteb-web-chat.php
-msgid "SignTeb Chat — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی."
+msgid "Medora AI — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی."
 msgstr ""
 
 #: includes/admin/class-admin-menu.php:67
@@ -72,11 +72,11 @@ msgid "%s گفتگوی جدید"
 msgstr ""
 
 #: includes/admin/class-chat-notifier.php:101
-msgid "گفتگوهای جدید SignTeb Chat"
+msgid "گفتگوهای جدید Medora AI"
 msgstr ""
 
 #: includes/admin/class-chat-notifier.php:121
-msgid "SignTeb Chat:"
+msgid "Medora AI:"
 msgstr ""
 
 #. translators: %s: number of new conversations
@@ -107,7 +107,7 @@ msgid "خطا در انتقال"
 msgstr ""
 
 #: includes/admin/class-premium-dashboard.php:35
-msgid "داشبورد SignTeb Chat"
+msgid "داشبورد Medora AI"
 msgstr ""
 
 #: includes/admin/class-premium-dashboard.php:36
@@ -723,7 +723,7 @@ msgid "یکپارچگی و امنیت"
 msgstr ""
 
 #: includes/admin/views/premium-dashboard.php:70
-msgid "برآورد درآمد تولیدشده توسط SignTeb Chat"
+msgid "برآورد درآمد تولیدشده توسط Medora AI"
 msgstr ""
 
 #: includes/admin/views/premium-dashboard.php:72
@@ -1101,7 +1101,7 @@ msgid "برای امضای HMAC"
 msgstr ""
 
 #: includes/admin/views/settings.php:262
-msgid "اگر تنظیم شود، هدر X-SignTeb-Signature با امضای HMAC-SHA256 ارسال می‌شود."
+msgid "اگر تنظیم شود، هدر X-Medora-Signature با امضای HMAC-SHA256 ارسال می‌شود."
 msgstr ""
 
 #: includes/admin/views/settings.php:265
@@ -1159,7 +1159,7 @@ msgid "نام شیت"
 msgstr ""
 
 #: includes/admin/views/settings.php:281
-msgid "SignTeb Cloud (اختیاری)"
+msgid "Medora Cloud (اختیاری)"
 msgstr ""
 
 #: includes/admin/views/settings.php:282
@@ -1167,7 +1167,7 @@ msgid "اتصال به پلتفرم ابری برای مانیتورینگ و ل
 msgstr ""
 
 #: includes/admin/views/settings.php:284
-msgid "ارسال heartbeat روزانه به SignTeb Cloud"
+msgid "ارسال heartbeat روزانه به Medora Cloud"
 msgstr ""
 
 #: includes/admin/views/settings.php:285
@@ -1384,7 +1384,7 @@ msgstr ""
 
 #: includes/ajax/class-export-ajax-handler.php:74
 #, php-format
-msgid "پیام آزمایشی از %s (SignTeb Chat)."
+msgid "پیام آزمایشی از %s (Medora AI)."
 msgstr ""
 
 #: includes/ajax/class-export-ajax-handler.php:90
@@ -1414,7 +1414,7 @@ msgid "در حال حاضر خارج از ساعت کاری هستیم، اما 
 msgstr ""
 
 #: includes/crm/class-lead-crm.php:51
-msgid "ارجاع لید از SignTeb Chat"
+msgid "ارجاع لید از Medora AI"
 msgstr ""
 
 #: includes/crm/class-lead-crm.php:52
@@ -1512,7 +1512,7 @@ msgstr ""
 
 #: includes/notifications/class-messenger-notifier.php:191
 #, php-format
-msgid "پیام آزمایشی %s از SignTeb Chat ✅"
+msgid "پیام آزمایشی %s از Medora AI ✅"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:96
@@ -1788,40 +1788,18 @@ msgstr ""
 msgid "ارسال پیام"
 msgstr ""
 
-#: includes/ai/class-ai-manager.php:65
-msgid "نسخه آزمایشی به پایان رسیده است. برای ادامه، لطفاً لایسنس را فعال کنید."
+#: includes/frontend/class-widget.php:80
+msgid "مشاوره آنلاین"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:247
-msgid "لایسنس فعال"
+#: includes/admin/views/settings.php:168
+msgid "لینک مشاوره آنلاین"
 msgstr ""
 
-#. translators: %d: remaining free-trial messages.
-#: includes/admin/class-settings-page.php:250
-msgid "نسخه آزمایشی — %d پیام باقی‌مانده"
+#: includes/admin/views/settings.php:168
+msgid "لینک ویزیت/مشاوره‌ی آنلاین (تصویری یا متنی). اگر خالی باشد، دکمه‌ی مشاوره نمایش داده نمی‌شود."
 msgstr ""
 
-#: includes/admin/class-settings-page.php:290
-msgid "لایسنس"
-msgstr ""
-
-#: includes/admin/views/settings.php:440
-msgid "نسخه آزمایشی"
-msgstr ""
-
-#. translators: 1: remaining trial messages, 2: total trial messages.
-#: includes/admin/views/settings.php:445
-msgid "%1$d پیام باقی‌مانده از %2$d"
-msgstr ""
-
-#: includes/admin/views/settings.php:455
-msgid "کلید لایسنس"
-msgstr ""
-
-#: includes/admin/views/settings.php:458
-msgid "پس از پایان نسخه آزمایشی، کلید لایسنس سالانه را وارد کنید."
-msgstr ""
-
-#: includes/admin/views/settings.php:464
-msgid "تاریخ فعال‌سازی"
+#: includes/admin/views/dashboard.php:52
+msgid "کلیک مشاوره آنلاین"
 msgstr ""

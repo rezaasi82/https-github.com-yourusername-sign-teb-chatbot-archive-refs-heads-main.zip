@@ -1,4 +1,4 @@
-/* SignTeb Chat — floating chat widget. Mobile-first, direction-agnostic
+/* Medora AI — floating chat widget. Mobile-first, direction-agnostic
    (RTL/LTR), premium SaaS-grade UI, fully themeable via --swc-bg / --swc-accent
    (printed inline by SWC_Widget). Touch targets >= 44px, no layout shift. */
 
@@ -255,6 +255,10 @@
 	font-size: 15px;
 	min-height: 50px;
 }
+/* Online consultation: teal, sits beside the gold booking button without
+   competing with it. .swc-cta-primary still wins when it is the only action. */
+.swc-cta-consult { background: #0e8a80; color: #fff; margin-top: 8px; }
+.swc-cta-consult.swc-cta-primary { color: var(--swc-ink); background: var(--swc-accent); }
 .swc-cta-whatsapp { background: #25d366; color: #fff; }
 .swc-cta-call { background: var(--swc-bg); color: #fff; }
 .swc-cta-bale { background: #1e6ff0; color: #fff; }

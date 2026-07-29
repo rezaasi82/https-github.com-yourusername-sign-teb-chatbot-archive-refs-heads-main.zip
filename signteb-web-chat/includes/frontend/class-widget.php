@@ -51,7 +51,7 @@ class Widget
 
     /**
      * Register + enqueue the widget CSS/JS and localize config. Idempotent, so
-     * both the footer widget and the [signteb_chat] shortcode can call it.
+     * both the footer widget and the [medora_chat] shortcode can call it.
      */
     public function enqueue_assets(): void
     {
@@ -80,6 +80,7 @@ class Widget
                 'send'        => __('ارسال', 'signteb-web-chat'),
                 'typing'      => __('در حال نوشتن…', 'signteb-web-chat'),
                 'book'        => __('رزرو نوبت آنلاین', 'signteb-web-chat'),
+                'consult'     => __('مشاوره آنلاین', 'signteb-web-chat'),
                 'whatsapp'    => __('واتساپ', 'signteb-web-chat'),
                 'call'        => __('تماس با مطب', 'signteb-web-chat'),
                 'bale'        => __('ارتباط در بله', 'signteb-web-chat'),
@@ -101,7 +102,7 @@ class Widget
     }
 
     /**
-     * Inline (embedded) render for the [signteb_chat] shortcode / sidebar block.
+     * Inline (embedded) render for the [medora_chat] shortcode / sidebar block.
      * Returns the markup instead of echoing so it can nest anywhere.
      */
     public function render_inline(): string
@@ -142,6 +143,7 @@ class Widget
             'quick_replies' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) $s->get('quick_replies', ''))))),
             'within_hours'  => $this->within_business_hours(),
             'booking_url'   => esc_url_raw((string) $s->get('booking_url', '')),
+            'consult_url'   => esc_url_raw((string) $s->get('consult_url', '')),
             'whatsapp'      => (string) $s->get('whatsapp', ''),
             'phone'         => (string) $s->get('phone', ''),
             'bale_url'      => esc_url_raw((string) $s->get('bale_url', '')),
@@ -149,6 +151,7 @@ class Widget
             'lead_capture'  => (int) $s->get('lead_capture', 1) === 1,
             'channels'      => [
                 'booking'  => (int) $s->get('ch_booking', 1) === 1 && (string) $s->get('booking_url', '') !== '',
+                'consult'  => (int) $s->get('ch_consult', 1) === 1 && (string) $s->get('consult_url', '') !== '',
                 'whatsapp' => (int) $s->get('ch_whatsapp', 1) === 1 && (string) $s->get('whatsapp', '') !== '',
                 'call'     => (int) $s->get('ch_call', 1) === 1 && (string) $s->get('phone', '') !== '',
                 'bale'     => (int) $s->get('ch_bale', 0) === 1 && (string) $s->get('bale_url', '') !== '',

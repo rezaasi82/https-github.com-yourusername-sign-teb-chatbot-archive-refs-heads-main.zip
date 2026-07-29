@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       SignTeb AI Web Chat
+ * Plugin Name:       Medora AI
  * Plugin URI:        https://signteb.com/web-chat
  * Description:       ویجت چت هوشمند پزشکی مستقل و سفید‌برچسب (white-label) که مستقیماً روی وب‌سایت اجرا می‌شود — جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو، بورد CRM، پیامک و خروجی. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی.
  * Version:           4.1.0

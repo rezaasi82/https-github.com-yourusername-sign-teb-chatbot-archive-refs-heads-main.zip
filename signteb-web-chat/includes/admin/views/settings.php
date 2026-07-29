@@ -1,11 +1,9 @@
 <?php
 /**
- * Tabbed settings content (provider | clinic | appearance | integrations |
- * license).
+ * Tabbed settings content (provider | clinic | appearance | integrations).
  *
- * @var \SignTeb\WebChat\Core\Settings          $s
- * @var \SignTeb\WebChat\License\LicenseManager $license
- * @var string                                  $tab
+ * @var \SignTeb\WebChat\Core\Settings $s
+ * @var string                         $tab
  *
  * @package SignTeb_Web_Chat
  */
@@ -38,7 +36,7 @@ if (! defined('ABSPATH')) {
                         printf(
                             /* translators: %s: the shortcode tag. */
                             esc_html__('با %s گفتگو را داخل یک برگه، نوشته یا سایدبار قرار می‌دهید. مستقل از ویجت شناور کار می‌کند.', 'signteb-web-chat'),
-                            '<code dir="ltr">[signteb_chat]</code>'
+                            '<code dir="ltr">[medora_chat]</code>'
                         );
                         ?>
                     </p>
@@ -168,6 +166,7 @@ if (! defined('ABSPATH')) {
             <tr><th><?php esc_html_e('شماره اورژانس', 'signteb-web-chat'); ?></th><td><input type="text" name="emergency_number" value="<?php echo esc_attr($s->get('emergency_number', '115')); ?>" class="small-text"></td></tr>
             <tr><th><?php esc_html_e('میانگین قیمت هر خدمت (تومان)', 'signteb-web-chat'); ?></th><td><input type="number" name="avg_service_price" value="<?php echo esc_attr($s->get('avg_service_price', 0)); ?>" min="0" step="10000" class="regular-text"><p class="description"><?php esc_html_e('برای محاسبه‌ی برآورد درآمد در داشبورد استفاده می‌شود.', 'signteb-web-chat'); ?></p></td></tr>
             <tr><th><?php esc_html_e('لینک رزرو نوبت', 'signteb-web-chat'); ?></th><td><input type="url" name="booking_url" value="<?php echo esc_attr($s->get('booking_url')); ?>" class="large-text" placeholder="https://"><p class="description"><?php esc_html_e('لینک یا شماره خروجی برای رزرو (سیستم نوبت‌دهی داخلی وجود ندارد).', 'signteb-web-chat'); ?></p></td></tr>
+            <tr><th><?php esc_html_e('لینک مشاوره آنلاین', 'signteb-web-chat'); ?></th><td><input type="url" name="consult_url" value="<?php echo esc_attr($s->get('consult_url')); ?>" class="large-text" placeholder="https://"><p class="description"><?php esc_html_e('لینک ویزیت/مشاوره‌ی آنلاین (تصویری یا متنی). اگر خالی باشد، دکمه‌ی مشاوره نمایش داده نمی‌شود.', 'signteb-web-chat'); ?></p></td></tr>
             <tr><th><?php esc_html_e('لینک پیام‌رسان بله', 'signteb-web-chat'); ?></th><td><input type="url" name="bale_url" value="<?php echo esc_attr($s->get('bale_url')); ?>" class="large-text" placeholder="https://ble.ir/…"></td></tr>
             <tr>
                 <th><?php esc_html_e('خدمات و قیمت‌ها', 'signteb-web-chat'); ?></th>
@@ -188,6 +187,7 @@ if (! defined('ABSPATH')) {
                 <th><?php esc_html_e('دکمه‌های ارتباطی', 'signteb-web-chat'); ?></th>
                 <td>
                     <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_booking" value="1" <?php checked($s->get('ch_booking', 1), 1); ?>> 📅 <?php esc_html_e('رزرو نوبت', 'signteb-web-chat'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_consult" value="1" <?php checked($s->get('ch_consult', 1), 1); ?>> 🩺 <?php esc_html_e('مشاوره آنلاین', 'signteb-web-chat'); ?></label>
                     <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_whatsapp" value="1" <?php checked($s->get('ch_whatsapp', 1), 1); ?>> 💬 <?php esc_html_e('واتساپ', 'signteb-web-chat'); ?></label>
                     <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_call" value="1" <?php checked($s->get('ch_call', 1), 1); ?>> 📞 <?php esc_html_e('تماس با مطب', 'signteb-web-chat'); ?></label>
                     <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_bale" value="1" <?php checked($s->get('ch_bale', 0), 1); ?>> 🟦 <?php esc_html_e('پیام‌رسان بله', 'signteb-web-chat'); ?></label>
@@ -261,7 +261,7 @@ if (! defined('ABSPATH')) {
                 <th><?php esc_html_e('کلید امنیتی (Secret)', 'signteb-web-chat'); ?></th>
                 <td>
                     <input type="password" name="webhook_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo $webhook->secret() !== '' ? '••••••••' : esc_attr__('برای امضای HMAC', 'signteb-web-chat'); ?>">
-                    <p class="description"><?php esc_html_e('اگر تنظیم شود، هدر X-SignTeb-Signature با امضای HMAC-SHA256 ارسال می‌شود.', 'signteb-web-chat'); ?></p>
+                    <p class="description"><?php esc_html_e('اگر تنظیم شود، هدر X-Medora-Signature با امضای HMAC-SHA256 ارسال می‌شود.', 'signteb-web-chat'); ?></p>
                 </td>
             </tr>
             <tr><th><?php esc_html_e('رویدادها', 'signteb-web-chat'); ?></th><td><input type="text" name="webhook_events" value="<?php echo esc_attr($s->get('webhook_events')); ?>" class="regular-text" placeholder="lead_created,pdf_generated"><p class="description"><?php esc_html_e('خالی = همه رویدادها. مقادیر: lead_created, chat_finished, pdf_generated, manual', 'signteb-web-chat'); ?></p></td></tr>
@@ -280,10 +280,10 @@ if (! defined('ABSPATH')) {
             <tr><th></th><td><button type="button" class="button swc-test-btn" data-target="gsheet"><?php esc_html_e('تست اتصال', 'signteb-web-chat'); ?></button> <span class="swc-test-result" data-for="gsheet"></span></td></tr>
         </table>
 
-        <h2 class="title"><?php esc_html_e('SignTeb Cloud (اختیاری)', 'signteb-web-chat'); ?></h2>
+        <h2 class="title"><?php esc_html_e('Medora Cloud (اختیاری)', 'signteb-web-chat'); ?></h2>
         <p class="description"><?php esc_html_e('اتصال به پلتفرم ابری برای مانیتورینگ و لایسنس. فقط شمارنده‌های فنی و هش دامنه ارسال می‌شود؛ هیچ داده‌ی بیمار ارسال نمی‌گردد. پیش‌فرض: خاموش.', 'signteb-web-chat'); ?></p>
         <table class="form-table" role="presentation">
-            <tr><th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="cloud_enabled" value="1" <?php checked($s->get('cloud_enabled', 0), 1); ?>> <?php esc_html_e('ارسال heartbeat روزانه به SignTeb Cloud', 'signteb-web-chat'); ?></label></td></tr>
+            <tr><th><?php esc_html_e('فعال‌سازی', 'signteb-web-chat'); ?></th><td><label><input type="checkbox" name="cloud_enabled" value="1" <?php checked($s->get('cloud_enabled', 0), 1); ?>> <?php esc_html_e('ارسال heartbeat روزانه به Medora Cloud', 'signteb-web-chat'); ?></label></td></tr>
             <tr><th><?php esc_html_e('آدرس Cloud', 'signteb-web-chat'); ?></th><td><input type="url" name="cloud_endpoint" value="<?php echo esc_attr($s->get('cloud_endpoint')); ?>" class="large-text" placeholder="https://example.com/v1/heartbeat"></td></tr>
             <tr><th><?php esc_html_e('کلید امنیتی', 'signteb-web-chat'); ?></th><td><input type="password" name="cloud_secret" value="" class="regular-text" autocomplete="new-password" placeholder="<?php echo (new \SignTeb\WebChat\Cloud\CloudClient())->secret() !== '' ? '••••••••' : ''; ?>"></td></tr>
         </table>
@@ -427,43 +427,6 @@ if (! defined('ABSPATH')) {
                     </td>
                 </tr>
             <?php endforeach; ?>
-        </table>
-
-    <?php elseif ($tab === 'license') : ?>
-        <?php $info = $license->info(); ?>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th><?php esc_html_e('وضعیت', 'signteb-web-chat'); ?></th>
-                <td>
-                    <?php if ($license->is_active()) : ?>
-                        <strong style="color:#2271b1"><?php esc_html_e('فعال', 'signteb-web-chat'); ?></strong>
-                    <?php else : ?>
-                        <strong><?php esc_html_e('نسخه آزمایشی', 'signteb-web-chat'); ?></strong>
-                        —
-                        <?php
-                        printf(
-                            /* translators: 1: remaining trial messages, 2: total trial messages. */
-                            esc_html__('%1$d پیام باقی‌مانده از %2$d', 'signteb-web-chat'),
-                            (int) $license->trial_remaining(),
-                            (int) $license->trial_limit()
-                        );
-                        ?>
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <tr>
-                <th><?php esc_html_e('کلید لایسنس', 'signteb-web-chat'); ?></th>
-                <td>
-                    <input type="text" name="license_key" value="<?php echo esc_attr($info['key']); ?>" class="regular-text" placeholder="XXXX-XXXX-XXXX">
-                    <p class="description"><?php esc_html_e('پس از پایان نسخه آزمایشی، کلید لایسنس سالانه را وارد کنید.', 'signteb-web-chat'); ?></p>
-                </td>
-            </tr>
-            <?php if ($info['activated_at'] !== '') : ?>
-                <tr>
-                    <th><?php esc_html_e('تاریخ فعال‌سازی', 'signteb-web-chat'); ?></th>
-                    <td><code dir="ltr"><?php echo esc_html($info['activated_at']); ?></code></td>
-                </tr>
-            <?php endif; ?>
         </table>
 
     <?php endif; ?>

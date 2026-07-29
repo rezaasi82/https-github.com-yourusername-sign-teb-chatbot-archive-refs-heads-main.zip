@@ -6,7 +6,7 @@
  *   1. an admin-bar bubble (top of every admin screen), kept live via the
  *      WordPress Heartbeat API — no page reload needed;
  *   2. a notice on the main Dashboard screen;
- *   3. a count badge on the SignTeb Chat menu item (same style as Comments).
+ *   3. a count badge on the Medora AI menu item (same style as Comments).
  *
  * Visiting the leads & conversations list marks everything as seen. The
  * marker is user meta, so each admin tracks their own unread state.
@@ -98,7 +98,7 @@ class ChatNotifier
             'href'  => self::list_url(),
             'meta'  => [
                 'class' => $count > 0 ? 'swc-ab-has-new' : 'swc-ab-zero',
-                'title' => __('گفتگوهای جدید SignTeb Chat', 'signteb-web-chat'),
+                'title' => __('گفتگوهای جدید Medora AI', 'signteb-web-chat'),
             ],
         ]);
     }
@@ -118,7 +118,7 @@ class ChatNotifier
         }
         printf(
             '<div class="notice notice-info swc-new-chats-notice"><p><strong>%s</strong> %s <a class="button button-primary" href="%s">%s</a></p></div>',
-            esc_html__('SignTeb Chat:', 'signteb-web-chat'),
+            esc_html__('Medora AI:', 'signteb-web-chat'),
             esc_html(sprintf(
                 /* translators: %s: number of new conversations */
                 _n('%s گفتگوی جدید از آخرین بازدید شما ثبت شده است.', '%s گفتگوی جدید از آخرین بازدید شما ثبت شده است.', $count, 'signteb-web-chat'),

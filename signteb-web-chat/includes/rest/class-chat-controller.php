@@ -3,7 +3,7 @@
  * REST transport for the chat.
  *
  * Mirrors the admin-ajax handler so hosts that block the REST API still work.
- * Nonce-protected; rate-limited and license-gated downstream in AiManager.
+ * Nonce-protected; rate-limited downstream in AiManager.
  *
  * @package SignTeb_Web_Chat
  */

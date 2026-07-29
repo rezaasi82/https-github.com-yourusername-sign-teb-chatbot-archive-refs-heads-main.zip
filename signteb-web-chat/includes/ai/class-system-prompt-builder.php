@@ -97,6 +97,9 @@ class SystemPromptBuilder
         if (($booking = (string) $this->settings->get('booking_url', '')) !== '') {
             $lines[] = "در صورت نیاز به رزرو، می‌توانی کاربر را به این لینک هدایت کنی: {$booking}";
         }
+        if (($consult = (string) $this->settings->get('consult_url', '')) !== '') {
+            $lines[] = "اگر مورد نیاز به معاینه‌ی حضوری ندارد یا کاربر امکان مراجعه ندارد، می‌توانی مشاوره‌ی آنلاین را پیشنهاد بدهی: {$consult}";
+        }
 
         // --- Medical safety (non-removable) ---
         $lines[] = $this->safety_block();

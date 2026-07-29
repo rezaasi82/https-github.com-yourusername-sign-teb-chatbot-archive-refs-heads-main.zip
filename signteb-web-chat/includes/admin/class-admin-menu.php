@@ -1,6 +1,6 @@
 <?php
 /**
- * Registers the "SignTeb Chat" menu and a single tabbed page.
+ * Registers the "Medora AI" menu and a single tabbed page.
  *
  * Tabs: AI Provider | Clinic | Appearance | Conversations | Stats | License.
  *
@@ -33,7 +33,7 @@ class AdminMenu
     {
         // Unseen-chat badge, same pattern as the core Comments bubble.
         $unseen = (new \SignTeb\WebChat\Admin\ChatNotifier())->unseen_count();
-        $title  = __('SignTeb Chat', 'signteb-web-chat');
+        $title  = __('Medora AI', 'signteb-web-chat');
         $badge  = sprintf(
             ' <span class="awaiting-mod swc-menu-count"%s>%s</span>',
             $unseen > 0 ? '' : ' style="display:none"',
@@ -41,7 +41,7 @@ class AdminMenu
         );
 
         add_menu_page(
-            __('SignTeb Chat', 'signteb-web-chat'),
+            __('Medora AI', 'signteb-web-chat'),
             $title . $badge,
             'manage_options',
             'swc-chat',

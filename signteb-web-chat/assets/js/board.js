@@ -1,5 +1,5 @@
 /**
- * SignTeb Chat — CRM Kanban board (vanilla JS, HTML5 drag & drop).
+ * Medora AI — CRM Kanban board (vanilla JS, HTML5 drag & drop).
  * Dropping a card into a column persists the new lead status via AJAX.
  */
 (function () {

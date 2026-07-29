@@ -125,10 +125,10 @@ class WebhookManager
 
         $headers = [
             'Content-Type'    => 'application/json',
-            'X-SignTeb-Event'  => $event,
+            'X-Medora-Event'  => $event,
         ];
         if ($secret !== '') {
-            $headers['X-SignTeb-Signature'] = 'sha256=' . hash_hmac('sha256', (string) $body, $secret);
+            $headers['X-Medora-Signature'] = 'sha256=' . hash_hmac('sha256', (string) $body, $secret);
         }
 
         $response = wp_remote_post($this->url(), [
@@ -162,7 +162,7 @@ class WebhookManager
     {
         return $this->send([
             'event'   => 'test',
-            'message' => 'SignTeb Chat webhook test',
+            'message' => 'Medora AI webhook test',
             'site'    => home_url(),
             'time'    => current_time('mysql'),
         ], 'test');

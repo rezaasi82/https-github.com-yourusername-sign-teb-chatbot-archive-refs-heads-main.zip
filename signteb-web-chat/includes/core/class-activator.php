@@ -65,6 +65,7 @@ class Activator
             // --- Lead capture + communication channels ---
             'lead_capture'       => 1,
             'ch_booking'         => 1,
+            'ch_consult'         => 1,
             'ch_whatsapp'        => 1,
             'ch_call'            => 1,
             'ch_bale'            => 0,
@@ -84,6 +85,7 @@ class Activator
             'address'            => '',
             'emergency_number'   => '115',
             'booking_url'        => '',
+            'consult_url'        => '', // online consultation (video/chat visit)
             'manual_services'    => '', // one "name | price" per line
             'avg_service_price'  => 0,  // Toman — used for the revenue estimate
         ];

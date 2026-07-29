@@ -32,7 +32,7 @@ class PremiumDashboard
     {
         add_submenu_page(
             'swc-chat',
-            __('داشبورد SignTeb Chat', 'signteb-web-chat'),
+            __('داشبورد Medora AI', 'signteb-web-chat'),
             __('داشبورد', 'signteb-web-chat'),
             'manage_options',
             self::PAGE,
@@ -125,7 +125,7 @@ class PremiumDashboard
             $m = [
                 'active_chats' => 0, 'conversations' => 0, 'leads' => 0, 'hot_leads' => 0,
                 'conversion' => 0.0, 'booked' => 0,
-                'clicks' => ['booking' => 0, 'whatsapp' => 0, 'call' => 0, 'bale' => 0],
+                'clicks' => ['booking' => 0, 'consult' => 0, 'whatsapp' => 0, 'call' => 0, 'bale' => 0],
                 'revenue' => 0, 'funnel' => [],
             ];
             try {
@@ -161,7 +161,7 @@ class PremiumDashboard
     private function log_anomaly(string $context, \Throwable $e): void
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log(sprintf('[SignTeb Chat] %s anomaly: %s', $context, $e->getMessage()));
+            error_log(sprintf('[Medora] %s anomaly: %s', $context, $e->getMessage()));
         }
     }
 }

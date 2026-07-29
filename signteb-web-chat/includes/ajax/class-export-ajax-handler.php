@@ -71,7 +71,7 @@ class ExportAjaxHandler
         }
 
         $clinic = (string) (new \SignTeb\WebChat\Core\Settings())->get('clinic_name', get_bloginfo('name'));
-        $text   = sprintf(__('پیام آزمایشی از %s (SignTeb Chat).', 'signteb-web-chat'), $clinic);
+        $text   = sprintf(__('پیام آزمایشی از %s (Medora AI).', 'signteb-web-chat'), $clinic);
         wp_send_json($sms->send($to, $text));
     }
 

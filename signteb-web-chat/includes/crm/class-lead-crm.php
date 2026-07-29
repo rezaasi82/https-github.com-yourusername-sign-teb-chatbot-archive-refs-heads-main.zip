@@ -48,7 +48,7 @@ class LeadCrm
             'cold' => __('سرد', 'signteb-web-chat'),
         ];
         $lines = [
-            __('ارجاع لید از SignTeb Chat', 'signteb-web-chat'),
+            __('ارجاع لید از Medora AI', 'signteb-web-chat'),
             sprintf(__('نام: %s', 'signteb-web-chat'), trim((string) ($c->patient_name ?? '')) ?: '—'),
             sprintf(__('موبایل: %s', 'signteb-web-chat'), trim((string) ($c->patient_phone ?? '')) ?: '—'),
             sprintf(__('امتیاز: %s', 'signteb-web-chat'), $scores[$c->lead_score ?? ''] ?? '—'),

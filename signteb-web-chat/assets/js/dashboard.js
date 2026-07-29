@@ -1,5 +1,5 @@
 /**
- * SignTeb Chat — premium dashboard (vanilla JS, no dependencies).
+ * Medora AI — premium dashboard (vanilla JS, no dependencies).
  * Animates the metric counters and refreshes the integrity badge live.
  */
 (function () {

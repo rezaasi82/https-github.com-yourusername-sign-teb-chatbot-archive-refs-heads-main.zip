@@ -59,7 +59,7 @@ class Plugin
         // Security audit trail (event listeners + admin viewer).
         (new \SignTeb\WebChat\Security\AuditLog())->register();
 
-        // Inline chat via [signteb_chat] — registered on both front-end and
+        // Inline chat via [medora_chat] — registered on both front-end and
         // admin so the shortcode resolves in the block editor preview too.
         (new \SignTeb\WebChat\Frontend\ChatShortcode())->register();
 

@@ -49,6 +49,7 @@ $render_bars = static function (array $series, string $color): void {
 <h2><?php esc_html_e('کلیک کانال‌های ارتباطی', 'signteb-web-chat'); ?></h2>
 <div class="swc-cards">
     <div class="swc-card"><span class="swc-card-num">📅 <?php echo esc_html(number_format_i18n($clicks['booking'])); ?></span><span class="swc-card-label"><?php esc_html_e('رزرو نوبت', 'signteb-web-chat'); ?></span></div>
+    <div class="swc-card"><span class="swc-card-num">🩺 <?php echo esc_html(number_format_i18n($clicks['consult'] ?? 0)); ?></span><span class="swc-card-label"><?php esc_html_e('مشاوره آنلاین', 'signteb-web-chat'); ?></span></div>
     <div class="swc-card"><span class="swc-card-num">💬 <?php echo esc_html(number_format_i18n($clicks['whatsapp'])); ?></span><span class="swc-card-label"><?php esc_html_e('واتساپ', 'signteb-web-chat'); ?></span></div>
     <div class="swc-card"><span class="swc-card-num">📞 <?php echo esc_html(number_format_i18n($clicks['call'])); ?></span><span class="swc-card-label"><?php esc_html_e('تماس', 'signteb-web-chat'); ?></span></div>
     <div class="swc-card"><span class="swc-card-num">🟦 <?php echo esc_html(number_format_i18n($clicks['bale'])); ?></span><span class="swc-card-label"><?php esc_html_e('بله', 'signteb-web-chat'); ?></span></div>

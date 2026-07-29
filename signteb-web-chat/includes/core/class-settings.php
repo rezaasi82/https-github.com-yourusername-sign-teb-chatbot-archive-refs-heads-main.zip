@@ -60,7 +60,7 @@ class Settings
         return (bool) ($this->data['float_enabled'] ?? $this->data['enabled'] ?? 1);
     }
 
-    /** The [signteb_chat] shortcode / block embed. */
+    /** The [medora_chat] shortcode / block embed. */
     public function is_shortcode_enabled(): bool
     {
         return (bool) ($this->data['shortcode_enabled'] ?? $this->data['enabled'] ?? 1);

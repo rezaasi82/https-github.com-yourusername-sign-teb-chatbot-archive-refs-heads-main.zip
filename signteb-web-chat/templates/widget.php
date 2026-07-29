@@ -1,6 +1,6 @@
 <?php
 /**
- * Frontend widget markup. White-label + SignTeb Chat redesign: premium AI icon,
+ * Frontend widget markup. White-label + Medora AI redesign: premium AI icon,
  * lead-capture step, professional booking CTA and communication channels.
  *
  * @var array $config Provided by Widget::render().
@@ -24,12 +24,14 @@ $channels = $config['channels'];
      data-teaser-delay="<?php echo (int) $config['teaser_delay']; ?>"
      data-teaser-sound="<?php echo $config['teaser_sound'] ? '1' : '0'; ?>"
      data-booking-url="<?php echo esc_url($config['booking_url']); ?>"
+     data-consult-url="<?php echo esc_url($config['consult_url']); ?>"
      data-whatsapp="<?php echo esc_attr($config['whatsapp']); ?>"
      data-phone="<?php echo esc_attr($config['phone']); ?>"
      data-bale-url="<?php echo esc_url($config['bale_url']); ?>"
      data-branch="<?php echo esc_attr($config['branch']); ?>"
      data-lead-capture="<?php echo $config['lead_capture'] ? '1' : '0'; ?>"
      data-ch-booking="<?php echo $channels['booking'] ? '1' : '0'; ?>"
+     data-ch-consult="<?php echo $channels['consult'] ? '1' : '0'; ?>"
      data-ch-whatsapp="<?php echo $channels['whatsapp'] ? '1' : '0'; ?>"
      data-ch-call="<?php echo $channels['call'] ? '1' : '0'; ?>"
      data-ch-bale="<?php echo $channels['bale'] ? '1' : '0'; ?>">

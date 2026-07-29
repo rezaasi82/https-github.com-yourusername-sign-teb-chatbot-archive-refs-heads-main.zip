@@ -17,7 +17,7 @@ if (! defined('ABSPATH')) {
 
 class SettingsPage
 {
-    private const TABS = ['provider', 'clinic', 'appearance', 'integrations', 'conversations', 'stats', 'license'];
+    private const TABS = ['provider', 'clinic', 'appearance', 'integrations', 'conversations', 'stats'];
 
     public function current_tab(): string
     {
@@ -40,11 +40,6 @@ class SettingsPage
 
         if ($tab === 'integrations') {
             $this->save_integrations($in);
-            $this->finish($tab);
-        }
-
-        if ($tab === 'license') {
-            (new \SignTeb\WebChat\License\LicenseManager())->activate((string) ($in['license_key'] ?? ''));
             $this->finish($tab);
         }
 
@@ -80,12 +75,14 @@ class SettingsPage
             $update['address']          = sanitize_text_field($in['address'] ?? '');
             $update['emergency_number'] = sanitize_text_field($in['emergency_number'] ?? '115');
             $update['booking_url']      = esc_url_raw($in['booking_url'] ?? '');
+            $update['consult_url']      = esc_url_raw($in['consult_url'] ?? '');
             $update['bale_url']         = esc_url_raw($in['bale_url'] ?? '');
             $update['business_hours']   = sanitize_text_field($in['business_hours'] ?? '');
             $update['manual_services']  = sanitize_textarea_field($in['manual_services'] ?? '');
             $update['avg_service_price'] = max(0, (int) ($in['avg_service_price'] ?? 0));
             $update['lead_capture']     = isset($in['lead_capture']) ? 1 : 0;
             $update['ch_booking']       = isset($in['ch_booking']) ? 1 : 0;
+            $update['ch_consult']       = isset($in['ch_consult']) ? 1 : 0;
             $update['ch_whatsapp']      = isset($in['ch_whatsapp']) ? 1 : 0;
             $update['ch_call']          = isset($in['ch_call']) ? 1 : 0;
             $update['ch_bale']          = isset($in['ch_bale']) ? 1 : 0;
@@ -210,7 +207,6 @@ class SettingsPage
 
         $tab     = $this->current_tab();
         $s       = new \SignTeb\WebChat\Core\Settings();
-        $license = new \SignTeb\WebChat\License\LicenseManager();
 
         echo '<div class="wrap swc-admin" dir="rtl">';
 
@@ -229,7 +225,7 @@ class SettingsPage
         }
 
         \SignTeb\WebChat\Admin\PageHeader::render(
-            __('SignTeb Chat', 'signteb-web-chat'),
+            __('Medora AI', 'signteb-web-chat'),
             __('دستیار هوشمند جذب بیمار', 'signteb-web-chat'),
             [
                 [
@@ -241,16 +237,6 @@ class SettingsPage
                         ? __('کلید API تنظیم شده', 'signteb-web-chat')
                         : __('کلید API تنظیم نشده', 'signteb-web-chat'),
                     'state' => $has_key ? 'on' : 'off',
-                ],
-                [
-                    'label' => $license->is_active()
-                        ? __('لایسنس فعال', 'signteb-web-chat')
-                        : sprintf(
-                            /* translators: %d: remaining free-trial messages. */
-                            __('نسخه آزمایشی — %d پیام باقی‌مانده', 'signteb-web-chat'),
-                            $license->trial_remaining()
-                        ),
-                    'state' => $license->can_send() ? 'on' : 'off',
                 ],
                 ['label' => __('نسخه', 'signteb-web-chat') . ' ' . SWC_VERSION],
             ]
@@ -267,7 +253,7 @@ class SettingsPage
         }
         $this->render_tab_nav($tab);
 
-        if (in_array($tab, ['provider', 'clinic', 'appearance', 'integrations', 'license'], true)) {
+        if (in_array($tab, ['provider', 'clinic', 'appearance', 'integrations'], true)) {
             include SWC_DIR . 'includes/admin/views/settings.php';
         } elseif ($tab === 'conversations') {
             (new \SignTeb\WebChat\Admin\ConversationsPage())->render_inner();
@@ -287,7 +273,6 @@ class SettingsPage
             'integrations'  => __('اتصال‌ها و خروجی', 'signteb-web-chat'),
             'conversations' => __('لیدها و مکالمات', 'signteb-web-chat'),
             'stats'         => __('آمار', 'signteb-web-chat'),
-            'license'       => __('لایسنس', 'signteb-web-chat'),
         ];
         echo '<h2 class="nav-tab-wrapper">';
         foreach ($labels as $slug => $label) {
