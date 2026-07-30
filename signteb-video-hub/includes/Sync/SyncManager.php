@@ -13,6 +13,7 @@ use SignTeb\VideoHub\Core\VideoMeta;
 use SignTeb\VideoHub\Db\AiQueueRepository;
 use SignTeb\VideoHub\Db\SyncLogRepository;
 use SignTeb\VideoHub\Db\VideoRepository;
+use SignTeb\VideoHub\Helpers\Format;
 
 if (! defined('ABSPATH')) {
     exit;
@@ -31,6 +32,7 @@ class SyncManager
     private VideoRepository $videos;
     private SyncLogRepository $log;
     private AiQueueRepository $queue;
+    private ThumbnailImporter $thumbnails;
 
     public function __construct(?Settings $settings = null)
     {
@@ -39,6 +41,7 @@ class SyncManager
         $this->videos   = new VideoRepository();
         $this->log      = new SyncLogRepository();
         $this->queue    = new AiQueueRepository();
+        $this->thumbnails = new ThumbnailImporter($this->settings);
     }
 
     /**
@@ -153,7 +156,7 @@ class SyncManager
             'post_content' => $dto->description,
             'post_excerpt' => wp_trim_words($dto->description, 40, '…'),
             'post_date'    => get_date_from_gmt($dto->published_at),
-            'post_name'    => sanitize_title($dto->title) ?: $dto->source . '-' . $dto->source_id,
+            'post_name'    => Format::slug($dto->title) ?: $dto->source . '-' . $dto->source_id,
         ], true);
 
         if (is_wp_error($post_id)) {
@@ -164,6 +167,9 @@ class SyncManager
         $post_id = (int) $post_id;
         $this->write_meta($post_id, $dto);
         $this->assign_topics($post_id, $dto);
+        // Before the AI queue: the composed body and the OpenGraph image both
+        // want a local attachment to already exist.
+        $this->thumbnails->import($post_id);
         $this->enqueue_ai($post_id);
 
         /**

@@ -44,6 +44,15 @@ function wp_parse_url($url, $component = -1)
     return parse_url($url, $component);
 }
 
+// Mirrors the part of WordPress' sanitize_title() the slug builder relies on.
+function sanitize_title($title)
+{
+    $title = mb_strtolower(trim((string) $title));
+    $title = preg_replace('/\s+/u', '-', $title);
+
+    return trim((string) $title, '-');
+}
+
 require STVH_DIR . 'includes/Core/Autoloader.php';
 \SignTeb\VideoHub\Core\Autoloader::register();
 
@@ -100,6 +109,30 @@ echo "\nAparatClient\n";
 $check('username plain', AparatClient::normalize_username('drhamedzamani'), 'drhamedzamani');
 $check('username with @', AparatClient::normalize_username('@drhamedzamani'), 'drhamedzamani');
 $check('username from url', AparatClient::normalize_username('https://www.aparat.com/drhamedzamani'), 'drhamedzamani');
+
+echo "\nFormat::slug — the real titles that produced unusable slugs\n";
+$check(
+    'drops the Persian question mark and the author suffix',
+    Format::slug('درمان ریفلاکس معده چیست؟ | دکتر محمد طالب‌پور'),
+    'درمان-ریفلاکس-معده-چیست'
+);
+$check(
+    'drops parenthesised qualifiers',
+    Format::slug('جراحی اسلیو معده چیست؟ | دکتر محمدطالب‌پور (فوق تخصص لاپاروسکوپی)'),
+    'جراحی-اسلیو-معده-چیست'
+);
+$check(
+    'strips colons and exclamation marks',
+    Format::slug('فیبرواسکن کبد: هرآنچه باید بدانید!'),
+    'فیبرواسکن-کبد-هرآنچه-باید-بدانید'
+);
+$check(
+    'leaves an already-clean title alone',
+    Format::slug('بهترین فوق تخصص گوارش تهران'),
+    'بهترین-فوق-تخصص-گوارش-تهران'
+);
+$check('trims at a word boundary', Format::slug('یک دو سه چهار پنج شش هفت هشت نه ده', 20), 'یک-دو-سه-چهار-پنج');
+$check('empty title yields empty slug', Format::slug('!!! ???'), '');
 
 echo "\nVideoDto\n";
 $dto = VideoDto::from_array('aparat', [

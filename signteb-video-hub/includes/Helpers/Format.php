@@ -111,6 +111,37 @@ class Format
     }
 
     /**
+     * Build a clean URL slug from a provider title.
+     *
+     * sanitize_title() alone is not enough for Persian titles: it preserves
+     * non-ASCII punctuation, so "…چیست؟ | دکتر" kept the Persian question mark
+     * and the pipe, producing an unusable slug. Punctuation is stripped first,
+     * then the result is trimmed at a word boundary so the URL stays short
+     * enough to read and to share.
+     */
+    public static function slug(string $title, int $max_length = 60): string
+    {
+        // Everything after a separator is usually a channel/author suffix.
+        $title = (string) preg_split('/\s*[|\x{2013}\x{2014}]\s*/u', $title)[0];
+
+        // Drop punctuation from every script, keep letters, digits and spaces.
+        $title = (string) preg_replace('/[^\p{L}\p{N}\s\-]+/u', ' ', $title);
+        $title = trim((string) preg_replace('/\s+/u', ' ', $title));
+
+        if ($title === '') {
+            return '';
+        }
+
+        if (mb_strlen($title) > $max_length) {
+            $clipped = mb_substr($title, 0, $max_length);
+            $boundary = mb_strrpos($clipped, ' ');
+            $title    = $boundary !== false && $boundary > 0 ? mb_substr($clipped, 0, $boundary) : $clipped;
+        }
+
+        return sanitize_title($title);
+    }
+
+    /**
      * Percentage guarded against division by zero (CTR tiles).
      */
     public static function rate(int $numerator, int $denominator, int $precision = 1): float

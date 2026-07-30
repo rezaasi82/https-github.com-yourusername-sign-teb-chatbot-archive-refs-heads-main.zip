@@ -113,7 +113,10 @@ $checkbox = static function (string $key, string $label, array $values, string $
             </tr>
             <tr>
                 <th scope="row"><?php esc_html_e('انتشار', 'signteb-video-hub'); ?></th>
-                <td><?php $checkbox('auto_publish', __('ویدئوهای جدید مستقیماً منتشر شوند', 'signteb-video-hub'), $values, __('در غیر این صورت به‌صورت پیش‌نویس ذخیره می‌شوند.', 'signteb-video-hub')); ?></td>
+                <td>
+                    <?php $checkbox('auto_publish', __('ویدئوهای جدید مستقیماً منتشر شوند', 'signteb-video-hub'), $values, __('در غیر این صورت به‌صورت پیش‌نویس ذخیره می‌شوند.', 'signteb-video-hub')); ?>
+                    <?php $checkbox('import_thumbnails', __('تصویر ویدئو در کتابخانه رسانه ذخیره و به‌عنوان تصویر شاخص ست شود', 'signteb-video-hub'), $values, __('آپارات تصاویر را با بررسی Referer محافظت می‌کند؛ بدون این گزینه تصویر روی سایت شما بارگذاری نمی‌شود.', 'signteb-video-hub')); ?>
+                </td>
             </tr>
         </table>
 
@@ -162,6 +165,7 @@ $checkbox = static function (string $key, string $label, array $values, string $
                     <?php $checkbox('ai_auto_summary', __('خلاصه، نکات مهم و سوالات متداول', 'signteb-video-hub'), $values); ?>
                     <?php $checkbox('ai_auto_links', __('لینک‌سازی داخلی', 'signteb-video-hub'), $values); ?>
                     <?php $checkbox('ai_auto_article', __('پیشنهاد مقاله ۸۰۰ کلمه‌ای', 'signteb-video-hub'), $values, __('مقاله همیشه به صورت پیش‌نویس ذخیره می‌شود.', 'signteb-video-hub')); ?>
+                    <?php $checkbox('ai_write_content', __('خلاصه و سوالات در متن نوشته ذخیره شود', 'signteb-video-hub'), $values, __('لازم است تا افزونه‌های سئو محتوایی برای تحلیل داشته باشند. متنی که خودتان نوشته باشید هرگز بازنویسی نمی‌شود.', 'signteb-video-hub')); ?>
                 </td>
             </tr>
             <tr>

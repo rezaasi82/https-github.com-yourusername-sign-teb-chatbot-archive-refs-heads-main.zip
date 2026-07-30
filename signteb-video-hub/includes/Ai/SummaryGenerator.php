@@ -68,6 +68,10 @@ class SummaryGenerator
             ]);
         }
 
+        // Aparat descriptions are often empty, which left post_content empty
+        // and gave RankMath nothing to analyse. Write the real body.
+        (new ContentComposer())->maybe_write($post_id);
+
         do_action('stvh_ai_summary_generated', $post_id, $parsed);
 
         return ['ok' => true];

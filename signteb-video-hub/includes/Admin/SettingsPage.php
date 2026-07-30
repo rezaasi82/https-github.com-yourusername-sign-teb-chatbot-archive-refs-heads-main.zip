@@ -103,8 +103,8 @@ class SettingsPage
         // phpcs:enable WordPress.Security.NonceVerification.Missing
 
         $checkboxes = [
-            'enabled', 'auto_publish', 'ai_enabled', 'ai_auto_summary', 'ai_auto_links',
-            'ai_auto_article', 'schema_enabled', 'social_meta', 'sitemap_enabled',
+            'enabled', 'auto_publish', 'import_thumbnails', 'ai_enabled', 'ai_auto_summary', 'ai_auto_links',
+            'ai_auto_article', 'ai_write_content', 'schema_enabled', 'social_meta', 'sitemap_enabled',
             'analytics_enabled', 'google_indexing', 'cache_purge', 'hub_enabled',
         ];
 

@@ -14,6 +14,7 @@ use SignTeb\VideoHub\Rest\RestNamespace;
 use SignTeb\VideoHub\Seo\IndexingClient;
 use SignTeb\VideoHub\Seo\IndexingQueue;
 use SignTeb\VideoHub\Seo\VideoSitemap;
+use SignTeb\VideoHub\Sync\Repair;
 use SignTeb\VideoHub\Sync\SyncManager;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -76,6 +77,15 @@ class AdminController
             'permission_callback' => $permission,
             'args'                => [
                 'video_id' => ['type' => 'integer', 'required' => true],
+            ],
+        ]);
+
+        register_rest_route(RestNamespace::NAME, '/repair', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'repair'],
+            'permission_callback' => $permission,
+            'args'                => [
+                'video_id' => ['type' => 'integer', 'default' => 0],
             ],
         ]);
 
@@ -202,6 +212,52 @@ class AdminController
             'ok'      => true,
             'message' => __('پیش‌نویس مقاله ساخته شد.', 'signteb-video-hub'),
             'edit'    => get_edit_post_link((int) $result['post_id'], 'raw'),
+        ], 200);
+    }
+
+    /**
+     * Backfill already-imported videos: clean slugs, local featured images and
+     * a real post body. Runs in batches so a large library cannot time out.
+     */
+    public function repair(WP_REST_Request $request): WP_REST_Response
+    {
+        $repair   = new Repair($this->settings);
+        $video_id = (int) $request->get_param('video_id');
+
+        if ($video_id > 0) {
+            $one = $repair->run_one($video_id);
+            (new CacheManager($this->settings))->purge_post($video_id);
+
+            return new WP_REST_Response([
+                'ok'      => true,
+                'message' => sprintf(
+                    /* translators: 1: slug state, 2: image state, 3: body state */
+                    __('نامک: %1$s — تصویر: %2$s — متن: %3$s', 'signteb-video-hub'),
+                    $one['slug'] ? __('اصلاح شد', 'signteb-video-hub') : __('بدون تغییر', 'signteb-video-hub'),
+                    $one['thumbnail'] ? __('ذخیره شد', 'signteb-video-hub') : __('بدون تغییر', 'signteb-video-hub'),
+                    $one['body'] ? __('نوشته شد', 'signteb-video-hub') : __('بدون تغییر', 'signteb-video-hub')
+                ),
+            ], 200);
+        }
+
+        $result = $repair->run();
+
+        if ($result['processed'] > 0) {
+            (new CacheManager($this->settings))->purge_all();
+        }
+
+        return new WP_REST_Response([
+            'ok'      => true,
+            'message' => sprintf(
+                /* translators: 1: processed, 2: slugs, 3: images, 4: bodies, 5: remaining */
+                __('%1$d ویدئو بررسی شد — %2$d نامک، %3$d تصویر، %4$d متن. %5$d باقی مانده.', 'signteb-video-hub'),
+                $result['processed'],
+                $result['slugs'],
+                $result['thumbnails'],
+                $result['bodies'],
+                $result['remaining']
+            ),
+            'data'    => $result,
         ], 200);
     }
 

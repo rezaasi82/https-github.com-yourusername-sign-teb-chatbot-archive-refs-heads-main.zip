@@ -34,6 +34,9 @@ $format_time = static function (int $timestamp): string {
         <button type="button" class="button" data-stvh-action="ai-queue">
             <?php esc_html_e('پردازش صف هوش مصنوعی', 'signteb-video-hub'); ?>
         </button>
+        <button type="button" class="button" data-stvh-action="repair">
+            <?php esc_html_e('بازسازی ویدئوهای موجود', 'signteb-video-hub'); ?>
+        </button>
         <button type="button" class="button" data-stvh-action="purge-cache">
             <?php esc_html_e('پاک‌سازی کش', 'signteb-video-hub'); ?>
         </button>

@@ -91,7 +91,7 @@
   }
 
   document.addEventListener('click', function (event) {
-    var target = event.target.closest('[data-stvh-action], [data-stvh-test], [data-stvh-generate], [data-stvh-publish-article], [data-stvh-index-ping]');
+    var target = event.target.closest('[data-stvh-action], [data-stvh-test], [data-stvh-generate], [data-stvh-publish-article], [data-stvh-index-ping], [data-stvh-repair]');
     if (!target) {
       return;
     }
@@ -103,6 +103,7 @@
         sync: 'sync',
         'ai-queue': 'ai/queue',
         'purge-cache': 'cache/purge',
+        repair: 'repair',
         'index-ping': 'indexing/ping'
       };
       var route = routes[target.dataset.stvhAction];
@@ -132,6 +133,11 @@
 
     if (target.hasAttribute('data-stvh-index-ping')) {
       run(target, 'indexing/ping', { video_id: videoIdFor(target) });
+      return;
+    }
+
+    if (target.hasAttribute('data-stvh-repair')) {
+      run(target, 'repair', { video_id: videoIdFor(target) });
     }
   });
 

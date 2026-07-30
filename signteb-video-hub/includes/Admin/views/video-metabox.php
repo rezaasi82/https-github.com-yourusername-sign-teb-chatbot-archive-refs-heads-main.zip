@@ -17,7 +17,7 @@ $post_id = (int) $data['post_id'];
 
     <div class="stvh-metabox__row">
         <?php if ($data['thumbnail'] !== '') : ?>
-            <img class="stvh-metabox__thumb" src="<?php echo esc_url((string) $data['thumbnail']); ?>" alt="" width="200" height="113">
+            <img class="stvh-metabox__thumb" src="<?php echo esc_url((string) $data['thumbnail']); ?>" alt="" referrerpolicy="no-referrer" width="200" height="113">
         <?php endif; ?>
 
         <table class="stvh-metabox__table">
@@ -68,6 +68,7 @@ $post_id = (int) $data['post_id'];
             <button type="button" class="button button-secondary" data-stvh-publish-article><?php esc_html_e('ساخت پیش‌نویس مقاله', 'signteb-video-hub'); ?></button>
         <?php endif; ?>
 
+        <button type="button" class="button" data-stvh-repair><?php esc_html_e('بازسازی نامک، تصویر و متن', 'signteb-video-hub'); ?></button>
         <button type="button" class="button" data-stvh-index-ping><?php esc_html_e('ارسال به ایندکس گوگل', 'signteb-video-hub'); ?></button>
 
         <span class="stvh-feedback" data-stvh-feedback role="status" aria-live="polite"></span>

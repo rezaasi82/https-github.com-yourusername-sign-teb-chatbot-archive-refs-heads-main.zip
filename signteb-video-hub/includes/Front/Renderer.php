@@ -2,6 +2,7 @@
 
 namespace SignTeb\VideoHub\Front;
 
+use SignTeb\VideoHub\Ai\ContentComposer;
 use SignTeb\VideoHub\Core\PostType;
 use SignTeb\VideoHub\Core\Settings;
 use SignTeb\VideoHub\Core\VideoMeta;
@@ -285,9 +286,14 @@ class Renderer
      */
     public function ai_block(int $post_id): string
     {
-        $summary   = VideoMeta::summary($post_id);
-        $keypoints = VideoMeta::keypoints($post_id);
-        $faq       = VideoMeta::faq($post_id);
+        // When the composer wrote these into post_content, the theme already
+        // renders them — repeating them here would duplicate the whole body
+        // and the FAQ answers.
+        $in_content = ContentComposer::owns_content($post_id);
+
+        $summary   = $in_content ? '' : VideoMeta::summary($post_id);
+        $keypoints = $in_content ? [] : VideoMeta::keypoints($post_id);
+        $faq       = $in_content ? [] : VideoMeta::faq($post_id);
         $links     = VideoMeta::links($post_id);
 
         if ($summary === '' && $keypoints === [] && $faq === [] && $links === []) {
