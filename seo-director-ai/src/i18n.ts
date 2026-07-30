@@ -294,6 +294,7 @@ const FA: Record<string, string> = {
   'Gastroenterology & hepatology (گوارش و کبد)': 'گوارش و کبد',
   'General & bariatric surgery (جراحی عمومی و چاقی)': 'جراحی عمومی و چاقی',
   'Hand, shoulder & elbow surgery (دست، شانه و آرنج)': 'جراحی دست، شانه و آرنج',
+  'Dermatology, hair & cosmetic (پوست، مو و زیبایی)': 'پوست، مو و زیبایی',
   'Medical web design, branding & SEO (ساین‌طب)': 'طراحی سایت، برندینگ و سئوی پزشکی (ساین‌طب)',
 };
 

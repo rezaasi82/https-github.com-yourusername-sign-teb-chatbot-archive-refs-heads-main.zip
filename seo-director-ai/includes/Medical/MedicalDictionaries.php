@@ -21,6 +21,7 @@ final class MedicalDictionaries {
 		'gastro_hepatology'   => 'گوارش و کبد',
 		'general_surgery'     => 'جراحی عمومی و چاقی',
 		'hand_shoulder_elbow' => 'جراحی دست، شانه و آرنج',
+		'dermatology_cosmetic' => 'پوست، مو و زیبایی',
 		'medical_marketing'   => 'طراحی و سئوی سایت پزشکی',
 	];
 
@@ -189,6 +190,48 @@ final class MedicalDictionaries {
 	}
 
 	/**
+	 * Dermatology, hair & cosmetic/aesthetic medicine — skin conditions plus
+	 * the aesthetic procedures that dominate this competitive niche. Common
+	 * Persian + transliterated brand/procedure names are both indexed
+	 * (بوتاکس/بوتولینوم، فیلر/ژل، لیزر موهای زائد).
+	 *
+	 * @return array<string, string[]>
+	 */
+	public static function dermatology_cosmetic(): array {
+		return [
+			'disease'   => [
+				'آکنه', 'جوش صورت', 'جوش', 'اسکار', 'جای جوش', 'اسکار آکنه', 'ملاسما', 'لک صورت',
+				'لک پوستی', 'کک و مک', 'ویتیلیگو', 'پیسی', 'اگزما', 'درماتیت', 'پسوریازیس', 'صدف',
+				'کهیر', 'زگیل', 'خال', 'زگیل تناسلی', 'قارچ پوست', 'قارچ ناخن', 'ریزش مو', 'طاسی',
+				'آلوپسی', 'شوره سر', 'روزاسه', 'ترک پوست', 'استرچ مارک', 'سلولیت', 'چین و چروک',
+				'افتادگی پوست', 'منافذ باز', 'تعریق بیش از حد', 'هایپرهیدروزیس', 'سرطان پوست', 'ملانوما',
+			],
+			'symptom'   => [
+				'خارش', 'قرمزی پوست', 'خشکی پوست', 'پوسته‌ریزی', 'التهاب پوست', 'تیرگی پوست',
+				'تیرگی دور چشم', 'چربی پوست', 'حساسیت پوستی', 'قرمزی صورت',
+			],
+			'treatment' => [
+				'بوتاکس', 'تزریق بوتاکس', 'بوتولینوم', 'فیلر', 'تزریق فیلر', 'ژل', 'تزریق ژل',
+				'مزوتراپی', 'میکرونیدلینگ', 'میکرونیدل', 'پی‌آر‌پی', 'PRP', 'پلاسما',
+				'لیزر', 'لیزر موهای زائد', 'لیزر موی زائد', 'لیزر فرکشنال', 'لیزر co2', 'الکساندرایت',
+				'هایفو', 'HIFU', 'آر‌اف', 'RF', 'رادیوفرکانسی', 'کرایوتراپی', 'میکرودرم', 'میکرودرم ابریژن',
+				'پیلینگ', 'لایه‌برداری', 'هیدرافیشیال', 'کاشت مو', 'کاشت ابرو', 'کاشت ریش',
+				'مزوژل', 'لیفت صورت', 'لیفت با نخ', 'نخ', 'تزریق چربی', 'لیپوماتیک', 'لیپوساکشن',
+				'ابدومینوپلاستی', 'بلفاروپلاستی', 'جراحی پلک', 'رینوپلاستی', 'جراحی بینی', 'پروتز',
+				'اسکلروتراپی', 'تاتو', 'پاکسازی پوست', 'کربوکسی تراپی',
+			],
+			'specialty' => [
+				'متخصص پوست', 'متخصص پوست و مو', 'متخصص پوست و زیبایی', 'درماتولوژیست',
+				'جراح پلاستیک', 'جراح زیبایی', 'فوق تخصص پوست', 'پزشک زیبایی',
+			],
+			'body_part' => [
+				'پوست', 'صورت', 'مو', 'ابرو', 'مژه', 'ناخن', 'پلک', 'لب', 'گونه', 'چانه',
+				'بینی', 'دور چشم', 'پیشانی', 'گردن', 'موی سر', 'پوست سر',
+			],
+		];
+	}
+
+	/**
 	 * Medical marketing / agency preset (SignTeb's own niche): medical website
 	 * design, medical branding, and medical SEO. Its categories describe an
 	 * agency's services and vocabulary rather than clinical concepts, so it
@@ -239,6 +282,7 @@ final class MedicalDictionaries {
 			'gastro_hepatology'   => self::merge( $base, self::gastro_hepatology() ),
 			'general_surgery'     => self::merge( $base, self::general_surgery() ),
 			'hand_shoulder_elbow' => self::merge( $base, self::hand_shoulder_elbow() ),
+			'dermatology_cosmetic' => self::merge( $base, self::dermatology_cosmetic() ),
 			// Agency preset is its own vocabulary; keep it standalone (no
 			// clinical base) so "درد"/"جراحی" don't pollute service detection.
 			'medical_marketing' => self::medical_marketing(),

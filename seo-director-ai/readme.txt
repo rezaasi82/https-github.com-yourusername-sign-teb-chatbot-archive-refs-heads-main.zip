@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.4
+Stable tag: 0.12.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.5 =
+* Medical Pack: added a "Dermatology, hair & cosmetic (پوست، مو و زیبایی)" dictionary preset — one of the most competitive Persian niches. Covers skin conditions (آکنه، ملاسما، ویتیلیگو، پسوریازیس، ریزش مو، روزاسه…) and the full aesthetic-procedure set (بوتاکس، فیلر، مزوتراپی، لیزر موهای زائد، هایفو، میکرونیدلینگ، کاشت مو، لیفت با نخ، رینوپلاستی، لیپوماتیک، پیلینگ، هیدرافیشیال…). Common Persian + transliterated names indexed. Merged onto the general base.
 
 = 0.12.4 =
 * Medical Pack: added a "Hand, shoulder & elbow surgery (جراحی دست، شانه و آرنج)" dictionary preset for upper-limb / hand-surgery fellows — carpal tunnel (تونل کارپال), rotator-cuff tears (پارگی روتاتور کاف), tennis/golf elbow (تنیس البو/گلف البو), frozen shoulder (شانه یخ‌زده), trigger finger, ganglion, De Quervain, plus procedures (آرتروسکوپی، ترمیم تاندون، آزادسازی تونل کارپال، تزریق PRP) and upper-limb anatomy. Merged onto the general base.

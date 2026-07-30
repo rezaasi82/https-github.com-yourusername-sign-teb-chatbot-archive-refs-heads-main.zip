@@ -808,6 +808,7 @@ function MedicalCard() {
             <option value="gastro_hepatology">{t('Gastroenterology & hepatology (گوارش و کبد)')}</option>
             <option value="general_surgery">{t('General & bariatric surgery (جراحی عمومی و چاقی)')}</option>
             <option value="hand_shoulder_elbow">{t('Hand, shoulder & elbow surgery (دست، شانه و آرنج)')}</option>
+            <option value="dermatology_cosmetic">{t('Dermatology, hair & cosmetic (پوست، مو و زیبایی)')}</option>
             <option value="medical_marketing">{t('Medical web design, branding & SEO (ساین‌طب)')}</option>
           </select>
         </label>
