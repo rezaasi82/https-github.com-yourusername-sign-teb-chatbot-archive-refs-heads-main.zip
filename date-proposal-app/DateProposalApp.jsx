@@ -159,6 +159,8 @@ const TEMPLATES = {
     hearts: ["💖", "💗", "💞", "🩷", "❤️", "💘"],
     moods: { idle: "🥺", shy: "🙈", love: "🥰", sly: "😈", think: "🤔", glad: "😍", pickA: "😋", pickB: "🤩", done: "🥳" },
     lines: { idle: "خب؟ چی میگی؟ 👀", shy: "اوففف خجالت کشیدم", love: "ایوللل همینه 🔥", sly: "گفتم که فقط «آره» تو مرامه", think: "خب کِی بیکاری؟", glad: "اوکی ترکوندی، بریم بعدی", pickA: "از الان ضعف کردم...", pickB: "سلیقت خفنه به خدا", done: "قرارمون سِت شد رسماً" },
+    subject: { label: "به مناسبتِ (اختیاری)", placeholder: "مثلاً سالگرد آشناییمون", prefix: "", row: "✨ مناسبت" },
+    toLabel: "اسم مخاطب", fromLabel: "اسم خودت",
     q: "پایه‌ای بریم سر قرار؟",
     sub: "یه سوال ساده‌ست فقط 🙂 ولی خب سیستم گزینه «نه» رو ساپورت نمیکنه 😜",
     yes: "آره دیگه 💖", no: "نچ ❌",
@@ -184,6 +186,8 @@ const TEMPLATES = {
     hearts: ["✨", "🎉", "🤙", "😎", "💫"],
     moods: { idle: "😃", shy: "😅", love: "😎", sly: "😏", think: "🤔", glad: "🤩", pickA: "😋", pickB: "🔥", done: "🥳" },
     lines: { idle: "خب؟ پایه‌ای؟", shy: "نگو نه دیگه 😅", love: "ایول رفیق 😎", sly: "این دکمه کار نمیده داداش", think: "کِی وقتت آزاده؟", glad: "اوکی، بریم بعدی", pickA: "خوبه خوبه", pickB: "چه انتخابی 🔥", done: "قرار گذاشتیم!" },
+    subject: { label: "به مناسبتِ (اختیاری)", placeholder: "مثلاً دورهمی بعد از مدت‌ها", prefix: "", row: "✨ مناسبت" },
+    toLabel: "اسم مخاطب", fromLabel: "اسم خودت",
     q: "بزنیم بیرون؟",
     sub: "خیلی وقته ندیدمت... یه دوری بزنیم؟",
     yes: "پایه‌ام 🤙", no: "نچ ❌",
@@ -209,6 +213,8 @@ const TEMPLATES = {
     hearts: ["🎈", "🎊", "🎁", "🥳", "✨", "🎂"],
     moods: { idle: "🎂", shy: "🙈", love: "🥳", sly: "😜", think: "🎈", glad: "🤩", pickA: "🎁", pickB: "🎉", done: "🥳" },
     lines: { idle: "میای دیگه؟ 🎈", shy: "بیا دیگه 🙈", love: "ایوللل 🥳", sly: "نه نداریم تو تولد!", think: "چی میاری؟", glad: "عالی شد", pickA: "دمت گرم 🎁", pickB: "چه انتخابی 🎉", done: "می‌بینمت!" },
+    subject: { label: "نام و نام خانوادگی صاحب تولد", placeholder: "مثلاً سارا محمدی", prefix: "تولدِ", row: "🎂 صاحب تولد" },
+    toLabel: "نام مخاطب", fromLabel: "نام و نام خانوادگی شما",
     q: "تولدمه، میای؟",
     sub: "بدون تو که نمی‌چسبه 🎈",
     yes: "حتماً میام 🎉", no: "نچ ❌",
@@ -233,6 +239,8 @@ const TEMPLATES = {
     hearts: ["🍉", "☕", "✨", "🎶"],
     moods: { idle: "😊", shy: "😅", love: "🤗", sly: "😏", think: "🤔", glad: "😍", pickA: "😋", pickB: "🤩", done: "🥳" },
     lines: { idle: "هستی دیگه؟", shy: "بیا دیگه 😅", love: "ایول 🤗", sly: "نه که نداریم!", think: "چی میاری؟", glad: "عالی", pickA: "دمت گرم", pickB: "چه انتخابی", done: "منتظرتم!" },
+    subject: { label: "به مناسبتِ (اختیاری)", placeholder: "مثلاً دورهمی ماهانه", prefix: "", row: "✨ مناسبت" },
+    toLabel: "نام مخاطب", fromLabel: "نام و نام خانوادگی شما",
     q: "دورهمی داریم، هستی؟",
     sub: "یه جمع کوچیک و صمیمی",
     yes: "هستم 🙌", no: "نچ ❌",
@@ -257,6 +265,8 @@ const TEMPLATES = {
     hearts: ["💍", "💐", "✨", "🤍"],
     moods: { idle: "💍", shy: "🤍", love: "🥰", sly: "🙂", think: "💐", glad: "😊", pickA: "🌸", pickB: "✨", done: "🎊" },
     lines: { idle: "خوشحال می‌شیم کنارمون باشی", shy: "", love: "چه عالی 🥰", sly: "", think: "", glad: "ممنون از شما", pickA: "", pickB: "", done: "منتظر حضورتون هستیم" },
+    subject: { label: "نام و نام خانوادگی عروس و داماد", placeholder: "مثلاً سارا محمدی و رضا احمدی", prefix: "مراسم عروسیِ", row: "💍 عروس و داماد" },
+    toLabel: "نام و نام خانوادگی مهمان", fromLabel: "نام خانواده / میزبان",
     q: "به عروسیمون دعوتید 💍",
     sub: "خوشحال می‌شیم در این روز خاص کنارمون باشید",
     yes: "حتماً میام 💐", no: "متأسفانه نمی‌تونم",
@@ -277,6 +287,8 @@ const TEMPLATES = {
     hearts: ["💐", "🤍", "✨"],
     moods: { idle: "💐", shy: "🤍", love: "🥰", sly: "🙂", think: "🌸", glad: "😊", pickA: "🌸", pickB: "✨", done: "🎊" },
     lines: { idle: "مشتاق دیدارتون هستیم", shy: "", love: "چه خوب 🥰", sly: "", think: "", glad: "سپاسگزاریم", pickA: "", pickB: "", done: "منتظرتون هستیم" },
+    subject: { label: "نام و نام خانوادگی عروس و داماد", placeholder: "مثلاً سارا محمدی و رضا احمدی", prefix: "جشن عقدِ", row: "💐 عروس و داماد" },
+    toLabel: "نام و نام خانوادگی مهمان", fromLabel: "نام خانواده / میزبان",
     q: "به جشن عقدمون دعوتید 💐",
     sub: "حضور گرمتون به مراسم ما رونق می‌ده",
     yes: "حتماً میام 🌸", no: "متأسفانه نمی‌تونم",
@@ -297,6 +309,8 @@ const TEMPLATES = {
     hearts: ["🥂", "💖", "✨", "🌹"],
     moods: { idle: "🥂", shy: "🙈", love: "🥰", sly: "🙂", think: "🌹", glad: "😍", pickA: "🍽️", pickB: "✨", done: "🎉" },
     lines: { idle: "یه شب خاص در پیشه", shy: "", love: "عالیه 🥰", sly: "", think: "", glad: "چه خوب", pickA: "", pickB: "", done: "می‌بینمت 🥂" },
+    subject: { label: "نام و نام خانوادگی زوج", placeholder: "مثلاً سارا و رضا", prefix: "سالگردِ", row: "🥂 به نامِ" },
+    toLabel: "نام مخاطب", fromLabel: "نام و نام خانوادگی شما",
     q: "سالگردمونه، جشن بگیریم؟",
     sub: "یه شب فقط برای خودمون 🥂",
     yes: "حتماً 🥂", no: "این بار نمی‌تونم",
@@ -322,6 +336,8 @@ const TEMPLATES = {
     hearts: null,
     moods: { idle: "🙂", shy: "🙂", love: "👍", sly: "🙂", think: "📅", glad: "✅", pickA: "📌", pickB: "✅", done: "🤝" },
     lines: { idle: "در خدمتم", shy: "", love: "عالی", sly: "", think: "چه زمانی مناسبه؟", glad: "ثبت شد", pickA: "", pickB: "", done: "هماهنگ شد" },
+    subject: { label: "موضوع یا نام شرکت", placeholder: "مثلاً همکاری با شرکت نمونه", prefix: "", row: "💼 موضوع" },
+    toLabel: "نام و نام خانوادگی مخاطب", fromLabel: "نام و نام خانوادگی شما",
     q: "یه قرار کاری بذاریم؟",
     sub: "زمان مناسب خودتون رو انتخاب کنید",
     yes: "بله، هماهنگ کنیم ✅", no: "الان نه",
@@ -348,6 +364,8 @@ const TEMPLATES = {
     hearts: null,
     moods: { idle: "📋", shy: "🙂", love: "👍", sly: "🙂", think: "📅", glad: "✅", pickA: "📌", pickB: "✅", done: "🤝" },
     lines: { idle: "حضورتون رو اعلام کنید", shy: "", love: "ثبت شد", sly: "", think: "", glad: "ثبت شد", pickA: "", pickB: "", done: "حضور شما ثبت شد" },
+    subject: { label: "موضوع جلسه", placeholder: "مثلاً بررسی نقشه راه محصول", prefix: "جلسهٔ", row: "📋 موضوع" },
+    toLabel: "نام و نام خانوادگی دعوت‌شده", fromLabel: "نام برگزارکننده / واحد",
     q: "دعوت به جلسه",
     sub: "لطفاً حضور یا عدم حضورتون رو اعلام کنید",
     yes: "حضور دارم ✅", no: "نمی‌تونم شرکت کنم",
@@ -371,6 +389,8 @@ const TEMPLATES = {
     hearts: null,
     moods: { idle: "🕊️", shy: "🕊️", love: "🤍", sly: "🕊️", think: "🕊️", glad: "🤍", pickA: "🤍", pickB: "🤍", done: "🤍" },
     lines: { idle: "", shy: "", love: "", sly: "", think: "", glad: "", pickA: "", pickB: "", done: "" },
+    subject: { label: "نام و نام خانوادگی متوفی", placeholder: "مثلاً شادروان محمود محمدی", prefix: "مراسم ختمِ", row: "🕊️ مرحوم/مرحومه" },
+    toLabel: "نام و نام خانوادگی مدعو", fromLabel: "نام خانواده",
     q: "مراسم یادبود",
     sub: "با نهایت تأسف، از شما دعوت می‌شود در مراسم یادبود شرکت بفرمایید.",
     yes: "حضور خواهم داشت 🤍", no: "متأسفانه نمی‌توانم",
@@ -429,7 +449,7 @@ const parseCoords = (s) => {
 };
 
 const EMPTY_CFG = {
-  tpl: "eshghi", to: "", from: "", question: "", note: "",
+  tpl: "eshghi", to: "", from: "", subject: "", question: "", note: "",
   telegram: "", whatsapp: "",
   palette: "", accent: "",
   locName: "", lat: "", lng: "",
@@ -442,6 +462,7 @@ const encodeConfig = (c) => {
   if (c.tpl && c.tpl !== "eshghi") p.k = c.tpl;
   if (c.to) p.t = clip(c.to, 60);
   if (c.from) p.f = clip(c.from, 60);
+  if (c.subject) p.s = clip(c.subject, 90);
   if (c.question) p.q = clip(c.question, 140);
   if (c.note) p.n = clip(c.note, 300);
   if (c.telegram) p.g = cleanHandle(c.telegram);
@@ -467,6 +488,7 @@ const decodeConfig = (raw) => {
       tpl,
       to: clip(o.t, 60),
       from: clip(o.f, 60),
+      subject: clip(o.s, 90),
       question: clip(o.q, 140),
       note: clip(o.n, 300),
       telegram: cleanHandle(o.g),
@@ -1333,8 +1355,16 @@ function CreatorScreen({ draft, setDraft, onPreview }) {
 
           {/* ── متن‌ها ── */}
           <div className="flex flex-col gap-3">
-            <Field label="اسم مخاطب" value={draft.to} onChange={set("to")} placeholder="مثلاً سارا" maxLength={60} />
-            <Field label="اسم خودت" value={draft.from} onChange={set("from")} placeholder="مثلاً رضا" maxLength={60} />
+            <Field
+              label={tpl.subject.label}
+              value={draft.subject}
+              onChange={set("subject")}
+              placeholder={tpl.subject.placeholder}
+              maxLength={90}
+              hint={tpl.subject.prefix ? `عنوان کارت می‌شود: «${tpl.subject.prefix} ${draft.subject || "…"}»` : ""}
+            />
+            <Field label={tpl.toLabel} value={draft.to} onChange={set("to")} placeholder="مثلاً سارا محمدی" maxLength={60} />
+            <Field label={tpl.fromLabel} value={draft.from} onChange={set("from")} placeholder="مثلاً رضا احمدی" maxLength={60} />
             <Field
               label="سوال / عنوان (اختیاری)"
               value={draft.question}
@@ -1555,6 +1585,7 @@ function ProposalFlow({ cfg, onEdit }) {
       "",
       `📅 ${tpl.whenLabel.replace(/^\S+\s/, "")}: ${dateLabel} — ${timeLabel}`,
     ];
+    if (cfg.subject) lines.splice(2, 0, `${tpl.subject.row}: ${cfg.subject}`);
     if (tpl.options) {
       const menu = pickLabels.length ? pickLabels.map((o) => `${o.emoji} ${o.label}`).join("، ") : "—";
       lines.push(`${tpl.optLabel}: ${menu}`);
@@ -1623,9 +1654,12 @@ function ProposalFlow({ cfg, onEdit }) {
      است؛ خطاب باید سطر جدا باشد: «سارا عزیز،» بعد «مراسم یادبود». */
   const greeting = current === "invite" && !tpl.playful && cfg.to ? `${cfg.to} عزیز،` : "";
 
+  /* اولویت عنوان: متن دستی کاربر ← عنوان ساخته‌شده از موضوع ← متن پیش‌فرض قالب */
+  const subjectTitle = cfg.subject && tpl.subject.prefix ? `${tpl.subject.prefix} ${cfg.subject}` : "";
+
   const title =
     current === "invite"
-      ? cfg.question || (tpl.playful && cfg.to ? `${cfg.to}، ${tpl.q}` : tpl.q)
+      ? cfg.question || subjectTitle || (tpl.playful && cfg.to ? `${cfg.to}، ${tpl.q}` : tpl.q)
       : current === "when" ? tpl.whenTitle
       : current === "options" ? tpl.optTitle
       : cfg.to && tpl.playful ? `${tpl.doneTitle.replace(/!$/, "")}، ${cfg.to}!` : tpl.doneTitle;
@@ -1911,6 +1945,12 @@ function ProposalFlow({ cfg, onEdit }) {
                   </div>
 
                   <dl className="space-y-2.5 pt-3 text-[12.5px]">
+                    {cfg.subject && (
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="shrink-0" style={{ color: "var(--muted)", opacity: 0.75 }}>{tpl.subject.row}</dt>
+                        <dd className="text-left font-extrabold" style={{ color: "var(--ink)" }}>{cfg.subject}</dd>
+                      </div>
+                    )}
                     <div className="flex items-start justify-between gap-3">
                       <dt className="shrink-0" style={{ color: "var(--muted)", opacity: 0.75 }}>{tpl.whenLabel}</dt>
                       <dd className="text-left font-extrabold" style={{ color: "var(--ink)" }}>
