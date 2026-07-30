@@ -1,8 +1,14 @@
 {
     "name": "signteb/signteb-web-chat",
-    "description": "SignTeb AI Web Chat — standalone, white-label intelligent medical chat widget for any WordPress site.",
+    "description": "Medora AI — standalone, white-label intelligent medical chat widget for any WordPress site.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "رضا آسیابی",
+            "homepage": "https://signteb.com"
+        }
+    ],
     "require": {
         "php": ">=8.0"
     },

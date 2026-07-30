@@ -15,7 +15,6 @@ msgstr ""
 "X-Domain: signteb-web-chat\n"
 
 #. Plugin Name of the plugin
-#. Author of the plugin
 #: signteb-web-chat.php
 #: includes/admin/class-admin-menu.php:36
 #: includes/admin/class-admin-menu.php:44
@@ -23,9 +22,14 @@ msgstr ""
 msgid "Medora AI"
 msgstr ""
 
+#. Author of the plugin
+#: signteb-web-chat.php
+msgid "رضا آسیابی"
+msgstr ""
+
 #. Description of the plugin
 #: signteb-web-chat.php
-msgid "Medora AI — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی."
+msgid "ویجت چت هوشمند پزشکی مستقل و سفید‌برچسب (white-label) که مستقیماً روی وب‌سایت اجرا می‌شود — جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو، بورد CRM، پیامک و خروجی. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی."
 msgstr ""
 
 #: includes/admin/class-admin-menu.php:67
