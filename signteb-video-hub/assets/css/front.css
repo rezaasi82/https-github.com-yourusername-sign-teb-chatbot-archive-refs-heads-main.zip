@@ -271,8 +271,11 @@
   background: linear-gradient(135deg, color-mix(in srgb, var(--stvh-accent) 22%, transparent), transparent);
 }
 
-.stvh-card__thumb[data-stvh-broken],
-.stvh-player__facade img[data-stvh-broken] {
+/* Must outrank the hardened `.stvh-player .stvh-player__facade img` rule
+   below, which sets display:block — otherwise a failed poster reappears as a
+   broken-image glyph. */
+.stvh-scope .stvh-card__thumb[data-stvh-broken],
+.stvh-player .stvh-player__facade img[data-stvh-broken] {
   display: none;
 }
 
@@ -423,29 +426,51 @@
   width: 100%;
 }
 
-.stvh-player__facade {
+/* Themes style `button` aggressively, and a rule like `.entry-content button`
+   outranks a single class — which shrank the facade to its content width and
+   parked it at the inline start, so the poster filled only a narrow strip.
+   Two defences: absolute positioning against .stvh-player, so width and
+   display rules cannot change the box at all, and a double-class selector
+   that outranks the typical theme rule. */
+.stvh-player .stvh-player__facade {
+  -webkit-appearance: none;
+  appearance: none;
   background: none;
   border: 0;
+  border-radius: 0;
+  box-shadow: none;
   cursor: pointer;
   display: block;
+  font: inherit;
   height: 100%;
+  inset: 0;
+  margin: 0;
+  max-width: none;
+  min-height: 0;
+  min-width: 0;
+  outline-offset: -2px;
   padding: 0;
-  position: relative;
+  position: absolute;
   width: 100%;
 }
 
 /* The poster comes from a third-party CDN and can fail (hotlink rules, an
    expired URL). It must never resize the player when it does, so the image is
    pinned to the box and the gradient underneath becomes the fallback. */
-.stvh-player__facade img {
+.stvh-player .stvh-player__facade img {
+  border-radius: 0;
+  display: block;
   height: 100%;
   inset: 0;
+  margin: 0;
+  max-width: none;
   object-fit: cover;
+  padding: 0;
   position: absolute;
   width: 100%;
 }
 
-.stvh-player__facade {
+.stvh-player .stvh-player__facade {
   background: linear-gradient(135deg, color-mix(in srgb, var(--stvh-accent) 30%, #000), #000);
 }
 
