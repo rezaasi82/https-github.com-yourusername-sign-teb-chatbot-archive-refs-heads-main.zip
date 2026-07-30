@@ -184,7 +184,7 @@ class Renderer
     {
         $title     = (string) get_the_title($post_id);
         $permalink = (string) get_permalink($post_id);
-        $thumbnail = VideoMeta::thumbnail($post_id);
+        $thumbnail = VideoMeta::poster($post_id);
         $duration  = VideoMeta::duration_human($post_id);
         $summary   = VideoMeta::summary($post_id);
         $excerpt   = $summary !== '' ? $summary : (string) get_the_excerpt($post_id);
@@ -254,7 +254,7 @@ class Renderer
         Assets::force();
 
         $title     = (string) get_the_title($post_id);
-        $thumbnail = VideoMeta::thumbnail($post_id);
+        $thumbnail = VideoMeta::poster($post_id);
 
         ob_start();
         ?>

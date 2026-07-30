@@ -228,8 +228,15 @@ class AdminController
             $one = $repair->run_one($video_id);
             (new CacheManager($this->settings))->purge_post($video_id);
 
+            $changed = $one['slug'] || $one['thumbnail'] || $one['body'];
+
             return new WP_REST_Response([
-                'ok'      => true,
+                'ok' => true,
+                // The editor still holds the pre-repair title, slug and body.
+                // Without a reload the admin sees no change, and saving the
+                // stale form would write the old values straight back over the
+                // repair. Reloading is part of the fix, not a nicety.
+                'reload'  => $changed,
                 'message' => sprintf(
                     /* translators: 1: slug state, 2: image state, 3: body state */
                     __('نامک: %1$s — تصویر: %2$s — متن: %3$s', 'signteb-video-hub'),

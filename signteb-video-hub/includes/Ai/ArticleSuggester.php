@@ -117,6 +117,8 @@ class ArticleSuggester
             'خلاصه: ' . mb_substr($context, 0, 1500),
             $keypoints !== [] ? 'نکات کلیدی: ' . implode(' | ', $keypoints) : '',
             '',
+            FocusKeyword::heading_instruction($post_id),
+            '',
             'یک مقاله وبلاگی حدود ۸۰۰ کلمه بر اساس همین ویدئو بنویس.',
             'ساختار مورد نیاز:',
             '- یک پاراگراف مقدمه بدون تیتر',

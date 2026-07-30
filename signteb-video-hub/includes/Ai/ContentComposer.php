@@ -108,6 +108,11 @@ class ContentComposer
             return '';
         }
 
+        // Generic headings ("نکات مهم این ویدئو") carry no keyword, which is
+        // one of the checks an SEO plugin runs against the body. Weave the
+        // focus keyword in when there is one.
+        $keyword = FocusKeyword::for_post($post_id);
+
         $parts = [];
 
         if ($summary !== '') {
@@ -115,7 +120,12 @@ class ContentComposer
         }
 
         if ($keypoints !== []) {
-            $parts[] = '<h2>' . esc_html__('نکات مهم این ویدئو', 'signteb-video-hub') . '</h2>';
+            $parts[] = '<h2>' . esc_html(
+                $keyword !== ''
+                    /* translators: %s: focus keyword */
+                    ? sprintf(__('نکات مهم درباره %s', 'signteb-video-hub'), $keyword)
+                    : __('نکات مهم این ویدئو', 'signteb-video-hub')
+            ) . '</h2>';
             $items   = '';
             foreach ($keypoints as $point) {
                 $items .= '<li>' . esc_html($point) . '</li>';
@@ -124,7 +134,12 @@ class ContentComposer
         }
 
         if ($faq !== []) {
-            $parts[] = '<h2>' . esc_html__('سوالات متداول', 'signteb-video-hub') . '</h2>';
+            $parts[] = '<h2>' . esc_html(
+                $keyword !== ''
+                    /* translators: %s: focus keyword */
+                    ? sprintf(__('سوالات متداول درباره %s', 'signteb-video-hub'), $keyword)
+                    : __('سوالات متداول', 'signteb-video-hub')
+            ) . '</h2>';
             foreach ($faq as $item) {
                 $parts[] = '<h3>' . esc_html($item['q']) . '</h3>';
                 $parts[] = '<p>' . esc_html($item['a']) . '</p>';

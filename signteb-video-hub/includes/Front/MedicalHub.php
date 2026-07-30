@@ -72,7 +72,7 @@ class MedicalHub
                             <?php foreach ($videos as $video_id) : ?>
                                 <li class="stvh-medhub__item">
                                     <a href="<?php echo esc_url((string) get_permalink($video_id)); ?>" data-stvh-click data-video-id="<?php echo esc_attr((string) $video_id); ?>">
-                                        <?php $thumb = VideoMeta::thumbnail($video_id); ?>
+                                        <?php $thumb = VideoMeta::poster($video_id, 'medium'); ?>
                                         <?php if ($thumb !== '') : ?>
                                             <img src="<?php echo esc_url($thumb); ?>" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="160" height="90">
                                         <?php endif; ?>

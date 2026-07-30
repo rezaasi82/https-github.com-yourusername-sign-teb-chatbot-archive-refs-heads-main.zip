@@ -63,6 +63,26 @@ class VideoMeta
         return $url;
     }
 
+    /**
+     * The poster to actually render.
+     *
+     * The featured image wins whenever one exists. The remote provider URL is
+     * only a fallback, because Aparat gates posters on the Referer header —
+     * preferring it meant the locally imported copy was downloaded and then
+     * never used, so the player stayed black.
+     */
+    public static function poster(int $post_id, string $size = 'large'): string
+    {
+        if (has_post_thumbnail($post_id)) {
+            $local = (string) get_the_post_thumbnail_url($post_id, $size);
+            if ($local !== '') {
+                return $local;
+            }
+        }
+
+        return (string) get_post_meta($post_id, self::THUMBNAIL, true);
+    }
+
     public static function duration(int $post_id): int
     {
         return (int) get_post_meta($post_id, self::DURATION, true);
@@ -171,7 +191,7 @@ class VideoMeta
         return [
             'title'       => (string) get_the_title($post_id),
             'description' => wp_strip_all_tags($description),
-            'thumbnail'   => self::thumbnail($post_id),
+            'thumbnail'   => self::poster($post_id, 'full'),
             'embed'       => self::embed_url($post_id),
             'duration'    => self::duration($post_id),
             'published'   => self::published_at($post_id),

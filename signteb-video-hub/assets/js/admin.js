@@ -72,8 +72,17 @@
     post(endpoint, body)
       .then(function (data) {
         report(button, data.message || (data.ok ? '' : i18n.failed), !!data.ok);
+
         if (data.ok && data.edit) {
           window.open(data.edit, '_blank', 'noopener');
+        }
+
+        // The server changed fields this page still shows. Reload before the
+        // admin can save the stale form back over them.
+        if (data.ok && data.reload) {
+          window.setTimeout(function () {
+            window.location.reload();
+          }, 1200);
         }
       })
       .catch(function () {

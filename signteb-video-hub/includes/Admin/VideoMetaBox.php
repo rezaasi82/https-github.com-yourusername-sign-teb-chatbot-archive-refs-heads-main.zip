@@ -56,7 +56,7 @@ class VideoMetaBox
             'source_id' => VideoMeta::source_id($post_id),
             'source_url' => VideoMeta::source_url($post_id),
             'embed'     => VideoMeta::embed_url($post_id),
-            'thumbnail' => VideoMeta::thumbnail($post_id),
+            'thumbnail' => VideoMeta::poster($post_id, 'medium'),
             'duration'  => VideoMeta::duration_human($post_id),
             'summary'   => VideoMeta::summary($post_id),
             'keypoints' => VideoMeta::keypoints($post_id),
