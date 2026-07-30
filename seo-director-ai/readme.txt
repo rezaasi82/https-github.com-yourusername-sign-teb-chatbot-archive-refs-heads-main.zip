@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.7
+Stable tag: 0.12.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.8 =
+* Medical Pack: added injectable weight-loss drugs (GLP-1 analogues) to the General & bariatric surgery preset — Mounjaro (مانجارو), اسپارتینا, Ozempic (اوزمپیک), Wegovy (ویگووی), Saxenda (ساکسندا), semaglutide/tirzepatide/liraglutide, plus injection terms (تزریق لاغری، آمپول لاغری، قلم لاغری، دارودرمانی چاقی) — so bariatric-clinic sites that also offer non-surgical drug therapy are detected.
 
 = 0.12.7 =
 * Medical Pack: expanded the Obstetrics & gynecology preset with adolescent and preventive/screening terms — precocious/delayed puberty (بلوغ زودرس/دیررس), periodic women's check-ups (چکاپ دوره‌ای، معاینه زنان), screening (غربالگری، غربالگری دهانه رحم، ماموگرافی، سونوگرافی پستان، تراکم استخوان), pre-pregnancy and genetic counseling (مشاوره قبل از بارداری، مشاوره ژنتیک، NIPT/آمنیوسنتز), and menopause / hormone therapy.
