@@ -46,7 +46,8 @@
 ## شورت‌کدها
 
 ```
-[signteb_videos]                                    فهرست کامل با فیلتر و جستجو
+[signteb_video_gallery]                             آرشیو کامل — همه ویدئوها با کادر لوکس متحرک
+[signteb_videos]                                    فهرست با فیلتر و جستجو
 [signteb_videos layout="carousel" per_page="8"]     کاروسل
 [signteb_videos topic="liver" show_search="no"]     فقط یک موضوع
 [signteb_videos orderby="popular"]                  محبوب‌ترین (بر اساس پخش ۳۰ روز)
@@ -54,7 +55,9 @@
 [signteb_medical_hub]                               بلوک مرکز هوشمند پزشکی
 ```
 
-`layout`: `grid` | `list` | `carousel` | `slider` — `orderby`: `date` | `popular` | `title` | `duration` | `random`
+`layout`: `grid` | `list` | `carousel` | `slider`
+`orderby`: `date` | `popular` | `title` | `duration` | `random`
+`style`: خالی (ساده) | `luxe` (حلقه‌ی رنگی متحرک دور کارت — پیش‌فرض گالری)
 
 ---
 

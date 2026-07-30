@@ -29,6 +29,7 @@ class Shortcodes
         add_shortcode('signteb_videos', [$this, 'videos']);
         add_shortcode('signteb_video', [$this, 'single_video']);
         add_shortcode('signteb_medical_hub', [$this, 'medical_hub']);
+        add_shortcode('signteb_video_gallery', [$this, 'gallery']);
 
         // Player, AI panels and the hub are appended to a video's own page
         // unless the active theme provides its own template.
@@ -46,6 +47,7 @@ class Shortcodes
             'title'        => '',
             'subtitle'     => '',
             'layout'       => 'grid',
+            'style'        => '',
             'theme'        => '',
             'topic'        => '',
             'per_page'     => (string) $this->settings->int('cards_per_page'),
@@ -53,6 +55,33 @@ class Shortcodes
             'show_search'  => 'yes',
             'show_filters' => 'yes',
         ], is_array($atts) ? $atts : [], 'signteb_videos');
+
+        return $this->renderer->hub($atts);
+    }
+
+    /**
+     * [signteb_video_gallery] — the whole library on one page.
+     *
+     * Same engine as [signteb_videos], with the defaults a full index wants:
+     * every video rather than one page of them, and the animated accent border
+     * on each card.
+     *
+     * @param array<string,string>|string $atts
+     */
+    public function gallery($atts = []): string
+    {
+        $atts = shortcode_atts([
+            'title'        => '',
+            'subtitle'     => '',
+            'layout'       => 'grid',
+            'style'        => 'luxe',
+            'theme'        => '',
+            'topic'        => '',
+            'per_page'     => '48',
+            'orderby'      => 'date',
+            'show_search'  => 'yes',
+            'show_filters' => 'yes',
+        ], is_array($atts) ? $atts : [], 'signteb_video_gallery');
 
         return $this->renderer->hub($atts);
     }

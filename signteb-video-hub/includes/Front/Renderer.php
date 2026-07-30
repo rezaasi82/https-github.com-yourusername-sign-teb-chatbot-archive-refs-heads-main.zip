@@ -70,6 +70,7 @@ class Renderer
                  data-per-page="<?php echo esc_attr((string) $args['per_page']); ?>"
                  data-topic="<?php echo esc_attr((string) $args['topic']); ?>"
                  data-orderby="<?php echo esc_attr($args['orderby']); ?>"
+                 data-style="<?php echo esc_attr($args['style']); ?>"
                  data-pages="<?php echo esc_attr((string) $result['pages']); ?>">
 
             <?php if ($args['title'] !== '') : ?>
@@ -109,7 +110,7 @@ class Renderer
             <div class="stvh-status" data-stvh-status role="status" aria-live="polite"></div>
 
             <div class="stvh-results stvh-results--<?php echo esc_attr($args['layout']); ?>" data-stvh-results>
-                <?php echo $this->cards($result['ids']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php echo $this->cards($result['ids'], $args['style']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </div>
 
             <?php if ($result['ids'] === []) : ?>
@@ -171,16 +172,16 @@ class Renderer
     /**
      * @param array<int,int> $ids
      */
-    public function cards(array $ids): string
+    public function cards(array $ids, string $style = ''): string
     {
         $out = '';
         foreach ($ids as $id) {
-            $out .= $this->card((int) $id);
+            $out .= $this->card((int) $id, $style);
         }
         return $out;
     }
 
-    public function card(int $post_id): string
+    public function card(int $post_id, string $style = ''): string
     {
         $title     = (string) get_the_title($post_id);
         $permalink = (string) get_permalink($post_id);
@@ -192,7 +193,8 @@ class Renderer
 
         ob_start();
         ?>
-        <article class="stvh-card" data-stvh-card data-video-id="<?php echo esc_attr((string) $post_id); ?>">
+        <article class="stvh-card<?php echo $style === 'luxe' ? ' stvh-card--luxe' : ''; ?>"
+                 data-stvh-card data-video-id="<?php echo esc_attr((string) $post_id); ?>">
             <a class="stvh-card__media" href="<?php echo esc_url($permalink); ?>" data-stvh-click
                aria-label="<?php echo esc_attr($title); ?>">
                 <?php if ($thumbnail !== '') : ?>
@@ -356,14 +358,16 @@ class Renderer
      * Normalize and clamp component arguments from shortcodes/widgets.
      *
      * @param array<string,mixed> $args
-     * @return array{title:string,subtitle:string,layout:string,theme:string,per_page:int,topic:string,orderby:string,show_search:bool,show_filters:bool,uid:string}
+     * @return array{title:string,subtitle:string,layout:string,style:string,theme:string,per_page:int,topic:string,orderby:string,show_search:bool,show_filters:bool,uid:string}
      */
     public function normalize(array $args): array
     {
         $layouts = ['grid', 'list', 'carousel', 'slider'];
         $orders  = ['date', 'popular', 'title', 'duration', 'random'];
+        $styles  = ['', 'luxe'];
 
         $layout  = (string) ($args['layout'] ?? 'grid');
+        $style   = (string) ($args['style'] ?? '');
         $orderby = (string) ($args['orderby'] ?? 'date');
         $theme   = (string) ($args['theme'] ?? $this->settings->str('dark_mode'));
 
@@ -371,6 +375,7 @@ class Renderer
             'title'        => sanitize_text_field((string) ($args['title'] ?? '')),
             'subtitle'     => sanitize_text_field((string) ($args['subtitle'] ?? '')),
             'layout'       => in_array($layout, $layouts, true) ? $layout : 'grid',
+            'style'        => in_array($style, $styles, true) ? $style : '',
             'theme'        => in_array($theme, ['auto', 'dark', 'light'], true) ? $theme : 'auto',
             'per_page'     => max(1, min(48, (int) ($args['per_page'] ?? $this->settings->int('cards_per_page')))),
             'topic'        => sanitize_title((string) ($args['topic'] ?? '')),

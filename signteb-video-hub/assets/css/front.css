@@ -830,3 +830,98 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ---------- Luxe card: rotating accent border ---------- */
+
+/* The angle has to be a registered custom property — a plain --var holds a
+   string, and strings cannot be interpolated, so the gradient would jump
+   between keyframes instead of sweeping. */
+@property --stvh-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.stvh-card--luxe {
+  --stvh-angle: 0deg;
+  --stvh-ring: 2px;
+
+  background: transparent;
+  border: 0;
+  padding: var(--stvh-ring);
+  position: relative;
+}
+
+/* The gradient sits behind the card and is revealed only around the edges by
+   the inner surface painted on top, so it reads as a border rather than a
+   background wash. */
+.stvh-card--luxe::before {
+  background: conic-gradient(
+    from var(--stvh-angle),
+    var(--stvh-accent),
+    #c9a227,
+    #e6d5a8,
+    var(--stvh-accent)
+  );
+  border-radius: inherit;
+  content: "";
+  inset: 0;
+  position: absolute;
+  z-index: 0;
+}
+
+.stvh-card--luxe > * {
+  position: relative;
+  z-index: 1;
+}
+
+.stvh-card--luxe .stvh-card__media {
+  border-radius: calc(var(--stvh-radius) - var(--stvh-ring)) calc(var(--stvh-radius) - var(--stvh-ring)) 0 0;
+  overflow: hidden;
+}
+
+.stvh-card--luxe .stvh-card__body {
+  background: var(--stvh-surface-solid);
+  border-radius: 0 0 calc(var(--stvh-radius) - var(--stvh-ring)) calc(var(--stvh-radius) - var(--stvh-ring));
+}
+
+/* Idle: a slow sweep. Hover: faster, brighter, lifted. */
+.stvh-card--luxe::before {
+  animation: stvh-ring-spin 8s linear infinite;
+  opacity: 0.55;
+  transition: opacity 0.4s var(--stvh-ease);
+}
+
+.stvh-card--luxe:hover::before,
+.stvh-card--luxe:focus-within::before {
+  animation-duration: 2.5s;
+  opacity: 1;
+}
+
+.stvh-card--luxe:hover {
+  box-shadow: var(--stvh-shadow-hover), 0 0 28px color-mix(in srgb, var(--stvh-accent) 28%, transparent);
+}
+
+@keyframes stvh-ring-spin {
+  to {
+    --stvh-angle: 360deg;
+  }
+}
+
+/* Browsers without @property cannot animate the angle. Rather than leaving a
+   dead static ring, fall back to a fixed gradient border that still looks
+   deliberate. */
+@supports not (background: conic-gradient(from 0deg, red, blue)) {
+  .stvh-card--luxe::before {
+    animation: none;
+    background: linear-gradient(135deg, var(--stvh-accent), #c9a227);
+    opacity: 0.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stvh-card--luxe::before {
+    animation: none;
+    opacity: 0.85;
+  }
+}

@@ -150,6 +150,7 @@
       pages: parseInt(hub.dataset.pages || '1', 10),
       perPage: parseInt(hub.dataset.perPage || '12', 10),
       orderby: hub.dataset.orderby || 'date',
+      style: hub.dataset.style || '',
       request: 0
     };
 
@@ -175,7 +176,8 @@
         search: state.search,
         page: String(state.page),
         per_page: String(state.perPage),
-        orderby: state.orderby
+        orderby: state.orderby,
+        style: state.style
       });
 
       results.classList.add('is-loading');

@@ -118,6 +118,7 @@ class ArticleSuggester
             $keypoints !== [] ? 'نکات کلیدی: ' . implode(' | ', $keypoints) : '',
             '',
             FocusKeyword::heading_instruction($post_id),
+            (new CannibalizationGuard())->instruction($post_id, FocusKeyword::for_post($post_id)),
             '',
             'یک مقاله وبلاگی حدود ۸۰۰ کلمه بر اساس همین ویدئو بنویس.',
             'ساختار مورد نیاز:',

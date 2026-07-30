@@ -45,6 +45,7 @@ class VideoController
                 'page'     => ['type' => 'integer', 'default' => 1],
                 'per_page' => ['type' => 'integer', 'default' => 12],
                 'orderby'  => ['type' => 'string', 'default' => 'date'],
+                'style'    => ['type' => 'string', 'default' => ''],
             ],
         ]);
     }
@@ -57,6 +58,7 @@ class VideoController
             'page'     => max(1, (int) $request->get_param('page')),
             'per_page' => max(1, min(48, (int) $request->get_param('per_page'))),
             'orderby'  => sanitize_key((string) $request->get_param('orderby')),
+            'style'    => sanitize_key((string) $request->get_param('style')),
         ];
 
         // Search results are per-query and short-lived; browse results are
@@ -68,7 +70,7 @@ class VideoController
             $result = $this->videos->query($args);
 
             return [
-                'html'  => $this->renderer->cards($result['ids']),
+                'html'  => $this->renderer->cards($result['ids'], $args['style'] === 'luxe' ? 'luxe' : ''),
                 'total' => $result['total'],
                 'pages' => $result['pages'],
                 'page'  => $args['page'],

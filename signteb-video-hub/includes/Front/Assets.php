@@ -72,7 +72,7 @@ class Assets
         $post = get_post();
         if ($post instanceof \WP_Post) {
             $content = (string) $post->post_content;
-            foreach (['signteb_videos', 'signteb_video', 'signteb_medical_hub'] as $shortcode) {
+            foreach (['signteb_videos', 'signteb_video', 'signteb_medical_hub', 'signteb_video_gallery'] as $shortcode) {
                 if (has_shortcode($content, $shortcode)) {
                     return true;
                 }
