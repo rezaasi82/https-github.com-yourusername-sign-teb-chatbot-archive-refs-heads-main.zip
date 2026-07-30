@@ -292,6 +292,7 @@ const FA: Record<string, string> = {
   'Specialty dictionary (sharpens entity detection)': 'دیکشنری تخصصی (تشخیص موجودیت را دقیق‌تر می‌کند)',
   'General medical': 'پزشکی عمومی',
   'Gastroenterology & hepatology (گوارش و کبد)': 'گوارش و کبد',
+  'General & bariatric surgery (جراحی عمومی و چاقی)': 'جراحی عمومی و چاقی',
   'Medical web design, branding & SEO (ساین‌طب)': 'طراحی سایت، برندینگ و سئوی پزشکی (ساین‌طب)',
 };
 

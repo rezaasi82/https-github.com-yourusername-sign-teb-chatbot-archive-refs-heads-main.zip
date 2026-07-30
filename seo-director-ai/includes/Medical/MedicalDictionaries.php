@@ -19,6 +19,7 @@ final class MedicalDictionaries {
 	public const PRESETS = [
 		'general'           => 'عمومی',
 		'gastro_hepatology' => 'گوارش و کبد',
+		'general_surgery'   => 'جراحی عمومی و چاقی',
 		'medical_marketing' => 'طراحی و سئوی سایت پزشکی',
 	];
 
@@ -102,6 +103,45 @@ final class MedicalDictionaries {
 	}
 
 	/**
+	 * General & bariatric surgery — hernia, gallbladder, and weight-loss
+	 * procedures (the ایران‌هرنیا / bariatric-surgeon niche). Common Persian
+	 * spellings are both listed (بای‌پس / بای پس) since patients type either.
+	 *
+	 * @return array<string, string[]>
+	 */
+	public static function general_surgery(): array {
+		return [
+			'disease'   => [
+				'فتق', 'فتق شکم', 'فتق اینگوینال', 'فتق کشاله ران', 'فتق ناف', 'فتق هیاتال',
+				'فتق برشی', 'فتق جدار شکم', 'سنگ کیسه صفرا', 'پولیپ کیسه صفرا', 'التهاب کیسه صفرا',
+				'چاقی', 'چاقی مفرط', 'اضافه وزن', 'آپاندیسیت', 'زخم معده', 'ریفلاکس معده',
+				'کیست', 'توده شکمی',
+			],
+			'symptom'   => [
+				'درد شکم', 'دل درد', 'نفخ', 'سوءهاضمه', 'ترش کردن', 'سوزش سر دل', 'تهوع',
+				'استفراغ', 'توده', 'برجستگی', 'اضافه وزن',
+			],
+			'treatment' => [
+				'جراحی فتق', 'ترمیم فتق', 'عمل فتق', 'جراحی فتق با لاپاراسکوپی', 'مش فتق',
+				'جراحی کیسه صفرا', 'برداشتن کیسه صفرا', 'کوله‌سیستکتومی', 'عمل کیسه صفرا',
+				'جراحی چاقی', 'جراحی متابولیک', 'عمل لاغری',
+				'اسلیو معده', 'اسلیو گاسترکتومی', 'اسلیو',
+				'بای‌پس معده', 'بای پس معده', 'بای‌پس', 'بای پس', 'مینی بای‌پس', 'مینی بای پس',
+				'پلیکیشن معده', 'پلیکاسیون معده', 'پلیکیشن', 'پلیکاسیون',
+				'بالون معده', 'لاپاراسکوپی', 'آندوسکوپی', 'جراحی باز',
+			],
+			'specialty' => [
+				'جراح چاقی', 'جراح عمومی', 'فلوشیپ جراحی چاقی', 'جراح لاپاراسکوپی',
+				'فوق تخصص جراحی چاقی', 'جراح فتق',
+			],
+			'body_part' => [
+				'معده', 'کیسه صفرا', 'روده', 'کبد', 'دیواره شکم', 'جدار شکم', 'ناف',
+				'کشاله ران', 'مری', 'صفاق',
+			],
+		];
+	}
+
+	/**
 	 * Medical marketing / agency preset (SignTeb's own niche): medical website
 	 * design, medical branding, and medical SEO. Its categories describe an
 	 * agency's services and vocabulary rather than clinical concepts, so it
@@ -150,6 +190,7 @@ final class MedicalDictionaries {
 
 		return match ( $preset ) {
 			'gastro_hepatology' => self::merge( $base, self::gastro_hepatology() ),
+			'general_surgery'   => self::merge( $base, self::general_surgery() ),
 			// Agency preset is its own vocabulary; keep it standalone (no
 			// clinical base) so "درد"/"جراحی" don't pollute service detection.
 			'medical_marketing' => self::medical_marketing(),

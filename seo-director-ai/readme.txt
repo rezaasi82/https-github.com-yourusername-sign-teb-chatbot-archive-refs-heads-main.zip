@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.2
+Stable tag: 0.12.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.3 =
+* Medical Pack: added a "General & bariatric surgery (جراحی عمومی و چاقی)" dictionary preset for hernia / gallbladder / weight-loss surgeons (the ایران‌هرنیا niche) — hernia repair (فتق اینگوینال/ناف/هیاتال + mesh), gallbladder surgery (کوله‌سیستکتومی), and bariatric procedures (اسلیو معده، بای‌پس، مینی بای‌پس، پلیکیشن معده، بالون معده). Common Persian spellings are both indexed (بای‌پس / بای پس، پلیکیشن / پلیکاسیون). Merged onto the general base so general symptoms and body parts are still detected.
 
 = 0.12.2 =
 * Medical Pack: added a "Medical web design, branding & SEO" dictionary preset built for agencies like SignTeb that serve the medical field. Instead of clinical terms it recognizes services (طراحی سایت پزشکی، سئو پزشکی، برندینگ پزشکی، لندینگ پیج، نوبت‌دهی آنلاین…), SEO vocabulary, branding, platforms (وردپرس/المنتور/ووکامرس), and target audiences — so the knowledge graph shows which services you have and haven't covered on your own agency site. These non-clinical categories feed entity detection and the knowledge graph but are intentionally excluded from clinical MedicalWebPage schema.
