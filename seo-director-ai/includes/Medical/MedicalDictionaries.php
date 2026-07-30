@@ -17,10 +17,11 @@ final class MedicalDictionaries {
 
 	/** Preset slug => human label (fa). */
 	public const PRESETS = [
-		'general'           => 'عمومی',
-		'gastro_hepatology' => 'گوارش و کبد',
-		'general_surgery'   => 'جراحی عمومی و چاقی',
-		'medical_marketing' => 'طراحی و سئوی سایت پزشکی',
+		'general'             => 'عمومی',
+		'gastro_hepatology'   => 'گوارش و کبد',
+		'general_surgery'     => 'جراحی عمومی و چاقی',
+		'hand_shoulder_elbow' => 'جراحی دست، شانه و آرنج',
+		'medical_marketing'   => 'طراحی و سئوی سایت پزشکی',
 	];
 
 	/**
@@ -142,6 +143,52 @@ final class MedicalDictionaries {
 	}
 
 	/**
+	 * Hand, shoulder & elbow surgery (upper-limb orthopedics) — the fellowship
+	 * niche of an اندام فوقانی surgeon. Common Persian + transliterated names
+	 * are both indexed (تونل کارپال / کارپال تانل، روتاتور کاف).
+	 *
+	 * @return array<string, string[]>
+	 */
+	public static function hand_shoulder_elbow(): array {
+		return [
+			'disease'   => [
+				'سندرم تونل کارپال', 'تونل کارپال', 'کارپال تانل', 'گیرافتادگی عصب',
+				'تنیس البو', 'آرنج تنیس‌بازان', 'اپی‌کندیلیت', 'گلف البو', 'آرنج گلف‌بازان',
+				'شانه یخ‌زده', 'شانه منجمد', 'فروزن شولدر', 'کپسولیت چسبنده',
+				'پارگی روتاتور کاف', 'پارگی تاندون', 'تاندونیت', 'التهاب تاندون',
+				'دررفتگی شانه', 'در رفتگی شانه', 'بی‌ثباتی شانه', 'گیرافتادگی شانه', 'ایمپینجمنت شانه',
+				'شکستگی مچ دست', 'شکستگی ساعد', 'شکستگی بازو', 'شکستگی آرنج', 'شکستگی انگشت',
+				'انگشت ماشه‌ای', 'تریگر فینگر', 'کیست گانگلیون', 'گانگلیون مچ',
+				'دکورون', 'تنوسینوویت دکورون', 'آرتروز دست', 'آرتروز شانه', 'آرتروز آرنج',
+				'دوپویترن', 'سفتی مفصل',
+			],
+			'symptom'   => [
+				'درد شانه', 'درد آرنج', 'درد مچ دست', 'درد دست', 'درد انگشتان',
+				'بی‌حسی دست', 'بی‌حسی انگشتان', 'گزگز انگشتان', 'مورمور شدن', 'ضعف دست',
+				'محدودیت حرکت', 'خشکی مفصل', 'ورم مچ', 'کاهش قدرت گرفتن',
+			],
+			'treatment' => [
+				'جراحی دست', 'جراحی شانه', 'جراحی آرنج', 'میکروسرجری', 'میکروجراحی',
+				'آرتروسکوپی شانه', 'آرتروسکوپی آرنج', 'آرتروسکوپی',
+				'ترمیم روتاتور کاف', 'ترمیم تاندون', 'ترمیم عصب', 'پیوند تاندون', 'پیوند عصب',
+				'آزادسازی تونل کارپال', 'جراحی تونل کارپال', 'رهاسازی عصب',
+				'تعویض مفصل شانه', 'تعویض مفصل آرنج', 'پروتز شانه',
+				'تزریق کورتون', 'تزریق ژل', 'تزریق پی‌آر‌پی', 'پی‌آر‌پی', 'PRP',
+				'فیزیوتراپی', 'کاردرمانی', 'گچ‌گیری', 'آتل', 'اسپلینت', 'توانبخشی',
+			],
+			'specialty' => [
+				'فوق تخصص جراحی دست', 'جراح دست', 'فلوشیپ جراحی دست', 'فوق تخصص دست و اندام فوقانی',
+				'جراح شانه', 'جراح آرنج', 'ارتوپد', 'فوق تخصص ارتوپدی',
+			],
+			'body_part' => [
+				'دست', 'مچ دست', 'انگشت', 'انگشتان', 'شست', 'کف دست',
+				'شانه', 'کتف', 'آرنج', 'بازو', 'ساعد',
+				'تاندون', 'عصب', 'مفصل', 'رباط', 'استخوان', 'روتاتور کاف', 'غضروف',
+			],
+		];
+	}
+
+	/**
 	 * Medical marketing / agency preset (SignTeb's own niche): medical website
 	 * design, medical branding, and medical SEO. Its categories describe an
 	 * agency's services and vocabulary rather than clinical concepts, so it
@@ -189,8 +236,9 @@ final class MedicalDictionaries {
 		$base = self::general();
 
 		return match ( $preset ) {
-			'gastro_hepatology' => self::merge( $base, self::gastro_hepatology() ),
-			'general_surgery'   => self::merge( $base, self::general_surgery() ),
+			'gastro_hepatology'   => self::merge( $base, self::gastro_hepatology() ),
+			'general_surgery'     => self::merge( $base, self::general_surgery() ),
+			'hand_shoulder_elbow' => self::merge( $base, self::hand_shoulder_elbow() ),
 			// Agency preset is its own vocabulary; keep it standalone (no
 			// clinical base) so "درد"/"جراحی" don't pollute service detection.
 			'medical_marketing' => self::medical_marketing(),
