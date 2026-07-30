@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.1
+Stable tag: 0.12.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.2 =
+* Medical Pack: added a "Medical web design, branding & SEO" dictionary preset built for agencies like SignTeb that serve the medical field. Instead of clinical terms it recognizes services (طراحی سایت پزشکی، سئو پزشکی، برندینگ پزشکی، لندینگ پیج، نوبت‌دهی آنلاین…), SEO vocabulary, branding, platforms (وردپرس/المنتور/ووکامرس), and target audiences — so the knowledge graph shows which services you have and haven't covered on your own agency site. These non-clinical categories feed entity detection and the knowledge graph but are intentionally excluded from clinical MedicalWebPage schema.
 
 = 0.12.1 =
 * Medical Pack: specialty dictionary presets. A new "Specialty dictionary" selector in the medical settings lets a clinic sharpen entity detection for its niche. Ships with a General preset and a deep Gastroenterology & hepatology (گوارش و کبد) preset — dozens of gut/liver-specific conditions, symptoms, procedures, and drugs. The selected preset feeds the entity engine, MedicalWebPage schema, and the knowledge graph. Sites can still extend any preset via the sda_medical_dictionary filter (now also passed the active preset slug).

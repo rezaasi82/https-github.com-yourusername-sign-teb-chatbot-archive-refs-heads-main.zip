@@ -806,6 +806,7 @@ function MedicalCard() {
           >
             <option value="general">{t('General medical')}</option>
             <option value="gastro_hepatology">{t('Gastroenterology & hepatology (گوارش و کبد)')}</option>
+            <option value="medical_marketing">{t('Medical web design, branding & SEO (ساین‌طب)')}</option>
           </select>
         </label>
 

@@ -17,6 +17,12 @@ const CATEGORY_LABEL: Record<string, string> = {
   drug: 'دارو',
   specialty: 'تخصص',
   body_part: 'عضو بدن',
+  // medical_marketing preset categories
+  service: 'خدمت',
+  seo_term: 'اصطلاح سئو',
+  branding: 'برندینگ',
+  platform: 'پلتفرم',
+  audience: 'مخاطب',
 };
 
 function ErrorBox({ error }: { error: Error }) {
