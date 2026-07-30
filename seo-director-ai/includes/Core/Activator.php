@@ -82,6 +82,7 @@ final class Activator {
 			'med_clinic_name'      => '',
 			'med_clinic_phone'     => '',
 			'med_clinic_address'   => '',
+			'med_specialty_preset' => 'general',
 			'license_shared_secret' => '',
 			// Agency: client-mode push target + branding (white-label).
 			'agency_hub_url'        => '',

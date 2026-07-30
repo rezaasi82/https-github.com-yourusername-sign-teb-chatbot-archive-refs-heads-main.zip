@@ -289,6 +289,9 @@ const FA: Record<string, string> = {
   'Clinic name': 'نام کلینیک',
   'Clinic phone': 'تلفن کلینیک',
   'Clinic address': 'آدرس کلینیک',
+  'Specialty dictionary (sharpens entity detection)': 'دیکشنری تخصصی (تشخیص موجودیت را دقیق‌تر می‌کند)',
+  'General medical': 'پزشکی عمومی',
+  'Gastroenterology & hepatology (گوارش و کبد)': 'گوارش و کبد',
 };
 
 /** True when the wp-admin locale is Persian (fa_IR, fa_AF, …). */

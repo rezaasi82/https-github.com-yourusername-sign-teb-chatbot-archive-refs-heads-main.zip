@@ -382,7 +382,7 @@ final class Plugin {
 		$c->set( SchemaGenerator::class, static fn() => new SchemaGenerator() );
 
 		// Medical Pack (Wave 3).
-		$c->set( MedicalEntityEngine::class, static fn() => new MedicalEntityEngine() );
+		$c->set( MedicalEntityEngine::class, static fn( Container $c ) => new MedicalEntityEngine( $c->get( Settings::class ) ) );
 		$c->set( EeatAnalyzer::class, static fn( Container $c ) => new EeatAnalyzer( $c->get( MedicalEntityEngine::class ) ) );
 		$c->set( MedicalSchemaBuilder::class, static fn( Container $c ) => new MedicalSchemaBuilder( $c->get( Settings::class ), $c->get( MedicalEntityEngine::class ) ) );
 		$c->set( KnowledgeGraph::class, static fn( Container $c ) => new KnowledgeGraph( $c->get( MedicalEntityEngine::class ) ) );

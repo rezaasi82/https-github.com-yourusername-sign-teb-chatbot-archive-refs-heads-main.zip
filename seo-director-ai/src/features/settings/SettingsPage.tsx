@@ -795,6 +795,20 @@ function MedicalCard() {
           {t('Enable medical mode')}
         </label>
 
+        <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+          {t('Specialty dictionary (sharpens entity detection)')}
+          <select
+            className="sda-input"
+            style={{ marginBlockStart: 4 }}
+            defaultValue={(data.settings.med_specialty_preset as string) ?? 'general'}
+            disabled={!allowed}
+            onChange={(e) => save.mutate({ med_specialty_preset: e.target.value })}
+          >
+            <option value="general">{t('General medical')}</option>
+            <option value="gastro_hepatology">{t('Gastroenterology & hepatology (گوارش و کبد)')}</option>
+          </select>
+        </label>
+
         <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
           <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>{t('Physician & clinic (for schema)')}</legend>
           <div style={{ display: 'grid', gap: 8 }}>

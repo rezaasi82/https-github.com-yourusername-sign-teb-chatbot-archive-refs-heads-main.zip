@@ -119,6 +119,7 @@ final class Settings {
 			'med_clinic_name'       => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'med_clinic_phone'      => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'med_clinic_address'    => static fn( $v ) => sanitize_textarea_field( (string) $v ),
+			'med_specialty_preset'  => static fn( $v ) => array_key_exists( (string) $v, \SEODirector\Medical\MedicalDictionaries::PRESETS ) ? (string) $v : 'general',
 			'delete_data_on_uninstall' => static fn( $v ) => (bool) $v,
 		];
 	}

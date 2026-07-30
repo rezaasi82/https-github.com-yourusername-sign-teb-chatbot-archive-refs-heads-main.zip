@@ -14,58 +14,32 @@
 
 namespace SEODirector\Medical;
 
+use SEODirector\Support\Settings;
+
 defined( 'ABSPATH' ) || exit;
 
 final class MedicalEntityEngine {
 
-	/**
-	 * Seed dictionary: category => list of Persian terms. Deliberately compact
-	 * and general; sites extend it via the sda_medical_dictionary filter.
-	 *
-	 * @var array<string, string[]>
-	 */
-	private const SEED = [
-		'disease'   => [
-			'فتق', 'فتق شکم', 'فتق اینگوینال', 'فتق ناف', 'فتق هیاتال', 'دیابت', 'فشار خون', 'سرطان',
-			'کبد چرب', 'سنگ کلیه', 'سنگ صفرا', 'آپاندیس', 'زخم معده', 'ریفلاکس', 'کولیت', 'یبوست',
-			'بواسیر', 'هموروئید', 'واریس', 'آرتروز', 'میگرن', 'افسردگی', 'کم‌خونی', 'کبد', 'تیروئید',
-		],
-		'symptom'   => [
-			'درد', 'تهوع', 'استفراغ', 'تب', 'سرگیجه', 'خستگی', 'ورم', 'التهاب', 'خونریزی', 'سوزش',
-			'نفخ', 'اسهال', 'بی‌اشتهایی', 'کاهش وزن', 'تنگی نفس', 'سردرد', 'کمردرد',
-		],
-		'treatment' => [
-			'جراحی', 'عمل', 'لاپاراسکوپی', 'آندوسکوپی', 'کولونوسکوپی', 'شیمی‌درمانی', 'پرتودرمانی',
-			'فیزیوتراپی', 'دارودرمانی', 'رژیم غذایی', 'اسلیو معده', 'بای‌پس معده', 'لیزر', 'تزریق',
-			'بیوپسی', 'سونوگرافی', 'ام‌آر‌آی', 'سی‌تی اسکن',
-		],
-		'drug'      => [
-			'آنتی‌بیوتیک', 'مسکن', 'استامینوفن', 'ایبوپروفن', 'امپرازول', 'متفورمین', 'انسولین',
-			'کورتون', 'آسپرین', 'ویتامین',
-		],
-		'specialty' => [
-			'جراح', 'متخصص گوارش', 'متخصص کبد', 'فوق تخصص', 'جراح عمومی', 'متخصص داخلی',
-			'متخصص زنان', 'ارتوپد', 'متخصص قلب', 'متخصص پوست', 'دندانپزشک', 'متخصص مغز و اعصاب',
-		],
-		'body_part' => [
-			'معده', 'روده', 'کبد', 'کلیه', 'کیسه صفرا', 'مری', 'پانکراس', 'قلب', 'ریه', 'مغز',
-			'ستون فقرات', 'زانو', 'شکم', 'لوزالمعده',
-		],
-	];
+	public function __construct( private ?Settings $settings = null ) {}
 
 	/**
-	 * The active dictionary (seed + filter). Longer terms first so "فتق ناف"
-	 * matches before the substring "فتق".
+	 * The active dictionary: the general base plus the selected specialty
+	 * preset, then the sda_medical_dictionary filter. Longer terms first so
+	 * "فتق ناف" matches before the substring "فتق".
 	 *
 	 * @return array<string, string[]>
 	 */
 	public function dictionary(): array {
+		$preset = null !== $this->settings ? (string) $this->settings->get( 'med_specialty_preset', 'general' ) : 'general';
+		$base   = MedicalDictionaries::for_preset( $preset );
+
 		/**
 		 * Filters the medical entity dictionary.
 		 *
 		 * @param array<string, string[]> $dictionary category => terms.
+		 * @param string                  $preset     Active specialty preset slug.
 		 */
-		$dictionary = (array) apply_filters( 'sda_medical_dictionary', self::SEED );
+		$dictionary = (array) apply_filters( 'sda_medical_dictionary', $base, $preset );
 
 		foreach ( $dictionary as &$terms ) {
 			$terms = array_values( array_unique( array_map( 'strval', (array) $terms ) ) );

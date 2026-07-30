@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.0
+Stable tag: 0.12.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.1 =
+* Medical Pack: specialty dictionary presets. A new "Specialty dictionary" selector in the medical settings lets a clinic sharpen entity detection for its niche. Ships with a General preset and a deep Gastroenterology & hepatology (گوارش و کبد) preset — dozens of gut/liver-specific conditions, symptoms, procedures, and drugs. The selected preset feeds the entity engine, MedicalWebPage schema, and the knowledge graph. Sites can still extend any preset via the sda_medical_dictionary filter (now also passed the active preset slug).
 
 = 0.12.0 =
 Wave 3 — the Medical Pack, the differentiator for Persian medical/YMYL sites. Turn on "Medical mode" in Settings (Pro license) to reveal a new Medical screen with three tools:
