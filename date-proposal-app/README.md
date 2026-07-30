@@ -6,20 +6,75 @@
 
 فایل اصلی: [`DateProposalApp.jsx`](./DateProposalApp.jsx) — همه‌چیز در یک کامپوننت.
 
-## نصب
+## راه‌اندازی از صفر
+
+این مراحل عیناً تست شده‌اند (Vite 8 + React 19 + Tailwind 4). از هر پوشه‌ای:
 
 ```bash
-npm i react react-dom framer-motion
+npm create vite@latest my-date -- --template react
+cd my-date
+npm install
+npm i framer-motion
 npm i -D tailwindcss @tailwindcss/vite
 ```
 
+بعد `DateProposalApp.jsx` را در `src/` بگذار و این چهار فایل را ویرایش کن:
+
+**`vite.config.js`** — پلاگین Tailwind را اضافه کن:
+
+```js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({ plugins: [react(), tailwindcss()] })
+```
+
+**`src/index.css`** — کل محتوا فقط همین یک خط (بقیه‌اش را پاک کن):
+
+```css
+@import "tailwindcss";
+```
+
+**`src/App.jsx`**:
+
 ```jsx
-import DateProposalApp from "./DateProposalApp";
+import DateProposalApp from './DateProposalApp.jsx'
 
 export default function App() {
-  return <DateProposalApp />;
+  return <DateProposalApp />
 }
 ```
+
+**`index.html`** — برای RTL و عنوان تب:
+
+```html
+<html lang="fa" dir="rtl">
+...
+<title>پایه‌ای بریم سر قرار؟ 💖</title>
+```
+
+> `src/App.css` را پاک کن — استایل پیش‌فرض Vite با لایه‌بندی کامپوننت قوز بالا قوز می‌کند.
+
+```bash
+npm run dev     # http://localhost:5173
+```
+
+## انتشار (که بفرستیش براش)
+
+```bash
+npm run build   # خروجی در dist/
+```
+
+`dist/` یک سایت استاتیک ساده است، پس هر جایی بالا می‌رود:
+
+- **Vercel / Netlify** — ریپو را وصل کن، خودش `vite` را می‌شناسد. صفر کانفیگ.
+- **GitHub Pages** — چون زیر `/<repo>/` سرو می‌شود باید `base` را ست کنی، وگرنه صفحه سفید می‌آید:
+  ```js
+  export default defineConfig({ base: '/my-date/', plugins: [react(), tailwindcss()] })
+  ```
+
+از موبایل هم بی‌مشکل باز می‌شود؛ کل UI موبایل‌فرست است و در ویوپورت ۳۹۰px تست شده.
 
 ## فونت وزیرمتن
 
