@@ -3,6 +3,12 @@
     "description": "SignTeb AI Chat — دستیار چت هوشمند پزشکی برای کلینیک‌ها (مستقل، با اتصال اختیاری به SignTeb Medical Core)",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Reza Asiabi",
+            "email": "reza.asi1982@gmail.com"
+        }
+    ],
     "require": {
         "php": ">=8.1"
     },

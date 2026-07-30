@@ -1,5 +1,5 @@
 === نوبتیار (Nobatyar) ===
-Contributors: nobatyar
+Contributors: rezaasiabi
 Tags: booking, appointment, scheduling, jalali-calendar, sms
 Requires at least: 5.8
 Tested up to: 6.5
@@ -11,6 +11,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 پلاگین مستقل رزرو نوبت آنلاین برای سالن، باشگاه، مشاوره حقوقی، آموزشگاه، کلینیک زیبایی و هر کسب‌وکار محلی نوبت‌محور — با تقویم جلالی، پیامک و درگاه پرداخت ایرانی از روز اول و بدون add-on پولی جدا.
 
 == توضیحات ==
+
+طراحی و توسعه: رضا آسیابی
 
 نوبتیار یک سیستم رزرو نوبت کامل برای وردپرس است که با شورت‌کد `[nobatyar_booking]` در هر صفحه یا نوشته قابل استفاده است. برخلاف بسیاری از پلاگین‌های مشابه (Bookly، Booknetic)، نوبتیار هیچ فیچر حیاتی را پشت add-on پولی جداگانه قرار نمی‌دهد: پیامک و درگاه پرداخت همان لایسنس اصلی شامل می‌شود.
 

@@ -3,6 +3,12 @@
     "description": "نوبتیار — پلاگین رزرو نوبت وردپرس برای کسب‌وکارهای محلی",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Reza Asiabi",
+            "email": "reza.asi1982@gmail.com"
+        }
+    ],
     "require": {
         "php": ">=7.4"
     },

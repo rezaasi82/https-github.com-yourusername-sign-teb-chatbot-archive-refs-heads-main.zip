@@ -6,7 +6,7 @@
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
- * Author:            Nobatyar
+ * Author:            رضا آسیابی (Reza Asiabi)
  * Author URI:        https://mynobatyar.ir
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html

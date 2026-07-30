@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Reza Asiabi <reza.asi1982@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.61.1"
