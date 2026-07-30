@@ -658,8 +658,250 @@ function PrimaryButton({ children, onClick, disabled, pulse = false, hint }) {
    کامپوننت اصلی
    ──────────────────────────────────────────────────────────────────────────── */
 
-export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
-  useVazirmatn(fontUrl);
+/* ────────────────────────────────────────────────────────────────────────────
+   حالت ساخت لینک — تنظیمات در hash کد می‌شود
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* base64url امن برای UTF-8 (btoa خام با فارسی می‌ترکد) */
+const b64urlEncode = (str) => {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  bytes.forEach((b) => (bin += String.fromCharCode(b)));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+};
+
+const b64urlDecode = (s) => {
+  const base = s.replace(/-/g, "+").replace(/_/g, "/");
+  const bin = atob(base + "=".repeat((4 - (base.length % 4)) % 4));
+  return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+};
+
+const clip = (v, n) => String(v ?? "").trim().slice(0, n);
+const cleanHandle = (v) => clip(v, 40).replace(/^@+/, "").replace(/\s+/g, "");
+
+const EMPTY_CFG = { to: "", from: "", question: "", note: "", telegram: "" };
+
+/** کلیدها عمداً تک‌حرفی‌اند تا لینک کوتاه بماند */
+const encodeConfig = (c) => {
+  const p = {};
+  if (c.to) p.t = clip(c.to, 40);
+  if (c.from) p.f = clip(c.from, 40);
+  if (c.question) p.q = clip(c.question, 120);
+  if (c.note) p.n = clip(c.note, 240);
+  if (c.telegram) p.g = cleanHandle(c.telegram);
+  return b64urlEncode(JSON.stringify(p));
+};
+
+const decodeConfig = (raw) => {
+  try {
+    const o = JSON.parse(b64urlDecode(raw));
+    if (!o || typeof o !== "object" || Array.isArray(o)) return null;
+    return {
+      to: clip(o.t, 40),
+      from: clip(o.f, 40),
+      question: clip(o.q, 120),
+      note: clip(o.n, 240),
+      telegram: cleanHandle(o.g),
+    };
+  } catch {
+    return null; // لینک خراب → برمی‌گردیم به صفحه‌ی ساخت، نه صفحه‌ی سفید
+  }
+};
+
+const readHashConfig = () => {
+  if (typeof window === "undefined") return null;
+  const m = window.location.hash.match(/[#&]c=([^&]+)/);
+  return m ? decodeConfig(m[1]) : null;
+};
+
+const buildLink = (c) => {
+  if (typeof window === "undefined") return "";
+  const { origin, pathname } = window.location;
+  return `${origin}${pathname}#c=${encodeConfig(c)}`;
+};
+
+/* ────────────────────────────────────────────────────────────────────────────
+   پوسته‌ی مشترک (پس‌زمینه + ظرف موبایل)
+   ──────────────────────────────────────────────────────────────────────────── */
+
+function Shell({ children }) {
+  return (
+    <div
+      dir="rtl"
+      lang="fa"
+      className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-rose-100 via-fuchsia-100 to-indigo-200 px-4 py-8"
+      style={{ fontFamily: FONT_STACK }}
+    >
+      <AmbientBackdrop />
+      <div className="relative z-10 mx-auto flex w-full max-w-sm flex-col items-center">
+        {children}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-4 text-center text-[10.5px] text-fuchsia-900/40"
+        >
+          ساخته شده با کلی 💖 و یه ذره 😈
+        </motion.p>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, hint, value, onChange, placeholder, maxLength, multiline, ltr }) {
+  const cls =
+    "w-full rounded-2xl border border-white/60 bg-white/45 px-3.5 py-2.5 text-[12.5px] text-fuchsia-950 placeholder:text-fuchsia-900/35 outline-none backdrop-blur-md transition focus:border-fuchsia-400 focus:bg-white/65";
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[11px] font-bold text-fuchsia-800/70">{label}</span>
+      {multiline ? (
+        <textarea
+          rows={2}
+          value={value}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          className={cls + " resize-none"}
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          dir={ltr ? "ltr" : "rtl"}
+          className={cls + (ltr ? " text-left" : "")}
+        />
+      )}
+      {hint && <span className="mt-1 block text-[10px] text-fuchsia-900/40">{hint}</span>}
+    </label>
+  );
+}
+
+/** صفحه‌ی ساخت لینک — وقتی hash خالی است این نشان داده می‌شود */
+function CreatorScreen({ draft, setDraft, onPreview }) {
+  const { play, buzz } = useFx();
+  const [copied, setCopied] = useState(false);
+  const link = useMemo(() => buildLink(draft), [draft]);
+  const set = (k) => (v) => setDraft((d) => ({ ...d, [k]: v }));
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      play("pop");
+      buzz(12);
+      setTimeout(() => setCopied(false), 2200);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  const shareLink = () => {
+    play("yay");
+    buzz([18, 40, 18]);
+    const msg = draft.to ? `${draft.to}، یه چیزی برات دارم 👀` : "یه چیزی برات دارم 👀";
+    const tg = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`;
+    try {
+      if (navigator.share) {
+        navigator.share({ title: "قرارمون 💖", text: msg, url: link }).catch(() => window.open(tg, "_blank"));
+      } else {
+        window.open(tg, "_blank", "noopener,noreferrer");
+      }
+    } catch {
+      window.open(tg, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 180, damping: 22 }}
+      className="relative w-full overflow-hidden rounded-[2rem] border border-white/60 bg-white/25 p-5 pb-6 shadow-[0_24px_60px_-20px_rgba(155,60,150,0.55)] backdrop-blur-2xl"
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/50 to-transparent" />
+
+      <div className="relative z-20">
+        <ReactionAvatar mood="love" compact />
+
+        <div className="mb-4 text-center">
+          <h1 className="text-[20px] font-black leading-snug text-fuchsia-950/90">کارتت رو بساز 💌</h1>
+          <p className="mx-auto mt-1 max-w-[19rem] text-[11.5px] leading-5 text-fuchsia-900/60">
+            پرش کن، لینکو بردار، بفرست. هیچی جایی ذخیره نمیشه — همه‌چی تو خود لینکه 🔒
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <Field label="اسمش چیه؟" value={draft.to} onChange={set("to")} placeholder="مثلاً سارا" maxLength={40} />
+          <Field label="اسم خودت" value={draft.from} onChange={set("from")} placeholder="مثلاً رضا" maxLength={40} />
+          <Field
+            label="سوالت (اختیاری)"
+            value={draft.question}
+            onChange={set("question")}
+            placeholder={draft.to ? `${draft.to}، پایه‌ای بریم سر قرار؟` : "پایه‌ای بریم سر قرار؟"}
+            maxLength={120}
+            hint="خالی بذاری، خودش با اسمش می‌سازتش"
+          />
+          <Field
+            label="یه پیام کوچیک برای آخرش (اختیاری)"
+            value={draft.note}
+            onChange={set("note")}
+            placeholder="مثلاً: خیلی وقته میخواستم بپرسم 🙈"
+            maxLength={240}
+            multiline
+          />
+          <Field
+            label="آیدی تلگرامت (اختیاری)"
+            value={draft.telegram}
+            onChange={set("telegram")}
+            placeholder="@username"
+            maxLength={40}
+            ltr
+            hint="بذاری، دکمه‌ی آخرش جوابو مستقیم برات می‌فرسته"
+          />
+        </div>
+
+        {/* لینک زنده */}
+        <div className="mt-4 rounded-2xl border border-white/60 bg-white/45 p-3 backdrop-blur-md">
+          <p className="mb-1.5 text-[10.5px] font-bold text-fuchsia-800/70">🔗 لینکت آماده‌ست</p>
+          <p dir="ltr" className="truncate text-left text-[10.5px] text-fuchsia-900/60" title={link}>
+            {link}
+          </p>
+        </div>
+
+        <div className="mt-3 flex flex-col gap-2">
+          <PrimaryButton onClick={copyLink} pulse>
+            {copied ? "کپی شد ✅" : "کپی لینک 📋"}
+          </PrimaryButton>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={shareLink}
+              className="flex-1 rounded-2xl border border-white/60 bg-white/40 px-4 py-2.5 text-[12px] font-bold text-fuchsia-800 backdrop-blur-md"
+            >
+              بفرست تو تلگرام 📲
+            </button>
+            <button
+              type="button"
+              onClick={onPreview}
+              className="flex-1 rounded-2xl border border-white/60 bg-white/40 px-4 py-2.5 text-[12px] font-bold text-fuchsia-800/70 backdrop-blur-md"
+            >
+              پیش‌نمایش 👀
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   جریان اصلی دعوت (چیزی که مخاطب می‌بیند)
+   ──────────────────────────────────────────────────────────────────────────── */
+
+function ProposalFlow({ cfg, onEdit }) {
   const { play, buzz } = useFx();
 
   const [step, setStep] = useState(1);
@@ -684,6 +926,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
 
   // مرحله ۴
   const [copied, setCopied] = useState(false);
+  const [pasteHint, setPasteHint] = useState(false);
 
   const selectedDay = dayId === null ? null : days.find((d) => d.id === dayId);
   const timeLabel = `${fa(pad2(hour))}:${fa(pad2(minute))}`;
@@ -754,7 +997,7 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
   const shareText = useMemo(() => {
     const menu = foodLabels.length ? foodLabels.map((f) => `${f.emoji} ${f.label}`).join("، ") : "سورپرایز 🤫";
     return [
-      "قرارمون سِت شد رسماً 💌",
+      cfg.to ? `${cfg.to} جان، قرارمون سِت شد رسماً 💌` : "قرارمون سِت شد رسماً 💌",
       "",
       `📅 کِی: ${dateLabel}`,
       `⏰ ساعت: ${timeLabel}`,
@@ -762,12 +1005,31 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
       extra ? "🎬 اکسترا: سینما / دور دور ✅" : "🎬 اکسترا: فعلاً بیخیال",
       "",
       `🚗 ساعت ${timeLabel} دم درم، لفتش نده! 💖`,
-    ].join("\n");
-  }, [dateLabel, timeLabel, foodLabels, extra]);
+      cfg.from ? `— ${cfg.from}` : "",
+    ]
+      .filter((l, i, a) => !(l === "" && a[i - 1] === ""))
+      .join("\n");
+  }, [dateLabel, timeLabel, foodLabels, extra, cfg.to, cfg.from]);
 
-  const shareToTelegram = () => {
+  /* اگر فرستنده آیدی تلگرام گذاشته باشد، جواب مستقیم به چت خودش می‌رود:
+     متن کپی می‌شود و چت باز می‌شود (تلگرام اجازه‌ی پیش‌پرکردن پیام به یک
+     کاربر مشخص را نمی‌دهد، فقط share sheet را). */
+  const shareToTelegram = async () => {
     play("yay");
     buzz([20, 40, 20]);
+
+    if (cfg.telegram) {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setPasteHint(true);
+        setTimeout(() => setPasteHint(false), 6000);
+      } catch {
+        /* اگر کلیپ‌بورد نشد، باز هم چت را باز می‌کنیم */
+      }
+      window.open(`https://t.me/${encodeURIComponent(cfg.telegram)}`, "_blank", "noopener,noreferrer");
+      return;
+    }
+
     const url = `https://t.me/share/url?url=${encodeURIComponent("https://t.me/")}&text=${encodeURIComponent(shareText)}`;
     try {
       if (navigator.share) {
@@ -815,25 +1077,20 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
   const transition = { type: "spring", stiffness: 260, damping: 28, mass: 0.8 };
 
   const stepMeta = {
-    1: { title: "پایه‌ای بریم سر قرار؟", sub: "یه سوال ساده‌ست فقط 🙂 ولی خب سیستم گزینه «نه» رو ساپورت نمیکنه 😜" },
+    1: {
+      title: cfg.question || (cfg.to ? `${cfg.to}، پایه‌ای بریم سر قرار؟` : "پایه‌ای بریم سر قرار؟"),
+      sub: "یه سوال ساده‌ست فقط 🙂 ولی خب سیستم گزینه «نه» رو ساپورت نمیکنه 😜",
+    },
     2: { title: "کِی بیکاری؟", sub: "یه روز و ساعت توپ بزن، بقیه‌ش با من" },
     3: { title: "پلنمون چی باشه؟", sub: "منو دست توئه رفیق! چی بزنیم؟" },
-    4: { title: "دمت گرم که نگفتی نه!", sub: "(هرچند راه دیگه‌ای هم نداشتی 😈💖)" },
+    4: {
+      title: cfg.to ? `دمت گرم که نگفتی نه، ${cfg.to}!` : "دمت گرم که نگفتی نه!",
+      sub: "(هرچند راه دیگه‌ای هم نداشتی 😈💖)",
+    },
   }[step];
 
   return (
-    <div
-      dir="rtl"
-      lang="fa"
-      className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-rose-100 via-fuchsia-100 to-indigo-200 px-4 py-8"
-      style={{
-        fontFamily: FONT_STACK,
-      }}
-    >
-      <AmbientBackdrop />
-
-      {/* ظرف موبایل — کارت وسط‌چین */}
-      <div className="relative z-10 mx-auto flex w-full max-w-sm flex-col items-center">
+    <>
         <motion.div
           initial={{ opacity: 0, y: 28, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -1161,6 +1418,12 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                           {extra ? "سینما / دور دور ✅" : "بیخیال، فقط همین"}
                         </dd>
                       </div>
+                      {cfg.from && (
+                        <div className="flex items-start justify-between gap-3">
+                          <dt className="shrink-0 text-fuchsia-900/55">💌 از طرف</dt>
+                          <dd className="text-left font-extrabold text-fuchsia-950">{cfg.from}</dd>
+                        </div>
+                      )}
                       <div className="border-t border-dashed border-fuchsia-300/70 pt-2.5">
                         <div className="flex items-start justify-between gap-3">
                           <dt className="shrink-0 text-fuchsia-900/55">🚗 وضعیت</dt>
@@ -1180,9 +1443,43 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
                     />
                   </motion.div>
 
+                  {cfg.note && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35 }}
+                      className="rounded-2xl border border-white/60 bg-white/45 px-4 py-3 text-center backdrop-blur-md"
+                    >
+                      <p className="text-[12px] leading-6 text-fuchsia-900/80">«{cfg.note}»</p>
+                      {cfg.from && (
+                        <p className="mt-1 text-[10.5px] font-bold text-fuchsia-700/60">— {cfg.from}</p>
+                      )}
+                    </motion.div>
+                  )}
+
                   <PrimaryButton onClick={shareToTelegram} pulse>
-                    بفرست تو تلگرام 📲
+                    {/* bdi لازم است وگرنه @ در متن راست‌به‌چپ به سمت اشتباه می‌پرد */}
+                    {cfg.telegram ? (
+                      <>
+                        جوابو بفرست به <bdi dir="ltr">@{cfg.telegram}</bdi> 📲
+                      </>
+                    ) : (
+                      "بفرست تو تلگرام 📲"
+                    )}
                   </PrimaryButton>
+
+                  <AnimatePresence>
+                    {pasteHint && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="-mt-1 text-center text-[11px] font-bold text-fuchsia-700/70"
+                      >
+                        متن کپی شد ✅ تو چت فقط پیستش کن
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
 
                   <div className="flex items-center gap-2">
                     <button
@@ -1206,15 +1503,65 @@ export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
           </div>
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-4 text-center text-[10.5px] text-fuchsia-900/40"
-        >
-          ساخته شده با کلی 💖 و یه ذره 😈
-        </motion.p>
-      </div>
-    </div>
+        {/* فقط وقتی از صفحه‌ی ساخت پیش‌نمایش گرفته‌ای — مخاطب این را نمی‌بیند */}
+        {onEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            className="mt-3 rounded-2xl border border-white/60 bg-white/40 px-4 py-2 text-[11.5px] font-bold text-fuchsia-800/70 backdrop-blur-md"
+          >
+            ↩ برگرد به ویرایش
+          </button>
+        )}
+    </>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   ورودی اپ — بین «ساخت لینک» و «دیدن دعوت» سوییچ می‌کند
+   ──────────────────────────────────────────────────────────────────────────── */
+
+export default function DateProposalApp({ fontUrl = VAZIRMATN_WOFF2 }) {
+  useVazirmatn(fontUrl);
+
+  const [cfg, setCfg] = useState(readHashConfig);
+  const [draft, setDraft] = useState(() => readHashConfig() || EMPTY_CFG);
+  const [previewing, setPreviewing] = useState(false);
+
+  // دکمه‌ی back مرورگر هم باید بین دو حالت جابه‌جا کند
+  useEffect(() => {
+    const onHash = () => {
+      const next = readHashConfig();
+      setCfg(next);
+      if (!next) setPreviewing(false);
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const preview = () => {
+    setPreviewing(true);
+    window.location.hash = `c=${encodeConfig(draft)}`;
+  };
+
+  const backToEditor = () => {
+    setPreviewing(false);
+    // hash را پاک کن بدون اینکه صفحه بپرد
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    setCfg(null);
+  };
+
+  return (
+    <Shell>
+      {cfg ? (
+        <ProposalFlow
+          key={encodeConfig(cfg)}
+          cfg={cfg}
+          onEdit={previewing ? backToEditor : undefined}
+        />
+      ) : (
+        <CreatorScreen draft={draft} setDraft={setDraft} onPreview={preview} />
+      )}
+    </Shell>
   );
 }
