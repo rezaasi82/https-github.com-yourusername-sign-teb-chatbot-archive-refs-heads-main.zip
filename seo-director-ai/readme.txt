@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.6
+Stable tag: 0.12.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.7 =
+* Medical Pack: expanded the Obstetrics & gynecology preset with adolescent and preventive/screening terms — precocious/delayed puberty (بلوغ زودرس/دیررس), periodic women's check-ups (چکاپ دوره‌ای، معاینه زنان), screening (غربالگری، غربالگری دهانه رحم، ماموگرافی، سونوگرافی پستان، تراکم استخوان), pre-pregnancy and genetic counseling (مشاوره قبل از بارداری، مشاوره ژنتیک، NIPT/آمنیوسنتز), and menopause / hormone therapy.
 
 = 0.12.6 =
 * Medical Pack: added an "Obstetrics & gynecology (زنان و زایمان)" dictionary preset — pregnancy/childbirth (بارداری، سزارین، زایمان طبیعی، دیابت بارداری، پره‌اکلامپسی), gynecologic conditions (کیست تخمدان، تخمدان پلی‌کیستیک، فیبروم، اندومتریوز، عفونت واژن), fertility (IUI/IVF/میکرواینجکشن، فریز تخمک), and procedures (لاپاراسکوپی، هیستروسکوپی، پاپ اسمیر، هیسترکتومی، لابیاپلاستی/جوانسازی). Merged onto the general base.
