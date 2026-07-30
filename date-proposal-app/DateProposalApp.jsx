@@ -512,7 +512,7 @@ const mapLinks = (cfg) => {
         : `https://neshan.org/maps/search/${encodeURIComponent(cfg.locName)}`,
     },
     {
-      id: "waze", label: "ویز", emoji: "🚗",
+      id: "waze", label: "Waze", emoji: "🚗", ltr: true,
       href: hasCoord
         ? `https://waze.com/ul?ll=${cfg.lat},${cfg.lng}&navigate=yes`
         : `https://waze.com/ul?q=${encodeURIComponent(cfg.locName)}`,
@@ -1137,7 +1137,8 @@ function MapButtons({ cfg }) {
             style={{ color: "var(--muted)" }}
           >
             <span className="text-lg leading-none">{l.emoji}</span>
-            {l.label}
+            {/* برچسب لاتین داخل متن راست‌به‌چپ باید جهتش صریح باشد */}
+            {l.ltr ? <bdi dir="ltr">{l.label}</bdi> : l.label}
           </a>
         ))}
       </div>
