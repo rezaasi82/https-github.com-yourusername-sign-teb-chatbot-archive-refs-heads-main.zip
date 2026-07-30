@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.5
+Stable tag: 0.12.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.6 =
+* Medical Pack: added an "Obstetrics & gynecology (زنان و زایمان)" dictionary preset — pregnancy/childbirth (بارداری، سزارین، زایمان طبیعی، دیابت بارداری، پره‌اکلامپسی), gynecologic conditions (کیست تخمدان، تخمدان پلی‌کیستیک، فیبروم، اندومتریوز، عفونت واژن), fertility (IUI/IVF/میکرواینجکشن، فریز تخمک), and procedures (لاپاراسکوپی، هیستروسکوپی، پاپ اسمیر، هیسترکتومی، لابیاپلاستی/جوانسازی). Merged onto the general base.
 
 = 0.12.5 =
 * Medical Pack: added a "Dermatology, hair & cosmetic (پوست، مو و زیبایی)" dictionary preset — one of the most competitive Persian niches. Covers skin conditions (آکنه، ملاسما، ویتیلیگو، پسوریازیس، ریزش مو، روزاسه…) and the full aesthetic-procedure set (بوتاکس، فیلر، مزوتراپی، لیزر موهای زائد، هایفو، میکرونیدلینگ، کاشت مو، لیفت با نخ، رینوپلاستی، لیپوماتیک، پیلینگ، هیدرافیشیال…). Common Persian + transliterated names indexed. Merged onto the general base.

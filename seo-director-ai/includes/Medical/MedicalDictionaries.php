@@ -22,6 +22,7 @@ final class MedicalDictionaries {
 		'general_surgery'     => 'جراحی عمومی و چاقی',
 		'hand_shoulder_elbow' => 'جراحی دست، شانه و آرنج',
 		'dermatology_cosmetic' => 'پوست، مو و زیبایی',
+		'obgyn'               => 'زنان و زایمان',
 		'medical_marketing'   => 'طراحی و سئوی سایت پزشکی',
 	];
 
@@ -232,6 +233,48 @@ final class MedicalDictionaries {
 	}
 
 	/**
+	 * Obstetrics & gynecology — pregnancy/childbirth, gynecologic conditions,
+	 * fertility, and the surgical + cosmetic-gyn procedures that drive this
+	 * niche. Merged onto the general base.
+	 *
+	 * @return array<string, string[]>
+	 */
+	public static function obgyn(): array {
+		return [
+			'disease'   => [
+				'بارداری', 'حاملگی', 'نازایی', 'ناباروری', 'سقط جنین', 'سقط مکرر', 'کیست تخمدان',
+				'تخمدان پلی‌کیستیک', 'پی‌سی‌او', 'پی‌سی‌اواس', 'فیبروم رحم', 'میوم رحم', 'اندومتریوز',
+				'پولیپ رحم', 'افتادگی رحم', 'پرولاپس', 'عفونت واژن', 'عفونت قارچی', 'واژینوز',
+				'زگیل تناسلی', 'اچ‌پی‌وی', 'سرطان دهانه رحم', 'سرطان رحم', 'سرطان تخمدان', 'سرطان پستان',
+				'کیست پستان', 'یائسگی', 'اختلال قاعدگی', 'خونریزی نامنظم', 'آمنوره', 'سندرم پیش از قاعدگی',
+				'بی‌اختیاری ادرار', 'حاملگی خارج رحمی', 'دیابت بارداری', 'مسمومیت بارداری', 'پره‌اکلامپسی',
+				'زایمان زودرس',
+			],
+			'symptom'   => [
+				'درد لگن', 'درد زیر شکم', 'خونریزی', 'لکه‌بینی', 'ترشحات واژن', 'خارش واژن',
+				'تأخیر قاعدگی', 'درد قاعدگی', 'گرگرفتگی', 'تهوع بارداری', 'ویار', 'درد پستان',
+			],
+			'treatment' => [
+				'زایمان طبیعی', 'زایمان بی‌درد', 'سزارین', 'سزارین به‌خواست', 'القای زایمان',
+				'آی‌یو‌آی', 'IUI', 'آی‌وی‌اف', 'IVF', 'میکرواینجکشن', 'آی‌سی‌اس‌آی', 'لقاح مصنوعی',
+				'انتقال جنین', 'تحریک تخمک‌گذاری', 'فریز تخمک', 'فریز جنین',
+				'لاپاراسکوپی', 'هیستروسکوپی', 'کورتاژ', 'سرکلاژ', 'هیسترکتومی', 'برداشتن رحم',
+				'برداشتن کیست تخمدان', 'میومکتومی', 'پاپ اسمیر', 'کولپوسکوپی', 'سونوگرافی',
+				'واکسن اچ‌پی‌وی', 'لابیاپلاستی', 'واژینوپلاستی', 'جوانسازی واژن', 'لیزر واژینال',
+				'ترمیم پرده بکارت', 'اسلینگ',
+			],
+			'specialty' => [
+				'متخصص زنان', 'متخصص زنان و زایمان', 'فوق تخصص نازایی', 'فلوشیپ نازایی',
+				'جراح زنان', 'ماما', 'فوق تخصص انکولوژی زنان', 'پریناتولوژیست',
+			],
+			'body_part' => [
+				'رحم', 'تخمدان', 'دهانه رحم', 'سرویکس', 'واژن', 'مهبل', 'لوله رحمی', 'لوله فالوپ',
+				'پستان', 'سینه', 'جنین', 'جفت', 'بند ناف', 'لگن', 'رحم و تخمدان',
+			],
+		];
+	}
+
+	/**
 	 * Medical marketing / agency preset (SignTeb's own niche): medical website
 	 * design, medical branding, and medical SEO. Its categories describe an
 	 * agency's services and vocabulary rather than clinical concepts, so it
@@ -283,6 +326,7 @@ final class MedicalDictionaries {
 			'general_surgery'     => self::merge( $base, self::general_surgery() ),
 			'hand_shoulder_elbow' => self::merge( $base, self::hand_shoulder_elbow() ),
 			'dermatology_cosmetic' => self::merge( $base, self::dermatology_cosmetic() ),
+			'obgyn'               => self::merge( $base, self::obgyn() ),
 			// Agency preset is its own vocabulary; keep it standalone (no
 			// clinical base) so "درد"/"جراحی" don't pollute service detection.
 			'medical_marketing' => self::medical_marketing(),
