@@ -40,11 +40,20 @@ class AparatClient
     private const PLAYLIST_CANDIDATES = [
         'https://www.aparat.com/etc/api/playlist/id/%s',
         'https://www.aparat.com/etc/api/playlistVideos/id/%s',
+        'https://www.aparat.com/etc/api/playlist/id/%s/perpage/100',
+        'https://www.aparat.com/etc/api/playlistVideos/id/%s/perpage/100',
         'https://www.aparat.com/api/fa/v1/video/playlist/getone/id/%s',
         'https://www.aparat.com/api/fa/v1/video/playlist/listbyid/playlist_id/%s',
     ];
 
     private const ENDPOINT_CACHE = 'stvh_aparat_playlist_endpoint';
+
+    /**
+     * Ceiling on a whole discovery pass. Probing is only worth doing if it
+     * cannot itself become the slow request — that is what took the site down
+     * before this budget existed.
+     */
+    private const PROBE_BUDGET = 15;
 
     /**
      * Raw video list for a channel, newest first.
@@ -118,8 +127,15 @@ class AparatClient
             ? array_merge([$known], array_diff(self::PLAYLIST_CANDIDATES, [$known]))
             : self::PLAYLIST_CANDIDATES;
 
-        $errors = [];
+        $errors   = [];
+        $deadline = microtime(true) + self::PROBE_BUDGET;
+
         foreach ($order as $template) {
+            if (microtime(true) >= $deadline) {
+                $errors[] = 'مهلت بررسی مسیرها تمام شد';
+                break;
+            }
+
             $response = $this->request(sprintf($template, rawurlencode($playlist_id)), self::PROBE_TIMEOUT);
 
             if (! $response['ok']) {
@@ -127,9 +143,15 @@ class AparatClient
                 continue;
             }
 
-            $items = $this->extract_playlist_items($response['body']);
+            $items = self::extract_playlist_items($response['body']);
             if ($items === []) {
-                $errors[] = sprintf('%s → پاسخ بدون ویدئو', $this->endpoint_label($template));
+                // The route answered; only the shape is unknown. Report it, so
+                // the next step is a fix rather than another guess.
+                $errors[] = sprintf(
+                    '%s → پاسخ ۲۰۰ ولی ویدئویی شناسایی نشد؛ ساختار پاسخ: %s',
+                    $this->endpoint_label($template),
+                    mb_substr(self::describe_shape($response['body']), 0, 300)
+                );
                 continue;
             }
 
@@ -153,54 +175,134 @@ class AparatClient
     }
 
     /**
-     * Just the path, for a log line that stays readable.
+     * Just the path, for a log line that stays readable. The id is shown as a
+     * placeholder — substituting a real-looking one made an earlier report
+     * read as though the plugin had requested playlist 0.
      */
     private function endpoint_label(string $template): string
     {
-        return (string) wp_parse_url(sprintf($template, '0'), PHP_URL_PATH);
+        return (string) wp_parse_url(sprintf($template, 'ID'), PHP_URL_PATH);
     }
 
     /**
-     * Playlist payloads nest a level deeper than the channel list and the
-     * shape has moved between revisions, so every plausible container is
-     * checked rather than assuming one.
+     * Videos anywhere inside a playlist payload.
+     *
+     * The first attempt guessed at a fixed list of containers and found
+     * nothing, even though two routes answered 200 with real JSON — the route
+     * was right and the shape was wrong. Guessing container names again would
+     * repeat that, so this searches the whole tree instead and keeps the
+     * largest set of records that actually look like videos.
      *
      * @param array<mixed> $body
      * @return array<int,array<string,mixed>>
      */
-    private function extract_playlist_items(array $body): array
+    public static function extract_playlist_items(array $body): array
     {
-        $candidates = [
-            $body['data']['attributes']['videos'] ?? null,
-            $body['data']['videos'] ?? null,
-            $body['included'] ?? null,
-            $body['playlist'] ?? null,
-            $body['videos'] ?? null,
-            $body['videobyuser'] ?? null,
-        ];
+        return self::find_video_records($body);
+    }
 
-        foreach ($candidates as $candidate) {
-            if (! is_array($candidate) || $candidate === []) {
+    /**
+     * @param array<mixed> $node
+     * @return array<int,array<string,mixed>>
+     */
+    private static function find_video_records(array $node, int $depth = 0): array
+    {
+        if ($depth > 6) {
+            return [];
+        }
+
+        // JSON:API wraps each record in {type, id, attributes:{…}}, so unwrap
+        // before judging. A sibling list of videos is the common case.
+        $direct = [];
+        foreach ($node as $record) {
+            if (! is_array($record)) {
                 continue;
             }
-
-            $items = [];
-            foreach ($candidate as $record) {
-                if (! is_array($record)) {
-                    continue;
-                }
-                $attributes = $record['attributes'] ?? $record;
-                if (is_array($attributes) && ($attributes['uid'] ?? $attributes['id'] ?? null) !== null) {
-                    $items[] = $attributes;
-                }
-            }
-
-            if ($items !== []) {
-                return $items;
+            $fields = isset($record['attributes']) && is_array($record['attributes'])
+                ? $record['attributes']
+                : $record;
+            if (self::looks_like_video($fields)) {
+                $direct[] = $fields;
             }
         }
 
-        return [];
+        if ($direct !== []) {
+            return $direct;
+        }
+
+        $best = [];
+        foreach ($node as $child) {
+            if (! is_array($child)) {
+                continue;
+            }
+            $found = self::find_video_records($child, $depth + 1);
+            if (count($found) > count($best)) {
+                $best = $found;
+            }
+        }
+
+        return $best;
+    }
+
+    /**
+     * A playlist payload also contains the playlist itself, its owner and
+     * assorted UI nodes — all of which carry `id` and `title`. Only fields
+     * that exist per-video can tell them apart, so a bare id is never enough.
+     *
+     * @param array<string,mixed> $record
+     */
+    private static function looks_like_video(array $record): bool
+    {
+        foreach (['uid', 'videohash', 'hash'] as $key) {
+            if (isset($record[$key]) && is_scalar($record[$key]) && (string) $record[$key] !== '') {
+                return true;
+            }
+        }
+
+        if (! isset($record['id']) || ! is_scalar($record['id']) || (string) $record['id'] === '') {
+            return false;
+        }
+
+        foreach (['frame', 'big_poster', 'small_poster', 'poster', 'preview_src', 'file_link'] as $key) {
+            if (isset($record[$key]) && $record[$key] !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * A compact outline of a JSON body's keys.
+     *
+     * When a route answers 200 but nothing parses, the useful thing to report
+     * is not "no videos" but what actually came back — otherwise the next fix
+     * is another guess.
+     *
+     * @param array<mixed> $body
+     */
+    public static function describe_shape(array $body, int $depth = 0): string
+    {
+        $parts = [];
+        $shown = 0;
+
+        foreach ($body as $key => $value) {
+            if ($shown++ >= 6) {
+                $parts[] = '…';
+                break;
+            }
+
+            $label = is_int($key) ? '[' . $key . ']' : (string) $key;
+
+            if (is_array($value) && $depth < 2 && $value !== []) {
+                $parts[] = $label . '{' . self::describe_shape($value, $depth + 1) . '}';
+                continue;
+            }
+
+            $parts[] = $label;
+        }
+
+        return implode(',', $parts);
     }
 
     /**

@@ -132,6 +132,47 @@ $check('bare playlist id', AparatClient::normalize_playlist('1234567'), '1234567
 $check('a channel url is not a playlist', AparatClient::normalize_playlist('https://www.aparat.com/mychannel'), '');
 $check('empty input', AparatClient::normalize_playlist('  '), '');
 
+echo "\nAparat playlist payloads — two routes answered 200 with JSON the first\n";
+echo "  parser did not recognise, so extraction now searches the whole tree.\n";
+
+$stvh_flat = ['playlist' => ['videos' => [
+    ['uid' => 'aaa', 'title' => 'یک'],
+    ['uid' => 'bbb', 'title' => 'دو'],
+]]];
+$check('finds videos nested two levels down', count(AparatClient::extract_playlist_items($stvh_flat)), 2);
+
+$stvh_jsonapi = ['data' => [
+    'type'       => 'Playlist',
+    'id'         => '1058203',
+    'attributes' => ['title' => 'فهرست من'],
+    'videos'     => [
+        ['type' => 'Video', 'id' => '1', 'attributes' => ['uid' => 'ccc', 'title' => 'سه']],
+    ],
+]];
+$stvh_found = AparatClient::extract_playlist_items($stvh_jsonapi);
+$check('unwraps JSON:API attributes', count($stvh_found), 1);
+$check('and returns the inner fields', $stvh_found[0]['uid'], 'ccc');
+
+$stvh_meta_only = ['playlist' => ['id' => '1058203', 'title' => 'فهرست من', 'cnt' => '12']];
+$check('playlist metadata is not mistaken for a video', AparatClient::extract_playlist_items($stvh_meta_only), []);
+
+$stvh_owner = [
+    'playlist' => ['id' => '1058203', 'title' => 'فهرست'],
+    'user'     => ['id' => '99', 'name' => 'کانال'],
+    'list'     => [['id' => '7', 'title' => 'چهار', 'big_poster' => 'https://x/y.jpg']],
+];
+$stvh_found = AparatClient::extract_playlist_items($stvh_owner);
+$check('a bare id needs a video-only field to count', count($stvh_found), 1);
+$check('and it is the video, not the playlist or the owner', $stvh_found[0]['title'], 'چهار');
+
+$check('an unrecognisable body yields nothing', AparatClient::extract_playlist_items(['ui' => ['theme' => 'dark']]), []);
+
+$check(
+    'the shape report names the keys that came back',
+    AparatClient::describe_shape(['playlist' => ['id' => 1, 'title' => 'x'], 'ui' => ['theme' => 'dark']]),
+    'playlist{id,title},ui{theme}'
+);
+
 echo "\nFormat::slug — the real titles that produced unusable slugs\n";
 $check(
     'drops the Persian question mark and the author suffix',
