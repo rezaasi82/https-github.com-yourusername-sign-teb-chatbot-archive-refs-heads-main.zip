@@ -187,6 +187,20 @@ $stvh_loose = AparatClient::extract_playlist_ids('<a href="/v/ccc333">سه</a><a
 $check('without the id, every video link is taken', $stvh_loose['ids'], ['ccc333']);
 $check('and the caller is told the match was loose', $stvh_loose['strict'], false);
 
+// The real page returned 200 with no /v/ links at all — a browser-rendered
+// shell that ships its data as JSON instead of markup.
+$stvh_shell = '<script>window.__NUXT__={"videos":[{"uid":"eee555","title":"x"},{"uid":"fff666"}]}</script>';
+$stvh_json  = AparatClient::extract_playlist_ids($stvh_shell, '1058203');
+$check('a JS-rendered page is read through its embedded JSON', $stvh_json['ids'], ['eee555', 'fff666']);
+$check('which route produced the ids is reported', $stvh_json['via'], 'json');
+$check('and JSON matches are never called exact', $stvh_json['strict'], false);
+
+$check(
+    'links win over embedded JSON when both carry the playlist id',
+    AparatClient::extract_playlist_ids($stvh_html . $stvh_shell, '1058203')['via'],
+    'link+id'
+);
+
 $stvh_escaped = AparatClient::extract_playlist_ids('{"url":"https:\\/\\/www.aparat.com\\/v\\/ddd444\\/list\\/1058203"}', '1058203');
 $check('slashes escaped inside embedded JSON still match', $stvh_escaped['ids'], ['ddd444']);
 

@@ -38,12 +38,20 @@ class AparatClient
      * works in production lives there.
      */
     private const PLAYLIST_CANDIDATES = [
-        'https://www.aparat.com/etc/api/playlist/id/%s',
-        'https://www.aparat.com/etc/api/playlistVideos/id/%s',
-        'https://www.aparat.com/etc/api/playlist/id/%s/perpage/100',
-        'https://www.aparat.com/etc/api/playlistVideos/id/%s/perpage/100',
+        // Path-segment style, as used by the working channel endpoint.
         'https://www.aparat.com/api/fa/v1/video/playlist/getone/id/%s',
         'https://www.aparat.com/api/fa/v1/video/playlist/listbyid/playlist_id/%s',
+        // Query-string style. The 405s above are consistent with a route that
+        // exists but rejects the request as shaped, so the same names are
+        // retried the other way before giving up on them.
+        'https://www.aparat.com/api/fa/v1/video/playlist/getone?id=%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/listbyid?playlist_id=%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/list?playlist_id=%s',
+        // The /etc/ family answers "username or password missing", so it is an
+        // authenticated API rather than a public one. Kept last and only for
+        // completeness — it is not expected to work without credentials.
+        'https://www.aparat.com/etc/api/playlist/id/%s',
+        'https://www.aparat.com/etc/api/playlistVideos/id/%s',
     ];
 
     /** The public playlist page — no API, no key, just HTML. */
@@ -218,8 +226,13 @@ class AparatClient
 
         $response = wp_remote_get(sprintf(self::PLAYLIST_PAGE, rawurlencode($playlist_id)), [
             'timeout'    => self::TIMEOUT,
-            'user-agent' => 'SignTeb-Video-Hub/' . STVH_VERSION . '; ' . home_url('/'),
-            'headers'    => ['Accept' => 'text/html,application/xhtml+xml'],
+            // The conventional identified-crawler form. A bare product token
+            // is what many CDNs treat as unknown and serve an empty shell to.
+            'user-agent' => 'Mozilla/5.0 (compatible; SignTeb-Video-Hub/' . STVH_VERSION . '; +' . home_url('/') . ')',
+            'headers'    => [
+                'Accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language' => 'fa-IR,fa;q=0.9,en;q=0.8',
+            ],
         ]);
 
         if (is_wp_error($response)) {
@@ -235,22 +248,28 @@ class AparatClient
         $found = self::extract_playlist_ids($html, $playlist_id);
 
         if ($found['ids'] === []) {
-            return ['ok' => false, 'ids' => [], 'error' => 'در صفحه‌ی فهرست پخش هیچ آدرس ویدئویی پیدا نشد.'];
+            return [
+                'ok'    => false,
+                'ids'   => [],
+                'error' => 'در صفحه‌ی فهرست پخش شناسه‌ی ویدئویی پیدا نشد — ' . self::page_fingerprint($html),
+            ];
         }
 
-        return ['ok' => true, 'ids' => $found['ids'], 'strict' => $found['strict']];
+        return ['ok' => true, 'ids' => $found['ids'], 'strict' => $found['strict'], 'via' => $found['via']];
     }
 
     /**
      * Video hashes in playlist-page markup, most reliable form first.
      *
-     * A video that belongs to the playlist is linked with the playlist id in
-     * its own URL (`/v/{hash}/list/{playlist_id}`). Those matches are exact.
-     * Only when none exist do we fall back to every `/v/{hash}` on the page,
-     * which can also catch sidebar and related-video links — `strict` says
-     * which of the two produced the result, so callers can be honest about it.
+     * A page that renders on the server links each video with the playlist id
+     * in its own URL (`/v/{hash}/list/{playlist_id}`); those matches are
+     * exact. A page that renders in the browser has no links at all, but ships
+     * its data as JSON in the markup, where videos appear as `"uid":"…"`. Both
+     * are read, because which one arrives depends on what Aparat decides to
+     * serve. `strict` reports whether the playlist id actually backed the
+     * match, so a caller never presents a loose result as a certain one.
      *
-     * @return array{ids:array<int,string>,strict:bool}
+     * @return array{ids:array<int,string>,strict:bool,via:string}
      */
     public static function extract_playlist_ids(string $html, string $playlist_id): array
     {
@@ -261,12 +280,44 @@ class AparatClient
             '~/v/([A-Za-z0-9_-]{4,24})[^"\'\s<>]*' . preg_quote($playlist_id, '~') . '~',
             $html
         );
-
         if ($strict !== []) {
-            return ['ids' => $strict, 'strict' => true];
+            return ['ids' => $strict, 'strict' => true, 'via' => 'link+id'];
         }
 
-        return ['ids' => self::match_ids('~/v/([A-Za-z0-9_-]{4,24})~', $html), 'strict' => false];
+        $embedded = self::match_ids('~"(?:uid|videohash|video_hash)"\s*:\s*"([A-Za-z0-9_-]{4,24})"~', $html);
+        if ($embedded !== []) {
+            return ['ids' => $embedded, 'strict' => false, 'via' => 'json'];
+        }
+
+        $links = self::match_ids('~/v/([A-Za-z0-9_-]{4,24})~', $html);
+
+        return ['ids' => $links, 'strict' => false, 'via' => $links === [] ? '' : 'link'];
+    }
+
+    /**
+     * What a page contained, when it contained no ids.
+     *
+     * "No videos found" is not a diagnosis. An empty shell, a JS challenge and
+     * a redirect all look identical from the outside, and they need different
+     * fixes — so report the evidence rather than the conclusion.
+     */
+    private static function page_fingerprint(string $html): string
+    {
+        $markers = [];
+        foreach (['__NUXT__', '__NEXT_DATA__', 'aparat.com/v/', '"uid"', 'ld+json', 'captcha', 'cf-chl', 'noscript'] as $needle) {
+            if (stripos($html, $needle) !== false) {
+                $markers[] = $needle;
+            }
+        }
+
+        $title = preg_match('~<title[^>]*>(.*?)</title>~is', $html, $m) ? trim(wp_strip_all_tags($m[1])) : '';
+
+        return sprintf(
+            '%s بایت%s%s',
+            number_format_i18n(strlen($html)),
+            $title !== '' ? '، عنوان: «' . mb_substr($title, 0, 60) . '»' : '',
+            $markers === [] ? '، بدون نشانه‌ی شناخته‌شده' : '، شامل: ' . implode(' ', $markers)
+        );
     }
 
     /**

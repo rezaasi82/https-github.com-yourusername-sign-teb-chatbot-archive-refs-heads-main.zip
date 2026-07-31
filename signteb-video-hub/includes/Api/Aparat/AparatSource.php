@@ -113,7 +113,7 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
      * against the channel list, so every field still comes from the payload
      * the importer already parses.
      *
-     * @return array{videos:array<int,VideoDto>,error:string,route:string}
+     * @return array{videos:array<int,VideoDto>,error:string,route:string,found?:int}
      */
     private function fetch_playlist(string $playlist, int $limit, bool $force = false): array
     {
@@ -147,6 +147,7 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
             'videos' => $this->to_dtos($matched, $limit),
             'error'  => '',
             'route'  => ($page['strict'] ?? false) ? 'page' : 'page-loose',
+            'found'  => count($page['ids']),
         ];
     }
 
@@ -247,10 +248,12 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
                 'api'   => sprintf('فهرست پخش %s از API خوانده شد — %d ویدئو.', $id, $count),
                 'page'  => sprintf('فهرست پخش %s از صفحه‌ی آپارات خوانده شد — %d ویدئو.', $id, $count),
                 default => sprintf(
-                    'فهرست پخش %s خوانده شد — %d ویدئو. توجه: لینک‌های صفحه شناسه‌ی فهرست را نداشتند،'
-                        . ' پس ممکن است ویدئوهای پیشنهادی صفحه هم شمرده شده باشند؛ اگر این عدد از فهرست شما بیشتر است بگویید.',
+                    'فهرست پخش %s خوانده شد — %d ویدئو (از %d شناسه‌ی پیداشده در صفحه).'
+                        . ' توجه: صفحه شناسه‌ی فهرست را کنار لینک‌ها نداشت، پس ممکن است ویدئوهای پیشنهادی هم شمرده شده باشند —'
+                        . ' اگر این عدد با فهرست شما نمی‌خواند بگویید.',
                     $id,
-                    $count
+                    $count,
+                    (int) ($result['found'] ?? $count)
                 ),
             },
         ];
