@@ -3,6 +3,7 @@
 namespace SignTeb\VideoHub\Api\Youtube;
 
 use SignTeb\VideoHub\Api\VideoDto;
+use SignTeb\VideoHub\Api\DeadlineAwareInterface;
 use SignTeb\VideoHub\Api\PlaylistAwareInterface;
 use SignTeb\VideoHub\Api\VideoSourceInterface;
 use SignTeb\VideoHub\Core\Logger;
@@ -19,14 +20,20 @@ if (! defined('ABSPATH')) {
  * Reads the channel's "uploads" playlist rather than search.list: it costs
  * 1 quota unit instead of 100 and returns items in true upload order.
  */
-class YoutubeSource implements VideoSourceInterface, PlaylistAwareInterface
+class YoutubeSource implements VideoSourceInterface, PlaylistAwareInterface, DeadlineAwareInterface
 {
     public const ID = 'youtube';
 
     private const API_BASE = 'https://www.googleapis.com/youtube/v3/';
     private const TIMEOUT  = 12;
 
+    /** Below this there is no point starting a request; it would only time out. */
+    private const MIN_TIMEOUT = 3;
+
     private Settings $settings;
+
+    /** Wall-clock instant after which no new request may start. */
+    private ?float $deadline = null;
 
     public function __construct(?Settings $settings = null)
     {
@@ -36,6 +43,11 @@ class YoutubeSource implements VideoSourceInterface, PlaylistAwareInterface
     public function id(): string
     {
         return self::ID;
+    }
+
+    public function set_deadline(?float $deadline): void
+    {
+        $this->deadline = $deadline;
     }
 
     public function label(): string
@@ -297,8 +309,20 @@ class YoutubeSource implements VideoSourceInterface, PlaylistAwareInterface
         $params['key'] = $this->api_key();
         $url           = self::API_BASE . $endpoint . '?' . http_build_query($params);
 
+        // A sync hands down a deadline; a request that cannot finish inside it
+        // is not started, because holding the connection open is what turns a
+        // cron tick running inside a visitor request into a timed-out page.
+        $timeout = self::TIMEOUT;
+        if ($this->deadline !== null) {
+            $left = $this->deadline - microtime(true);
+            if ($left < self::MIN_TIMEOUT) {
+                return ['ok' => false, 'body' => [], 'error' => 'مهلت این اجرا تمام شد؛ ادامه در اجرای بعدی.'];
+            }
+            $timeout = (int) min(self::TIMEOUT, floor($left));
+        }
+
         $response = wp_remote_get($url, [
-            'timeout' => self::TIMEOUT,
+            'timeout' => $timeout,
             'headers' => ['Accept' => 'application/json'],
         ]);
 

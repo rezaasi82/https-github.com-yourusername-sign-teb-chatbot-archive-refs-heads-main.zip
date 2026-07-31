@@ -2,6 +2,7 @@
 
 namespace SignTeb\VideoHub\Sync;
 
+use SignTeb\VideoHub\Api\DeadlineAwareInterface;
 use SignTeb\VideoHub\Api\SourceManager;
 use SignTeb\VideoHub\Api\VideoDto;
 use SignTeb\VideoHub\Api\VideoSourceInterface;
@@ -29,6 +30,9 @@ if (! defined('ABSPATH')) {
  */
 class SyncManager
 {
+    /** Seconds of the budget held back from fetching, for the import loop. */
+    private const IMPORT_RESERVE = 10;
+
     private Settings $settings;
     private SourceManager $sources;
     private VideoRepository $videos;
@@ -106,6 +110,14 @@ class SyncManager
     {
         $started = microtime(true);
         $limit   = max(1, $this->settings->int('sync_limit'));
+
+        // Fetching is the slowest part of a sync and it happens before the
+        // first budget check below, so the budget has to reach inside it.
+        // Leaving room for at least one import is deliberate: a run that spends
+        // everything on fetching and imports nothing never makes progress.
+        if ($this->budget !== null && $source instanceof DeadlineAwareInterface) {
+            $source->set_deadline($this->budget->deadline() - self::IMPORT_RESERVE);
+        }
 
         $fetched = $source->fetch($limit);
         if (! $fetched['ok']) {

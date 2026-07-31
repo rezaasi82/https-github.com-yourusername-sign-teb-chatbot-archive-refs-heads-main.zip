@@ -59,6 +59,15 @@ class Budget
     }
 
     /**
+     * The wall-clock instant this budget expires, for collaborators that hold
+     * their own clock rather than a reference to the budget.
+     */
+    public function deadline(): float
+    {
+        return $this->started + $this->seconds;
+    }
+
+    /**
      * A per-request HTTP timeout that cannot outlast the budget itself.
      */
     public function http_timeout(int $preferred): int

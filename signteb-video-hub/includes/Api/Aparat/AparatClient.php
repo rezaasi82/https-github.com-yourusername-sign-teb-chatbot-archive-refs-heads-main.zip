@@ -73,6 +73,32 @@ class AparatClient
      */
     private const PROBE_BUDGET = 15;
 
+    /** Below this there is no point starting a request; it would only time out. */
+    private const MIN_TIMEOUT = 3;
+
+    /** Wall-clock instant after which no new request may start. */
+    private ?float $deadline = null;
+
+    public function set_deadline(?float $deadline): void
+    {
+        $this->deadline = $deadline;
+    }
+
+    /**
+     * Seconds this call may take, or null when the deadline has already
+     * passed and the call must not be made at all.
+     */
+    private function budgeted_timeout(int $preferred): ?int
+    {
+        if ($this->deadline === null) {
+            return $preferred;
+        }
+
+        $left = $this->deadline - microtime(true);
+
+        return $left >= self::MIN_TIMEOUT ? (int) min($preferred, floor($left)) : null;
+    }
+
     /**
      * Raw video list for a channel, newest first.
      *
@@ -181,22 +207,27 @@ class AparatClient
         }
 
         $known = get_transient(self::ENDPOINT_CACHE);
+        $known = is_string($known) && $known !== '' && $known !== self::ENDPOINT_NONE ? $known : '';
 
-        // A completed probe that found nothing is worth remembering. Without
-        // this, every sync would spend the whole probe budget rediscovering
-        // the same dead ends before falling back.
-        if (! $force && $known === self::ENDPOINT_NONE) {
-            return [
-                'ok'    => false,
-                'items' => [],
-                'error' => 'مسیر API فهرست پخش قبلاً بررسی و رد شده است (تا ۲۴ ساعت دوباره بررسی نمی‌شود).',
-            ];
+        // Discovery is an admin action, never a background one. A sync gets one
+        // request against an endpoint already known to work — trying nine in a
+        // row is exactly the kind of unbounded work that turns a cron tick into
+        // an unreachable site, and it would repeat on every single run.
+        if (! $force) {
+            if ($known === '') {
+                return [
+                    'ok'    => false,
+                    'items' => [],
+                    'error' => 'مسیر API فهرست پخش شناخته‌شده نیست؛ کشف مسیر فقط با دکمه‌ی «تست فهرست پخش» انجام می‌شود.',
+                ];
+            }
+
+            $order = [$known];
+        } else {
+            $order = $known !== ''
+                ? array_merge([$known], array_diff(self::PLAYLIST_CANDIDATES, [$known]))
+                : self::PLAYLIST_CANDIDATES;
         }
-
-        // A known-good endpoint is reused directly; only the first run probes.
-        $order = is_string($known) && $known !== '' && $known !== self::ENDPOINT_NONE
-            ? array_merge([$known], array_diff(self::PLAYLIST_CANDIDATES, [$known]))
-            : self::PLAYLIST_CANDIDATES;
 
         $errors   = [];
         $deadline = microtime(true) + self::PROBE_BUDGET;
@@ -242,7 +273,12 @@ class AparatClient
             ];
         }
 
-        set_transient(self::ENDPOINT_CACHE, self::ENDPOINT_NONE, DAY_IN_SECONDS);
+        // Only a full pass may conclude that nothing works. A single failed
+        // request during a sync says nothing about the other candidates, and
+        // must not discard an endpoint that was proven to work.
+        if ($force) {
+            set_transient(self::ENDPOINT_CACHE, self::ENDPOINT_NONE, DAY_IN_SECONDS);
+        }
 
         return [
             'ok'    => false,
@@ -269,8 +305,13 @@ class AparatClient
             return ['ok' => false, 'ids' => [], 'error' => 'شناسه فهرست پخش معتبر نیست.'];
         }
 
+        $timeout = $this->budgeted_timeout(self::TIMEOUT);
+        if ($timeout === null) {
+            return ['ok' => false, 'ids' => [], 'error' => 'مهلت این اجرا تمام شد؛ ادامه در اجرای بعدی.'];
+        }
+
         $response = wp_remote_get(sprintf(self::PLAYLIST_PAGE, rawurlencode($playlist_id)), [
-            'timeout'    => self::TIMEOUT,
+            'timeout'    => $timeout,
             // The conventional identified-crawler form. A bare product token
             // is what many CDNs treat as unknown and serve an empty shell to.
             'user-agent' => 'Mozilla/5.0 (compatible; SignTeb-Video-Hub/' . STVH_VERSION . '; +' . home_url('/') . ')',
@@ -559,8 +600,13 @@ class AparatClient
      */
     private function request(string $url, ?int $timeout = null): array
     {
+        $timeout = $this->budgeted_timeout($timeout ?? self::TIMEOUT);
+        if ($timeout === null) {
+            return ['ok' => false, 'body' => [], 'error' => 'مهلت این اجرا تمام شد؛ ادامه در اجرای بعدی.'];
+        }
+
         $response = wp_remote_get($url, [
-            'timeout'    => $timeout ?? self::TIMEOUT,
+            'timeout'    => $timeout,
             'user-agent' => 'SignTeb-Video-Hub/' . STVH_VERSION . '; ' . home_url('/'),
             'headers'    => ['Accept' => 'application/json'],
         ]);

@@ -2,9 +2,11 @@
 
 namespace SignTeb\VideoHub\Api\Aparat;
 
+use SignTeb\VideoHub\Api\DeadlineAwareInterface;
 use SignTeb\VideoHub\Api\VideoDto;
 use SignTeb\VideoHub\Api\PlaylistAwareInterface;
 use SignTeb\VideoHub\Api\VideoSourceInterface;
+use SignTeb\VideoHub\Core\Budget;
 use SignTeb\VideoHub\Core\Logger;
 use SignTeb\VideoHub\Core\Settings;
 
@@ -16,7 +18,7 @@ if (! defined('ABSPATH')) {
  * Maps Aparat payloads onto VideoDto. Field names differ between the v1 and
  * legacy endpoints, so every read goes through pick() with a candidate list.
  */
-class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
+class AparatSource implements VideoSourceInterface, PlaylistAwareInterface, DeadlineAwareInterface
 {
     public const ID = 'aparat';
 
@@ -32,6 +34,11 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
     public function id(): string
     {
         return self::ID;
+    }
+
+    public function set_deadline(?float $deadline): void
+    {
+        $this->client->set_deadline($deadline);
     }
 
     public function label(): string
@@ -257,6 +264,11 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
      */
     public function test_playlist(): array
     {
+        // A full probe plus a page fetch plus a channel fetch can outlast PHP's
+        // own execution limit, and an admin screen that dies mid-request is no
+        // better than a sync that does. Budget clamps itself to that limit.
+        $this->client->set_deadline((new Budget(25))->deadline());
+
         // The manual list outranks the URL at sync time, so it is what a test
         // must report on when both are filled — otherwise the test would
         // describe a route the sync will never take.

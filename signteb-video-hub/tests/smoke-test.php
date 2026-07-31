@@ -424,6 +424,51 @@ $stvh_none = $stvh_manual('zzz999, yyy888', 'https://www.aparat.com/playlist/123
 $check('a list that matches nothing falls through to the playlist', count($stvh_none['videos']), 1);
 $check('and that fallback is the playlist result', $stvh_none['videos'][0]->title, 'از فهرست پخش');
 
+echo "\nDeadlines — the sync budget has to reach inside the fetch, because the\n";
+echo "  fetch happens before the first budget check.\n";
+
+/** Records the timeout each request would have used, without making any. */
+final class StvhTimeoutSpyClient extends AparatClient
+{
+    /** @var array<int,int|null> */
+    public array $timeouts = [];
+
+    public function probe(int $preferred): void
+    {
+        $this->timeouts[] = $this->public_budgeted_timeout($preferred);
+    }
+
+    public function public_budgeted_timeout(int $preferred): ?int
+    {
+        // Mirrors request()'s first step; the private method is what ships.
+        $reflection = new ReflectionMethod(AparatClient::class, 'budgeted_timeout');
+        $reflection->setAccessible(true);
+
+        return $reflection->invoke($this, $preferred);
+    }
+}
+
+$stvh_spy = new StvhTimeoutSpyClient();
+$stvh_spy->set_deadline(null);
+$check('without a deadline the preferred timeout stands', $stvh_spy->public_budgeted_timeout(12), 12);
+
+$stvh_spy->set_deadline(microtime(true) + 30);
+$check('a distant deadline does not shorten it', $stvh_spy->public_budgeted_timeout(12), 12);
+
+// Rounded down, never up: a timeout that outlasts the deadline defeats it.
+$stvh_spy->set_deadline(microtime(true) + 7);
+$check('a near deadline clamps it, rounding down', $stvh_spy->public_budgeted_timeout(12), 6);
+
+$stvh_spy->set_deadline(microtime(true) + 1);
+$check('and a spent deadline refuses the request outright', $stvh_spy->public_budgeted_timeout(12), null);
+
+$stvh_spy->set_deadline(microtime(true) - 5);
+$check('a deadline already passed refuses too', $stvh_spy->public_budgeted_timeout(12), null);
+
+$stvh_budget = new SignTeb\VideoHub\Core\Budget(20);
+$check('a budget exposes the instant it expires', $stvh_budget->deadline() > microtime(true), true);
+$check('and that instant is inside the budget window', $stvh_budget->deadline() - microtime(true) <= 20.0, true);
+
 echo "\nVideoDto\n";
 $dto = VideoDto::from_array('aparat', [
     'source_id'    => 'abc',
