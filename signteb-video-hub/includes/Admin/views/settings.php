@@ -82,7 +82,7 @@ $checkbox = static function (string $key, string $label, array $values, string $
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="aparat_playlist"><?php esc_html_e('فقط یک فهرست آپارات', 'signteb-video-hub'); ?></label></th>
+                <th scope="row"><label for="aparat_playlist"><?php esc_html_e('فقط یک دسته از آپارات', 'signteb-video-hub'); ?></label></th>
                 <td>
                     <select id="aparat_playlist" name="aparat_playlist" data-stvh-playlist-select="aparat">
                         <option value=""><?php esc_html_e('کل کانال', 'signteb-video-hub'); ?></option>
@@ -91,15 +91,15 @@ $checkbox = static function (string $key, string $label, array $values, string $
                                 <?php
                                 printf(
                                     /* translators: %s: stored playlist id */
-                                    esc_html__('فهرست ذخیره‌شده (%s)', 'signteb-video-hub'),
+                                    esc_html__('دسته ذخیره‌شده (%s)', 'signteb-video-hub'),
                                     esc_html((string) $values['aparat_playlist'])
                                 );
                                 ?>
                             </option>
                         <?php endif; ?>
                     </select>
-                    <button type="button" class="button" data-stvh-playlists="aparat"><?php esc_html_e('بارگذاری فهرست‌ها', 'signteb-video-hub'); ?></button>
-                    <p class="description"><?php esc_html_e('اگر «کل کانال» بماند، همه ویدئوهای کانال وارد می‌شوند. برای دیدن فهرست‌ها اول شناسه کانال را ذخیره کنید.', 'signteb-video-hub'); ?></p>
+                    <button type="button" class="button" data-stvh-playlists="aparat"><?php esc_html_e('بارگذاری دسته‌ها', 'signteb-video-hub'); ?></button>
+                    <p class="description"><?php esc_html_e('دسته‌ها از روی ویدئوهای خود کانال استخراج می‌شوند؛ اول شناسه کانال را ذخیره کنید. «کل کانال» یعنی بدون فیلتر.', 'signteb-video-hub'); ?></p>
                 </td>
             </tr>
             <tr>

@@ -21,8 +21,6 @@ class AparatClient
     private const V1_ENDPOINT     = 'https://www.aparat.com/api/fa/v1/video/video/list/username/%s';
     private const LEGACY_ENDPOINT = 'https://www.aparat.com/etc/api/videoByUser/username/%s/perpage/%d';
     private const PROFILE_V1      = 'https://www.aparat.com/api/fa/v1/user/user/information/username/%s';
-    private const PLAYLISTS_V1    = 'https://www.aparat.com/api/fa/v1/video/playlist/getuserplaylist/username/%s';
-    private const PLAYLIST_V1     = 'https://www.aparat.com/api/fa/v1/video/playlist/one/playlist_id/%s';
 
     private const TIMEOUT = 12;
 
@@ -60,113 +58,6 @@ class AparatClient
         Logger::error('aparat', $error, ['username' => $username]);
 
         return ['ok' => false, 'items' => [], 'error' => $error];
-    }
-
-    /**
-     * Playlists published on a channel.
-     *
-     * @return array{ok:bool,items:array<int,array{id:string,title:string,count:int}>,error?:string}
-     */
-    public function playlists_by_username(string $username): array
-    {
-        $username = self::normalize_username($username);
-        if ($username === '') {
-            return ['ok' => false, 'items' => [], 'error' => 'نام کانال آپارات خالی است.'];
-        }
-
-        $response = $this->request(sprintf(self::PLAYLISTS_V1, rawurlencode($username)));
-        if (! $response['ok']) {
-            return ['ok' => false, 'items' => [], 'error' => $response['error'] ?? 'دریافت فهرست‌ها ناموفق بود.'];
-        }
-
-        $items = [];
-        foreach ((array) ($response['body']['data'] ?? []) as $record) {
-            if (! is_array($record)) {
-                continue;
-            }
-            $attributes = $record['attributes'] ?? $record;
-            $id         = (string) ($record['id'] ?? $attributes['id'] ?? '');
-            $title      = trim((string) ($attributes['title'] ?? $attributes['name'] ?? ''));
-
-            if ($id === '' || $title === '') {
-                continue;
-            }
-
-            $items[] = [
-                'id'    => $id,
-                'title' => $title,
-                'count' => (int) ($attributes['cnt'] ?? $attributes['video_cnt'] ?? $attributes['count'] ?? 0),
-            ];
-        }
-
-        return $items === []
-            ? ['ok' => false, 'items' => [], 'error' => 'این کانال فهرستی ندارد یا ساختار پاسخ شناخته نشد.']
-            : ['ok' => true, 'items' => $items];
-    }
-
-    /**
-     * Videos inside one playlist.
-     *
-     * @return array{ok:bool,items:array<int,array<string,mixed>>,error?:string}
-     */
-    public function videos_by_playlist(string $playlist_id, int $limit): array
-    {
-        $playlist_id = trim($playlist_id);
-        if ($playlist_id === '') {
-            return ['ok' => false, 'items' => [], 'error' => 'شناسه فهرست خالی است.'];
-        }
-
-        $response = $this->request(sprintf(self::PLAYLIST_V1, rawurlencode($playlist_id)));
-        if (! $response['ok']) {
-            return ['ok' => false, 'items' => [], 'error' => $response['error'] ?? 'دریافت فهرست ناموفق بود.'];
-        }
-
-        $items = $this->extract_playlist_items($response['body']);
-
-        return $items === []
-            ? ['ok' => false, 'items' => [], 'error' => 'فهرست خالی بود یا ساختار پاسخ شناخته نشد.']
-            : ['ok' => true, 'items' => array_slice($items, 0, max(1, min(100, $limit)))];
-    }
-
-    /**
-     * Aparat nests playlist videos a level deeper than the channel list, and
-     * the exact shape has moved between API revisions — so every plausible
-     * container is checked rather than assuming one.
-     *
-     * @param array<mixed> $body
-     * @return array<int,array<string,mixed>>
-     */
-    private function extract_playlist_items(array $body): array
-    {
-        $candidates = [
-            $body['data']['attributes']['videos'] ?? null,
-            $body['data']['videos'] ?? null,
-            $body['included'] ?? null,
-            $body['videos'] ?? null,
-        ];
-
-        foreach ($candidates as $candidate) {
-            if (! is_array($candidate) || $candidate === []) {
-                continue;
-            }
-
-            $items = [];
-            foreach ($candidate as $record) {
-                if (! is_array($record)) {
-                    continue;
-                }
-                $attributes = $record['attributes'] ?? $record;
-                if (is_array($attributes) && ($attributes['uid'] ?? $attributes['id'] ?? null) !== null) {
-                    $items[] = $attributes;
-                }
-            }
-
-            if ($items !== []) {
-                return $items;
-            }
-        }
-
-        return [];
     }
 
     /**

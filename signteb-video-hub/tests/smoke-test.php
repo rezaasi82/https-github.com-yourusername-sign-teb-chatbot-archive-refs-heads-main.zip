@@ -45,6 +45,21 @@ function wp_parse_url($url, $component = -1)
 }
 
 // Mirrors the part of WordPress' sanitize_title() the slug builder relies on.
+function current_time($type = 'mysql')
+{
+    return $type === 'timestamp' ? time() : gmdate('Y-m-d H:i:s');
+}
+
+function update_option($key, $value, $autoload = null)
+{
+    return true;
+}
+
+function get_option($key, $default = false)
+{
+    return $GLOBALS['stvh_test_options'] ?? $default;
+}
+
 function sanitize_title($title)
 {
     $title = mb_strtolower(trim((string) $title));
@@ -57,6 +72,8 @@ require STVH_DIR . 'includes/Core/Autoloader.php';
 \SignTeb\VideoHub\Core\Autoloader::register();
 
 use SignTeb\VideoHub\Api\Aparat\AparatClient;
+use SignTeb\VideoHub\Api\Aparat\AparatSource;
+use SignTeb\VideoHub\Core\Settings;
 use SignTeb\VideoHub\Api\VideoDto;
 use SignTeb\VideoHub\Helpers\Format;
 use SignTeb\VideoHub\Helpers\Json;
@@ -133,6 +150,52 @@ $check(
 );
 $check('trims at a word boundary', Format::slug('یک دو سه چهار پنج شش هفت هشت نه ده', 20), 'یک-دو-سه-چهار-پنج');
 $check('empty title yields empty slug', Format::slug('!!! ???'), '');
+
+echo "\nAparat category filtering — the 405 from the playlist API forced this\n";
+echo "  onto the channel list, which is the payload the importer already reads.\n";
+
+/** A client stub returning a fixed payload, so no network is involved. */
+final class StvhStubAparatClient extends AparatClient
+{
+    /** @var array<int,array<string,mixed>> */
+    public array $items = [];
+
+    public function videos_by_username(string $username, int $limit): array
+    {
+        return ['ok' => true, 'items' => $this->items];
+    }
+}
+
+$stvh_items = [
+    ['uid' => 'a', 'title' => 'سلامت ۱', 'cat_id' => '12', 'cat_name' => 'سلامت'],
+    ['uid' => 'b', 'title' => 'آموزش ۱', 'cat_id' => '30', 'cat_name' => 'آموزش'],
+    ['uid' => 'c', 'title' => 'سلامت ۲', 'cat_id' => '12', 'cat_name' => 'سلامت'],
+];
+
+$stvh_source = static function (string $category, array $items): AparatSource {
+    $GLOBALS['stvh_test_options'] = ['aparat_username' => 'x', 'aparat_playlist' => $category];
+    $client        = new StvhStubAparatClient();
+    $client->items = $items;
+
+    return new AparatSource(new Settings(), $client);
+};
+
+$check('no filter imports the whole channel', count($stvh_source('', $stvh_items)->fetch(10)['videos']), 3);
+$check('a category imports only its own videos', count($stvh_source('cat:12', $stvh_items)->fetch(10)['videos']), 2);
+$check('and the correct ones', $stvh_source('cat:12', $stvh_items)->fetch(10)['videos'][0]->title, 'سلامت ۱');
+$check('a stale category falls back to the channel', count($stvh_source('cat:999', $stvh_items)->fetch(10)['videos']), 3);
+$check('the sync limit still applies after filtering', count($stvh_source('cat:12', $stvh_items)->fetch(1)['videos']), 1);
+
+$stvh_groups = $stvh_source('', $stvh_items)->playlists();
+$check('categories are derived from the video list', $stvh_groups['ok'], true);
+$check('one entry per distinct category', count($stvh_groups['items']), 2);
+$check('largest category first', $stvh_groups['items'][0]['title'], 'سلامت');
+
+$stvh_tagged = $stvh_source('', [['uid' => 'a', 'title' => 'v', 'tags' => ['کبد']]])->playlists();
+$check('falls back to the first tag when no category field exists', $stvh_tagged['items'][0]['title'], 'کبد');
+
+$stvh_bare = $stvh_source('', [['uid' => 'a', 'title' => 'v']])->playlists();
+$check('says so plainly when nothing groups the videos', $stvh_bare['ok'], false);
 
 echo "\nVideoDto\n";
 $dto = VideoDto::from_array('aparat', [

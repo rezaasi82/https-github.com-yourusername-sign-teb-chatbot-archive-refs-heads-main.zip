@@ -55,28 +55,37 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
             return ['ok' => false, 'videos' => [], 'error' => 'شناسه کانال آپارات تنظیم نشده است.'];
         }
 
-        $playlist = $this->selected_playlist();
+        $category = $this->selected_playlist();
 
-        if ($playlist !== '') {
-            $raw = $this->client->videos_by_playlist($playlist, $limit);
+        // Filtering happens over the channel list, so ask for more than the
+        // limit — otherwise a category holding a handful of videos would be
+        // starved by whatever happens to be newest.
+        $fetch_limit = $category !== '' ? 100 : $limit;
 
-            // A renamed or deleted playlist must not silently import nothing;
-            // falling back to the channel keeps the site populated and the
-            // error is surfaced by the connection test.
-            if (! $raw['ok']) {
-                Logger::warning('aparat', (string) ($raw['error'] ?? ''), ['playlist' => $playlist]);
-                $raw = $this->client->videos_by_username($this->username(), $limit);
-            }
-        } else {
-            $raw = $this->client->videos_by_username($this->username(), $limit);
-        }
-
+        $raw = $this->client->videos_by_username($this->username(), $fetch_limit);
         if (! $raw['ok']) {
             return ['ok' => false, 'videos' => [], 'error' => $raw['error'] ?? 'خطای نامشخص آپارات.'];
         }
 
+        $items = $raw['items'];
+        if ($category !== '') {
+            $matched = array_values(array_filter(
+                $items,
+                fn(array $item): bool => $this->category_key($item) === $category
+            ));
+
+            // An empty result means the category was renamed or emptied at the
+            // source. Import the channel rather than silently nothing, and say
+            // so in the log.
+            if ($matched === []) {
+                Logger::warning('aparat', 'دسته‌ی انتخاب‌شده ویدئویی نداشت؛ کل کانال وارد شد.', ['category' => $category]);
+            } else {
+                $items = $matched;
+            }
+        }
+
         $videos = [];
-        foreach ($raw['items'] as $item) {
+        foreach (array_slice($items, 0, $limit) as $item) {
             $dto = $this->to_dto($item);
             if ($dto !== null && $dto->is_valid()) {
                 $videos[] = $dto;
@@ -86,14 +95,104 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
         return ['ok' => true, 'videos' => $videos];
     }
 
+    /** The chosen category key, or '' for the whole channel. */
     public function selected_playlist(): string
     {
         return trim((string) $this->settings->get('aparat_playlist', ''));
     }
 
+    /**
+     * Categories present on the channel.
+     *
+     * Derived from the channel's own video list rather than a dedicated
+     * endpoint. Aparat's playlist routes could not be verified — the two
+     * documented-looking paths both answered 405 — and an unverifiable guess
+     * that fails at runtime is worse than none. This reads the exact payload
+     * the importer already parses successfully, so if videos import, the
+     * category list works too.
+     *
+     * @return array{ok:bool,items:array<int,array{id:string,title:string,count:int}>,error?:string}
+     */
     public function playlists(): array
     {
-        return $this->client->playlists_by_username($this->username());
+        if (! $this->is_configured()) {
+            return ['ok' => false, 'items' => [], 'error' => 'شناسه کانال آپارات تنظیم نشده است.'];
+        }
+
+        $raw = $this->client->videos_by_username($this->username(), 100);
+        if (! $raw['ok']) {
+            return ['ok' => false, 'items' => [], 'error' => $raw['error'] ?? 'دریافت ویدئوهای کانال ناموفق بود.'];
+        }
+
+        $groups = [];
+        foreach ($raw['items'] as $item) {
+            $key = $this->category_key($item);
+            if ($key === '') {
+                continue;
+            }
+
+            if (! isset($groups[$key])) {
+                $groups[$key] = ['id' => $key, 'title' => $this->category_title($item, $key), 'count' => 0];
+            }
+            $groups[$key]['count']++;
+        }
+
+        if ($groups === []) {
+            return [
+                'ok'    => false,
+                'items' => [],
+                'error' => 'آپارات برای ویدئوهای این کانال دسته‌بندی برنگرداند.',
+            ];
+        }
+
+        // Biggest first: the category an admin wants is usually the main one.
+        usort($groups, static fn(array $a, array $b): int => $b['count'] <=> $a['count']);
+
+        return ['ok' => true, 'items' => array_values($groups)];
+    }
+
+    /**
+     * A stable key for a video's category. Aparat has used several field
+     * names across API revisions, so each candidate is tried in turn and the
+     * first tag is the last resort.
+     *
+     * @param array<string,mixed> $item
+     */
+    private function category_key(array $item): string
+    {
+        $id = (string) $this->pick($item, ['cat_id', 'catId', 'category_id', 'cat']);
+        if ($id !== '') {
+            return 'cat:' . $id;
+        }
+
+        $name = (string) $this->pick($item, ['cat_name', 'catName', 'category', 'category_name']);
+        if ($name !== '') {
+            return 'cat:' . sanitize_title($name);
+        }
+
+        $tags = $this->tags($item);
+
+        return $tags === [] ? '' : 'tag:' . sanitize_title($tags[0]);
+    }
+
+    /**
+     * @param array<string,mixed> $item
+     */
+    private function category_title(array $item, string $key): string
+    {
+        $name = trim((string) $this->pick($item, ['cat_name', 'catName', 'category', 'category_name']));
+        if ($name !== '') {
+            return $name;
+        }
+
+        if (str_starts_with($key, 'tag:')) {
+            $tags = $this->tags($item);
+            if ($tags !== []) {
+                return $tags[0];
+            }
+        }
+
+        return $key;
     }
 
     public function test_connection(): array

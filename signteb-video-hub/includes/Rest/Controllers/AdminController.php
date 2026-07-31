@@ -194,8 +194,10 @@ class AdminController
             'ok'        => (bool) $result['ok'],
             'message'   => $result['ok']
                 ? sprintf(
-                    /* translators: %s: number of playlists found */
-                    __('%s فهرست پیدا شد.', 'signteb-video-hub'),
+                    /* translators: %s: number of groups found */
+                    $id === 'aparat'
+                        ? __('%s دسته پیدا شد.', 'signteb-video-hub')
+                        : __('%s پلی‌لیست پیدا شد.', 'signteb-video-hub'),
                     number_format_i18n(count($result['items']))
                 )
                 : (string) ($result['error'] ?? __('دریافت فهرست‌ها ناموفق بود.', 'signteb-video-hub')),
