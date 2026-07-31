@@ -82,10 +82,52 @@ $checkbox = static function (string $key, string $label, array $values, string $
                 </td>
             </tr>
             <tr>
+                <th scope="row"><label for="aparat_playlist"><?php esc_html_e('فقط یک فهرست آپارات', 'signteb-video-hub'); ?></label></th>
+                <td>
+                    <select id="aparat_playlist" name="aparat_playlist" data-stvh-playlist-select="aparat">
+                        <option value=""><?php esc_html_e('کل کانال', 'signteb-video-hub'); ?></option>
+                        <?php if ((string) $values['aparat_playlist'] !== '') : ?>
+                            <option value="<?php echo esc_attr((string) $values['aparat_playlist']); ?>" selected>
+                                <?php
+                                printf(
+                                    /* translators: %s: stored playlist id */
+                                    esc_html__('فهرست ذخیره‌شده (%s)', 'signteb-video-hub'),
+                                    esc_html((string) $values['aparat_playlist'])
+                                );
+                                ?>
+                            </option>
+                        <?php endif; ?>
+                    </select>
+                    <button type="button" class="button" data-stvh-playlists="aparat"><?php esc_html_e('بارگذاری فهرست‌ها', 'signteb-video-hub'); ?></button>
+                    <p class="description"><?php esc_html_e('اگر «کل کانال» بماند، همه ویدئوهای کانال وارد می‌شوند. برای دیدن فهرست‌ها اول شناسه کانال را ذخیره کنید.', 'signteb-video-hub'); ?></p>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row"><label for="youtube_channel"><?php esc_html_e('کانال یوتیوب', 'signteb-video-hub'); ?></label></th>
                 <td>
                     <input type="text" id="youtube_channel" name="youtube_channel" value="<?php echo esc_attr((string) $values['youtube_channel']); ?>" class="regular-text" dir="ltr" placeholder="UC… یا ‎@handle">
                     <button type="button" class="button" data-stvh-test="youtube"><?php esc_html_e('تست اتصال', 'signteb-video-hub'); ?></button>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="youtube_playlist"><?php esc_html_e('فقط یک پلی‌لیست یوتیوب', 'signteb-video-hub'); ?></label></th>
+                <td>
+                    <select id="youtube_playlist" name="youtube_playlist" data-stvh-playlist-select="youtube">
+                        <option value=""><?php esc_html_e('کل کانال', 'signteb-video-hub'); ?></option>
+                        <?php if ((string) $values['youtube_playlist'] !== '') : ?>
+                            <option value="<?php echo esc_attr((string) $values['youtube_playlist']); ?>" selected>
+                                <?php
+                                printf(
+                                    /* translators: %s: stored playlist id */
+                                    esc_html__('پلی‌لیست ذخیره‌شده (%s)', 'signteb-video-hub'),
+                                    esc_html((string) $values['youtube_playlist'])
+                                );
+                                ?>
+                            </option>
+                        <?php endif; ?>
+                    </select>
+                    <button type="button" class="button" data-stvh-playlists="youtube"><?php esc_html_e('بارگذاری پلی‌لیست‌ها', 'signteb-video-hub'); ?></button>
+                    <p class="description"><?php esc_html_e('برای بارگذاری، کانال و کلید API باید ذخیره شده باشند.', 'signteb-video-hub'); ?></p>
                 </td>
             </tr>
             <tr>

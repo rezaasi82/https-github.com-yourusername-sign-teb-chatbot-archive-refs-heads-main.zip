@@ -3,6 +3,7 @@
 namespace SignTeb\VideoHub\Api\Youtube;
 
 use SignTeb\VideoHub\Api\VideoDto;
+use SignTeb\VideoHub\Api\PlaylistAwareInterface;
 use SignTeb\VideoHub\Api\VideoSourceInterface;
 use SignTeb\VideoHub\Core\Logger;
 use SignTeb\VideoHub\Core\Settings;
@@ -18,7 +19,7 @@ if (! defined('ABSPATH')) {
  * Reads the channel's "uploads" playlist rather than search.list: it costs
  * 1 quota unit instead of 100 and returns items in true upload order.
  */
-class YoutubeSource implements VideoSourceInterface
+class YoutubeSource implements VideoSourceInterface, PlaylistAwareInterface
 {
     public const ID = 'youtube';
 
@@ -58,7 +59,8 @@ class YoutubeSource implements VideoSourceInterface
             return ['ok' => false, 'videos' => [], 'error' => 'کانال یا کلید API یوتیوب تنظیم نشده است.'];
         }
 
-        $playlist = $this->uploads_playlist_id();
+        // A chosen playlist wins; otherwise the channel's uploads playlist.
+        $playlist = $this->selected_playlist() ?: $this->uploads_playlist_id();
         if ($playlist === '') {
             return ['ok' => false, 'videos' => [], 'error' => 'پلی‌لیست آپلودهای کانال پیدا نشد.'];
         }
@@ -125,6 +127,87 @@ class YoutubeSource implements VideoSourceInterface
         return $playlist !== ''
             ? ['ok' => true, 'message' => 'اتصال به یوتیوب برقرار است.']
             : ['ok' => false, 'message' => 'کانال یوتیوب پیدا نشد یا کلید API معتبر نیست.'];
+    }
+
+    public function selected_playlist(): string
+    {
+        return trim((string) $this->settings->get('youtube_playlist', ''));
+    }
+
+    /**
+     * Playlists on the configured channel.
+     *
+     * @return array{ok:bool,items:array<int,array{id:string,title:string,count:int}>,error?:string}
+     */
+    public function playlists(): array
+    {
+        if (! $this->is_configured()) {
+            return ['ok' => false, 'items' => [], 'error' => 'کانال یا کلید API یوتیوب تنظیم نشده است.'];
+        }
+
+        $channel = $this->settings->str('youtube_channel');
+        $params  = ['part' => 'snippet,contentDetails', 'maxResults' => 50];
+
+        // playlists.list only accepts a channel id, never a handle or name.
+        $params['channelId'] = str_starts_with($channel, 'UC') && strlen($channel) === 24
+            ? $channel
+            : $this->resolve_channel_id();
+
+        if ($params['channelId'] === '') {
+            return ['ok' => false, 'items' => [], 'error' => 'شناسه کانال یوتیوب قابل تشخیص نبود.'];
+        }
+
+        $response = $this->get('playlists', $params);
+        if (! $response['ok']) {
+            return ['ok' => false, 'items' => [], 'error' => $response['error'] ?? 'دریافت پلی‌لیست‌ها ناموفق بود.'];
+        }
+
+        $items = [];
+        foreach ((array) ($response['body']['items'] ?? []) as $item) {
+            $id    = (string) Json::dig($item, 'id', '');
+            $title = trim((string) Json::dig($item, 'snippet.title', ''));
+
+            if ($id !== '' && $title !== '') {
+                $items[] = [
+                    'id'    => $id,
+                    'title' => $title,
+                    'count' => (int) Json::dig($item, 'contentDetails.itemCount', 0),
+                ];
+            }
+        }
+
+        return $items === []
+            ? ['ok' => false, 'items' => [], 'error' => 'این کانال پلی‌لیستی ندارد.']
+            : ['ok' => true, 'items' => $items];
+    }
+
+    /**
+     * The channel id behind a handle or legacy username, cached for a day.
+     */
+    private function resolve_channel_id(): string
+    {
+        $channel   = $this->settings->str('youtube_channel');
+        $cache_key = 'stvh_yt_channel_' . md5($channel);
+        $cached    = get_transient($cache_key);
+        if (is_string($cached) && $cached !== '') {
+            return $cached;
+        }
+
+        $params = ['part' => 'id'];
+        if (str_starts_with($channel, '@')) {
+            $params['forHandle'] = $channel;
+        } else {
+            $params['forUsername'] = $channel;
+        }
+
+        $response = $this->get('channels', $params);
+        $id       = $response['ok'] ? (string) Json::dig($response['body'], 'items.0.id', '') : '';
+
+        if ($id !== '') {
+            set_transient($cache_key, $id, DAY_IN_SECONDS);
+        }
+
+        return $id;
     }
 
     /**

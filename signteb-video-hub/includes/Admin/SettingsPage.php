@@ -81,6 +81,9 @@ class SettingsPage
         (new CacheManager())->purge_all();
         VideoSitemap::flush();
         InternalLinker::flush_candidates();
+        // Channel, playlist or key may all have changed; the cached probe
+        // result now describes a configuration that no longer exists.
+        delete_transient('stvh_source_status');
         flush_rewrite_rules(false);
 
         /** Fires after the settings are persisted (Scheduler re-anchors cron). */
@@ -114,7 +117,7 @@ class SettingsPage
         }
 
         $text = [
-            'aparat_username', 'youtube_channel', 'ai_model', 'physician_name',
+            'aparat_username', 'aparat_playlist', 'youtube_channel', 'youtube_playlist', 'ai_model', 'physician_name',
             'physician_specialty', 'clinic_name', 'cloudflare_zone',
         ];
         foreach ($text as $key) {

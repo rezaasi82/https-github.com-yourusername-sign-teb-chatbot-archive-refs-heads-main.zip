@@ -4,6 +4,7 @@ namespace SignTeb\VideoHub\Rest\Controllers;
 
 use SignTeb\VideoHub\Ai\AiManager;
 use SignTeb\VideoHub\Ai\ArticleSuggester;
+use SignTeb\VideoHub\Api\PlaylistAwareInterface;
 use SignTeb\VideoHub\Api\SourceManager;
 use SignTeb\VideoHub\Cache\CacheManager;
 use SignTeb\VideoHub\Core\PostType;
@@ -77,6 +78,15 @@ class AdminController
             'permission_callback' => $permission,
             'args'                => [
                 'video_id' => ['type' => 'integer', 'required' => true],
+            ],
+        ]);
+
+        register_rest_route(RestNamespace::NAME, '/playlists', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'playlists'],
+            'permission_callback' => $permission,
+            'args'                => [
+                'source' => ['type' => 'string', 'required' => true],
             ],
         ]);
 
@@ -160,6 +170,37 @@ class AdminController
         delete_transient('stvh_source_status');
 
         return $result;
+    }
+
+    /**
+     * Playlists on a configured channel, so the settings screen can offer a
+     * list instead of asking an admin to find an opaque id by hand.
+     */
+    public function playlists(WP_REST_Request $request): WP_REST_Response
+    {
+        $id     = sanitize_key((string) $request->get_param('source'));
+        $source = (new SourceManager($this->settings))->get($id);
+
+        if (! $source instanceof PlaylistAwareInterface) {
+            return new WP_REST_Response([
+                'ok'      => false,
+                'message' => __('این منبع فهرست‌بندی ندارد.', 'signteb-video-hub'),
+            ], 400);
+        }
+
+        $result = $source->playlists();
+
+        return new WP_REST_Response([
+            'ok'        => (bool) $result['ok'],
+            'message'   => $result['ok']
+                ? sprintf(
+                    /* translators: %s: number of playlists found */
+                    __('%s فهرست پیدا شد.', 'signteb-video-hub'),
+                    number_format_i18n(count($result['items']))
+                )
+                : (string) ($result['error'] ?? __('دریافت فهرست‌ها ناموفق بود.', 'signteb-video-hub')),
+            'playlists' => $result['items'],
+        ], 200);
     }
 
     public function generate(WP_REST_Request $request): WP_REST_Response

@@ -28,7 +28,9 @@ class Settings
     public const DEFAULTS = [
         'enabled'              => 1,
         'aparat_username'      => '',
+        'aparat_playlist'      => '',
         'youtube_channel'      => '',
+        'youtube_playlist'     => '',
         'sync_interval'        => 'stvh_12h',
         'sync_limit'           => 30,
         'auto_publish'         => 1,

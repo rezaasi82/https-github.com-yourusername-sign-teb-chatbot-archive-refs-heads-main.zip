@@ -100,7 +100,7 @@
   }
 
   document.addEventListener('click', function (event) {
-    var target = event.target.closest('[data-stvh-action], [data-stvh-test], [data-stvh-generate], [data-stvh-publish-article], [data-stvh-index-ping], [data-stvh-repair]');
+    var target = event.target.closest('[data-stvh-action], [data-stvh-test], [data-stvh-generate], [data-stvh-publish-article], [data-stvh-index-ping], [data-stvh-repair], [data-stvh-playlists]');
     if (!target) {
       return;
     }
@@ -147,8 +147,61 @@
 
     if (target.hasAttribute('data-stvh-repair')) {
       run(target, 'repair', { video_id: videoIdFor(target) });
+      return;
+    }
+
+    if (target.dataset.stvhPlaylists) {
+      loadPlaylists(target, target.dataset.stvhPlaylists);
     }
   });
+
+  /**
+   * Fill the playlist <select> from the provider.
+   *
+   * The current value is preserved across a reload: an admin who already
+   * chose a playlist should not silently fall back to the whole channel just
+   * because they pressed refresh.
+   */
+  function loadPlaylists(button, source) {
+    var select = document.querySelector('[data-stvh-playlist-select="' + source + '"]');
+    if (!select) {
+      return;
+    }
+
+    var previous = select.value;
+    var label = button.textContent;
+    button.disabled = true;
+    button.textContent = i18n.working || label;
+
+    post('playlists', { source: source })
+      .then(function (data) {
+        report(button, data.message || '', !!data.ok);
+
+        if (!data.ok || !data.playlists) {
+          return;
+        }
+
+        select.innerHTML = '';
+        select.appendChild(new Option(i18n.wholeChannel || '—', ''));
+
+        data.playlists.forEach(function (item) {
+          var text = item.count ? item.title + ' (' + item.count + ')' : item.title;
+          select.appendChild(new Option(text, item.id));
+        });
+
+        select.value = previous;
+        if (select.value !== previous) {
+          select.value = '';
+        }
+      })
+      .catch(function () {
+        report(button, i18n.failed || '', false);
+      })
+      .finally(function () {
+        button.disabled = false;
+        button.textContent = label;
+      });
+  }
 
   /**
    * A masked secret field should clear on focus rather than making the admin

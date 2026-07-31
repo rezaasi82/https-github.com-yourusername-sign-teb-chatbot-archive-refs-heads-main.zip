@@ -3,7 +3,9 @@
 namespace SignTeb\VideoHub\Api\Aparat;
 
 use SignTeb\VideoHub\Api\VideoDto;
+use SignTeb\VideoHub\Api\PlaylistAwareInterface;
 use SignTeb\VideoHub\Api\VideoSourceInterface;
+use SignTeb\VideoHub\Core\Logger;
 use SignTeb\VideoHub\Core\Settings;
 
 if (! defined('ABSPATH')) {
@@ -14,7 +16,7 @@ if (! defined('ABSPATH')) {
  * Maps Aparat payloads onto VideoDto. Field names differ between the v1 and
  * legacy endpoints, so every read goes through pick() with a candidate list.
  */
-class AparatSource implements VideoSourceInterface
+class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
 {
     public const ID = 'aparat';
 
@@ -53,7 +55,22 @@ class AparatSource implements VideoSourceInterface
             return ['ok' => false, 'videos' => [], 'error' => 'شناسه کانال آپارات تنظیم نشده است.'];
         }
 
-        $raw = $this->client->videos_by_username($this->username(), $limit);
+        $playlist = $this->selected_playlist();
+
+        if ($playlist !== '') {
+            $raw = $this->client->videos_by_playlist($playlist, $limit);
+
+            // A renamed or deleted playlist must not silently import nothing;
+            // falling back to the channel keeps the site populated and the
+            // error is surfaced by the connection test.
+            if (! $raw['ok']) {
+                Logger::warning('aparat', (string) ($raw['error'] ?? ''), ['playlist' => $playlist]);
+                $raw = $this->client->videos_by_username($this->username(), $limit);
+            }
+        } else {
+            $raw = $this->client->videos_by_username($this->username(), $limit);
+        }
+
         if (! $raw['ok']) {
             return ['ok' => false, 'videos' => [], 'error' => $raw['error'] ?? 'خطای نامشخص آپارات.'];
         }
@@ -67,6 +84,16 @@ class AparatSource implements VideoSourceInterface
         }
 
         return ['ok' => true, 'videos' => $videos];
+    }
+
+    public function selected_playlist(): string
+    {
+        return trim((string) $this->settings->get('aparat_playlist', ''));
+    }
+
+    public function playlists(): array
+    {
+        return $this->client->playlists_by_username($this->username());
     }
 
     public function test_connection(): array

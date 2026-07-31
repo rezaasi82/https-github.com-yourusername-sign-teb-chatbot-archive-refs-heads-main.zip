@@ -103,6 +103,7 @@ class AdminMenu
                 'working' => __('در حال انجام…', 'signteb-video-hub'),
                 'failed'  => __('عملیات ناموفق بود.', 'signteb-video-hub'),
                 'confirm' => __('مطمئن هستید؟', 'signteb-video-hub'),
+                'wholeChannel' => __('کل کانال', 'signteb-video-hub'),
             ],
         ]);
     }
