@@ -46,7 +46,13 @@ class AparatClient
         'https://www.aparat.com/api/fa/v1/video/playlist/listbyid/playlist_id/%s',
     ];
 
+    /** The public playlist page — no API, no key, just HTML. */
+    private const PLAYLIST_PAGE = 'https://www.aparat.com/playlist/%s';
+
     private const ENDPOINT_CACHE = 'stvh_aparat_playlist_endpoint';
+
+    /** Written when a full probe finds nothing, so syncs stop re-probing. */
+    private const ENDPOINT_NONE = 'none';
 
     /**
      * Ceiling on a whole discovery pass. Probing is only worth doing if it
@@ -114,16 +120,28 @@ class AparatClient
      *
      * @return array{ok:bool,items:array<int,array<string,mixed>>,error?:string,endpoint?:string}
      */
-    public function videos_by_playlist(string $playlist_id, int $limit): array
+    public function videos_by_playlist(string $playlist_id, int $limit, bool $force = false): array
     {
         $playlist_id = self::normalize_playlist($playlist_id);
         if ($playlist_id === '') {
             return ['ok' => false, 'items' => [], 'error' => 'شناسه فهرست پخش معتبر نیست.'];
         }
 
-        // A known-good endpoint is reused directly; only the first run probes.
         $known = get_transient(self::ENDPOINT_CACHE);
-        $order = is_string($known) && $known !== ''
+
+        // A completed probe that found nothing is worth remembering. Without
+        // this, every sync would spend the whole probe budget rediscovering
+        // the same dead ends before falling back.
+        if (! $force && $known === self::ENDPOINT_NONE) {
+            return [
+                'ok'    => false,
+                'items' => [],
+                'error' => 'مسیر API فهرست پخش قبلاً بررسی و رد شده است (تا ۲۴ ساعت دوباره بررسی نمی‌شود).',
+            ];
+        }
+
+        // A known-good endpoint is reused directly; only the first run probes.
+        $order = is_string($known) && $known !== '' && $known !== self::ENDPOINT_NONE
             ? array_merge([$known], array_diff(self::PLAYLIST_CANDIDATES, [$known]))
             : self::PLAYLIST_CANDIDATES;
 
@@ -145,12 +163,18 @@ class AparatClient
 
             $items = self::extract_playlist_items($response['body']);
             if ($items === []) {
-                // The route answered; only the shape is unknown. Report it, so
-                // the next step is a fix rather than another guess.
+                // The legacy API answers 200 with {"login":{type,value}} when a
+                // method does not exist, so a 200 is not proof of a live route.
+                // Report its own words rather than "no videos".
+                $complaint = (string) Json::dig($response['body'], 'login.value', '');
+
                 $errors[] = sprintf(
-                    '%s → پاسخ ۲۰۰ ولی ویدئویی شناسایی نشد؛ ساختار پاسخ: %s',
+                    '%s → %s',
                     $this->endpoint_label($template),
-                    mb_substr(self::describe_shape($response['body']), 0, 300)
+                    $complaint !== ''
+                        ? 'آپارات: ' . mb_substr($complaint, 0, 120)
+                        : 'پاسخ ۲۰۰ ولی ویدئویی شناسایی نشد؛ ساختار پاسخ: '
+                            . mb_substr(self::describe_shape($response['body']), 0, 200)
                 );
                 continue;
             }
@@ -165,13 +189,97 @@ class AparatClient
             ];
         }
 
-        delete_transient(self::ENDPOINT_CACHE);
+        set_transient(self::ENDPOINT_CACHE, self::ENDPOINT_NONE, DAY_IN_SECONDS);
 
         return [
             'ok'    => false,
             'items' => [],
             'error' => 'هیچ‌کدام از مسیرهای فهرست پخش آپارات جواب نداد — ' . implode(' | ', $errors),
         ];
+    }
+
+    /**
+     * Video ids listed on a playlist's public page.
+     *
+     * Aparat's playlist API could not be found: four legacy paths answer 200
+     * with the `login` error envelope and two v1 paths answer 405. The page
+     * itself needs no API and no key, and the site's own server can fetch it —
+     * so the ids are read from the markup and matched against the channel
+     * list, an endpoint that already works.
+     *
+     * @return array{ok:bool,ids:array<int,string>,error?:string,strict?:bool}
+     */
+    public function playlist_video_ids(string $playlist_id): array
+    {
+        $playlist_id = self::normalize_playlist($playlist_id);
+        if ($playlist_id === '') {
+            return ['ok' => false, 'ids' => [], 'error' => 'شناسه فهرست پخش معتبر نیست.'];
+        }
+
+        $response = wp_remote_get(sprintf(self::PLAYLIST_PAGE, rawurlencode($playlist_id)), [
+            'timeout'    => self::TIMEOUT,
+            'user-agent' => 'SignTeb-Video-Hub/' . STVH_VERSION . '; ' . home_url('/'),
+            'headers'    => ['Accept' => 'text/html,application/xhtml+xml'],
+        ]);
+
+        if (is_wp_error($response)) {
+            return ['ok' => false, 'ids' => [], 'error' => $response->get_error_message()];
+        }
+
+        $code = (int) wp_remote_retrieve_response_code($response);
+        if ($code !== 200) {
+            return ['ok' => false, 'ids' => [], 'error' => sprintf('صفحه‌ی فهرست پخش کد %d برگرداند.', $code)];
+        }
+
+        $html  = (string) wp_remote_retrieve_body($response);
+        $found = self::extract_playlist_ids($html, $playlist_id);
+
+        if ($found['ids'] === []) {
+            return ['ok' => false, 'ids' => [], 'error' => 'در صفحه‌ی فهرست پخش هیچ آدرس ویدئویی پیدا نشد.'];
+        }
+
+        return ['ok' => true, 'ids' => $found['ids'], 'strict' => $found['strict']];
+    }
+
+    /**
+     * Video hashes in playlist-page markup, most reliable form first.
+     *
+     * A video that belongs to the playlist is linked with the playlist id in
+     * its own URL (`/v/{hash}/list/{playlist_id}`). Those matches are exact.
+     * Only when none exist do we fall back to every `/v/{hash}` on the page,
+     * which can also catch sidebar and related-video links — `strict` says
+     * which of the two produced the result, so callers can be honest about it.
+     *
+     * @return array{ids:array<int,string>,strict:bool}
+     */
+    public static function extract_playlist_ids(string $html, string $playlist_id): array
+    {
+        // JSON embedded in the page escapes its slashes.
+        $html = str_replace('\\/', '/', $html);
+
+        $strict = self::match_ids(
+            '~/v/([A-Za-z0-9_-]{4,24})[^"\'\s<>]*' . preg_quote($playlist_id, '~') . '~',
+            $html
+        );
+
+        if ($strict !== []) {
+            return ['ids' => $strict, 'strict' => true];
+        }
+
+        return ['ids' => self::match_ids('~/v/([A-Za-z0-9_-]{4,24})~', $html), 'strict' => false];
+    }
+
+    /**
+     * @return array<int,string>
+     */
+    private static function match_ids(string $pattern, string $html): array
+    {
+        if (! preg_match_all($pattern, $html, $matches)) {
+            return [];
+        }
+
+        // Page order is playlist order, so dedupe must preserve it.
+        return array_values(array_unique($matches[1]));
     }
 
     /**

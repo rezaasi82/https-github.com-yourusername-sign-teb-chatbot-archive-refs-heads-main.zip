@@ -61,13 +61,13 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
         // category filter below is the fallback that is already known to work.
         $playlist = $this->playlist_id();
         if ($playlist !== '') {
-            $list = $this->client->videos_by_playlist($playlist, $limit);
-            if ($list['ok']) {
-                return ['ok' => true, 'videos' => $this->to_dtos($list['items'], $limit)];
+            $result = $this->fetch_playlist($playlist, $limit);
+            if ($result['videos'] !== []) {
+                return ['ok' => true, 'videos' => $result['videos']];
             }
             Logger::warning(
                 'aparat',
-                'فهرست پخش خوانده نشد؛ به فیلتر دسته برگشتیم. ' . ($list['error'] ?? ''),
+                'فهرست پخش خوانده نشد؛ به فیلتر دسته برگشتیم. ' . $result['error'],
                 ['playlist' => $playlist]
             );
         }
@@ -102,6 +102,80 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
         }
 
         return ['ok' => true, 'videos' => $this->to_dtos($items, $limit)];
+    }
+
+    /**
+     * A playlist's videos, by whichever route works.
+     *
+     * The API route is tried first because it is cheapest when it works. The
+     * page route is the one that does not depend on an undocumented endpoint:
+     * it reads video ids from the playlist's public HTML and matches them
+     * against the channel list, so every field still comes from the payload
+     * the importer already parses.
+     *
+     * @return array{videos:array<int,VideoDto>,error:string,route:string}
+     */
+    private function fetch_playlist(string $playlist, int $limit, bool $force = false): array
+    {
+        $reasons = [];
+
+        $list = $this->client->videos_by_playlist($playlist, $limit, $force);
+        if ($list['ok']) {
+            return ['videos' => $this->to_dtos($list['items'], $limit), 'error' => '', 'route' => 'api'];
+        }
+        $reasons[] = (string) ($list['error'] ?? '');
+
+        $page = $this->client->playlist_video_ids($playlist);
+        if (! $page['ok']) {
+            $reasons[] = (string) ($page['error'] ?? '');
+            return ['videos' => [], 'error' => implode(' | ', array_filter($reasons)), 'route' => ''];
+        }
+
+        $channel = $this->client->videos_by_username($this->username(), 100);
+        if (! $channel['ok']) {
+            $reasons[] = (string) ($channel['error'] ?? '');
+            return ['videos' => [], 'error' => implode(' | ', array_filter($reasons)), 'route' => ''];
+        }
+
+        $matched = $this->order_by_ids($channel['items'], $page['ids']);
+        if ($matched === []) {
+            $reasons[] = 'ویدئوهای فهرست پخش در ۱۰۰ ویدئوی اخیر کانال نبودند.';
+            return ['videos' => [], 'error' => implode(' | ', array_filter($reasons)), 'route' => ''];
+        }
+
+        return [
+            'videos' => $this->to_dtos($matched, $limit),
+            'error'  => '',
+            'route'  => ($page['strict'] ?? false) ? 'page' : 'page-loose',
+        ];
+    }
+
+    /**
+     * Channel records whose id appears in the playlist, in the playlist's own
+     * order — page order is playlist order, and it is rarely upload order.
+     *
+     * @param array<int,array<string,mixed>> $items
+     * @param array<int,string>              $ids
+     * @return array<int,array<string,mixed>>
+     */
+    private function order_by_ids(array $items, array $ids): array
+    {
+        $by_id = [];
+        foreach ($items as $item) {
+            $uid = (string) $this->pick($item, ['uid', 'hash', 'videohash', 'id']);
+            if ($uid !== '') {
+                $by_id[$uid] = $item;
+            }
+        }
+
+        $ordered = [];
+        foreach ($ids as $id) {
+            if (isset($by_id[$id])) {
+                $ordered[] = $by_id[$id];
+            }
+        }
+
+        return $ordered;
     }
 
     /**
@@ -153,18 +227,32 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
             ];
         }
 
-        $list = $this->client->videos_by_playlist($id, 5);
-        if ($list['ok']) {
+        // An explicit test is the one moment worth re-probing the API route,
+        // even if a previous pass wrote it off.
+        $result = $this->fetch_playlist($id, 100, true);
+
+        if ($result['videos'] === []) {
             return [
-                'ok'      => true,
-                'message' => sprintf('فهرست پخش %s خوانده شد — %d ویدئو در نمونه.', $id, count($list['items'])),
+                'ok'      => false,
+                'message' => ($result['error'] !== '' ? $result['error'] : 'خواندن فهرست پخش ناموفق بود.')
+                    . ' — همگام‌سازی به فیلتر دسته برمی‌گردد.',
             ];
         }
 
+        $count = count($result['videos']);
+
         return [
-            'ok'      => false,
-            'message' => ($list['error'] ?? 'خواندن فهرست پخش ناموفق بود.')
-                . ' — همگام‌سازی به فیلتر دسته برمی‌گردد.',
+            'ok'      => true,
+            'message' => match ($result['route']) {
+                'api'   => sprintf('فهرست پخش %s از API خوانده شد — %d ویدئو.', $id, $count),
+                'page'  => sprintf('فهرست پخش %s از صفحه‌ی آپارات خوانده شد — %d ویدئو.', $id, $count),
+                default => sprintf(
+                    'فهرست پخش %s خوانده شد — %d ویدئو. توجه: لینک‌های صفحه شناسه‌ی فهرست را نداشتند،'
+                        . ' پس ممکن است ویدئوهای پیشنهادی صفحه هم شمرده شده باشند؛ اگر این عدد از فهرست شما بیشتر است بگویید.',
+                    $id,
+                    $count
+                ),
+            },
         ];
     }
 

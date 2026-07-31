@@ -173,6 +173,25 @@ $check(
     'playlist{id,title},ui{theme}'
 );
 
+echo "\nPlaylist page scraping — the API answers `login{type,value}`, its own\n";
+echo "  error envelope, so ids come from the page instead.\n";
+
+$stvh_html = '<a href="/v/aaa111/list/1058203">یک</a>'
+    . '<a href="/v/bbb222/list/1058203">دو</a>'
+    . '<a href="/v/zzz999">ویدئوی پیشنهادی</a>';
+$stvh_ids = AparatClient::extract_playlist_ids($stvh_html, '1058203');
+$check('links carrying the playlist id are preferred', $stvh_ids['ids'], ['aaa111', 'bbb222']);
+$check('and that is reported as the exact match', $stvh_ids['strict'], true);
+
+$stvh_loose = AparatClient::extract_playlist_ids('<a href="/v/ccc333">سه</a><a href="/v/ccc333">تکراری</a>', '1058203');
+$check('without the id, every video link is taken', $stvh_loose['ids'], ['ccc333']);
+$check('and the caller is told the match was loose', $stvh_loose['strict'], false);
+
+$stvh_escaped = AparatClient::extract_playlist_ids('{"url":"https:\\/\\/www.aparat.com\\/v\\/ddd444\\/list\\/1058203"}', '1058203');
+$check('slashes escaped inside embedded JSON still match', $stvh_escaped['ids'], ['ddd444']);
+
+$check('a page with no video links yields nothing', AparatClient::extract_playlist_ids('<html></html>', '1')['ids'], []);
+
 echo "\nFormat::slug — the real titles that produced unusable slugs\n";
 $check(
     'drops the Persian question mark and the author suffix',
@@ -216,7 +235,12 @@ final class StvhStubAparatClient extends AparatClient
         return ['ok' => true, 'items' => $this->items];
     }
 
-    public function videos_by_playlist(string $playlist_id, int $limit): array
+    /** @var array<int,string>|null null means the playlist page could not be read. */
+    public ?array $page_ids = null;
+
+    public bool $page_strict = true;
+
+    public function videos_by_playlist(string $playlist_id, int $limit, bool $force = false): array
     {
         $this->asked_playlist = $playlist_id;
 
@@ -225,6 +249,15 @@ final class StvhStubAparatClient extends AparatClient
         }
 
         return ['ok' => true, 'items' => array_slice($this->playlist_items, 0, $limit)];
+    }
+
+    public function playlist_video_ids(string $playlist_id): array
+    {
+        if ($this->page_ids === null) {
+            return ['ok' => false, 'ids' => [], 'error' => 'صفحه‌ی فهرست پخش خوانده نشد.'];
+        }
+
+        return ['ok' => true, 'ids' => $this->page_ids, 'strict' => $this->page_strict];
     }
 }
 
@@ -261,7 +294,13 @@ $check('says so plainly when nothing groups the videos', $stvh_bare['ok'], false
 
 echo "\nAparat playlist URL — takes precedence, but must fall back safely\n";
 
-$stvh_playlist_source = static function (string $url, string $category, ?array $playlist_items) use ($stvh_items): array {
+$stvh_playlist_source = static function (
+    string $url,
+    string $category,
+    ?array $playlist_items,
+    ?array $page_ids = null,
+    bool $strict = true
+) use ($stvh_items): array {
     $GLOBALS['stvh_test_options'] = [
         'aparat_username'     => 'x',
         'aparat_playlist'     => $category,
@@ -270,6 +309,8 @@ $stvh_playlist_source = static function (string $url, string $category, ?array $
     $client                 = new StvhStubAparatClient();
     $client->items          = $stvh_items;
     $client->playlist_items = $playlist_items;
+    $client->page_ids       = $page_ids;
+    $client->page_strict    = $strict;
 
     return [new AparatSource(new Settings(), $client), $client];
 };
@@ -295,6 +336,24 @@ $check('…and to the whole channel when no category is set', count($stvh_src->f
 [$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/mychannel', 'cat:12', $stvh_list);
 $check('a non-playlist url is ignored, not requested', $stvh_client->asked_playlist, '');
 $check('so the category filter still runs', count($stvh_src->fetch(10)['videos']), 2);
+
+echo "\nThe page route — when the API fails, ids from the page are matched\n";
+echo "  against the channel list, which already returns full metadata.\n";
+
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', 'cat:12', null, ['c', 'a']);
+$stvh_fetched = $stvh_src->fetch(10);
+$check('the page route rescues a failed API probe', count($stvh_fetched['videos']), 2);
+$check('playlist order wins over channel order', $stvh_fetched['videos'][0]->title, 'سلامت ۲');
+$check('and the second is the other one', $stvh_fetched['videos'][1]->title, 'سلامت ۱');
+
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', 'cat:12', null, ['a', 'unknown']);
+$check('ids missing from the channel are skipped, not faked', count($stvh_src->fetch(10)['videos']), 1);
+
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', 'cat:12', null, ['zzz']);
+$check('no overlap at all falls back to the category', count($stvh_src->fetch(10)['videos']), 2);
+
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', 'cat:12', null, ['a', 'b', 'c']);
+$check('the sync limit applies to page results too', count($stvh_src->fetch(2)['videos']), 2);
 
 echo "\nVideoDto\n";
 $dto = VideoDto::from_array('aparat', [
