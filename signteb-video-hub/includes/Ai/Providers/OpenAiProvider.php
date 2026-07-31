@@ -20,7 +20,7 @@ if (! defined('ABSPATH')) {
 class OpenAiProvider implements AiProviderInterface
 {
     private const DEFAULT_BASE = 'https://api.openai.com/v1';
-    private const TIMEOUT      = 90;
+    private const TIMEOUT      = 45;
 
     public function __construct(
         private readonly string $api_key,

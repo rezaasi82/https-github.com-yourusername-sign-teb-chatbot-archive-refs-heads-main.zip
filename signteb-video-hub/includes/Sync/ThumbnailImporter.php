@@ -23,6 +23,14 @@ if (! defined('ABSPATH')) {
  */
 class ThumbnailImporter
 {
+    /**
+     * Deliberately short. This runs once per imported video, so a generous
+     * figure multiplies: 30 seconds across 30 videos is fifteen minutes of a
+     * held-open request. A poster that cannot be fetched in a few seconds is
+     * better retried on the next pass than allowed to stall the run.
+     */
+    private const DOWNLOAD_TIMEOUT = 8;
+
     private Settings $settings;
 
     public function __construct(?Settings $settings = null)
@@ -109,7 +117,7 @@ class ThumbnailImporter
      */
     private function download(string $url): string
     {
-        $temp = download_url($url, 30);
+        $temp = download_url($url, self::DOWNLOAD_TIMEOUT);
 
         if (is_wp_error($temp)) {
             Logger::warning('thumbnail', $temp->get_error_message(), ['url' => $url]);

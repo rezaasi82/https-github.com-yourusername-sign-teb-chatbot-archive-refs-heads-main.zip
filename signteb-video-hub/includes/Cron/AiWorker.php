@@ -8,6 +8,8 @@ use SignTeb\VideoHub\Ai\InternalLinker;
 use SignTeb\VideoHub\Ai\SummaryGenerator;
 use SignTeb\VideoHub\Cache\CacheManager;
 use SignTeb\VideoHub\Core\Logger;
+use SignTeb\VideoHub\Core\Budget;
+use SignTeb\VideoHub\Core\RunLock;
 use SignTeb\VideoHub\Core\Settings;
 use SignTeb\VideoHub\Db\AiQueueRepository;
 
@@ -38,11 +40,18 @@ class AiWorker
     /**
      * @return array{processed:int,failed:int}
      */
-    public function run(): array
+    public function run(int $budget_seconds = 25): array
     {
         if (! $this->ai->is_enabled()) {
             return ['processed' => 0, 'failed' => 0];
         }
+
+        $lock = new RunLock('ai');
+        if (! $lock->acquire()) {
+            return ['processed' => 0, 'failed' => 0];
+        }
+
+        $budget = new Budget($budget_seconds);
 
         $this->queue->requeue_stale();
         $this->backfill();
@@ -53,6 +62,13 @@ class AiWorker
         $failed    = 0;
 
         foreach ($jobs as $job) {
+            // A model call can take most of a minute. Never begin one the
+            // budget cannot cover — the job stays pending for the next tick.
+            if (! $budget->allows(20)) {
+                $this->queue->release($job['id']);
+                continue;
+            }
+
             $result = $this->run_job($job['video_id'], $job['task']);
 
             if ($result['ok']) {
@@ -68,6 +84,8 @@ class AiWorker
                 'task'     => $job['task'],
             ]);
         }
+
+        $lock->release();
 
         if ($processed > 0) {
             (new CacheManager($this->settings))->purge_all();

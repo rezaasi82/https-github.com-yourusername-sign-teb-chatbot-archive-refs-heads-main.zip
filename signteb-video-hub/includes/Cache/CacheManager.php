@@ -157,7 +157,7 @@ class CacheManager
         $response = wp_remote_post(
             sprintf('https://api.cloudflare.com/client/v4/zones/%s/purge_cache', rawurlencode($zone)),
             [
-                'timeout' => 15,
+                'timeout' => 8,
                 'headers' => [
                     'Authorization' => 'Bearer ' . $token,
                     'Content-Type'  => 'application/json',

@@ -22,7 +22,7 @@ class AparatClient
     private const LEGACY_ENDPOINT = 'https://www.aparat.com/etc/api/videoByUser/username/%s/perpage/%d';
     private const PROFILE_V1      = 'https://www.aparat.com/api/fa/v1/user/user/information/username/%s';
 
-    private const TIMEOUT = 20;
+    private const TIMEOUT = 12;
 
     /**
      * Raw video list for a channel, newest first.

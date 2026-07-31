@@ -23,7 +23,7 @@ class YoutubeSource implements VideoSourceInterface
     public const ID = 'youtube';
 
     private const API_BASE = 'https://www.googleapis.com/youtube/v3/';
-    private const TIMEOUT  = 20;
+    private const TIMEOUT  = 12;
 
     private Settings $settings;
 

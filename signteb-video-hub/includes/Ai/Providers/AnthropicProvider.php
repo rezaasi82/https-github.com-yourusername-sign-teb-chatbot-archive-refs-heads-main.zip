@@ -17,7 +17,7 @@ class AnthropicProvider implements AiProviderInterface
 {
     private const ENDPOINT    = 'https://api.anthropic.com/v1/messages';
     private const API_VERSION = '2023-06-01';
-    private const TIMEOUT     = 90;
+    private const TIMEOUT     = 45;
 
     public function __construct(
         private readonly string $api_key,

@@ -109,6 +109,30 @@ class AiQueueRepository
         return $claimed;
     }
 
+    /**
+     * Hand a claimed job back without counting it as an attempt.
+     *
+     * A worker that stops on its time budget has claimed jobs it never ran;
+     * leaving them 'running' would strand them until the stale sweep, half an
+     * hour later.
+     */
+    public function release(int $id): void
+    {
+        global $wpdb;
+
+        $wpdb->query(
+            $wpdb->prepare(
+                'UPDATE ' . Schema::ai_queue_table() . '
+                 SET status = %s, attempts = GREATEST(attempts - 1, 0), updated_at = %s
+                 WHERE id = %d AND status = %s',
+                'pending',
+                current_time('mysql'),
+                $id,
+                'running'
+            )
+        );
+    }
+
     public function complete(int $id): void
     {
         $this->finish($id, 'done', '');

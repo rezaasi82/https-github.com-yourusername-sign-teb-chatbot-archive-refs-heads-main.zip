@@ -73,9 +73,34 @@ class SourceManager
     /**
      * Connection status for every source, for the dashboard panel.
      *
+     * Cached, because this probes each provider over HTTP. Rendering it live
+     * made simply opening the dashboard wait on aparat.com and googleapis.com
+     * — up to both timeouts, every page load, on a host that may not reach
+     * either. The "تست اتصال" buttons still probe live on demand.
+     *
      * @return array<string,array{label:string,configured:bool,ok:bool,message:string}>
      */
-    public function status(): array
+    public function status(bool $fresh = false): array
+    {
+        $cache_key = 'stvh_source_status';
+
+        if (! $fresh) {
+            $cached = get_transient($cache_key);
+            if (is_array($cached)) {
+                return $cached;
+            }
+        }
+
+        $status = $this->probe();
+        set_transient($cache_key, $status, 10 * MINUTE_IN_SECONDS);
+
+        return $status;
+    }
+
+    /**
+     * @return array<string,array{label:string,configured:bool,ok:bool,message:string}>
+     */
+    private function probe(): array
     {
         $out = [];
         foreach ($this->all() as $id => $source) {

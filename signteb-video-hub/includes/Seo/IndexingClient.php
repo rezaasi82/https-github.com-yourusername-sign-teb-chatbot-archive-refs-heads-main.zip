@@ -57,7 +57,7 @@ class IndexingClient
         }
 
         $response = wp_remote_post(self::PUBLISH_ENDPOINT, [
-            'timeout' => 20,
+            'timeout' => 12,
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Content-Type'  => 'application/json',
@@ -120,7 +120,7 @@ class IndexingClient
         }
 
         $response = wp_remote_post(self::TOKEN_ENDPOINT, [
-            'timeout' => 20,
+            'timeout' => 12,
             'body'    => [
                 'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
                 'assertion'  => $jwt,

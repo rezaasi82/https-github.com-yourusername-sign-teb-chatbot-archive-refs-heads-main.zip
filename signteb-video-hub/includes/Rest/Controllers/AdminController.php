@@ -149,9 +149,17 @@ class AdminController
     {
         $source = (new SourceManager($this->settings))->get($id);
 
-        return $source === null
-            ? ['ok' => false, 'message' => __('منبع ناشناخته است.', 'signteb-video-hub')]
-            : $source->test_connection();
+        if ($source === null) {
+            return ['ok' => false, 'message' => __('منبع ناشناخته است.', 'signteb-video-hub')];
+        }
+
+        $result = $source->test_connection();
+
+        // The dashboard panel reads a cached snapshot; an explicit test is the
+        // moment to refresh it.
+        delete_transient('stvh_source_status');
+
+        return $result;
     }
 
     public function generate(WP_REST_Request $request): WP_REST_Response

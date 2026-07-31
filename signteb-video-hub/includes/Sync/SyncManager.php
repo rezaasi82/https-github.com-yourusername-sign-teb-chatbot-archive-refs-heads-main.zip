@@ -8,6 +8,8 @@ use SignTeb\VideoHub\Api\VideoSourceInterface;
 use SignTeb\VideoHub\Cache\CacheManager;
 use SignTeb\VideoHub\Core\Logger;
 use SignTeb\VideoHub\Core\PostType;
+use SignTeb\VideoHub\Core\Budget;
+use SignTeb\VideoHub\Core\RunLock;
 use SignTeb\VideoHub\Core\Settings;
 use SignTeb\VideoHub\Core\VideoMeta;
 use SignTeb\VideoHub\Db\AiQueueRepository;
@@ -33,6 +35,7 @@ class SyncManager
     private SyncLogRepository $log;
     private AiQueueRepository $queue;
     private ThumbnailImporter $thumbnails;
+    private ?Budget $budget = null;
 
     public function __construct(?Settings $settings = null)
     {
@@ -49,9 +52,19 @@ class SyncManager
      *
      * @return array{ok:bool,imported:int,updated:int,skipped:int,errors:array<int,string>}
      */
-    public function sync_all(): array
+    public function sync_all(int $budget_seconds = 20): array
     {
         $totals = ['ok' => true, 'imported' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => []];
+
+        // Two overlapping runs would each repeat the same slow HTTP work, which
+        // is how a slow site becomes an unreachable one.
+        $lock = new RunLock('sync');
+        if (! $lock->acquire()) {
+            $totals['errors'][] = 'همگام‌سازی دیگری در حال اجراست.';
+            return $totals;
+        }
+
+        $this->budget = new Budget($budget_seconds);
 
         $configured = $this->sources->configured();
         if ($configured === []) {
@@ -61,6 +74,9 @@ class SyncManager
         }
 
         foreach ($configured as $source) {
+            if ($this->budget->exhausted()) {
+                break;
+            }
             $result = $this->sync_source($source);
             $totals['imported'] += $result['imported'];
             $totals['updated']  += $result['updated'];
@@ -70,6 +86,8 @@ class SyncManager
                 $totals['errors'][] = $result['error'] ?? '';
             }
         }
+
+        $lock->release();
 
         $totals['errors'] = array_values(array_filter($totals['errors']));
         update_option('stvh_last_sync', current_time('mysql'), false);
@@ -111,6 +129,14 @@ class SyncManager
         $skipped  = 0;
 
         foreach ($fetched['videos'] as $dto) {
+            // A new import costs a post insert plus a poster download; stop
+            // before starting one there is no time for. The rest arrive on the
+            // next run — sync is incremental by design.
+            if ($this->budget !== null && ! $this->budget->allows(10)) {
+                $skipped += count($fetched['videos']) - ($imported + $updated + $skipped);
+                break;
+            }
+
             $outcome = $this->upsert($dto);
             match ($outcome) {
                 'imported' => $imported++,
