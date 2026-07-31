@@ -4,6 +4,7 @@ namespace SignTeb\VideoHub\Rest\Controllers;
 
 use SignTeb\VideoHub\Ai\AiManager;
 use SignTeb\VideoHub\Ai\ArticleSuggester;
+use SignTeb\VideoHub\Api\Aparat\AparatSource;
 use SignTeb\VideoHub\Api\PlaylistAwareInterface;
 use SignTeb\VideoHub\Api\SourceManager;
 use SignTeb\VideoHub\Cache\CacheManager;
@@ -144,9 +145,10 @@ class AdminController
         $target = sanitize_key((string) $request->get_param('target'));
 
         $result = match ($target) {
-            'ai'     => (new AiManager($this->settings))->test_connection(),
-            'google' => (new IndexingClient($this->settings))->test_connection(),
-            default  => $this->test_source($target),
+            'ai'              => (new AiManager($this->settings))->test_connection(),
+            'google'          => (new IndexingClient($this->settings))->test_connection(),
+            'aparat_playlist' => (new AparatSource($this->settings))->test_playlist(),
+            default           => $this->test_source($target),
         };
 
         return new WP_REST_Response($result, 200);

@@ -29,6 +29,7 @@ class Settings
         'enabled'              => 1,
         'aparat_username'      => '',
         'aparat_playlist'      => '',
+        'aparat_playlist_url'  => '',
         'youtube_channel'      => '',
         'youtube_playlist'     => '',
         'sync_interval'        => 'stvh_12h',

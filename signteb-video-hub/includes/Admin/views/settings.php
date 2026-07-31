@@ -103,6 +103,18 @@ $checkbox = static function (string $key, string $label, array $values, string $
                 </td>
             </tr>
             <tr>
+                <th scope="row"><label for="aparat_playlist_url"><?php esc_html_e('یا آدرس فهرست پخش آپارات', 'signteb-video-hub'); ?></label></th>
+                <td>
+                    <input type="text" id="aparat_playlist_url" name="aparat_playlist_url" value="<?php echo esc_attr((string) $values['aparat_playlist_url']); ?>" class="regular-text" dir="ltr" placeholder="https://www.aparat.com/playlist/27074957">
+                    <button type="button" class="button" data-stvh-test="aparat_playlist"><?php esc_html_e('تست فهرست پخش', 'signteb-video-hub'); ?></button>
+                    <p class="description">
+                        <?php esc_html_e('آدرس فهرست پخش را از آپارات کپی و اینجا بچسبانید. اگر پر باشد، بر دسته‌ی بالا اولویت دارد.', 'signteb-video-hub'); ?>
+                        <br>
+                        <?php esc_html_e('آپارات مستندات API ندارد؛ افزونه چند مسیر را روی سرور خودتان امتحان می‌کند و مسیر درست را به‌خاطر می‌سپارد. اگر هیچ‌کدام جواب نداد، همان فیلتر دسته کار می‌کند — با «تست فهرست پخش» قبل از همگام‌سازی مطمئن شوید.', 'signteb-video-hub'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row"><label for="youtube_channel"><?php esc_html_e('کانال یوتیوب', 'signteb-video-hub'); ?></label></th>
                 <td>
                     <input type="text" id="youtube_channel" name="youtube_channel" value="<?php echo esc_attr((string) $values['youtube_channel']); ?>" class="regular-text" dir="ltr" placeholder="UC… یا ‎@handle">

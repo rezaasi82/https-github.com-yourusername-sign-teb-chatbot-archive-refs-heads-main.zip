@@ -117,7 +117,7 @@ class SettingsPage
         }
 
         $text = [
-            'aparat_username', 'aparat_playlist', 'youtube_channel', 'youtube_playlist', 'ai_model', 'physician_name',
+            'aparat_username', 'aparat_playlist', 'aparat_playlist_url', 'youtube_channel', 'youtube_playlist', 'ai_model', 'physician_name',
             'physician_specialty', 'clinic_name', 'cloudflare_zone',
         ];
         foreach ($text as $key) {

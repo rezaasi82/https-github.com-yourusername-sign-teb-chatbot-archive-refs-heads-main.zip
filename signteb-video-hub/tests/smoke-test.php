@@ -126,6 +126,11 @@ echo "\nAparatClient\n";
 $check('username plain', AparatClient::normalize_username('drhamedzamani'), 'drhamedzamani');
 $check('username with @', AparatClient::normalize_username('@drhamedzamani'), 'drhamedzamani');
 $check('username from url', AparatClient::normalize_username('https://www.aparat.com/drhamedzamani'), 'drhamedzamani');
+$check('playlist id from url', AparatClient::normalize_playlist('https://www.aparat.com/playlist/27074957'), '27074957');
+$check('playlist id from url with query', AparatClient::normalize_playlist('https://www.aparat.com/playlist/27074957?x=1'), '27074957');
+$check('bare playlist id', AparatClient::normalize_playlist('27074957'), '27074957');
+$check('a channel url is not a playlist', AparatClient::normalize_playlist('https://www.aparat.com/drhamedzamani'), '');
+$check('empty input', AparatClient::normalize_playlist('  '), '');
 
 echo "\nFormat::slug — the real titles that produced unusable slugs\n";
 $check(
@@ -160,9 +165,25 @@ final class StvhStubAparatClient extends AparatClient
     /** @var array<int,array<string,mixed>> */
     public array $items = [];
 
+    /** @var array<int,array<string,mixed>>|null null means the playlist route failed. */
+    public ?array $playlist_items = null;
+
+    public string $asked_playlist = '';
+
     public function videos_by_username(string $username, int $limit): array
     {
         return ['ok' => true, 'items' => $this->items];
+    }
+
+    public function videos_by_playlist(string $playlist_id, int $limit): array
+    {
+        $this->asked_playlist = $playlist_id;
+
+        if ($this->playlist_items === null) {
+            return ['ok' => false, 'items' => [], 'error' => 'آپارات کد 405 برگرداند.'];
+        }
+
+        return ['ok' => true, 'items' => array_slice($this->playlist_items, 0, $limit)];
     }
 }
 
@@ -196,6 +217,43 @@ $check('falls back to the first tag when no category field exists', $stvh_tagged
 
 $stvh_bare = $stvh_source('', [['uid' => 'a', 'title' => 'v']])->playlists();
 $check('says so plainly when nothing groups the videos', $stvh_bare['ok'], false);
+
+echo "\nAparat playlist URL — takes precedence, but must fall back safely\n";
+
+$stvh_playlist_source = static function (string $url, string $category, ?array $playlist_items) use ($stvh_items): array {
+    $GLOBALS['stvh_test_options'] = [
+        'aparat_username'     => 'x',
+        'aparat_playlist'     => $category,
+        'aparat_playlist_url' => $url,
+    ];
+    $client                 = new StvhStubAparatClient();
+    $client->items          = $stvh_items;
+    $client->playlist_items = $playlist_items;
+
+    return [new AparatSource(new Settings(), $client), $client];
+};
+
+$stvh_list = [
+    ['uid' => 'p1', 'title' => 'فهرست ۱'],
+    ['uid' => 'p2', 'title' => 'فهرست ۲'],
+];
+
+[$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/playlist/27074957', 'cat:12', $stvh_list);
+$stvh_fetched = $stvh_src->fetch(10);
+$check('a working playlist wins over the category', count($stvh_fetched['videos']), 2);
+$check('and its videos are the ones imported', $stvh_fetched['videos'][0]->title, 'فهرست ۱');
+$check('the id is extracted before the request', $stvh_client->asked_playlist, '27074957');
+$check('the sync limit applies to playlist results too', count($stvh_src->fetch(1)['videos']), 1);
+
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/27074957', 'cat:12', null);
+$check('a 405 falls back to the category filter', count($stvh_src->fetch(10)['videos']), 2);
+
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/27074957', '', null);
+$check('…and to the whole channel when no category is set', count($stvh_src->fetch(10)['videos']), 3);
+
+[$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/drhamedzamani', 'cat:12', $stvh_list);
+$check('a non-playlist url is ignored, not requested', $stvh_client->asked_playlist, '');
+$check('so the category filter still runs', count($stvh_src->fetch(10)['videos']), 2);
 
 echo "\nVideoDto\n";
 $dto = VideoDto::from_array('aparat', [

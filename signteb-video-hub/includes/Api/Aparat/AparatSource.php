@@ -55,6 +55,23 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
             return ['ok' => false, 'videos' => [], 'error' => 'شناسه کانال آپارات تنظیم نشده است.'];
         }
 
+        // A pasted playlist URL is the most explicit thing an admin can say, so
+        // it wins over the category dropdown. It can still fail — Aparat's
+        // playlist route is discovered at runtime, not documented — and the
+        // category filter below is the fallback that is already known to work.
+        $playlist = $this->playlist_id();
+        if ($playlist !== '') {
+            $list = $this->client->videos_by_playlist($playlist, $limit);
+            if ($list['ok']) {
+                return ['ok' => true, 'videos' => $this->to_dtos($list['items'], $limit)];
+            }
+            Logger::warning(
+                'aparat',
+                'فهرست پخش خوانده نشد؛ به فیلتر دسته برگشتیم. ' . ($list['error'] ?? ''),
+                ['playlist' => $playlist]
+            );
+        }
+
         $category = $this->selected_playlist();
 
         // Filtering happens over the channel list, so ask for more than the
@@ -84,6 +101,15 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
             }
         }
 
+        return ['ok' => true, 'videos' => $this->to_dtos($items, $limit)];
+    }
+
+    /**
+     * @param array<int,array<string,mixed>> $items
+     * @return array<int,VideoDto>
+     */
+    private function to_dtos(array $items, int $limit): array
+    {
         $videos = [];
         foreach (array_slice($items, 0, $limit) as $item) {
             $dto = $this->to_dto($item);
@@ -91,14 +117,55 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
                 $videos[] = $dto;
             }
         }
-
-        return ['ok' => true, 'videos' => $videos];
+        return $videos;
     }
 
     /** The chosen category key, or '' for the whole channel. */
     public function selected_playlist(): string
     {
         return trim((string) $this->settings->get('aparat_playlist', ''));
+    }
+
+    /** The numeric id from the pasted playlist URL, or '' when unset/invalid. */
+    public function playlist_id(): string
+    {
+        return AparatClient::normalize_playlist((string) $this->settings->get('aparat_playlist_url', ''));
+    }
+
+    /**
+     * Probes the playlist route so an admin learns whether the pasted URL
+     * works before a sync silently falls back to the category filter.
+     *
+     * @return array{ok:bool,message:string}
+     */
+    public function test_playlist(): array
+    {
+        $raw = trim((string) $this->settings->get('aparat_playlist_url', ''));
+        if ($raw === '') {
+            return ['ok' => false, 'message' => 'آدرس فهرست پخش وارد نشده است.'];
+        }
+
+        $id = $this->playlist_id();
+        if ($id === '') {
+            return [
+                'ok'      => false,
+                'message' => 'از این آدرس شناسه‌ای پیدا نشد. نمونه درست: https://www.aparat.com/playlist/27074957',
+            ];
+        }
+
+        $list = $this->client->videos_by_playlist($id, 5);
+        if ($list['ok']) {
+            return [
+                'ok'      => true,
+                'message' => sprintf('فهرست پخش %s خوانده شد — %d ویدئو در نمونه.', $id, count($list['items'])),
+            ];
+        }
+
+        return [
+            'ok'      => false,
+            'message' => ($list['error'] ?? 'خواندن فهرست پخش ناموفق بود.')
+                . ' — همگام‌سازی به فیلتر دسته برمی‌گردد.',
+        ];
     }
 
     /**
