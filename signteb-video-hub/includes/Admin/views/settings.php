@@ -110,7 +110,18 @@ $checkbox = static function (string $key, string $label, array $values, string $
                     <p class="description">
                         <?php esc_html_e('آدرس فهرست پخش را از آپارات کپی و اینجا بچسبانید. اگر پر باشد، بر دسته‌ی بالا اولویت دارد.', 'signteb-video-hub'); ?>
                         <br>
-                        <?php esc_html_e('آپارات مستندات API ندارد؛ افزونه چند مسیر را روی سرور خودتان امتحان می‌کند و مسیر درست را به‌خاطر می‌سپارد. اگر هیچ‌کدام جواب نداد، همان فیلتر دسته کار می‌کند — با «تست فهرست پخش» قبل از همگام‌سازی مطمئن شوید.', 'signteb-video-hub'); ?>
+                        <?php esc_html_e('آپارات مستندات API ندارد؛ افزونه چند مسیر را روی سرور خودتان امتحان می‌کند و مسیر درست را به‌خاطر می‌سپارد. اگر هیچ‌کدام جواب نداد، از فیلد پایین استفاده کنید — با «تست فهرست پخش» قبل از همگام‌سازی مطمئن شوید.', 'signteb-video-hub'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="aparat_video_ids"><?php esc_html_e('یا فهرست دستی ویدئوها', 'signteb-video-hub'); ?></label></th>
+                <td>
+                    <textarea id="aparat_video_ids" name="aparat_video_ids" rows="5" class="large-text code" dir="ltr" placeholder="https://www.aparat.com/v/abc123&#10;https://www.aparat.com/v/def456"><?php echo esc_textarea((string) $values['aparat_video_ids']); ?></textarea>
+                    <p class="description">
+                        <?php esc_html_e('آدرس ویدئوها را (هر کدام در یک خط) از آپارات کپی کنید. شناسه‌ی خالی هم پذیرفته می‌شود.', 'signteb-video-hub'); ?>
+                        <br>
+                        <?php esc_html_e('این روش تنها روشی است که به هیچ چیزی در سمت آپارات وابسته نیست — اگر پر باشد، بر فهرست پخش و دسته اولویت دارد. ویدئوها باید متعلق به همان کانال بالا باشند و در ۱۰۰ ویدئوی اخیر آن قرار داشته باشند.', 'signteb-video-hub'); ?>
                     </p>
                 </td>
             </tr>

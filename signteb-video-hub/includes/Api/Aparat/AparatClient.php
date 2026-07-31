@@ -38,15 +38,19 @@ class AparatClient
      * works in production lives there.
      */
     private const PLAYLIST_CANDIDATES = [
+        // `/playlist/list` answered 400, not 405 — the only route so far that
+        // parsed the request and objected to its parameters, which makes its
+        // parameter shape the most promising thing left to vary.
+        'https://www.aparat.com/api/fa/v1/video/playlist/list?id=%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/list/id/%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/list?playlist_id=%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/videos/id/%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/videos?id=%s',
         // Path-segment style, as used by the working channel endpoint.
         'https://www.aparat.com/api/fa/v1/video/playlist/getone/id/%s',
-        'https://www.aparat.com/api/fa/v1/video/playlist/listbyid/playlist_id/%s',
-        // Query-string style. The 405s above are consistent with a route that
-        // exists but rejects the request as shaped, so the same names are
-        // retried the other way before giving up on them.
         'https://www.aparat.com/api/fa/v1/video/playlist/getone?id=%s',
-        'https://www.aparat.com/api/fa/v1/video/playlist/listbyid?playlist_id=%s',
-        'https://www.aparat.com/api/fa/v1/video/playlist/list?playlist_id=%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/getone/playlist_id/%s',
+        'https://www.aparat.com/api/fa/v1/video/playlist/listbyid/playlist_id/%s',
         // The /etc/ family answers "username or password missing", so it is an
         // authenticated API rather than a public one. Kept last and only for
         // completeness — it is not expected to work without credentials.
@@ -121,6 +125,47 @@ class AparatClient
         }
 
         return ctype_digit($input) ? $input : '';
+    }
+
+    /**
+     * Video ids from a pasted list of Aparat links or bare hashes.
+     *
+     * The one selection method that depends on nothing Aparat has to grant:
+     * the admin can see the playlist in a browser even when the server cannot,
+     * so they can supply the list directly. Separators are deliberately loose
+     * — newlines, commas and spaces all work, because a copied column of links
+     * arrives in whichever of those a browser felt like using.
+     *
+     * @return array<int,string>
+     */
+    public static function normalize_video_ids(string $input): array
+    {
+        $input = str_replace('\\/', '/', trim($input));
+        if ($input === '') {
+            return [];
+        }
+
+        $ids = [];
+        foreach (preg_split('/[\s,،;]+/u', $input) ?: [] as $token) {
+            $token = trim((string) $token);
+            if ($token === '') {
+                continue;
+            }
+
+            if (preg_match('~/v/([A-Za-z0-9_-]{4,24})~', $token, $m)) {
+                $ids[] = $m[1];
+                continue;
+            }
+
+            // A bare hash. Anything with a slash or a dot is a URL we failed to
+            // read, not an id, and silently importing the wrong thing is worse
+            // than skipping it.
+            if (preg_match('~^[A-Za-z0-9_-]{4,24}$~', $token)) {
+                $ids[] = $token;
+            }
+        }
+
+        return array_values(array_unique($ids));
     }
 
     /**
@@ -526,7 +571,16 @@ class AparatClient
 
         $code = (int) wp_remote_retrieve_response_code($response);
         if ($code !== 200) {
-            return ['ok' => false, 'body' => [], 'error' => sprintf('آپارات کد %d برگرداند.', $code)];
+            // A 400 names the parameter it wanted; a 405 usually does not. The
+            // body is worth far more than the status on its own.
+            $detail = trim(wp_strip_all_tags((string) wp_remote_retrieve_body($response)));
+
+            return [
+                'ok'    => false,
+                'body'  => [],
+                'error' => sprintf('آپارات کد %d برگرداند.', $code)
+                    . ($detail !== '' ? ' پاسخ: ' . mb_substr(preg_replace('/\s+/u', ' ', $detail) ?? '', 0, 160) : ''),
+            ];
         }
 
         $body = Json::decode((string) wp_remote_retrieve_body($response));

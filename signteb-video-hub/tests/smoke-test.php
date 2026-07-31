@@ -206,6 +206,25 @@ $check('slashes escaped inside embedded JSON still match', $stvh_escaped['ids'],
 
 $check('a page with no video links yields nothing', AparatClient::extract_playlist_ids('<html></html>', '1')['ids'], []);
 
+echo "\nManual video list — the one selection Aparat cannot refuse\n";
+$check(
+    'urls one per line',
+    AparatClient::normalize_video_ids("https://www.aparat.com/v/abc123\nhttps://www.aparat.com/v/def456"),
+    ['abc123', 'def456']
+);
+$check(
+    'commas and spaces separate too',
+    AparatClient::normalize_video_ids('abc123, def456 ghi789'),
+    ['abc123', 'def456', 'ghi789']
+);
+$check('duplicates collapse, order survives', AparatClient::normalize_video_ids("x1y2z3\nx1y2z3"), ['x1y2z3']);
+$check(
+    'a url that is not a video is skipped, not guessed at',
+    AparatClient::normalize_video_ids("https://www.aparat.com/playlist/1058203\nhttps://www.aparat.com/v/ok1234"),
+    ['ok1234']
+);
+$check('blank input yields nothing', AparatClient::normalize_video_ids("  \n , "), []);
+
 echo "\nFormat::slug — the real titles that produced unusable slugs\n";
 $check(
     'drops the Persian question mark and the author suffix',
@@ -368,6 +387,42 @@ $check('no overlap at all falls back to the category', count($stvh_src->fetch(10
 
 [$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', 'cat:12', null, ['a', 'b', 'c']);
 $check('the sync limit applies to page results too', count($stvh_src->fetch(2)['videos']), 2);
+
+echo "\nManual list precedence — nothing outranks it, because nothing else is\n";
+echo "  guaranteed to work.\n";
+
+// Real Aparat hashes are several characters long, and normalize_video_ids
+// deliberately refuses anything shorter, so this fixture uses realistic ones.
+$stvh_hashed = [
+    ['uid' => 'aa11bb', 'title' => 'سلامت ۱', 'cat_id' => '12'],
+    ['uid' => 'cc22dd', 'title' => 'آموزش ۱', 'cat_id' => '30'],
+    ['uid' => 'ee33ff', 'title' => 'سلامت ۲', 'cat_id' => '12'],
+];
+
+$stvh_manual = static function (string $ids, string $url, string $category) use ($stvh_hashed): AparatSource {
+    $GLOBALS['stvh_test_options'] = [
+        'aparat_username'     => 'x',
+        'aparat_playlist'     => $category,
+        'aparat_playlist_url' => $url,
+        'aparat_video_ids'    => $ids,
+    ];
+    $client                 = new StvhStubAparatClient();
+    $client->items          = $stvh_hashed;
+    $client->playlist_items = [['uid' => 'p1zzzz', 'title' => 'از فهرست پخش']];
+
+    return new AparatSource(new Settings(), $client);
+};
+
+$stvh_picked = $stvh_manual("https://www.aparat.com/v/ee33ff\nhttps://www.aparat.com/v/aa11bb", 'https://www.aparat.com/playlist/1234567', 'cat:12')->fetch(10);
+$check('the manual list beats a working playlist', count($stvh_picked['videos']), 2);
+$check('and keeps the order it was written in', $stvh_picked['videos'][0]->title, 'سلامت ۲');
+
+$stvh_partial = $stvh_manual('aa11bb, nosuchid', '', '')->fetch(10);
+$check('unknown ids are dropped, not invented', count($stvh_partial['videos']), 1);
+
+$stvh_none = $stvh_manual('zzz999, yyy888', 'https://www.aparat.com/playlist/1234567', '')->fetch(10);
+$check('a list that matches nothing falls through to the playlist', count($stvh_none['videos']), 1);
+$check('and that fallback is the playlist result', $stvh_none['videos'][0]->title, 'از فهرست پخش');
 
 echo "\nVideoDto\n";
 $dto = VideoDto::from_array('aparat', [

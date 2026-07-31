@@ -55,6 +55,21 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
             return ['ok' => false, 'videos' => [], 'error' => 'شناسه کانال آپارات تنظیم نشده است.'];
         }
 
+        // An explicit list of videos is the only selection that cannot fail on
+        // Aparat's side, so nothing outranks it.
+        $chosen = $this->selected_video_ids();
+        if ($chosen !== []) {
+            $picked = $this->videos_by_ids($chosen, $limit);
+            if ($picked !== []) {
+                return ['ok' => true, 'videos' => $picked];
+            }
+            Logger::warning(
+                'aparat',
+                'هیچ‌کدام از ویدئوهای فهرست دستی در ۱۰۰ ویدئوی اخیر کانال نبودند.',
+                ['ids' => count($chosen)]
+            );
+        }
+
         // A pasted playlist URL is the most explicit thing an admin can say, so
         // it wins over the category dropdown. It can still fail — Aparat's
         // playlist route is discovered at runtime, not documented — and the
@@ -208,6 +223,33 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
     }
 
     /**
+     * Video ids an admin listed by hand.
+     *
+     * @return array<int,string>
+     */
+    public function selected_video_ids(): array
+    {
+        return AparatClient::normalize_video_ids((string) $this->settings->get('aparat_video_ids', ''));
+    }
+
+    /**
+     * The named videos, taken from the channel list so every field comes from
+     * the endpoint that works, in the order they were listed.
+     *
+     * @param array<int,string> $ids
+     * @return array<int,VideoDto>
+     */
+    private function videos_by_ids(array $ids, int $limit): array
+    {
+        $channel = $this->client->videos_by_username($this->username(), 100);
+        if (! $channel['ok']) {
+            return [];
+        }
+
+        return $this->to_dtos($this->order_by_ids($channel['items'], $ids), $limit);
+    }
+
+    /**
      * Probes the playlist route so an admin learns whether the pasted URL
      * works before a sync silently falls back to the category filter.
      *
@@ -215,6 +257,32 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
      */
     public function test_playlist(): array
     {
+        // The manual list outranks the URL at sync time, so it is what a test
+        // must report on when both are filled — otherwise the test would
+        // describe a route the sync will never take.
+        $chosen = $this->selected_video_ids();
+        if ($chosen !== []) {
+            $matched = $this->videos_by_ids($chosen, 100);
+
+            return [
+                'ok'      => $matched !== [],
+                'message' => $matched !== []
+                    ? sprintf(
+                        'فهرست دستی: %d شناسه وارد شده، %d ویدئو در کانال پیدا شد.%s',
+                        count($chosen),
+                        count($matched),
+                        count($matched) < count($chosen)
+                            ? ' بقیه در ۱۰۰ ویدئوی اخیر کانال نبودند.'
+                            : ''
+                    )
+                    : sprintf(
+                        '%d شناسه خوانده شد ولی هیچ‌کدام در ۱۰۰ ویدئوی اخیر کانال نبود —'
+                            . ' مطمئن شوید ویدئوها متعلق به همین کانال هستند.',
+                        count($chosen)
+                    ),
+            ];
+        }
+
         $raw = trim((string) $this->settings->get('aparat_playlist_url', ''));
         if ($raw === '') {
             return ['ok' => false, 'message' => 'آدرس فهرست پخش وارد نشده است.'];

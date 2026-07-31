@@ -150,6 +150,7 @@ class SettingsPage
         $values['analytics_retention'] = max(7, min(730, (int) ($post['analytics_retention'] ?? 180)));
 
         $values['internal_link_map'] = sanitize_textarea_field((string) ($post['internal_link_map'] ?? ''));
+        $values['aparat_video_ids']  = sanitize_textarea_field((string) ($post['aparat_video_ids'] ?? ''));
 
         return $values;
     }
