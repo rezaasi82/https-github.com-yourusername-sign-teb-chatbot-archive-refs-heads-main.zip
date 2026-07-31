@@ -3,7 +3,7 @@
  * Plugin Name:       SEO Director AI
  * Plugin URI:        https://signteb.com
  * Description:       AI-powered SEO management platform that monitors, analyzes, prioritizes, explains, and recommends actions — a virtual SEO Director inside WordPress.
- * Version:           0.12.8
+ * Version:           0.12.9
  * Requires at least: 6.4
  * Requires PHP:      8.2
  * Author:            Reza Asiabi (رضا آسیابی)
