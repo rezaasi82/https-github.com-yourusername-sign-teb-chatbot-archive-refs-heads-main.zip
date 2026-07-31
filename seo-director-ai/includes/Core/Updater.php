@@ -39,6 +39,66 @@ final class Updater {
 		add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'inject_update' ] );
 		add_filter( 'plugins_api', [ $this, 'plugin_info' ], 10, 3 );
 		add_filter( 'auto_update_plugin', [ $this, 'maybe_auto_update' ], 10, 2 );
+
+		if ( is_admin() ) {
+			add_filter( 'plugin_row_meta', [ $this, 'row_meta' ], 10, 2 );
+			add_filter( 'plugin_auto_update_setting_html', [ $this, 'auto_update_html' ], 10, 2 );
+		}
+	}
+
+	/**
+	 * Replace the generic "View details" thickbox link in the plugins-list row
+	 * with a direct "visit plugin home" link. The details popup is a
+	 * wordpress.org-flavored screen that doesn't fit a self-hosted plugin.
+	 *
+	 * @param string[] $links Existing row-meta links.
+	 * @param string   $file  Plugin file being rendered.
+	 * @return string[]
+	 */
+	public function row_meta( array $links, string $file ): array {
+		if ( plugin_basename( SDA_PLUGIN_FILE ) !== $file ) {
+			return $links;
+		}
+
+		// Drop the auto-added "View details" thickbox link.
+		foreach ( $links as $i => $link ) {
+			if ( str_contains( (string) $link, 'plugin-information' ) || str_contains( (string) $link, 'thickbox' ) ) {
+				unset( $links[ $i ] );
+			}
+		}
+
+		$home    = 'https://signteb.com';
+		$links[] = sprintf(
+			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_url( $home ),
+			esc_html__( 'Visit plugin home', 'seo-director-ai' )
+		);
+
+		return array_values( $links );
+	}
+
+	/**
+	 * The core "Auto-updates" column is meaningless for a self-hosted plugin —
+	 * updates come from the SignTeb server on a schedule and are governed by
+	 * the plugin's own setting, not WordPress's per-plugin toggle. Replace the
+	 * toggle with a short static note.
+	 *
+	 * @param string $html Existing toggle markup.
+	 * @param string $file Plugin file being rendered.
+	 */
+	public function auto_update_html( string $html, string $file ): string {
+		if ( plugin_basename( SDA_PLUGIN_FILE ) !== $file ) {
+			return $html;
+		}
+
+		$on = (bool) $this->settings->get( 'auto_update', true );
+
+		return sprintf(
+			'<span style="color:var(--wp-admin-theme-color,#2271b1)">%s</span>',
+			$on
+				? esc_html__( 'Updates from SignTeb (manage in SEO Director → Settings)', 'seo-director-ai' )
+				: esc_html__( 'Auto-update off (manage in SEO Director → Settings)', 'seo-director-ai' )
+		);
 	}
 
 	/**

@@ -68,6 +68,13 @@ final class FeatureGate {
 	 * Whether the current effective edition unlocks a feature.
 	 */
 	public function allows( string $feature ): bool {
+		// Test/unlock override: when SDA_UNLOCK_ALL is defined true (or the
+		// filter returns true) every feature is available regardless of license
+		// state. Intended for QA — remove the constant to restore licensing.
+		if ( self::unlock_all() ) {
+			return true;
+		}
+
 		$edition = $this->effective_edition();
 
 		$rank = self::RANK[ $edition ] ?? 0;
@@ -87,6 +94,26 @@ final class FeatureGate {
 	 */
 	public function is_lite(): bool {
 		return defined( 'SDA_LITE' ) && SDA_LITE;
+	}
+
+	/**
+	 * Whether the license gate is bypassed (all features unlocked). Driven by
+	 * the SDA_UNLOCK_ALL constant or the sda_unlock_all filter. Lite builds
+	 * ignore this — the free edition stays limited.
+	 */
+	public static function unlock_all(): bool {
+		if ( defined( 'SDA_LITE' ) && SDA_LITE ) {
+			return false;
+		}
+
+		$unlocked = defined( 'SDA_UNLOCK_ALL' ) && SDA_UNLOCK_ALL;
+
+		/**
+		 * Filters whether all licensed features are unlocked (QA/testing).
+		 *
+		 * @param bool $unlocked True to bypass the license gate.
+		 */
+		return (bool) apply_filters( 'sda_unlock_all', $unlocked );
 	}
 
 	/**

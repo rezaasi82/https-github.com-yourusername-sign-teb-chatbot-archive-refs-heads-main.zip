@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.12.8
+Stable tag: 0.12.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.12.9 =
+* TESTING BUILD: the license gate is bypassed (SDA_UNLOCK_ALL) so every Pro/Agency/Enterprise feature is unlocked for QA — no license needed. To re-enable licensing, remove the SDA_UNLOCK_ALL define at the top of seo-director-ai.php (or set it false) and ship a new build. A matching sda_unlock_all filter is also available.
+* Plugins list: replaced the generic "View details" link with a direct "Visit plugin home" link (signteb.com), and replaced the confusing core "Auto-updates" toggle with a note that updates are managed in SEO Director → Settings (this plugin updates itself from the SignTeb server, so WordPress's per-plugin toggle didn't apply).
 
 = 0.12.8 =
 * Medical Pack: added injectable weight-loss drugs (GLP-1 analogues) to the General & bariatric surgery preset — Mounjaro (مانجارو), اسپارتینا, Ozempic (اوزمپیک), Wegovy (ویگووی), Saxenda (ساکسندا), semaglutide/tirzepatide/liraglutide, plus injection terms (تزریق لاغری، آمپول لاغری، قلم لاغری، دارودرمانی چاقی) — so bariatric-clinic sites that also offer non-surgical drug therapy are detected.

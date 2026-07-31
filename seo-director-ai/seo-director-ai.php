@@ -18,11 +18,21 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SDA_VERSION', '0.12.8' );
+define( 'SDA_VERSION', '0.12.9' );
 define( 'SDA_DB_VERSION', '3' );
 define( 'SDA_PLUGIN_FILE', __FILE__ );
 define( 'SDA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SDA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+/* ============================================================================
+ * TESTING / QA — LICENSE BYPASS
+ * All Pro/Agency/Enterprise features are UNLOCKED while this constant is true,
+ * so every screen can be tested without a license. To re-enable licensing,
+ * delete (or set to false) the line below and ship a new build.
+ * ========================================================================== */
+if ( ! defined( 'SDA_UNLOCK_ALL' ) ) {
+	define( 'SDA_UNLOCK_ALL', true );
+}
 
 /**
  * Requirements gate: never fatal on unsupported environments, degrade to an admin notice.
