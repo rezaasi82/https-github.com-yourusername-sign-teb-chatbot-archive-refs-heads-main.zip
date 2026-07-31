@@ -76,7 +76,7 @@ $checkbox = static function (string $key, string $label, array $values, string $
             <tr>
                 <th scope="row"><label for="aparat_username"><?php esc_html_e('شناسه کانال آپارات', 'signteb-video-hub'); ?></label></th>
                 <td>
-                    <input type="text" id="aparat_username" name="aparat_username" value="<?php echo esc_attr((string) $values['aparat_username']); ?>" class="regular-text" dir="ltr" placeholder="drhamedzamani">
+                    <input type="text" id="aparat_username" name="aparat_username" value="<?php echo esc_attr((string) $values['aparat_username']); ?>" class="regular-text" dir="ltr" placeholder="mychannel">
                     <button type="button" class="button" data-stvh-test="aparat"><?php esc_html_e('تست اتصال', 'signteb-video-hub'); ?></button>
                     <p class="description"><?php esc_html_e('فقط نام کاربری کانال کافی است؛ آدرس کامل هم پذیرفته می‌شود.', 'signteb-video-hub'); ?></p>
                 </td>
@@ -105,7 +105,7 @@ $checkbox = static function (string $key, string $label, array $values, string $
             <tr>
                 <th scope="row"><label for="aparat_playlist_url"><?php esc_html_e('یا آدرس فهرست پخش آپارات', 'signteb-video-hub'); ?></label></th>
                 <td>
-                    <input type="text" id="aparat_playlist_url" name="aparat_playlist_url" value="<?php echo esc_attr((string) $values['aparat_playlist_url']); ?>" class="regular-text" dir="ltr" placeholder="https://www.aparat.com/playlist/27074957">
+                    <input type="text" id="aparat_playlist_url" name="aparat_playlist_url" value="<?php echo esc_attr((string) $values['aparat_playlist_url']); ?>" class="regular-text" dir="ltr" placeholder="https://www.aparat.com/playlist/1234567">
                     <button type="button" class="button" data-stvh-test="aparat_playlist"><?php esc_html_e('تست فهرست پخش', 'signteb-video-hub'); ?></button>
                     <p class="description">
                         <?php esc_html_e('آدرس فهرست پخش را از آپارات کپی و اینجا بچسبانید. اگر پر باشد، بر دسته‌ی بالا اولویت دارد.', 'signteb-video-hub'); ?>

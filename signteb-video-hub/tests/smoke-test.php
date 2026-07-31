@@ -123,13 +123,13 @@ $check('dig nested', Json::dig(['a' => ['b' => ['c' => 7]]], 'a.b.c'), 7);
 $check('dig missing returns default', Json::dig(['a' => 1], 'x.y', 'def'), 'def');
 
 echo "\nAparatClient\n";
-$check('username plain', AparatClient::normalize_username('drhamedzamani'), 'drhamedzamani');
-$check('username with @', AparatClient::normalize_username('@drhamedzamani'), 'drhamedzamani');
-$check('username from url', AparatClient::normalize_username('https://www.aparat.com/drhamedzamani'), 'drhamedzamani');
-$check('playlist id from url', AparatClient::normalize_playlist('https://www.aparat.com/playlist/27074957'), '27074957');
-$check('playlist id from url with query', AparatClient::normalize_playlist('https://www.aparat.com/playlist/27074957?x=1'), '27074957');
-$check('bare playlist id', AparatClient::normalize_playlist('27074957'), '27074957');
-$check('a channel url is not a playlist', AparatClient::normalize_playlist('https://www.aparat.com/drhamedzamani'), '');
+$check('username plain', AparatClient::normalize_username('mychannel'), 'mychannel');
+$check('username with @', AparatClient::normalize_username('@mychannel'), 'mychannel');
+$check('username from url', AparatClient::normalize_username('https://www.aparat.com/mychannel'), 'mychannel');
+$check('playlist id from url', AparatClient::normalize_playlist('https://www.aparat.com/playlist/1234567'), '1234567');
+$check('playlist id from url with query', AparatClient::normalize_playlist('https://www.aparat.com/playlist/1234567?x=1'), '1234567');
+$check('bare playlist id', AparatClient::normalize_playlist('1234567'), '1234567');
+$check('a channel url is not a playlist', AparatClient::normalize_playlist('https://www.aparat.com/mychannel'), '');
 $check('empty input', AparatClient::normalize_playlist('  '), '');
 
 echo "\nFormat::slug — the real titles that produced unusable slugs\n";
@@ -238,20 +238,20 @@ $stvh_list = [
     ['uid' => 'p2', 'title' => 'فهرست ۲'],
 ];
 
-[$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/playlist/27074957', 'cat:12', $stvh_list);
+[$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', 'cat:12', $stvh_list);
 $stvh_fetched = $stvh_src->fetch(10);
 $check('a working playlist wins over the category', count($stvh_fetched['videos']), 2);
 $check('and its videos are the ones imported', $stvh_fetched['videos'][0]->title, 'فهرست ۱');
-$check('the id is extracted before the request', $stvh_client->asked_playlist, '27074957');
+$check('the id is extracted before the request', $stvh_client->asked_playlist, '1234567');
 $check('the sync limit applies to playlist results too', count($stvh_src->fetch(1)['videos']), 1);
 
-[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/27074957', 'cat:12', null);
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', 'cat:12', null);
 $check('a 405 falls back to the category filter', count($stvh_src->fetch(10)['videos']), 2);
 
-[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/27074957', '', null);
+[$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', '', null);
 $check('…and to the whole channel when no category is set', count($stvh_src->fetch(10)['videos']), 3);
 
-[$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/drhamedzamani', 'cat:12', $stvh_list);
+[$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/mychannel', 'cat:12', $stvh_list);
 $check('a non-playlist url is ignored, not requested', $stvh_client->asked_playlist, '');
 $check('so the category filter still runs', count($stvh_src->fetch(10)['videos']), 2);
 

@@ -149,7 +149,7 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface
         if ($id === '') {
             return [
                 'ok'      => false,
-                'message' => 'از این آدرس شناسه‌ای پیدا نشد. نمونه درست: https://www.aparat.com/playlist/27074957',
+                'message' => 'از این آدرس شناسه‌ای پیدا نشد. نمونه درست: https://www.aparat.com/playlist/1234567',
             ];
         }
 

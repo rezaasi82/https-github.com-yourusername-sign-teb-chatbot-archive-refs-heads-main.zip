@@ -83,7 +83,7 @@ class AparatClient
     }
 
     /**
-     * A playlist id from a URL like https://www.aparat.com/playlist/27074957,
+     * A playlist id from a URL like https://www.aparat.com/playlist/1234567,
      * or a bare id. Returns '' when nothing numeric can be found.
      */
     public static function normalize_playlist(string $input): string
