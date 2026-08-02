@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Medical Core
  * Plugin URI:        https://signteb.com/
  * Description:       موتور اصلی پزشکی برای SignTeb MedCore — Custom Post Types، Meta Fields، SEO Engine، و سیستم رزرو نوبت.
- * Version:           1.0.2
+ * Version:           1.1.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            رضا آسیابی
@@ -45,7 +45,7 @@ if ( version_compare( get_bloginfo( 'version' ), '6.4', '<' ) ) {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-define( 'STMC_VERSION',   '1.0.2' );
+define( 'STMC_VERSION',   '1.1.0' );
 define( 'STMC_FILE',      __FILE__ );
 define( 'STMC_DIR',       plugin_dir_path( __FILE__ ) );
 define( 'STMC_URI',       plugin_dir_url( __FILE__ ) );

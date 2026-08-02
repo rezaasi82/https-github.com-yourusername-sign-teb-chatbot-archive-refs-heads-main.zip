@@ -33,10 +33,12 @@ final class Settings {
 			'stmc_social_instagram',
 			'stmc_social_linkedin',
 			'stmc_social_youtube',
-			// ── SMS / ملی‌پیامک ──
+			// ── SMS ──
 			'stmc_sms_enabled',
+			'stmc_sms_provider',
 			'stmc_sms_username',
 			'stmc_sms_password',
+			'stmc_sms_api_key',
 			'stmc_sms_sender_line',
 			'stmc_sms_confirmation_enabled',
 			'stmc_sms_reminder_24h_enabled',
@@ -144,28 +146,53 @@ final class Settings {
 					<?php endforeach; ?>
 				</table>
 
-				<h2>📱 <?php esc_html_e( 'پیامک — ملی‌پیامک', STMC_TEXT ); ?></h2>
+				<h2>📱 <?php esc_html_e( 'پیامک', STMC_TEXT ); ?></h2>
+				<?php $current_provider = get_option( 'stmc_sms_provider', \STMC\Sms\ProviderFactory::DEFAULT_PROVIDER ); ?>
 				<table class="form-table">
 					<tr>
 						<th scope="row"><?php esc_html_e( 'فعال‌سازی SMS', STMC_TEXT ); ?></th>
 						<td><label><input type="checkbox" name="stmc_sms_enabled" value="1" <?php checked( get_option( 'stmc_sms_enabled', '0' ), '1' ); ?>>
 						<?php esc_html_e( 'فعال', STMC_TEXT ); ?></label>
-						<p class="description"><?php esc_html_e( 'برای دریافت اطلاعات حساب از panel.payamak-panel.com اقدام کنید.', STMC_TEXT ); ?></p></td>
+						<p class="description"><?php esc_html_e( 'درگاه پیامک دلخواه خود را انتخاب و اطلاعات حساب آن را وارد کنید.', STMC_TEXT ); ?></p></td>
 					</tr>
 					<tr>
+						<th scope="row"><label for="stmc_sms_provider"><?php esc_html_e( 'درگاه پیامک', STMC_TEXT ); ?></label></th>
+						<td>
+							<select id="stmc_sms_provider" name="stmc_sms_provider">
+								<?php foreach ( \STMC\Sms\ProviderFactory::list() as $pid => $plabel ) : ?>
+									<option value="<?php echo esc_attr( $pid ); ?>" <?php selected( $current_provider, $pid ); ?>><?php echo esc_html( $plabel ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description"><?php esc_html_e( 'با تغییر درگاه، فیلدهای مورد نیاز همان درگاه نمایش داده می‌شوند.', STMC_TEXT ); ?></p>
+						</td>
+					</tr>
+
+					<!-- فیلدهای ملی‌پیامک: username / password -->
+					<tr class="stmc-sms-field" data-provider="melipayamak">
 						<th scope="row"><label for="stmc_sms_username"><?php esc_html_e( 'نام کاربری', STMC_TEXT ); ?></label></th>
 						<td><input type="text" id="stmc_sms_username" name="stmc_sms_username"
 							value="<?php echo esc_attr( get_option( 'stmc_sms_username', '' ) ); ?>" class="regular-text" autocomplete="off"></td>
 					</tr>
-					<tr>
+					<tr class="stmc-sms-field" data-provider="melipayamak">
 						<th scope="row"><label for="stmc_sms_password"><?php esc_html_e( 'رمز عبور', STMC_TEXT ); ?></label></th>
 						<td><input type="password" id="stmc_sms_password" name="stmc_sms_password"
 							value="<?php echo esc_attr( get_option( 'stmc_sms_password', '' ) ); ?>" class="regular-text" autocomplete="off"></td>
 					</tr>
-					<tr>
+
+					<!-- فیلد کلید API: کاوه‌نگار / SMS.ir / قاصدک -->
+					<tr class="stmc-sms-field" data-provider="kavenegar smsir ghasedak">
+						<th scope="row"><label for="stmc_sms_api_key"><?php esc_html_e( 'کلید API', STMC_TEXT ); ?></label></th>
+						<td><input type="text" id="stmc_sms_api_key" name="stmc_sms_api_key"
+							value="<?php echo esc_attr( get_option( 'stmc_sms_api_key', '' ) ); ?>" class="regular-text" autocomplete="off">
+						<p class="description"><?php esc_html_e( 'کلید API از پنل کاربری درگاه انتخاب‌شده.', STMC_TEXT ); ?></p></td>
+					</tr>
+
+					<!-- شماره خط ارسال: همهٔ درگاه‌ها (برای کاوه‌نگار/قاصدک اختیاری) -->
+					<tr class="stmc-sms-field" data-provider="melipayamak kavenegar smsir ghasedak">
 						<th scope="row"><label for="stmc_sms_sender_line"><?php esc_html_e( 'شماره خط ارسال', STMC_TEXT ); ?></label></th>
 						<td><input type="text" id="stmc_sms_sender_line" name="stmc_sms_sender_line"
-							value="<?php echo esc_attr( get_option( 'stmc_sms_sender_line', '' ) ); ?>" class="regular-text" placeholder="مثال: 09982004676"></td>
+							value="<?php echo esc_attr( get_option( 'stmc_sms_sender_line', '' ) ); ?>" class="regular-text" placeholder="مثال: 30002108">
+						<p class="description" data-provider-hint="kavenegar ghasedak" hidden><?php esc_html_e( 'برای این درگاه اختیاری است؛ خالی بگذارید تا خط پیش‌فرض حساب استفاده شود.', STMC_TEXT ); ?></p></td>
 					</tr>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'پیامک‌های فعال', STMC_TEXT ); ?></th>
@@ -176,6 +203,26 @@ final class Settings {
 						</td>
 					</tr>
 				</table>
+
+				<script>
+				(function() {
+					var sel = document.getElementById('stmc_sms_provider');
+					if (!sel) { return; }
+					function sync() {
+						var p = sel.value;
+						document.querySelectorAll('.stmc-sms-field').forEach(function(row) {
+							var providers = (row.getAttribute('data-provider') || '').split(/\s+/);
+							row.style.display = providers.indexOf(p) !== -1 ? '' : 'none';
+						});
+						document.querySelectorAll('[data-provider-hint]').forEach(function(el) {
+							var providers = (el.getAttribute('data-provider-hint') || '').split(/\s+/);
+							el.hidden = providers.indexOf(p) === -1;
+						});
+					}
+					sel.addEventListener('change', sync);
+					sync();
+				})();
+				</script>
 
 				<h2>📅 <?php esc_html_e( 'تنظیمات رزرو نوبت', STMC_TEXT ); ?></h2>
 				<table class="form-table">
@@ -250,7 +297,7 @@ final class Settings {
 			'stmc_clinic_email', 'stmc_clinic_address', 'stmc_appointment_email',
 			'stmc_market', 'stmc_geo_region', 'stmc_geo_placename',
 			'stmc_social_instagram', 'stmc_social_linkedin', 'stmc_social_youtube',
-			'stmc_sms_username', 'stmc_sms_sender_line',
+			'stmc_sms_provider', 'stmc_sms_username', 'stmc_sms_api_key', 'stmc_sms_sender_line',
 			'stmc_default_slot_minutes', 'stmc_booking_lead_hours', 'stmc_booking_max_days',
 		];
 
@@ -288,7 +335,7 @@ final class Settings {
 			wp_send_json_error( [ 'message' => __( 'شماره موبایل نامعتبر است (فرمت: 09xxxxxxxxx)', STMC_TEXT ) ] );
 		}
 
-		$client = new \STMC\Sms\MeliPayamakClient();
+		$client = \STMC\Sms\ProviderFactory::current();
 		if ( ! $client->is_configured() ) {
 			wp_send_json_error( [ 'message' => __( 'ابتدا تنظیمات SMS را کامل و ذخیره کنید.', STMC_TEXT ) ] );
 		}

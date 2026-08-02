@@ -21,10 +21,10 @@ defined( 'ABSPATH' ) || exit;
 
 final class Notifier {
 
-	private MeliPayamakClient $client;
+	private ProviderInterface $client;
 
 	public function __construct( private readonly Loader $loader ) {
-		$this->client = new MeliPayamakClient();
+		$this->client = ProviderFactory::current();
 
 		// نوبت جدید ثبت شد → SMS تأیید دریافت
 		$this->loader->add_action( 'stmc_appointment_created', $this, 'on_appointment_created', 10, 2 );
