@@ -1,0 +1,5 @@
+# Build output directory.
+#
+# `npm run build` writes app.js, editor.js and their *.asset.php dependency
+# manifests here. The compiled files are gitignored; this placeholder keeps the
+# directory present so a source checkout still has a valid plugin structure.

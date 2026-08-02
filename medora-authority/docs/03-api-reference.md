@@ -1,0 +1,261 @@
+# API reference
+
+Namespace: `medora/v1`. Base URL: `{site}/wp-json/medora/v1`.
+
+## Authentication
+
+| Route group                                   | Access                              |
+|-----------------------------------------------|-------------------------------------|
+| `/entities`, `/graph`, `/prompt/{id}`, `/search`, `/citations/{id}` (GET) | Public, read-only |
+| Everything else (GET)                          | `medora_view_dashboard`             |
+| `/settings`, `/modules/*`, `/crawlers` (write) | `medora_manage_settings`            |
+| `/score/{id}/analyze`, `/citations` (write)    | `medora_run_analysis`               |
+| `/entities/{id}` (write)                       | `medora_manage_entities`            |
+| `/audit-log`                                   | `medora_view_audit_log`             |
+
+The public endpoints are open **by design** — they are how an AI system consumes
+the site's structured knowledge, and gating them behind a key would defeat the
+product. They expose only published content. Anonymous GETs are rate limited to
+120 requests per minute per IP (`medora_public_rate_limit`), and the whole public
+surface can be closed with `add_filter( 'medora_public_api_enabled', '__return_false' )`.
+
+Authenticated requests use the standard WordPress REST nonce (`X-WP-Nonce`), or
+application passwords for machine-to-machine use.
+
+## Knowledge API (public)
+
+### `GET /entities`
+
+Every entity the site covers, ranked by authority.
+
+| Param | Type | Default | Notes |
+|---|---|---|---|
+| `search` | string | — | matched against the normalised name |
+| `type` | string | — | Schema.org type, e.g. `MedicalCondition` |
+| `min_score` | number | — | 0–100 |
+| `orderby` | enum | `authority` | `authority`\|`name`\|`occurrences`\|`recent` |
+| `page`, `per_page` | int | 1, 50 | `per_page` max 200 |
+
+```json
+{
+  "items": [
+    {
+      "id": 42,
+      "uid": "9f2c…",
+      "name": "Fatty liver disease",
+      "type": "MedicalCondition",
+      "type_label": "Condition",
+      "description": "Accumulation of fat in liver cells…",
+      "permalink": "https://example.test/conditions/fatty-liver/",
+      "same_as": ["https://www.wikidata.org/wiki/Q1058054"],
+      "authority_score": 78.5,
+      "occurrences": 31,
+      "object": { "type": "term", "id": 17 }
+    }
+  ],
+  "total": 214,
+  "page": 1
+}
+```
+
+`X-WP-Total` carries the count for pagination.
+
+### `GET /entities/{id}`
+
+One entity, plus its graph neighbourhood and a full authority breakdown —
+six components, each with points earned, points available and a plain-language
+note explaining the gap.
+
+### `GET /graph`
+
+| Param | Type | Default | Notes |
+|---|---|---|---|
+| `format` | enum | `jsonld` | `jsonld` for machines, `nodes` for visualisation |
+| `limit` | int | 300 | max 2000 |
+
+`format=jsonld` responds with `Content-Type: application/ld+json` and a
+Schema.org `@graph` whose nodes reference each other by stable `@id`.
+`format=nodes` returns `{ nodes, links, stats }` for a force layout.
+
+### `GET /prompt/{id}`
+
+The LLM-facing representation of a page.
+
+```json
+{
+  "title": "Fatty liver disease: symptoms and treatment",
+  "url": "https://example.test/fatty-liver/",
+  "summary": "Fatty liver disease is the accumulation of fat…",
+  "canonical_answer": "Fatty liver disease is reversible in most cases through…",
+  "facts": ["Affects roughly 25% of adults worldwide.", "…"],
+  "questions": [ { "question": "What causes it?", "answer": "…" } ],
+  "context_window": "# Fatty liver disease\nSource: …",
+  "entities": ["Fatty liver disease", "Hepatology", "FibroScan"]
+}
+```
+
+Everything is derived **extractively** from the page's own words. That is a
+product decision: a generated paraphrase would introduce claims the publisher
+never made, which on a health site is a liability. Hook `medora_prompt_pack` to
+substitute model-generated text.
+
+### `GET /search`
+
+Semantic search over the site. Requires the Vector Engine module.
+
+| Param | Type | Notes |
+|---|---|---|
+| `q` | string | required |
+| `limit` | int | default 10, max 50 |
+
+### `GET /citations/{id}`
+
+References attached to a post, formatted in `apa`, `vancouver` or `harvard`
+(`?style=`), each with its evidence level and quality score.
+
+## Dashboard API
+
+### `GET /overview?days=30`
+
+One request that bootstraps the entire dashboard: licence state, module
+inventory, queue depth, site score, entity counts, crawler report, referral
+report, vector stats and citation stats. Sections belonging to disabled modules
+are omitted rather than erroring.
+
+### `GET /score/{id}` · `GET /score` · `POST /score/{id}/analyze`
+
+Per-page and site-wide authority. `POST …/analyze` queues by default and returns
+`202`; pass `{"sync": true}` to run inline and get the result immediately (this
+is what the editor's re-analyse button does).
+
+### `GET /score/{id}/recommendations`
+
+An ordered to-do list, sorted by **points recovered per unit of effort** rather
+than by severity alone — a critical issue needing a week of rewriting ranks
+below a high-severity one that takes two minutes.
+
+### `GET /schema/{id}`
+
+The JSON-LD Medora would emit for a page, plus a validation report catching
+dangling `@id` references, missing required properties and untyped nodes.
+
+### `GET /links/{id}`
+
+Outbound link suggestions and inbound opportunities. Anchor text is always a
+phrase the source page already contains — suggesting an anchor that is not
+present would push an editor toward inserting a phrase for the link's sake.
+
+### `GET /crawlers` · `PATCH /crawlers`
+
+Resolved per-crawler policy, a robots.txt preview, and a flag when a physical
+`robots.txt` is shadowing the virtual one. `PATCH` accepts `{preset}` for the
+site-wide policy or `{slug, decision}` for one crawler (`decision: "reset"`
+clears an override).
+
+### `GET /analytics` · `GET /crawler-activity`
+
+Referral and crawl reports over a `days` window. Referral `change_percent` is
+`null` rather than a fabricated number when there is no prior period.
+
+### `GET /authors/{user_id}/trust`
+
+E-E-A-T breakdown across Experience, Expertise, Authoritativeness and
+Trustworthiness, with the specific gaps.
+
+### `GET|PATCH /settings` · `PATCH /modules/{id}` · `GET|POST /license`
+
+Configuration. `PATCH /settings` accepts only keys declared in
+`Options::defaults()`. The stored embedding API key is never returned. Disabling
+a module that others depend on returns `400` naming them; enabling one above the
+current tier returns `402` with `required_tier`.
+
+### `GET /security/scan` · `GET /audit-log` · `GET|POST /onboarding`
+
+Configuration self-audit, the append-only audit trail, and the setup wizard.
+
+## Errors
+
+Standard WordPress REST shape:
+
+```json
+{ "code": "medora_upgrade_required", "message": "This module requires the Agency plan.", "data": { "status": 402, "required_tier": "agency" } }
+```
+
+| Code | Status | Meaning |
+|---|---|---|
+| `medora_forbidden` | 401/403 | missing capability |
+| `medora_not_found` | 404 | unknown post, entity or crawler |
+| `medora_bad_request` | 400 | invalid input, or a required module is inactive |
+| `medora_upgrade_required` | 402 | licence tier too low |
+| `medora_rate_limited` | 429 | public rate limit exceeded |
+| `medora_license_error` | 400 | licence server rejected the operation |
+
+## Action hooks
+
+| Hook | Args | Fires |
+|---|---|---|
+| `medora_register_modules` | `ModuleRegistry` | before modules are filtered and booted |
+| `medora_modules_booted` | `ModuleRegistry` | after all modules boot |
+| `medora_module_toggled` | `string $id, bool $enabled` | a module is enabled or disabled |
+| `medora_register_entity_extractors` | `EntityExtractor` | extractor registration |
+| `medora_entities_indexed` | `WP_Post, array $results` | a post's entities were written |
+| `medora_register_schema_nodes` | `SchemaGraph` | schema node registration |
+| `medora_register_scorers` | `AuthorityScoreCalculator` | scorer registration |
+| `medora_post_analyzed` | `WP_Post, array $result` | a page was scored |
+| `medora_post_embedded` | `WP_Post, int $chunks` | embeddings written |
+| `medora_graph_rebuilt` | `int $posts, int $edges` | full graph rebuild finished |
+| `medora_ai_crawler_detected` | `array $crawler, string $decision` | before the response to a crawler |
+| `medora_ai_referral_recorded` | `array $match` | an assistant referral was logged |
+| `medora_license_status_changed` | `string $status, array $state` | licence state transition |
+| `medora_settings_updated` | `array $settings` | settings written |
+| `medora_onboarding_completed` | `array $settings` | wizard finished |
+| `medora_job_failed` | `string $handler, Throwable` | a background job threw |
+| `medora_scorer_failed` | `string $id, Throwable` | a scorer threw (analysis continues) |
+
+## Filter hooks
+
+| Filter | Returns | Purpose |
+|---|---|---|
+| `medora_module_classes` | `list<class-string>` | add or replace modules |
+| `medora_option` | `mixed` | override a setting at read time |
+| `medora_entity_dictionary` | `array` | contribute controlled vocabulary |
+| `medora_medical_ontology` | `array` | extend the clinical vocabulary |
+| `medora_taxonomy_entity_type` | `string` | map a taxonomy to a Schema.org type |
+| `medora_entity_candidates` | `array<string, Candidate>` | edit candidates before persistence |
+| `medora_entity_salience` | `float` | adjust computed salience |
+| `medora_entity_authority_score` | `float` | adjust entity authority |
+| `medora_authority_score` | `float` | adjust the page score |
+| `medora_topic_facets` | `array` | change expected sub-topics per type |
+| `medora_schema_graph` | `list<array>` | edit the JSON-LD graph before output |
+| `medora_schema_citations` | `list<array>` | attach citation nodes to an article |
+| `medora_article_schema_type` | `string` | override the Article type |
+| `medora_crawler_registry` | `array` | register crawlers shipped after this release |
+| `medora_crawler_decision` | `string` | override access for one crawler |
+| `medora_robots_directives` | `string` | edit the robots.txt block |
+| `medora_llms_txt` / `medora_llms_full_txt` | `string` | edit the published documents |
+| `medora_llms_txt_sections` | `array` | restructure the llms.txt index |
+| `medora_prompt_pack` | `array` | replace extractive text with generated text |
+| `medora_embedding_providers` | `array` | register an embedding provider |
+| `medora_vector_search` | `?array` | delegate search to an external index |
+| `medora_sitemap_ping_endpoints` | `list<string>` | add IndexNow or similar |
+| `medora_rest_controllers` | `list<AbstractController>` | register REST controllers |
+| `medora_public_api_enabled` | `bool` | close the public knowledge API |
+| `medora_public_rate_limit` | `int` | per-minute anonymous limit |
+| `medora_license_endpoint` / `medora_license_tier` | `string` | point at your own entitlement service |
+| `medora_branding` | `array` | force white-label values from code |
+| `medora_boot_data` | `array` | extend the dashboard bootstrap payload |
+| `medora_security_checks` | `array` | add configuration checks |
+
+## Published documents
+
+| Path | Content type | Purpose |
+|---|---|---|
+| `/llms.txt` | `text/markdown` | curated site map for language models |
+| `/llms-full.txt` | `text/markdown` | full content bundle, token-budgeted |
+| `/medora-sitemap.xml` | `application/xml` | sitemap index |
+| `/medora-sitemap-{type}.{xml,json,md}` | varies | `content`, `entity` or `knowledge` |
+| `/robots.txt` | `text/plain` | per-crawler policy (appended by filter) |
+
+Sitemap priority is derived from the AI Authority Score rather than hardcoded
+per post type, so a crawler with a limited budget is pointed at the pages most
+worth citing.

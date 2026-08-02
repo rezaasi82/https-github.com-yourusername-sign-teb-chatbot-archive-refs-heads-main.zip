@@ -1,0 +1,130 @@
+=== Medora Authority ===
+Contributors: medora
+Tags: ai, seo, geo, schema, knowledge-graph
+Requires at least: 6.4
+Tested up to: 6.7
+Requires PHP: 8.2
+Stable tag: 0.1.0
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Make your site a trusted, machine-readable knowledge source for AI search engines and large language models.
+
+== Description ==
+
+Medora Authority optimises a WordPress site for the systems that **answer**
+questions, not just the ones that rank pages.
+
+Ranking algorithms place a page in a list. Reasoning systems extract a claim,
+check who is accountable for it, and decide whether to cite the source. Those
+are different jobs, and they need different foundations: entities instead of
+keywords, retrieval chunks instead of pages, and an explainable score instead of
+a traffic light.
+
+= What it does =
+
+* **AI Crawler Manager** — detect, control and measure GPTBot, ClaudeBot,
+  PerplexityBot, Google-Extended, Applebot-Extended, CCBot and 25 more. Three
+  policy presets plus per-crawler overrides, written straight into robots.txt.
+* **llms.txt Engine** — publish `/llms.txt` and `/llms-full.txt`, generated from
+  live content so they never drift from the site.
+* **AI Sitemap Engine** — entity-annotated sitemaps in XML, JSON and Markdown,
+  prioritised by authority rather than by post type.
+* **Schema Intelligence** — one connected JSON-LD graph per page, validated
+  before it ships.
+* **Knowledge Graph** — every page becomes an entity; entities connect into a
+  navigable graph you can explore and export.
+* **Entity Intelligence** — detect the people, conditions, procedures, products
+  and places your content covers, and score your authority on each.
+* **Semantic Engine** — measure knowledge density, topic coverage, answer
+  readiness and whether your sections stand alone when retrieved.
+* **Vector Engine** — semantic search and related content, working offline with
+  no API key.
+* **AI Prompt Engine** — give every page a canonical answer, fact sheet and
+  question pack that assistants can quote.
+* **Citation Engine** — resolve DOIs and PubMed IDs into structured, scored,
+  schema-ready references.
+* **E-E-A-T Engine** — capture author credentials and verifiable profiles.
+* **Medical Intelligence** — YMYL mode with clinical vocabulary, reviewer
+  metadata and evidence-level tracking.
+* **AI Analytics** — see visits arriving from ChatGPT, Claude, Perplexity,
+  Gemini and Copilot.
+* **AI Authority Score** — one 0–100 figure per page, with every lost point
+  explained and a specific fix attached.
+
+= Built for Persian and Arabic =
+
+Not translated as an afterthought. Text normalisation folds Arabic character
+forms so `علي` and `علی` resolve to one entity, tokenisation and sentence
+splitting are Unicode-aware, token estimation adjusts for script, and the
+dashboard is RTL by construction.
+
+= Honest about its limits =
+
+Referral analytics report a floor, not a total, because several assistants strip
+the referrer. Trend percentages show nothing rather than a fabricated number
+when there is no baseline. Crawler detection is documented as a spoofable hint.
+Vector search is a linear scan with a stated ceiling and an escape hatch.
+
+= Privacy =
+
+No raw IP addresses or user agents are stored. Visitor identifiers are salted
+HMACs with a salt that rotates daily, so no longitudinal profile can be built
+even in principle — which is why the analytics module needs no consent banner.
+Retention is bounded and configurable.
+
+== Installation ==
+
+1. Upload the plugin folder to `/wp-content/plugins/`, or install the ZIP.
+2. Activate it through the Plugins screen.
+3. Run the setup wizard — five questions, about two minutes. It configures your
+   crawler policy and queues an analysis of your existing content.
+
+== Frequently Asked Questions ==
+
+= Do I need an API key? =
+
+No. Semantic search, related content and internal linking all work offline using
+built-in feature-hashing embeddings. Configuring an OpenAI-compatible endpoint
+improves paraphrase matching, but nothing depends on it.
+
+= Will this slow down my site? =
+
+The dashboard bundle loads only on Medora's own admin screens and nothing is
+enqueued on the front end. All analysis runs on a background queue, never on the
+request that triggered it, and every expensive path short-circuits on an
+unchanged content hash.
+
+= Does it conflict with Yoast, Rank Math or SEO Press? =
+
+No. Medora does not manage titles, meta descriptions or canonical URLs, and
+emits its schema in a separately identified `@graph`. It complements a
+traditional SEO plugin rather than replacing it.
+
+= Can I block AI crawlers? =
+
+Yes, individually or by preset. The "Selective" preset — allow search and
+retrieval crawlers, block training crawlers — is what most publishers want:
+stay citable, opt out of corpus collection.
+
+= Can I move my licence to another domain? =
+
+Yes, yourself, from the settings screen, once a month. No support ticket.
+
+== Screenshots ==
+
+1. Authority overview with site score, crawler activity and AI referral trend.
+2. Entity explorer with the authority breakdown for a single entity.
+3. Knowledge graph visualisation.
+4. AI crawler policy, per vendor, with a live robots.txt preview.
+5. Per-page authority in the editor, with prioritised fixes.
+
+== Changelog ==
+
+= 0.1.0 =
+* First release. See CHANGELOG.md for the full list, including known limitations.
+
+== Upgrade Notice ==
+
+= 0.1.0 =
+Initial release.

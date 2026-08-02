@@ -1,0 +1,52 @@
+/**
+ * Editor meta box styles.
+ *
+ * Kept separate from the dashboard bundle so the post edit screen loads only
+ * these few rules rather than the whole admin stylesheet.
+ */
+
+.medora-metabox .medora-score {
+	font-size: 15px;
+	margin-block: 0 10px;
+}
+
+.medora-metabox .medora-score strong {
+	font-size: 30px;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+}
+
+.medora-metabox .medora-grade-a strong { color: #16a34a; }
+.medora-metabox .medora-grade-b strong { color: #65a30d; }
+.medora-metabox .medora-grade-c strong { color: #d97706; }
+.medora-metabox .medora-grade-d strong { color: #ea580c; }
+.medora-metabox .medora-grade-f strong { color: #dc2626; }
+
+.medora-metabox .medora-deductions {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-metabox .medora-deductions li {
+	padding: 8px 0 8px 10px;
+	padding-inline: 10px 0;
+	border-inline-start: 3px solid #dcdcde;
+	margin-block-end: 8px;
+	font-size: 12px;
+}
+
+.medora-metabox .medora-severity-critical { border-inline-start-color: #dc2626; }
+.medora-metabox .medora-severity-high { border-inline-start-color: #ea580c; }
+.medora-metabox .medora-severity-medium { border-inline-start-color: #d97706; }
+.medora-metabox .medora-severity-low { border-inline-start-color: #8c8f94; }
+
+.medora-metabox .medora-deductions span { color: #646970; }
+
+.medora-metabox textarea { inline-size: 100%; }
+
+.medora-metabox .medora-error {
+	color: #dc2626;
+	font-size: 12px;
+	margin-block-start: 8px;
+}
