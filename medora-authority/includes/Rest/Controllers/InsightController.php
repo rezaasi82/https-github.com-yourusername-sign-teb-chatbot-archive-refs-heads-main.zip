@@ -10,6 +10,8 @@ use Medora\Authority\Crawler\CrawlAnalytics;
 use Medora\Authority\Eeat\AuthorProfile;
 use Medora\Authority\Eeat\TrustScorer;
 use Medora\Authority\Linking\LinkSuggestionEngine;
+use Medora\Authority\Medical\MedicalGraph;
+use Medora\Authority\Medical\MedicalOntology;
 use Medora\Authority\Module\ModuleRegistry;
 use Medora\Authority\Rest\AbstractController;
 use Medora\Authority\Schema\SchemaGraph;
@@ -71,6 +73,26 @@ final class InsightController extends AbstractController
             'callback'            => [$this, 'authorTrust'],
             'permission_callback' => [$this, 'canView'],
             'args'                => ['user_id' => ['type' => 'integer', 'sanitize_callback' => 'absint']],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/medical/profile', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'medicalProfile'],
+            'permission_callback' => [$this, 'isPublic'],
+            'args'                => [
+                'condition' => [
+                    'type'              => 'string',
+                    'required'          => true,
+                    'sanitize_callback' => 'sanitize_text_field',
+                    'description'       => 'Condition name, in any of the languages the ontology declares.',
+                ],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/medical/coverage', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'medicalCoverage'],
+            'permission_callback' => [$this, 'canView'],
         ]);
 
         register_rest_route(self::NAMESPACE, '/audit-log', [
@@ -154,6 +176,46 @@ final class InsightController extends AbstractController
 
         return $this->ok(
             $profile->toArray() + ['trust' => $this->container->get(TrustScorer::class)->score($profile)]
+        );
+    }
+
+    /**
+     * The structured clinical picture for one condition.
+     *
+     * This is what an answer engine asking "what does this site know about X"
+     * should receive: symptoms, treatments, diagnostics and risk factors as
+     * data, rather than a page it has to parse.
+     */
+    public function medicalProfile(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        if (! $this->container->get(ModuleRegistry::class)->isBooted('medical')) {
+            return $this->badRequest(__('The Medical Intelligence module is not active.', 'medora-authority'));
+        }
+
+        $profile = $this->container->get(MedicalGraph::class)
+            ->profileFor((string) $request->get_param('condition'));
+
+        if ($profile === null) {
+            return $this->notFound(__('This site does not cover that condition.', 'medora-authority'));
+        }
+
+        return $this->ok($profile);
+    }
+
+    public function medicalCoverage(): WP_REST_Response|WP_Error
+    {
+        if (! $this->container->get(ModuleRegistry::class)->isBooted('medical')) {
+            return $this->badRequest(__('The Medical Intelligence module is not active.', 'medora-authority'));
+        }
+
+        $graph    = $this->container->get(MedicalGraph::class);
+        $ontology = $this->container->get(MedicalOntology::class);
+
+        return $this->ok(
+            $graph->coverage() + [
+                'ontology_terms'     => $ontology->stats(),
+                'unresolved_relations' => count($ontology->validatedRelations()['unresolved']),
+            ]
         );
     }
 

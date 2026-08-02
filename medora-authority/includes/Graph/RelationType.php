@@ -30,6 +30,16 @@ final class RelationType
     public const SYMPTOM_OF    = 'signOrSymptom';
     public const AFFILIATED_TO = 'affiliation';
 
+    // Clinical predicates. Each maps onto a real Schema.org medical property,
+    // so a curated edge serialises into JSON-LD without inventing vocabulary an
+    // AI system has never seen.
+    public const DIAGNOSED_BY   = 'typicalTest';
+    public const RISK_FACTOR    = 'riskFactor';
+    public const AFFECTS_ANATOMY = 'associatedAnatomy';
+    public const COMPLICATION_OF = 'possibleComplication';
+    public const DRUG_FOR        = 'drug';
+    public const SPECIALTY_OF    = 'relevantSpecialty';
+
     /** @return list<string> */
     public static function all(): array
     {
@@ -46,7 +56,40 @@ final class RelationType
             self::TREATS,
             self::SYMPTOM_OF,
             self::AFFILIATED_TO,
+            self::DIAGNOSED_BY,
+            self::RISK_FACTOR,
+            self::AFFECTS_ANATOMY,
+            self::COMPLICATION_OF,
+            self::DRUG_FOR,
+            self::SPECIALTY_OF,
         ];
+    }
+
+    /**
+     * Predicates that assert a clinical claim.
+     *
+     * These are held to a higher bar than the inferred ones: they are only ever
+     * written from a curated ontology, never from co-occurrence, because a
+     * wrong "is a treatment for" edge is machine-readable misinformation.
+     *
+     * @return list<string>
+     */
+    public static function clinical(): array
+    {
+        return [
+            self::TREATS,
+            self::SYMPTOM_OF,
+            self::DIAGNOSED_BY,
+            self::RISK_FACTOR,
+            self::AFFECTS_ANATOMY,
+            self::COMPLICATION_OF,
+            self::DRUG_FOR,
+        ];
+    }
+
+    public static function isClinical(string $predicate): bool
+    {
+        return in_array($predicate, self::clinical(), true);
     }
 
     public static function isValid(string $predicate): bool
@@ -75,6 +118,12 @@ final class RelationType
             self::TREATS        => __('is a treatment for', 'medora-authority'),
             self::SYMPTOM_OF    => __('is a symptom of', 'medora-authority'),
             self::AFFILIATED_TO => __('is affiliated with', 'medora-authority'),
+            self::DIAGNOSED_BY  => __('is diagnosed by', 'medora-authority'),
+            self::RISK_FACTOR   => __('is a risk factor for', 'medora-authority'),
+            self::AFFECTS_ANATOMY  => __('affects', 'medora-authority'),
+            self::COMPLICATION_OF  => __('is a complication of', 'medora-authority'),
+            self::DRUG_FOR         => __('is a drug for', 'medora-authority'),
+            self::SPECIALTY_OF     => __('is treated by the specialty', 'medora-authority'),
             default             => $predicate,
         };
     }

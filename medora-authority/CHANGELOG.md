@@ -4,6 +4,64 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-08-02
+
+Closes two of the limitations declared in 0.1.0.
+
+### Added — integration test suite
+
+The unit suite deliberately avoids WordPress; this covers what it could not.
+
+- `tests/integration/` running against a real WordPress install, with
+  `bin/install-wp-tests.sh` to provision it and a `MedoraTestCase` base that
+  truncates Medora's tables between tests (WordPress's own rollback covers only
+  core tables).
+- **Repository behaviour**: upsert convergence, Arabic/Persian character
+  folding, "never blank out a richer record", idempotent linking, cascade
+  deletes, pagination and search.
+- **Queue semantics**: atomic claiming, duplicate collapsing, back-off,
+  stalled-job recovery, and that one throwing job never aborts a batch.
+- **REST surface**: route registration, public-vs-capability access, that a
+  draft never leaks through the public API, that undeclared settings keys are
+  rejected, that the API key is never returned, dependency-aware module
+  toggling, and 402 on an over-tier module.
+- **Published artefacts**: schema validates cleanly and stays connected by
+  `@id`, medical mode upgrades the node types, FAQ extraction, llms.txt
+  exclusions, sitemaps parse as valid XML in all three formats, and robots.txt
+  reflects the policy.
+- CI gains an integration job on WordPress 6.4 and latest, against MySQL 8.
+
+### Added — clinical knowledge graph
+
+Medical Intelligence now ships the disease / treatment / drug graph.
+
+- Six clinical predicates (`typicalTest`, `riskFactor`, `associatedAnatomy`,
+  `possibleComplication`, `drug`, `relevantSpecialty`), each mapping onto a real
+  Schema.org medical property so a curated edge serialises without inventing
+  vocabulary.
+- Ontology expanded from 19 to **42 terms** across conditions, procedures,
+  drugs, anatomy, symptoms and specialties — with **65 curated relations**.
+- `MedicalGraph` seeds those relations, under two rules that keep the output
+  honest: an edge is written only when the site already covers *both* endpoints
+  (so it never claims expertise it does not have), and curated edges are stored
+  under `source = 'ontology'` so the nightly co-occurrence rebuild can never
+  overwrite a clinical assertion with a statistical guess.
+- `GET /medical/profile?condition=` returns a structured clinical picture —
+  symptoms, treatments, diagnostics, risk factors, specialties — resolvable by
+  Persian or Arabic name.
+- `GET /medical/coverage` reports which curated concepts the site covers and
+  which are gaps, turning "write more content" into a named list.
+
+### Fixed
+
+Both found by the ontology consistency tests added in this release:
+
+- `کبد` was claimed as an alias by both `Liver` (the organ) and `Hepatology`
+  (the specialty), so every mention of the liver would have been read as a
+  mention of the specialty.
+- `آندوسکوپی` and `اندوسکوپی` were listed as separate aliases of the same term,
+  but `Text::normalize()` folds them — the second was a dead entry.
+
 ## [0.1.0] — 2026-08-02
 
 First cut of the platform. The architecture, data layer, published artefacts and
@@ -109,14 +167,11 @@ Stated plainly rather than implied:
 - **Crawler detection is user-agent based** and therefore spoofable. It drives
   analytics and content negotiation only; nothing security-relevant depends on
   it. Reverse-DNS verification exists but is not run inline.
-- **The medical ontology is a seed, not SNOMED or MeSH.** Roughly 20 entries
-  with multilingual aliases, extended through `medora_medical_ontology`.
+- **The medical ontology is a seed, not SNOMED or MeSH.** 42 entries with
+  multilingual aliases and 65 curated relations as of 0.2.0, extended through
+  `medora_medical_ontology` and `medora_medical_relations`.
 - **Summaries are extractive, not generative,** by design. See
   `medora_prompt_pack` to substitute a model.
 - **The following modules are functional but minimal** relative to the full
-  product vision: Content Optimizer (recommendations only, no rewriting),
-  Internal Linking (suggestions only, no insertion), Medical Intelligence
-  (vocabulary and review metadata; no disease/treatment/drug graph yet).
-- **Integration tests are not yet written.** The unit suite deliberately avoids
-  WordPress; database-backed repositories and REST routes need a WordPress test
-  install to cover properly.
+  product vision: Content Optimizer (recommendations only, no rewriting) and
+  Internal Linking (suggestions only, no insertion).

@@ -6,6 +6,8 @@ namespace Medora\Authority\Medical;
 
 use Medora\Authority\Core\Container;
 use Medora\Authority\Core\Options;
+use Medora\Authority\Entity\EntityRepository;
+use Medora\Authority\Graph\RelationRepository;
 use Medora\Authority\License\LicenseTier;
 use Medora\Authority\Module\AbstractModule;
 use WP_Post;
@@ -41,7 +43,9 @@ final class MedicalModule extends AbstractModule
 
     public function dependencies(): array
     {
-        return ['entity'];
+        // `graph` supplies the relation store the curated clinical edges are
+        // written into; without it there is nowhere to put them.
+        return ['entity', 'graph'];
     }
 
     public function requiredTier(): string
@@ -52,6 +56,15 @@ final class MedicalModule extends AbstractModule
     public function register(Container $container): void
     {
         $container->singleton(MedicalOntology::class, static fn (): MedicalOntology => new MedicalOntology());
+
+        $container->singleton(
+            MedicalGraph::class,
+            static fn (Container $c): MedicalGraph => new MedicalGraph(
+                $c->get(MedicalOntology::class),
+                $c->get(EntityRepository::class),
+                $c->get(RelationRepository::class)
+            )
+        );
     }
 
     public function boot(Container $container): void
@@ -64,6 +77,24 @@ final class MedicalModule extends AbstractModule
         // the ontology plugs in without either side knowing about the other.
         add_filter('medora_entity_dictionary', static function (array $terms) use ($container): array {
             return array_merge($terms, $container->get(MedicalOntology::class)->terms());
+        });
+
+        // Curated clinical edges are re-seeded after every inferred rebuild.
+        // The inferred layer deletes only its own rows, so the two coexist —
+        // but a newly covered condition should gain its clinical edges without
+        // waiting for someone to press a button.
+        add_action('medora_graph_rebuilt', static function () use ($container): void {
+            $container->get(MedicalGraph::class)->seed();
+        });
+
+        // A post that introduces a new condition makes new curated edges
+        // seedable, so re-seed when the entity index changes.
+        add_action('medora_entities_indexed', static function () use ($container): void {
+            $container->get(MedicalGraph::class)->seed();
+        }, 20);
+
+        add_action('medora_onboarding_completed', static function () use ($container): void {
+            $container->get(MedicalGraph::class)->seed();
         });
 
         add_action('add_meta_boxes', [$this, 'registerMetaBox']);

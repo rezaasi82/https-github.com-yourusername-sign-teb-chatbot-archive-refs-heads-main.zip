@@ -157,6 +157,33 @@ clears an override).
 Referral and crawl reports over a `days` window. Referral `change_percent` is
 `null` rather than a fabricated number when there is no prior period.
 
+### `GET /medical/profile?condition=` (public)
+
+The structured clinical picture for one condition — what an answer engine
+asking "what does this site know about X" should receive, as data rather than a
+page it has to parse. Resolvable by any name the ontology declares, in English,
+Persian or Arabic.
+
+```json
+{
+  "entity": { "name": "Fatty liver disease", "type": "MedicalCondition", "…": "…" },
+  "symptoms":     [ { "name": "Fatigue", "curated": true, "predicate": "signOrSymptom" } ],
+  "diagnostics":  [ { "name": "FibroScan", "curated": true, "predicate": "typicalTest" } ],
+  "risk_factors": [ { "name": "Diabetes mellitus", "curated": true, "predicate": "riskFactor" } ],
+  "treatments":   [],
+  "specialties":  [ { "name": "Hepatology", "predicate": "relevantSpecialty" } ],
+  "related":      []
+}
+```
+
+Returns `404` when the site does not cover the condition — the graph never
+claims expertise the content does not support.
+
+### `GET /medical/coverage`
+
+Which curated concepts the site covers and which are gaps, plus ontology
+statistics. This turns "write more content" into a named list.
+
 ### `GET /authors/{user_id}/trust`
 
 E-E-A-T breakdown across Experience, Expertise, Authoritativeness and
@@ -206,6 +233,7 @@ Standard WordPress REST shape:
 | `medora_graph_rebuilt` | `int $posts, int $edges` | full graph rebuild finished |
 | `medora_ai_crawler_detected` | `array $crawler, string $decision` | before the response to a crawler |
 | `medora_ai_referral_recorded` | `array $match` | an assistant referral was logged |
+| `medora_medical_graph_seeded` | `array $result` | curated clinical edges were written |
 | `medora_license_status_changed` | `string $status, array $state` | licence state transition |
 | `medora_settings_updated` | `array $settings` | settings written |
 | `medora_onboarding_completed` | `array $settings` | wizard finished |
@@ -220,6 +248,7 @@ Standard WordPress REST shape:
 | `medora_option` | `mixed` | override a setting at read time |
 | `medora_entity_dictionary` | `array` | contribute controlled vocabulary |
 | `medora_medical_ontology` | `array` | extend the clinical vocabulary |
+| `medora_medical_relations` | `array` | extend the curated disease/treatment/drug graph |
 | `medora_taxonomy_entity_type` | `string` | map a taxonomy to a Schema.org type |
 | `medora_entity_candidates` | `array<string, Candidate>` | edit candidates before persistence |
 | `medora_entity_salience` | `float` | adjust computed salience |

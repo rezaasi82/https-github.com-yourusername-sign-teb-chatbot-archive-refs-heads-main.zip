@@ -24,6 +24,15 @@ npm install
 npm run build       # emits assets/js/{app,editor}.js + assets/css/*
 ```
 
+Tests:
+
+```bash
+composer test              # unit suite — fast, needs no WordPress
+bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 latest
+composer test:integration  # integration suite — real WordPress + MySQL
+npm run check              # tsc + eslint + jest
+```
+
 Activate the plugin, then run the setup wizard (five questions, ~2 minutes). It
 writes the settings, applies a crawler policy, and queues an analysis of your
 most recent 200 pages so the dashboard has real numbers the first time you open

@@ -33,7 +33,12 @@
         "analyse": "phpstan analyse --memory-limit=1G",
         "test": "phpunit",
         "test:coverage": "phpunit --coverage-text",
+        "test:integration": "phpunit -c phpunit-integration.xml.dist",
         "check": ["@lint", "@analyse", "@test"]
+    },
+    "scripts-descriptions": {
+        "test": "Unit suite. Fast, needs no WordPress install.",
+        "test:integration": "Integration suite. Run bin/install-wp-tests.sh first."
     },
     "config": {
         "optimize-autoloader": true,

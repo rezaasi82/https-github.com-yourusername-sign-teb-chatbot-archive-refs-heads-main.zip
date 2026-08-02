@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,10 +121,25 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.2.0 =
+* Added the curated clinical knowledge graph: 42 ontology terms and 65 declared
+  disease/treatment/drug/symptom relations, with new /medical/profile and
+  /medical/coverage endpoints.
+* Added the WordPress integration test suite covering repositories, the queue,
+  the REST surface and every published artefact.
+* Fixed two ontology defects the new consistency tests found: "کبد" was claimed
+  by both the liver (organ) and hepatology (specialty), and two Persian
+  spellings of "endoscopy" were listed separately despite normalising to the
+  same form.
+
 = 0.1.0 =
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.2.0 =
+Adds the clinical knowledge graph and the integration test suite. No database
+changes; curated clinical edges are seeded automatically on the next analysis.
 
 = 0.1.0 =
 Initial release.
