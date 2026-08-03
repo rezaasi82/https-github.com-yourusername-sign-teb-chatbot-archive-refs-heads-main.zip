@@ -152,6 +152,38 @@ export const api = {
 	recommendations: ( id: number ) =>
 		request< Record< string, unknown > >( `score/${ id }/recommendations` ),
 
+	brief: ( id: number ) =>
+		request< import('../types').Brief >( `score/${ id }/brief` ),
+
+	briefMarkdown: ( id: number ) =>
+		request< { post_id: number; markdown: string } >(
+			`score/${ id }/brief`,
+			{ params: { format: 'markdown' } }
+		),
+
+	links: ( id: number ) =>
+		request< import('../types').LinkReport >( `links/${ id }` ),
+
+	applyLink: (
+		id: number,
+		targetId: number,
+		anchor: string,
+		occurrence = 1
+	) =>
+		request< { applied: boolean; anchor: string; target_id: number } >(
+			`links/${ id }`,
+			{
+				method: 'POST',
+				data: { target_id: targetId, anchor, occurrence },
+			}
+		),
+
+	revertLinks: ( id: number, targetId?: number ) =>
+		request< { reverted: number } >( `links/${ id }`, {
+			method: 'DELETE',
+			data: targetId ? { target_id: targetId } : {},
+		} ),
+
 	entities: ( params: Record< string, string | number > ) =>
 		request< {
 			items: import('../types').EntitySummary[];

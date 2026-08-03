@@ -716,6 +716,169 @@
 	margin-block-start: 16px;
 }
 
+/* --- Brief and link panels -------------------------------------------------------- */
+
+.medora-subtabs {
+	display: flex;
+	gap: 2px;
+	margin-block: 4px 16px;
+	padding: 3px;
+	background: var(--medora-surface-2);
+	border-radius: 8px;
+}
+
+.medora-subtabs button {
+	flex: 1;
+	appearance: none;
+	background: none;
+	border: 0;
+	border-radius: 6px;
+	padding: 6px 10px;
+	font-size: 13px;
+	color: var(--medora-muted);
+	cursor: pointer;
+}
+
+.medora-subtabs button.is-active {
+	background: var(--medora-surface);
+	color: var(--medora-text);
+	box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+}
+
+.medora-brief section,
+.medora-links section {
+	margin-block-start: 20px;
+}
+
+.medora-brief h4,
+.medora-links h4 {
+	margin-block: 16px 8px;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--medora-muted);
+}
+
+.medora-brief__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.medora-brief__head h3,
+.medora-links h3 {
+	margin: 0;
+	font-size: 16px;
+}
+
+.medora-checklist {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-checklist__item {
+	display: flex;
+	gap: 8px;
+	padding-block: 6px;
+	font-size: 13px;
+}
+
+.medora-checklist__item span {
+	color: var(--medora-grade-c);
+	font-weight: 700;
+}
+
+.medora-checklist__item.is-done {
+	color: var(--medora-muted);
+}
+
+.medora-checklist__item.is-done span {
+	color: var(--medora-grade-a);
+}
+
+.medora-outline {
+	margin: 0;
+	padding-inline-start: 20px;
+}
+
+.medora-outline__item {
+	padding-block: 8px;
+	font-size: 13px;
+}
+
+.medora-outline__item.is-missing strong {
+	color: var(--medora-grade-c);
+}
+
+.medora-outline__item p {
+	margin: 4px 0 0;
+	font-size: 12px;
+}
+
+.medora-hints {
+	margin: 4px 0 0;
+	padding-inline-start: 18px;
+	font-size: 12px;
+	color: var(--medora-muted);
+}
+
+.medora-quote {
+	margin: 8px 0 0;
+	padding-inline-start: 12px;
+	border-inline-start: 3px solid var(--medora-border);
+	font-size: 13px;
+	color: var(--medora-muted);
+	font-style: italic;
+}
+
+.medora-suggestions {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-suggestion {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding-block: 12px;
+	border-block-end: 1px solid var(--medora-border);
+}
+
+.medora-suggestion.is-linked {
+	opacity: 0.6;
+}
+
+.medora-suggestion__body {
+	flex: 1;
+	min-inline-size: 200px;
+}
+
+.medora-suggestion__body p {
+	margin: 4px 0 0;
+	font-size: 12px;
+}
+
+.medora-suggestion__action {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.medora-suggestion__action select {
+	max-inline-size: 180px;
+	padding: 5px 8px;
+	border: 1px solid var(--medora-border);
+	border-radius: 6px;
+	background: var(--medora-surface);
+	color: var(--medora-text);
+}
+
 /* --- Wizard --------------------------------------------------------------------- */
 
 .medora-wizard {

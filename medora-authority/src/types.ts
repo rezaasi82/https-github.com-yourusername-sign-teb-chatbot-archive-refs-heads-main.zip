@@ -227,6 +227,55 @@ export interface Overview {
 	citations?: { total: number; with_doi: number; average_quality: number };
 }
 
+export interface BriefSection {
+	heading: string;
+	why: string;
+	cover: string[];
+	status: 'present' | 'missing';
+}
+
+export interface Brief {
+	post_id: number;
+	title: string;
+	url: string;
+	score: number;
+	potential_score: number;
+	subject: EntitySummary | null;
+	word_count: { current: number; target: number };
+	opening: { needs_rewrite: boolean; current: string; spec: string };
+	sections: BriefSection[];
+	questions: Array< { question: string; status: 'answered' | 'unanswered' } >;
+	entities: {
+		covered: string[];
+		add: Array< { name: string; type: string; why: string } >;
+	};
+	evidence: { required: boolean; current: number; target: number; note: string };
+	internal_links: LinkSuggestion[];
+	checklist: Array< { done: boolean; task: string } >;
+}
+
+export interface LinkSuggestion {
+	target_id: number;
+	title: string;
+	url: string;
+	score: number;
+	reason: string;
+	anchors: string[];
+	already_linked: boolean;
+}
+
+export interface LinkReport {
+	post_id: number;
+	outbound: LinkSuggestion[];
+	inbound: Array< {
+		source_id: number;
+		title: string;
+		url: string;
+		score: number;
+	} >;
+	applied: number;
+}
+
 export interface SecurityScan {
 	passed: number;
 	failed: number;

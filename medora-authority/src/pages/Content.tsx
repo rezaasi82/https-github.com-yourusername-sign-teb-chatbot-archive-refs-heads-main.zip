@@ -4,7 +4,11 @@ import { api } from '../api/client';
 import { useAsync } from '../hooks/useAsync';
 import { ScoreRing } from '../components/ScoreRing';
 import { DeductionList } from '../components/DeductionList';
+import { BriefPanel } from '../components/BriefPanel';
+import { LinkPanel } from '../components/LinkPanel';
 import type { Deduction, SiteReport } from '../types';
+
+type PanelTab = 'fixes' | 'brief' | 'links';
 
 interface Recommendations {
 	post_id: number;
@@ -24,6 +28,7 @@ interface Recommendations {
 
 export function Content(): JSX.Element {
 	const [ postId, setPostId ] = useState< number | null >( null );
+	const [ tab, setTab ] = useState< PanelTab >( 'fixes' );
 
 	const report = useAsync< SiteReport >( () => api.siteScore(), [] );
 	const detail = useAsync< Recommendations | null >(
@@ -86,14 +91,16 @@ export function Content(): JSX.Element {
 				</table>
 			</div>
 
-			{ detail.data && (
+			{ postId !== null && (
 				<aside className="medora-panel">
 					<header className="medora-panel__head">
-						<ScoreRing
-							score={ detail.data.score }
-							grade={ detail.data.grade }
-							size={ 96 }
-						/>
+						{ detail.data && (
+							<ScoreRing
+								score={ detail.data.score }
+								grade={ detail.data.grade }
+								size={ 96 }
+							/>
+						) }
 						<button
 							type="button"
 							className="button-link"
@@ -103,40 +110,86 @@ export function Content(): JSX.Element {
 						</button>
 					</header>
 
-					<p className="medora-muted">
-						{ sprintf(
-							/* translators: %s: potential score. */
-							__(
-								'Completing every action below would take this page to roughly %s / 100.',
-								'medora-authority'
-							),
-							detail.data.potential_score.toFixed( 0 )
-						) }
-					</p>
+					<nav
+						className="medora-subtabs"
+						aria-label={ __( 'Page tools', 'medora-authority' ) }
+					>
+						{ (
+							[
+								[ 'fixes', __( 'Fixes', 'medora-authority' ) ],
+								[ 'brief', __( 'Brief', 'medora-authority' ) ],
+								[ 'links', __( 'Links', 'medora-authority' ) ],
+							] as const
+						 ).map( ( [ id, label ] ) => (
+							<button
+								key={ id }
+								type="button"
+								className={ tab === id ? 'is-active' : '' }
+								aria-current={ tab === id ? 'true' : undefined }
+								onClick={ () => setTab( id ) }
+							>
+								{ label }
+							</button>
+						) ) }
+					</nav>
 
-					{ detail.data.answer_first.needs_rewrite && (
-						<div className="medora-notice medora-notice--warning">
-							<strong>
-								{ __( 'Answer-first rewrite', 'medora-authority' ) }
-							</strong>
-							<p>{ detail.data.answer_first.guidance }</p>
-						</div>
+					{ tab === 'fixes' && detail.data && (
+						<>
+							<p className="medora-muted">
+								{ sprintf(
+									/* translators: %s: potential score. */
+									__(
+										'Completing every action below would take this page to roughly %s / 100.',
+										'medora-authority'
+									),
+									detail.data.potential_score.toFixed( 0 )
+								) }
+							</p>
+
+							{ detail.data.answer_first.needs_rewrite && (
+								<div className="medora-notice medora-notice--warning">
+									<strong>
+										{ __(
+											'Answer-first rewrite',
+											'medora-authority'
+										) }
+									</strong>
+									<p>{ detail.data.answer_first.guidance }</p>
+								</div>
+							) }
+
+							<h3>
+								{ __(
+									'Do these, in this order',
+									'medora-authority'
+								) }
+							</h3>
+							<p className="medora-muted">
+								{ __(
+									'Ordered by points recovered per unit of effort, not by severity alone.',
+									'medora-authority'
+								) }
+							</p>
+
+							<DeductionList
+								deductions={ detail.data.actions.map(
+									( action ) => ( {
+										...action,
+										label: action.title,
+									} )
+								) }
+							/>
+						</>
 					) }
 
-					<h3>{ __( 'Do these, in this order', 'medora-authority' ) }</h3>
-					<p className="medora-muted">
-						{ __(
-							'Ordered by points recovered per unit of effort, not by severity alone.',
-							'medora-authority'
-						) }
-					</p>
+					{ tab === 'brief' && <BriefPanel postId={ postId } /> }
+					{ tab === 'links' && <LinkPanel postId={ postId } /> }
 
-					<DeductionList
-						deductions={ detail.data.actions.map( ( action ) => ( {
-							...action,
-							label: action.title,
-						} ) ) }
-					/>
+					{ tab === 'fixes' && detail.loading && ! detail.data && (
+						<p className="medora-loading">
+							{ __( 'Loading…', 'medora-authority' ) }
+						</p>
+					) }
 				</aside>
 			) }
 		</div>
