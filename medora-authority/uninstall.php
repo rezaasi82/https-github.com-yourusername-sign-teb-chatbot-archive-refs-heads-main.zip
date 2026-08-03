@@ -75,7 +75,7 @@ delete_option('medora_needs_onboarding');
 delete_option('medora_delete_data_on_uninstall');
 
 // Post and user meta written by the plugin.
-foreach (['_medora_ai_summary', '_medora_canonical_answer', '_medora_primary_entity', '_medora_noindex', '_medora_exclude_llms', '_medora_reviewer_id', '_medora_reviewed_at', '_medora_schema_type', '_medora_faq', '_medora_audience'] as $medora_meta) {
+foreach (['_medora_ai_summary', '_medora_llm_pack_hash', '_medora_canonical_answer', '_medora_primary_entity', '_medora_noindex', '_medora_exclude_llms', '_medora_reviewer_id', '_medora_reviewed_at', '_medora_schema_type', '_medora_faq', '_medora_audience'] as $medora_meta) {
     delete_post_meta_by_key($medora_meta);
 }
 

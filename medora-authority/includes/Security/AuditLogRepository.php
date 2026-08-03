@@ -110,7 +110,7 @@ final class AuditLogRepository
      */
     private function redact(array $context): array
     {
-        $sensitive = ['api_key', 'key', 'token', 'secret', 'password', 'license_key', 'embedding_api_key'];
+        $sensitive = ['api_key', 'key', 'token', 'secret', 'password', 'license_key', 'embedding_api_key', 'llm_api_key'];
         $clean     = [];
 
         foreach ($context as $key => $value) {

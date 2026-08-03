@@ -169,6 +169,14 @@ final class Options
             'embedding_base_url'   => 'https://api.openai.com/v1',
             'embedding_model'      => 'text-embedding-3-small',
 
+            // Generative rewriting. Off by default: with this false, the plugin
+            // makes no outbound model call and every published summary is the
+            // publisher's own sentences. Same key precedence as embeddings —
+            // MEDORA_LLM_API_KEY first, database last and flagged.
+            'llm_enabled'  => false,
+            'llm_provider' => 'anthropic',
+            'llm_model'    => 'claude-opus-5',
+
             // Operations.
             'default_language' => 'en',
             'retention_days'   => 180,

@@ -4,6 +4,76 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] — 2026-08-03
+
+Adds the generative layer the product has so far deliberately gone without —
+and the check that makes it defensible.
+
+### Added — AI Writer module (`llm`)
+
+* `Llm\LlmProviderInterface` with an Anthropic implementation. One synchronous
+  completion, no streaming, no tool use, no conversation state: everything
+  Medora generates is a short, bounded, single-turn transformation of content
+  the site already published.
+* `Llm\Grounding` — the reason generation is allowed at all. Every generated
+  field is checked against the page it came from before it can be published:
+
+  * **Lexical support.** Content words in the output must appear in the source.
+    Paraphrase legitimately introduces some vocabulary, so this is a ratio
+    (0.82 site-wide, 0.6 per sentence), not a rule.
+  * **Numeric fidelity.** Any figure in the output must appear verbatim in the
+    source, with zero tolerance. Persian and Arabic-Indic digits, the three
+    different comma characters and trailing decimal zeros are all normalised
+    first, so "۱٬۵۰۰" in the page vouches for "1500" in the output.
+
+  Prompt instructions are a request; this is verification. Output that fails is
+  discarded and the rejection is recorded in the audit log with the support
+  ratio and the offending figures.
+* Field-level adoption. A page can end up with a generated summary and an
+  extractive canonical answer — partial adoption beats an all-or-nothing gate
+  that discards three good fields because a fourth invented a number.
+* Generated answers are accepted only for questions the extractive pass left
+  blank, and only for questions already in the pack. Questions the model
+  invents are dropped: the question set comes from the site's own headings and
+  FAQ blocks, and a model adding to it would be putting words in the
+  publisher's mouth in the most literal sense.
+* `GeneratePackJob`, on its own `llm` queue. Generation never runs in the
+  request that saved a post, and never on a page view. A provider failure
+  costs the page nothing, because the extractive pack was already saved.
+* New action `medora_prompt_pack_saved`; new filters `medora_llm_provider`,
+  `medora_llm_request_body`, `medora_llm_language`.
+
+### Added — dashboard and operations
+
+* Settings → AI Writer: the opt-in, the model, and a plain statement of what
+  changes when it is on.
+* `JobQueue::stats()` now reports a per-queue breakdown. 400 pending jobs is a
+  backlog; 400 pending jobs all in the `llm` queue is a provider that stopped
+  answering, and those are different problems.
+* `MEDORA_LLM_API_KEY` follows the same precedence as the embedding key —
+  environment, then constant, then database — and the security scanner flags
+  the database case.
+
+### Fixed
+
+* `Grounding` originally folded U+066B (Persian decimal separator) and U+060C
+  (Arabic comma) but not U+066C (Arabic thousands separator), so "۱٬۵۰۰" parsed
+  as the two figures 1 and 500 and a faithful "1500" in the output was reported
+  as fabricated. Found by the new test suite.
+
+### Notes
+
+* Off by default, and off in a meaningful sense: with the module disabled or no
+  key configured, the plugin makes no outbound model call and every summary on
+  the site is the publisher's own sentences.
+* The Anthropic provider calls the Messages API with `wp_remote_post` rather
+  than the official SDK package. This plugin ships zero runtime PHP
+  dependencies by design (docs/04-security.md): a plugin is installed by
+  unzipping it, Composer is not available at the install site, and two plugins
+  bundling different versions of the same package in one process is a fatal
+  error nobody can debug. The request is pinned to `anthropic-version:
+  2023-06-01`.
+
 ## [0.3.0] — 2026-08-02
 
 Completes the two modules 0.1.0 shipped as "functional but minimal", without

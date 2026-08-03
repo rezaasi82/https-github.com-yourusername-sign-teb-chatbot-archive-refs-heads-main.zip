@@ -73,7 +73,14 @@ never split one capability across two purchases.
 **Extractive, not generative, by default.** Summaries and canonical answers are
 built from the page's own sentences. A generated paraphrase would introduce
 claims the publisher never made — a liability on a health site, not a feature.
-Hook `medora_prompt_pack` if you want model-generated text.
+With the AI Writer module off, or no key configured, the plugin makes no
+outbound model call at all.
+
+**Generation is verified, not trusted.** Turn the AI Writer on and every
+generated field is still checked against the page it came from: content words
+must largely appear in the source, and any figure that does not appear verbatim
+is a hard rejection. Prompt instructions are a request; the check is what makes
+the output publishable. Rejections land in the audit log.
 
 **Honest numbers.** Referral analytics report a floor, not a total, because
 several assistants strip the referrer. Trend percentages are `null` rather than

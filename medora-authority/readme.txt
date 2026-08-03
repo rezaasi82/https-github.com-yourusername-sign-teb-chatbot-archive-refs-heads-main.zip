@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,20 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.4.0 =
+* AI Writer (opt-in, off by default): a model rewrites page summaries and
+  canonical answers, and fills in answers to questions the page left blank.
+* Every generated field is checked against the source page before publication.
+  Text that introduces vocabulary the page does not contain is discarded, and
+  any figure not present in the page is a hard rejection — the specific hazard
+  on a clinical page is an invented dose or percentage.
+* Rejections are recorded in the audit log with the support ratio and the
+  offending figures.
+* Generation runs in the background queue, never on a page view and never in
+  the request that saved a post.
+* Fixed a digit-normalisation gap where the Persian thousands separator split
+  one figure into two, making a faithful number look fabricated.
+
 = 0.3.0 =
 * Content briefs: GET /score/{id}/brief turns the recommendation list into a
   writing brief — outline with pasteable headings, unanswered questions,
@@ -147,6 +161,10 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.4.0 =
+Adds the opt-in AI Writer. Off by default; with it off, nothing is sent to a
+third party and no behaviour changes. No database changes.
 
 = 0.3.0 =
 Adds content briefs and editor-approved link application. No database changes.

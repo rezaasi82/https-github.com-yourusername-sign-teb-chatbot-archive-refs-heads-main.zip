@@ -85,6 +85,19 @@ final class PromptContextBuilder
         // the summary without a join.
         update_post_meta($post->ID, '_medora_ai_summary', $pack['summary']);
 
+        /**
+         * Fires after an extractive pack has been persisted.
+         *
+         * The AI Writer listens here to queue a generative pass. It runs after
+         * the save, deliberately: whatever the model does or fails to do, the
+         * page already has a usable pack.
+         *
+         * @param array<string, mixed> $pack
+         * @param WP_Post              $post
+         * @param string               $hash Content hash the pack was built from.
+         */
+        do_action('medora_prompt_pack_saved', $pack, $post, $hash);
+
         return $this->shape($pack, $post);
     }
 

@@ -47,13 +47,19 @@ final class SecurityScanner
         );
 
         // --- Secret handling --------------------------------------------------
-        $keyInDatabase = $this->options->getString('embedding_api_key') !== '';
-
         $checks[] = $this->check(
             'api_key_storage',
             __('Embedding API key is not stored in the database', 'medora-authority'),
-            ! $keyInDatabase,
+            $this->options->getString('embedding_api_key') === '',
             __('Move the key to the MEDORA_EMBEDDING_API_KEY constant or environment variable so it stays out of database backups.', 'medora-authority'),
+            'high'
+        );
+
+        $checks[] = $this->check(
+            'llm_key_storage',
+            __('AI Writer API key is not stored in the database', 'medora-authority'),
+            $this->options->getString('llm_api_key') === '',
+            __('Move the key to the MEDORA_LLM_API_KEY constant or environment variable so it stays out of database backups.', 'medora-authority'),
             'high'
         );
 

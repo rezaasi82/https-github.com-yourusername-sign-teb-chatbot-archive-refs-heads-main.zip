@@ -96,8 +96,16 @@ The LLM-facing representation of a page.
 
 Everything is derived **extractively** from the page's own words. That is a
 product decision: a generated paraphrase would introduce claims the publisher
-never made, which on a health site is a liability. Hook `medora_prompt_pack` to
-substitute model-generated text.
+never made, which on a health site is a liability.
+
+The AI Writer module (`llm`, opt-in, Agency tier) can replace the `summary` and
+`canonical_answer` with model-generated prose, and fill in answers the
+extractive pass left blank. It never runs during this request: the extractive
+pack is saved first, `medora_prompt_pack_saved` fires, and a queued job does the
+generative pass. Each generated field is checked by `Llm\Grounding` against the
+source page and discarded on failure, so this endpoint's response is either the
+publisher's own sentences or text verified to introduce nothing the page does
+not contain. Hook `medora_prompt_pack` to substitute your own text instead.
 
 ### `GET /search`
 
@@ -273,6 +281,7 @@ Standard WordPress REST shape:
 | `medora_register_scorers` | `AuthorityScoreCalculator` | scorer registration |
 | `medora_post_analyzed` | `WP_Post, array $result` | a page was scored |
 | `medora_post_embedded` | `WP_Post, int $chunks` | embeddings written |
+| `medora_prompt_pack_saved` | `array $pack, WP_Post, string $hash` | an extractive pack was persisted |
 | `medora_graph_rebuilt` | `int $posts, int $edges` | full graph rebuild finished |
 | `medora_ai_crawler_detected` | `array $crawler, string $decision` | before the response to a crawler |
 | `medora_ai_referral_recorded` | `array $match` | an assistant referral was logged |
@@ -311,6 +320,9 @@ Standard WordPress REST shape:
 | `medora_llms_txt` / `medora_llms_full_txt` | `string` | edit the published documents |
 | `medora_llms_txt_sections` | `array` | restructure the llms.txt index |
 | `medora_prompt_pack` | `array` | replace extractive text with generated text |
+| `medora_llm_provider` | `LlmProviderInterface` | swap in another text-generation backend |
+| `medora_llm_request_body` | `array` | edit the outgoing Messages API request |
+| `medora_llm_language` | `string` | override the language generated text is written in |
 | `medora_embedding_providers` | `array` | register an embedding provider |
 | `medora_vector_search` | `?array` | delegate search to an external index |
 | `medora_sitemap_ping_endpoints` | `list<string>` | add IndexNow or similar |

@@ -201,20 +201,36 @@ final class JobQueue
         );
     }
 
-    /** @return array{pending: int, running: int, failed: int} */
+    /**
+     * @return array{pending: int, running: int, failed: int, by_queue: array<string, array{pending: int, running: int, failed: int}>}
+     */
     public function stats(): array
     {
         global $wpdb;
 
         $table = Tables::name(Tables::JOBS);
 
+        // Broken down by queue as well as in total, because the two diagnoses
+        // are different: 400 pending jobs is a backlog, 400 pending jobs all
+        // in the `llm` queue is a provider that stopped answering.
         // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is a constant.
-        $rows = $wpdb->get_results("SELECT status, COUNT(*) AS total FROM {$table} GROUP BY status", ARRAY_A) ?: [];
+        $rows = $wpdb->get_results("SELECT queue, status, COUNT(*) AS total FROM {$table} GROUP BY queue, status", ARRAY_A) ?: [];
 
-        $stats = ['pending' => 0, 'running' => 0, 'failed' => 0];
+        $empty = ['pending' => 0, 'running' => 0, 'failed' => 0];
+        $stats = $empty + ['by_queue' => []];
 
         foreach ($rows as $row) {
-            $stats[(string) $row['status']] = (int) $row['total'];
+            $queue  = (string) $row['queue'];
+            $status = (string) $row['status'];
+            $total  = (int) $row['total'];
+
+            if (! isset($stats[$status])) {
+                continue;
+            }
+
+            $stats[$status]                     += $total;
+            $stats['by_queue'][$queue]         ??= $empty;
+            $stats['by_queue'][$queue][$status] = $total;
         }
 
         return $stats;

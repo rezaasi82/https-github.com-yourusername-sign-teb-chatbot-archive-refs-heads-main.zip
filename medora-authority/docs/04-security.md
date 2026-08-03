@@ -79,10 +79,12 @@ before responding. The licence key is only ever returned masked.
 
 ### Secrets
 
-The embedding API key is read in this order: `MEDORA_EMBEDDING_API_KEY`
-environment variable, then the constant, then the database. The security scanner
-flags the database case, because a key in `wp_options` ends up in every backup
-and every options export.
+API keys are read in this order: environment variable, then a constant in
+`wp-config.php`, then the database — `MEDORA_EMBEDDING_API_KEY` for embeddings
+and `MEDORA_LLM_API_KEY` for the AI Writer. The security scanner flags the
+database case for both, because a key in `wp_options` ends up in every backup
+and every options export. Neither key is ever returned by the settings
+endpoint, in either direction.
 
 The audit log redacts any context key matching `key`, `token`, `secret`,
 `password` or `api_key` before writing — audit context is assembled from request
@@ -124,9 +126,29 @@ tooling. A bundled DI or HTTP library would collide with other plugins bundling
 different versions of the same package — a genuine and common source of fatal
 errors in the WordPress ecosystem.
 
-Outbound HTTP is limited to three destinations, all through `wp_remote_*` (which
+Outbound HTTP is limited to four destinations, all through `wp_remote_*` (which
 honours a site's proxy and blocking constants): the licence server, the
-configured embedding endpoint, and CrossRef/PubMed for citation resolution.
+configured embedding endpoint, CrossRef/PubMed for citation resolution, and —
+only when the AI Writer module is enabled *and* a key is configured — the
+configured text-generation endpoint. With the AI Writer off, which is the
+default, that fourth destination is never contacted.
+
+The Anthropic provider calls the Messages API directly with `wp_remote_post`
+rather than through the official SDK package, for the reason stated above: a
+WordPress plugin is installed by unzipping it, so a Composer dependency would
+have to be vendored, and vendored packages are exactly what collides. The
+request is pinned to `anthropic-version: 2023-06-01`, which is what makes a raw
+call stable rather than fragile.
+
+### Generated content
+
+The AI Writer is off by default. When it is on, generated text is not trusted
+on the strength of the prompt: `Llm\Grounding` checks every field against the
+source page and discards it unless the content words largely appear there and
+every figure appears verbatim. The numeric check has no tolerance, because the
+concrete harm on a clinical page is a fabricated dose or percentage rather than
+an awkward paraphrase. Adoptions and rejections are both recorded in the audit
+log, so "where did this sentence come from?" is answerable after the fact.
 
 ### Uninstall
 

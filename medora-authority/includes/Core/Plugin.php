@@ -15,6 +15,7 @@ use Medora\Authority\Graph\GraphModule;
 use Medora\Authority\License\LicenseManager;
 use Medora\Authority\License\LicenseModule;
 use Medora\Authority\Linking\LinkingModule;
+use Medora\Authority\Llm\LlmModule;
 use Medora\Authority\Llms\LlmsModule;
 use Medora\Authority\Medical\MedicalModule;
 use Medora\Authority\Module\ModuleRegistry;
@@ -147,6 +148,7 @@ final class Plugin
             LlmsModule::class,
             SitemapModule::class,
             PromptModule::class,
+            LlmModule::class,
             ContentModule::class,
             LinkingModule::class,
             CitationModule::class,

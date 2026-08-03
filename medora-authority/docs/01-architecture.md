@@ -63,6 +63,7 @@ A module whose dependency was filtered out is skipped with a recorded reason
 | `llms`        | —                         | Free   | `/llms.txt`, `/llms-full.txt`               |
 | `sitemap`     | `entity`                  | Free   | annotated sitemaps (XML/JSON/Markdown)      |
 | `prompt`      | `entity`                  | Pro    | summaries, canonical answers, fact sheets   |
+| `llm`         | `prompt`, `performance`   | Agency | verified generative rewriting (opt-in, off) |
 | `content`     | `score`, `semantic`       | Pro    | prioritised recommendations                 |
 | `linking`     | `vector`, `entity`        | Pro    | internal link suggestions                   |
 | `citation`    | —                         | Pro    | DOI/PubMed resolution, formatting           |

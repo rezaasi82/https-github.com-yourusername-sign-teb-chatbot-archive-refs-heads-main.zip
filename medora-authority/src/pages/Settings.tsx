@@ -366,6 +366,52 @@ export function Settings(): JSX.Element {
 					) }
 				</p>
 
+				<h3>{ __( 'AI Writer', 'medora-authority' ) }</h3>
+
+				<label className="medora-checkbox">
+					<input
+						type="checkbox"
+						checked={ Boolean( draft.llm_enabled ) }
+						onChange={ ( event ) =>
+							set( 'llm_enabled', event.target.checked )
+						}
+					/>
+					{ __(
+						'Let a model rewrite page summaries and canonical answers',
+						'medora-authority'
+					) }
+				</label>
+				<p className="medora-muted">
+					{ __(
+						'Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party.',
+						'medora-authority'
+					) }
+				</p>
+				<p className="medora-muted">
+					{ __(
+						'When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log.',
+						'medora-authority'
+					) }
+				</p>
+
+				<label htmlFor="medora-llm-model">
+					{ __( 'Model', 'medora-authority' ) }
+				</label>
+				<input
+					id="medora-llm-model"
+					type="text"
+					value={ String( draft.llm_model ?? '' ) }
+					onChange={ ( event ) => set( 'llm_model', event.target.value ) }
+				/>
+				<p className="medora-muted">
+					{ data?.has_llm_key
+						? __( 'An API key is configured.', 'medora-authority' )
+						: __(
+								'No API key configured. Set MEDORA_LLM_API_KEY in wp-config.php rather than storing it in the database.',
+								'medora-authority'
+						  ) }
+				</p>
+
 				<div className="medora-actions">
 					<button
 						type="button"

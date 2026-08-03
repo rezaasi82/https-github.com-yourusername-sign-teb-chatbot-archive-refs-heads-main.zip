@@ -97,7 +97,12 @@ final class SettingsController extends AbstractController
         $settings = $options->all();
 
         // The stored API key never leaves the server, in either direction.
-        unset($settings['embedding_api_key'], $settings['install_hash'], $settings['license']);
+        unset(
+            $settings['embedding_api_key'],
+            $settings['llm_api_key'],
+            $settings['install_hash'],
+            $settings['license']
+        );
 
         return $this->ok([
             'settings'          => $settings,
@@ -105,6 +110,9 @@ final class SettingsController extends AbstractController
             'has_embedding_key' => $options->getString('embedding_api_key') !== ''
                 || getenv('MEDORA_EMBEDDING_API_KEY') !== false
                 || defined('MEDORA_EMBEDDING_API_KEY'),
+            'has_llm_key'       => $options->getString('llm_api_key') !== ''
+                || getenv('MEDORA_LLM_API_KEY') !== false
+                || defined('MEDORA_LLM_API_KEY'),
             'tiers'             => array_map(
                 static fn (string $tier): array => ['id' => $tier, 'label' => LicenseTier::label($tier)],
                 LicenseTier::all()
@@ -129,7 +137,7 @@ final class SettingsController extends AbstractController
 
             // Only keys the product declares are writable, so a crafted request
             // cannot inject arbitrary options.
-            if (! array_key_exists($key, $defaults) && $key !== 'embedding_api_key') {
+            if (! array_key_exists($key, $defaults) && ! in_array($key, ['embedding_api_key', 'llm_api_key'], true)) {
                 continue;
             }
 

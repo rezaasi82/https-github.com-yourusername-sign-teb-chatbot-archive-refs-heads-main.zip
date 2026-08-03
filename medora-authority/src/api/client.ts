@@ -244,6 +244,7 @@ export const api = {
 			settings: Record< string, unknown >;
 			defaults: Record< string, unknown >;
 			has_embedding_key: boolean;
+			has_llm_key: boolean;
 		} >( 'settings' ),
 
 	saveSettings: ( data: Record< string, unknown > ) =>
