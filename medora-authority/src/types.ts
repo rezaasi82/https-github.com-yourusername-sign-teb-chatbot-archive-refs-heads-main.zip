@@ -301,3 +301,38 @@ export interface WizardState {
 	defaults: Record< string, string >;
 	steps: WizardStep[];
 }
+
+export interface PassageIssue {
+	code: string;
+	label: string;
+	fix: string;
+}
+
+export interface Passage {
+	index: number;
+	heading: string;
+	excerpt: string;
+	words: number;
+	score: number;
+	issues: PassageIssue[];
+}
+
+export interface GeoReport {
+	post_id: number;
+	passages: Passage[];
+	clean: number;
+	total: number;
+	ratio: number;
+	structure: {
+		tables: number;
+		ordered_lists: number;
+		unordered_lists: number;
+		definition_lists: number;
+		question_headings: number;
+		headings: number;
+		surfaces: number;
+		words: number;
+		is_long_form: boolean;
+		has_steps: boolean;
+	};
+}

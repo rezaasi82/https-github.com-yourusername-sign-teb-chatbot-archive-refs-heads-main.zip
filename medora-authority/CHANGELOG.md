@@ -4,6 +4,66 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] — 2026-08-03
+
+Adds the GEO Optimizer, the last of the twenty named modules without a
+counterpart in the codebase, and with it a seventh score dimension.
+
+### Added — GEO Optimizer module (`geo`)
+
+The module's contribution is its unit of analysis. Every other scorer reads the
+page; a retriever does not. It pulls one chunk, hands that chunk to a model, and
+the model answers from it alone. A page can be thorough, sourced and well-linked
+while most of its paragraphs are unquotable on their own — and nothing in the
+platform measured that until now.
+
+* `Geo\PassageAnalyzer` scores every chunk on whether it survives being read
+  cold. Six lints, each naming a specific edit:
+
+  * **Dangling connective** — the passage opens with "However" / "بنابراین",
+    asserting a relationship to an argument it does not contain.
+  * **Dangling pronoun** — it opens with a pronoun pointing outside itself.
+    `it`/`they` always flag, since they cannot introduce a noun; `this`/`این`
+    flag only when standing alone, because "This condition affects…" names its
+    own subject and survives retrieval.
+  * **Page reference** — "as mentioned above", "در ادامه". Once retrieved, the
+    passage has no above and no below.
+  * **Subject absent** — the passage never names what the page is about, so
+    there is nothing for a query to match against.
+  * **No heading**, and **too short** to be an answer at all.
+
+* `Geo\StructureAnalyzer` counts the surfaces an assistant can lift whole —
+  tables, procedures, lists of three or more, question-form headings. Not a
+  demand that pages become lists: a check that a long page which *is*
+  enumerating something has said so in markup, because the markup gets quoted
+  and the paragraph gets paraphrased.
+
+* `Geo\LlmCompatibilityScorer` adds the `llm_compatibility` dimension at weight
+  0.14. Its deductions name passages by index and heading, so the fix list
+  points at a paragraph rather than at the page.
+
+* `GET /geo/{id}` returns the full passage report; the Content screen gains a
+  **Passages** tab showing each passage with the excerpt it was judged on.
+
+The module writes nothing and changes no published output. It is entirely
+measurement, because the edits it asks for are editorial and belong to the
+author.
+
+### Changed
+
+* The unit-test bootstrap now provides a minimal `WP_Post`.
+
+### Notes
+
+* Both new word lists are folded through `Text::normalize` at comparison time
+  rather than written pre-folded, so they keep matching if normalisation learns
+  another character. "آیا" normalises to "ایا"; a hand-folded literal would
+  silently stop matching the day that changed.
+* Known limitation, accepted deliberately: a demonstrative followed by a real
+  noun passes even when the noun anchors nothing ("این نشان می‌دهد"). Catching
+  those needs a parser, and the pattern that catches them also fires on correct
+  writing. A lint people learn to ignore is worse than one that misses cases.
+
 ## [0.4.0] — 2026-08-03
 
 Adds the generative layer the product has so far deliberately gone without —

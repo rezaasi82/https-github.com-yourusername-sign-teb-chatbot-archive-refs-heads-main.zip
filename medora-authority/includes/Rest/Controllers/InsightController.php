@@ -9,6 +9,8 @@ use Medora\Authority\Core\Container;
 use Medora\Authority\Crawler\CrawlAnalytics;
 use Medora\Authority\Eeat\AuthorProfile;
 use Medora\Authority\Eeat\TrustScorer;
+use Medora\Authority\Geo\PassageAnalyzer;
+use Medora\Authority\Geo\StructureAnalyzer;
 use Medora\Authority\Linking\LinkApplier;
 use Medora\Authority\Linking\LinkSuggestionEngine;
 use Medora\Authority\Medical\MedicalGraph;
@@ -58,6 +60,13 @@ final class InsightController extends AbstractController
         register_rest_route(self::NAMESPACE, '/schema/(?P<id>\d+)', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'schema'],
+            'permission_callback' => [$this, 'canView'],
+            'args'                => ['id' => ['type' => 'integer', 'sanitize_callback' => 'absint']],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/geo/(?P<id>\d+)', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'geo'],
             'permission_callback' => [$this, 'canView'],
             'args'                => ['id' => ['type' => 'integer', 'sanitize_callback' => 'absint']],
         ]);
@@ -167,6 +176,32 @@ final class InsightController extends AbstractController
             'post_id'    => $post->ID,
             'document'   => $document,
             'validation' => $this->container->get(SchemaValidator::class)->validate($document),
+        ]);
+    }
+
+    /**
+     * Passage-level retrievability for one page.
+     *
+     * Separate from the score because the score answers "how bad is it" and
+     * this answers "which paragraph". An editor fixing a page needs the second
+     * one, and it is too long to carry inside a deduction.
+     */
+    public function geo(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        if (! $this->container->get(ModuleRegistry::class)->isBooted('geo')) {
+            return $this->badRequest(__('The GEO Optimizer module is not active.', 'medora-authority'));
+        }
+
+        $post = $this->resolvePost($request);
+
+        if ($post instanceof WP_Error) {
+            return $post;
+        }
+
+        $report = $this->container->get(PassageAnalyzer::class)->analyze($post);
+
+        return $this->ok($report + [
+            'structure' => $this->container->get(StructureAnalyzer::class)->analyze($post),
         ]);
     }
 

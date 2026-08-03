@@ -6,9 +6,10 @@ import { ScoreRing } from '../components/ScoreRing';
 import { DeductionList } from '../components/DeductionList';
 import { BriefPanel } from '../components/BriefPanel';
 import { LinkPanel } from '../components/LinkPanel';
+import { PassagePanel } from '../components/PassagePanel';
 import type { Deduction, SiteReport } from '../types';
 
-type PanelTab = 'fixes' | 'brief' | 'links';
+type PanelTab = 'fixes' | 'brief' | 'links' | 'passages';
 
 interface Recommendations {
 	post_id: number;
@@ -119,6 +120,10 @@ export function Content(): JSX.Element {
 								[ 'fixes', __( 'Fixes', 'medora-authority' ) ],
 								[ 'brief', __( 'Brief', 'medora-authority' ) ],
 								[ 'links', __( 'Links', 'medora-authority' ) ],
+								[
+									'passages',
+									__( 'Passages', 'medora-authority' ),
+								],
 							] as const
 						 ).map( ( [ id, label ] ) => (
 							<button
@@ -184,6 +189,7 @@ export function Content(): JSX.Element {
 
 					{ tab === 'brief' && <BriefPanel postId={ postId } /> }
 					{ tab === 'links' && <LinkPanel postId={ postId } /> }
+					{ tab === 'passages' && <PassagePanel postId={ postId } /> }
 
 					{ tab === 'fixes' && detail.loading && ! detail.data && (
 						<p className="medora-loading">

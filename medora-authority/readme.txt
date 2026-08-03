@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,18 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.5.0 =
+* GEO Optimizer: scores every passage of a page on whether it still makes sense
+  once a retriever pulls it out on its own — which is how most AI answers
+  actually read your content.
+* Flags passages that open with a dangling pronoun or connective, refer to
+  "the table above", never name the page's subject, sit under no heading, or
+  are too short to answer anything.
+* Counts the structures an assistant can quote whole: tables, numbered
+  procedures, lists, question-form headings.
+* New "LLM Compatibility" score dimension, and a Passages tab showing each
+  passage with the text it was judged on.
+
 = 0.4.0 =
 * AI Writer (opt-in, off by default): a model rewrites page summaries and
   canonical answers, and fills in answers to questions the page left blank.
@@ -161,6 +173,11 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.5.0 =
+Adds the GEO Optimizer and the LLM Compatibility score dimension. Existing
+scores shift slightly because a seventh dimension joins the weighting. No
+database changes.
 
 = 0.4.0 =
 Adds the opt-in AI Writer. Off by default; with it off, nothing is sent to a

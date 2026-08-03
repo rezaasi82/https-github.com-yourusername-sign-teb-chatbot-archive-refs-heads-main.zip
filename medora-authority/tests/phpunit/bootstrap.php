@@ -148,3 +148,32 @@ if (! function_exists('wp_parse_url')) {
         return parse_url($url, $component);
     }
 }
+
+if (! class_exists('WP_Post')) {
+    /**
+     * Minimal stand-in for WordPress's `WP_Post`.
+     *
+     * Only the property-copying constructor matters here: the unit suite passes
+     * posts to analysers that read `post_title` and `post_content` and nothing
+     * else. The integration suite runs against the real class.
+     */
+    class WP_Post
+    {
+        public int $ID = 0;
+        public string $post_title = '';
+        public string $post_content = '';
+        public string $post_excerpt = '';
+        public string $post_status = 'publish';
+        public string $post_type = 'post';
+        public int $post_author = 0;
+
+        public function __construct(object $post = new stdClass())
+        {
+            foreach (get_object_vars($post) as $key => $value) {
+                if (property_exists($this, $key)) {
+                    $this->$key = $value;
+                }
+            }
+        }
+    }
+}

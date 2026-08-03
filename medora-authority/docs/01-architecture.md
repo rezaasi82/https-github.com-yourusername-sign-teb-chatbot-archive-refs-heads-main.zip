@@ -64,6 +64,7 @@ A module whose dependency was filtered out is skipped with a recorded reason
 | `sitemap`     | `entity`                  | Free   | annotated sitemaps (XML/JSON/Markdown)      |
 | `prompt`      | `entity`                  | Pro    | summaries, canonical answers, fact sheets   |
 | `llm`         | `prompt`, `performance`   | Agency | verified generative rewriting (opt-in, off) |
+| `geo`         | `semantic`, `score`       | Pro    | passage-level retrievability, LLM compatibility |
 | `content`     | `score`, `semantic`       | Pro    | prioritised recommendations                 |
 | `linking`     | `vector`, `entity`        | Pro    | internal link suggestions                   |
 | `citation`    | —                         | Pro    | DOI/PubMed resolution, formatting           |

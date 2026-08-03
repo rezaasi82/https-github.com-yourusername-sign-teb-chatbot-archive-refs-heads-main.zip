@@ -82,6 +82,11 @@ must largely appear in the source, and any figure that does not appear verbatim
 is a hard rejection. Prompt instructions are a request; the check is what makes
 the output publishable. Rejections land in the audit log.
 
+**The passage is the unit, not the page.** A retriever hands a model one chunk,
+not an article. The GEO Optimizer scores every passage on whether it survives
+that — and does it over the same chunks the Vector Engine embeds, so the score
+describes the text actually retrieved.
+
 **Honest numbers.** Referral analytics report a floor, not a total, because
 several assistants strip the referrer. Trend percentages are `null` rather than
 fabricated when there is no baseline. Crawler detection is documented as a

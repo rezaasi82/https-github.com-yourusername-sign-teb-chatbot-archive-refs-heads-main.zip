@@ -164,6 +164,9 @@ export const api = {
 	links: ( id: number ) =>
 		request< import('../types').LinkReport >( `links/${ id }` ),
 
+	geo: ( id: number ) =>
+		request< import('../types').GeoReport >( `geo/${ id }` ),
+
 	applyLink: (
 		id: number,
 		targetId: number,

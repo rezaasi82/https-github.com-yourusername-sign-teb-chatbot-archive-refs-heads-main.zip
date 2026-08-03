@@ -31,6 +31,35 @@ permanently capped below 100 for lacking a clinical reviewer.
 | Medical Trust | 20% | medical mode | Does the YMYL evidence chain hold up? |
 | Knowledge Quality | 12% | all | Is it maintained, sourced and connected? |
 | Prompt Quality | 12% | all | Is the machine-facing representation good? |
+| LLM Compatibility | 14% | all | Does each passage still make sense alone? |
+
+The weights above are the declared ones; because they are re-normalised, adding
+or disabling a dimension shifts every other dimension's share of the total. A
+site that turns the GEO Optimizer off does not lose 14 points — the remaining
+six dimensions expand to fill the score.
+
+### LLM Compatibility — the page as it is actually read
+
+The only dimension that does not score the page as a document. A retriever
+returns one chunk and the model answers from that chunk alone, so this dimension
+asks of every passage: read cold, with nothing around it, does this say what it
+is about?
+
+| Check | Max penalty |
+|---|---|
+| Passages that do not stand alone | 55, scaled by the fraction that fail |
+| Long page with no table, list or procedure | 20 |
+| No H2/H3 headings at all | 15 |
+| No heading phrased as a question | 10 |
+
+The passage checks are lints and are tuned to under-report: a demonstrative
+followed by a real noun ("This condition affects…", "این بیماری…") passes even
+when the noun anchors nothing, because the rule strict enough to catch that also
+fires on correct writing. Missing a case costs one deduction; a check people
+learn to ignore costs the whole dimension.
+
+Passages come from the same `Chunker` the Vector Engine embeds with, so this
+scores the text that is genuinely retrieved rather than a separate model of it.
 
 ### AI Readiness — the gate
 

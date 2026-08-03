@@ -11,6 +11,7 @@ use Medora\Authority\Content\ContentModule;
 use Medora\Authority\Crawler\CrawlerModule;
 use Medora\Authority\Eeat\EeatModule;
 use Medora\Authority\Entity\EntityModule;
+use Medora\Authority\Geo\GeoModule;
 use Medora\Authority\Graph\GraphModule;
 use Medora\Authority\License\LicenseManager;
 use Medora\Authority\License\LicenseModule;
@@ -151,6 +152,7 @@ final class Plugin
             LlmModule::class,
             ContentModule::class,
             LinkingModule::class,
+            GeoModule::class,
             CitationModule::class,
             EeatModule::class,
             MedicalModule::class,

@@ -922,3 +922,43 @@
 	border-block-start: 1px solid var(--medora-border);
 	background: var(--medora-surface-2);
 }
+
+/* --- Passages (GEO Optimizer) -------------------------------------------- */
+
+.medora-passage-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.medora-passage {
+	border: 1px solid var(--medora-border);
+	/* The status stripe runs down the reading edge, so it flips with the
+	   document direction rather than sitting on the wrong side in Persian. */
+	border-inline-start: 3px solid var(--medora-grade-d);
+	border-radius: var(--medora-radius);
+	padding: 12px 16px;
+}
+
+.medora-passage.is-clean {
+	border-inline-start-color: var(--medora-grade-a);
+}
+
+.medora-passage__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 8px;
+	margin-block-end: 8px;
+}
+
+.medora-passage__head .medora-pill {
+	margin-inline-start: auto;
+}
+
+.medora-passage .medora-quote {
+	margin-block: 8px;
+}

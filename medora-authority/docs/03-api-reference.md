@@ -107,6 +107,43 @@ source page and discarded on failure, so this endpoint's response is either the
 publisher's own sentences or text verified to introduce nothing the page does
 not contain. Hook `medora_prompt_pack` to substitute your own text instead.
 
+### `GET /geo/{id}`
+
+Passage-level retrievability for one page. Requires the GEO Optimizer module.
+
+```json
+{
+  "post_id": 42,
+  "passages": [
+    {
+      "index": 2,
+      "heading": "Treatment",
+      "excerpt": "Treatment. However, that is rarely the whole picture…",
+      "words": 96,
+      "score": 75.0,
+      "issues": [
+        {
+          "code": "dangling_connective",
+          "label": "Opens by continuing an argument that is not here",
+          "fix": "Start the passage with a statement rather than \"However\"…"
+        }
+      ]
+    }
+  ],
+  "clean": 8,
+  "total": 14,
+  "ratio": 0.5714,
+  "structure": { "tables": 1, "ordered_lists": 0, "question_headings": 2, "…": 0 }
+}
+```
+
+The passages are the same chunks the Vector Engine indexes — both go through one
+`Chunker` — so the score here describes the text that is actually retrieved,
+not a separate approximation of it.
+
+Issue codes: `dangling_connective`, `dangling_pronoun`, `page_reference`,
+`subject_absent`, `no_heading`, `too_short`.
+
 ### `GET /search`
 
 Semantic search over the site. Requires the Vector Engine module.
