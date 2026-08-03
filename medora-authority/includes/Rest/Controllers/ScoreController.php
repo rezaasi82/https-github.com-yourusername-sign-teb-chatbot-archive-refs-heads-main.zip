@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Medora\Authority\Rest\Controllers;
 
+use Medora\Authority\Content\ContentBrief;
 use Medora\Authority\Content\RecommendationEngine;
 use Medora\Authority\Core\Container;
+use Medora\Authority\Linking\LinkSuggestionEngine;
 use Medora\Authority\Module\ModuleRegistry;
 use Medora\Authority\Performance\JobQueue;
 use Medora\Authority\Performance\Jobs\IndexPostJob;
@@ -59,6 +61,16 @@ final class ScoreController extends AbstractController
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/score/(?P<id>\d+)/brief', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'brief'],
+            'permission_callback' => [$this, 'canView'],
+            'args'                => [
+                'id'     => ['type' => 'integer', 'required' => true, 'sanitize_callback' => 'absint'],
+                'format' => ['type' => 'string', 'default' => 'json', 'enum' => ['json', 'markdown']],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/score', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'siteReport'],
@@ -96,6 +108,43 @@ final class ScoreController extends AbstractController
         return $this->ok(
             $engine->forPost($post) + ['answer_first' => $engine->answerFirstGuidance($post)]
         );
+    }
+
+    /**
+     * A writing brief: what to add, in what order, and what "done" looks like.
+     */
+    public function brief(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $registry = $this->container->get(ModuleRegistry::class);
+
+        if (! $registry->isBooted('content')) {
+            return $this->badRequest(__('The AI Content Optimizer module is not active.', 'medora-authority'));
+        }
+
+        $post = $this->resolvePost($request);
+
+        if ($post instanceof WP_Error) {
+            return $post;
+        }
+
+        $generator = $this->container->get(ContentBrief::class);
+
+        // Internal link suggestions are folded in when the module is available;
+        // the brief is still complete without them.
+        $linking = $registry->isBooted('linking')
+            ? $this->container->get(LinkSuggestionEngine::class)
+            : null;
+
+        $brief = $generator->forPost($post, $linking);
+
+        if ((string) $request->get_param('format') === 'markdown') {
+            return $this->ok([
+                'post_id'  => $post->ID,
+                'markdown' => $generator->toMarkdown($brief),
+            ]);
+        }
+
+        return $this->ok($brief);
     }
 
     public function analyze(WP_REST_Request $request): WP_REST_Response|WP_Error

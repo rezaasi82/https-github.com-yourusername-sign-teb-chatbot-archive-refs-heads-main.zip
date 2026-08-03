@@ -2,6 +2,7 @@ import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { api, boot } from '../api/client';
 import { useAsync } from '../hooks/useAsync';
+import { percentOf } from '../utils/format';
 import type { EntityDetail, EntitySummary } from '../types';
 
 function EntityPanel( {
@@ -93,11 +94,10 @@ function EntityPanel( {
 								>
 									<span
 										style={ {
-											inlineSize: `${
-												( component.points /
-													component.max ) *
-												100
-											}%`,
+											inlineSize: `${ percentOf(
+												component.points,
+												component.max
+											) }%`,
 										} }
 									/>
 								</div>

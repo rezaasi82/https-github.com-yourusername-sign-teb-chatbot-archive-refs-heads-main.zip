@@ -8,6 +8,8 @@ use Medora\Authority\Core\Container;
 use Medora\Authority\Entity\EntityRepository;
 use Medora\Authority\License\LicenseTier;
 use Medora\Authority\Module\AbstractModule;
+use Medora\Authority\Security\AuditLogRepository;
+use Medora\Authority\Support\Hash;
 use Medora\Authority\Vector\VectorIndex;
 
 if (! defined('ABSPATH')) {
@@ -17,9 +19,12 @@ if (! defined('ABSPATH')) {
 /**
  * Internal Linking AI.
  *
- * Suggests only — it never rewrites content. Automatic link injection produces
- * unnatural anchor text and silently changes published pages, which is both an
- * editorial and a compliance problem on regulated sites.
+ * Suggests by default. It will apply a link, but only one at a time, only to a
+ * target it suggested, only wrapping words already in the prose, and only when
+ * an editor asks — see {@see LinkApplier}. There is deliberately no "apply
+ * all": bulk automatic injection produces unnatural anchor text and silently
+ * changes published pages, which is an editorial problem generally and a
+ * compliance problem on regulated sites.
  */
 final class LinkingModule extends AbstractModule
 {
@@ -55,6 +60,18 @@ final class LinkingModule extends AbstractModule
             static fn (Container $c): LinkSuggestionEngine => new LinkSuggestionEngine(
                 $c->get(VectorIndex::class),
                 $c->get(EntityRepository::class)
+            )
+        );
+
+        $container->singleton(AnchorWrapper::class, static fn (): AnchorWrapper => new AnchorWrapper());
+
+        $container->singleton(
+            LinkApplier::class,
+            static fn (Container $c): LinkApplier => new LinkApplier(
+                $c->get(LinkSuggestionEngine::class),
+                $c->get(AuditLogRepository::class),
+                $c->get(Hash::class),
+                $c->get(AnchorWrapper::class)
             )
         );
     }

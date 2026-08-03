@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,17 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.3.0 =
+* Content briefs: GET /score/{id}/brief turns the recommendation list into a
+  writing brief — outline with pasteable headings, unanswered questions,
+  entities to introduce, evidence target and a checklist. Also as Markdown.
+* Link application: apply a single suggested internal link, chosen by an editor,
+  wrapping words already in the prose. Marked, audited, revertible, and it
+  leaves a revision. There is deliberately no "apply all".
+* Added the dashboard test suite; "npm run check" previously ran zero tests.
+* Fixed duplicated series-collapsing and grade-threshold logic that had already
+  begun to diverge between two components.
+
 = 0.2.0 =
 * Added the curated clinical knowledge graph: 42 ontology terms and 65 declared
   disease/treatment/drug/symptom relations, with new /medical/profile and
@@ -136,6 +147,9 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.3.0 =
+Adds content briefs and editor-approved link application. No database changes.
 
 = 0.2.0 =
 Adds the clinical knowledge graph and the integration test suite. No database

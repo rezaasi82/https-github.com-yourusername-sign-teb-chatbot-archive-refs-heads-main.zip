@@ -4,6 +4,77 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-08-02
+
+Completes the two modules 0.1.0 shipped as "functional but minimal", without
+crossing the line they were minimal to avoid.
+
+### Added — content briefs
+
+The Content Optimizer previously listed problems. It now produces the artefact
+a writer can work from.
+
+- `GET /score/{id}/brief` returns a full writing brief: the outline with
+  existing and missing sections (as pasteable question-shaped headings, each
+  with concrete coverage hints), what the opening has to accomplish, questions
+  the page cannot yet answer, entities to introduce, an evidence target, and a
+  word-count target derived from the gaps rather than pulled from the air.
+- `?format=markdown` renders the same brief for pasting into a ticket.
+- Entities to introduce come from the site's **own graph** — concepts that
+  co-occur with this page's subject elsewhere on the site — so a brief never
+  invents a topic the site knows nothing about.
+- Ends with a checklist, unfinished items first. A checklist that opens with
+  ticks buries the work.
+
+It still does not rewrite the page. Auto-rewriting published content leaves the
+byline accountable for words the author never wrote, which on a health site is
+a liability rather than a feature.
+
+### Added — link application
+
+Internal Linking previously only suggested. It will now apply a link, through
+the narrowest crossing of that line that is still useful:
+
+- One link per call, target and anchor chosen by a human. There is no
+  "apply all".
+- The anchor must already exist in the prose — text is never inserted, only
+  wrapped. That is what stops the feature becoming the keyword stuffing it
+  exists to replace.
+- The target must be one the engine actually suggested, otherwise the endpoint
+  would be an arbitrary-markup injection primitive wearing a capability check.
+- `edit_post` is required, on top of the Medora capability: being able to
+  analyse must not imply being able to edit.
+- Inserted anchors carry `data-medora-link`, so they are visible in the editor,
+  revertible precisely, and audited. `wp_update_post()` leaves a revision, so
+  the edit is recoverable even if revert is never called.
+- `POST` and `DELETE /links/{id}` expose apply and revert.
+
+`AnchorWrapper` was extracted as a pure, separately tested unit because it is
+the only code in the plugin that rewrites customer HTML. Its 20 tests are the
+most adversarial in the suite — nesting inside an existing anchor, rewriting an
+`alt` attribute, linking inside `code`, matching `colon` inside `colonoscopy`,
+and Unicode word boundaries on Persian, all of which the naive `str_replace`
+implementation gets wrong on a live page.
+
+### Added — dashboard test suite
+
+`npm run check` previously invoked a Jest run with no tests. There are now real
+ones, and CI runs them.
+
+- `src/utils/format.ts` extracted, with tests covering every grade threshold,
+  series collapsing, and the guards against `NaN%` and fabricated zero-fill.
+- `src/api/client.test.ts` covers URL building, parameter encoding, and the
+  thing that matters most: a WordPress REST error keeps its server message
+  instead of degrading to "Request failed".
+
+### Fixed
+
+- **Duplicated series logic.** `collapseSeries` existed twice — once in
+  `Overview` and once inline in `Analytics` — and the two had already begun to
+  differ. Both now use the shared, tested helper.
+- **Grade thresholds were duplicated** between `ScoreRing` and the server. The
+  client copy now lives in one place and is tested against the same boundaries.
+
 ## [0.2.0] — 2026-08-02
 
 Closes two of the limitations declared in 0.1.0.
@@ -172,6 +243,6 @@ Stated plainly rather than implied:
   `medora_medical_ontology` and `medora_medical_relations`.
 - **Summaries are extractive, not generative,** by design. See
   `medora_prompt_pack` to substitute a model.
-- **The following modules are functional but minimal** relative to the full
-  product vision: Content Optimizer (recommendations only, no rewriting) and
-  Internal Linking (suggestions only, no insertion).
+- **Neither the Content Optimizer nor Internal Linking rewrites prose.** The
+  first produces a brief, the second wraps words already present. Both stop
+  there deliberately — see 0.3.0.

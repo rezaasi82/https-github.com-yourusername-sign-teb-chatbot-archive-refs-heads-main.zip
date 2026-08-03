@@ -134,6 +134,49 @@ An ordered to-do list, sorted by **points recovered per unit of effort** rather
 than by severity alone — a critical issue needing a week of rewriting ranks
 below a high-severity one that takes two minutes.
 
+### `GET /score/{id}/brief`
+
+A writing brief — the artefact a writer works from, as opposed to the
+recommendation list, which is a diagnosis.
+
+| Param | Type | Default | Notes |
+|---|---|---|---|
+| `format` | enum | `json` | `markdown` renders it for pasting into a ticket |
+
+Returns the outline (existing and missing sections, each missing one given as a
+pasteable question-shaped heading with coverage hints), what the opening must
+accomplish, unanswered questions, entities to introduce, an evidence target, a
+word-count target derived from the gaps, and a checklist ordered unfinished
+first.
+
+Entities to introduce come from the site's own knowledge graph, so a brief never
+proposes a topic the site knows nothing about.
+
+### `POST /links/{id}` · `DELETE /links/{id}`
+
+Apply or revert a single internal link.
+
+```json
+{ "target_id": 42, "anchor": "liver biopsy", "occurrence": 2 }
+```
+
+Constraints, all enforced server-side:
+
+- The **target must be one `GET /links/{id}` suggested**. Anything else is
+  rejected — otherwise this endpoint would be arbitrary-markup injection with a
+  capability check in front of it.
+- The **anchor must already exist in the prose.** Text is never inserted, only
+  wrapped.
+- The caller needs `edit_post` on the post, on top of `medora_run_analysis`.
+  Being able to analyse must not imply being able to edit.
+- Occurrences inside existing anchors, headings, `code`, `pre` and attribute
+  values are never eligible. `occurrence` counts eligible positions only.
+
+Inserted anchors carry `data-medora-link`, and the update goes through
+`wp_update_post()` so a revision is always available. `DELETE` unwraps only
+marked anchors — an editor's own links to the same target survive — and accepts
+an optional `target_id` to revert one destination.
+
 ### `GET /schema/{id}`
 
 The JSON-LD Medora would emit for a page, plus a validation report catching
@@ -234,6 +277,7 @@ Standard WordPress REST shape:
 | `medora_ai_crawler_detected` | `array $crawler, string $decision` | before the response to a crawler |
 | `medora_ai_referral_recorded` | `array $match` | an assistant referral was logged |
 | `medora_medical_graph_seeded` | `array $result` | curated clinical edges were written |
+| `medora_link_applied` | `WP_Post, int $targetId, string $anchor` | an internal link was inserted |
 | `medora_license_status_changed` | `string $status, array $state` | licence state transition |
 | `medora_settings_updated` | `array $settings` | settings written |
 | `medora_onboarding_completed` | `array $settings` | wizard finished |
@@ -249,6 +293,9 @@ Standard WordPress REST shape:
 | `medora_entity_dictionary` | `array` | contribute controlled vocabulary |
 | `medora_medical_ontology` | `array` | extend the clinical vocabulary |
 | `medora_medical_relations` | `array` | extend the curated disease/treatment/drug graph |
+| `medora_brief_related_entities` | `array` | supply related entities for a content brief |
+| `medora_brief_citation_count` | `int` | report how many citations a post carries |
+| `medora_brief_citations_required` | `bool` | demand primary literature for a post |
 | `medora_taxonomy_entity_type` | `string` | map a taxonomy to a Schema.org type |
 | `medora_entity_candidates` | `array<string, Candidate>` | edit candidates before persistence |
 | `medora_entity_salience` | `float` | adjust computed salience |

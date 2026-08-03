@@ -5,22 +5,8 @@ import { useAsync } from '../hooks/useAsync';
 import { ScoreRing } from '../components/ScoreRing';
 import { StatCard } from '../components/StatCard';
 import { Sparkline } from '../components/Sparkline';
+import { collapseSeries } from '../utils/format';
 import type { Overview as OverviewData } from '../types';
-
-function collapseSeries(
-	series: Array< { day: string; visits?: number; hits?: number } >
-): Array< { day: string; value: number } > {
-	const byDay = new Map< string, number >();
-
-	for ( const point of series ) {
-		const value = point.visits ?? point.hits ?? 0;
-		byDay.set( point.day, ( byDay.get( point.day ) ?? 0 ) + value );
-	}
-
-	return [ ...byDay.entries() ]
-		.sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) )
-		.map( ( [ day, value ] ) => ( { day, value } ) );
-}
 
 export function Overview(): JSX.Element {
 	const [ days, setDays ] = useState( 30 );

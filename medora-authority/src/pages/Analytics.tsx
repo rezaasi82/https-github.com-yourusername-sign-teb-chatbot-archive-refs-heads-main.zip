@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { useAsync } from '../hooks/useAsync';
 import { Sparkline } from '../components/Sparkline';
 import { StatCard } from '../components/StatCard';
+import { collapseSeries } from '../utils/format';
 
 export function Analytics(): JSX.Element {
 	const [ days, setDays ] = useState( 30 );
@@ -17,15 +18,7 @@ export function Analytics(): JSX.Element {
 		return <p className="medora-loading">{ __( 'Loading…', 'medora-authority' ) }</p>;
 	}
 
-	const byDay = new Map< string, number >();
-
-	for ( const point of data?.series ?? [] ) {
-		byDay.set( point.day, ( byDay.get( point.day ) ?? 0 ) + point.visits );
-	}
-
-	const series = [ ...byDay.entries() ]
-		.sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) )
-		.map( ( [ day, value ] ) => ( { day, value } ) );
+	const series = collapseSeries( data?.series ?? [] );
 
 	return (
 		<div className="medora-page">

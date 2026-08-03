@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { formatScore, gradeFor } from '../utils/format';
 import type { Grade } from '../types';
 
 interface ScoreRingProps {
@@ -15,14 +16,6 @@ const GRADE_TOKENS: Record< Grade, string > = {
 	D: 'var(--medora-grade-d)',
 	F: 'var(--medora-grade-f)',
 };
-
-function gradeFor( score: number ): Grade {
-	if ( score >= 90 ) return 'A';
-	if ( score >= 80 ) return 'B';
-	if ( score >= 65 ) return 'C';
-	if ( score >= 50 ) return 'D';
-	return 'F';
-}
 
 /**
  * The headline score dial.
@@ -81,7 +74,7 @@ export function ScoreRing( {
 			</svg>
 
 			<div className="medora-score-ring__center" aria-hidden="true">
-				<strong>{ clamped.toFixed( clamped % 1 === 0 ? 0 : 1 ) }</strong>
+				<strong>{ formatScore( clamped ) }</strong>
 				<span className={ `medora-grade medora-grade--${ resolved.toLowerCase() }` }>
 					{ resolved }
 				</span>

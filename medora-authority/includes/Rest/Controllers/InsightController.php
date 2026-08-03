@@ -9,6 +9,7 @@ use Medora\Authority\Core\Container;
 use Medora\Authority\Crawler\CrawlAnalytics;
 use Medora\Authority\Eeat\AuthorProfile;
 use Medora\Authority\Eeat\TrustScorer;
+use Medora\Authority\Linking\LinkApplier;
 use Medora\Authority\Linking\LinkSuggestionEngine;
 use Medora\Authority\Medical\MedicalGraph;
 use Medora\Authority\Medical\MedicalOntology;
@@ -62,10 +63,36 @@ final class InsightController extends AbstractController
         ]);
 
         register_rest_route(self::NAMESPACE, '/links/(?P<id>\d+)', [
-            'methods'             => WP_REST_Server::READABLE,
-            'callback'            => [$this, 'links'],
-            'permission_callback' => [$this, 'canView'],
-            'args'                => ['id' => ['type' => 'integer', 'sanitize_callback' => 'absint']],
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [$this, 'links'],
+                'permission_callback' => [$this, 'canView'],
+                'args'                => ['id' => ['type' => 'integer', 'sanitize_callback' => 'absint']],
+            ],
+            [
+                // Applying a link edits published content, so this is gated on
+                // `edit_post` inside the applier, not on a Medora capability
+                // alone — someone who can analyse must not thereby be able to
+                // edit.
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [$this, 'applyLink'],
+                'permission_callback' => [$this, 'canAnalyze'],
+                'args'                => [
+                    'id'         => ['type' => 'integer', 'sanitize_callback' => 'absint'],
+                    'target_id'  => ['type' => 'integer', 'required' => true, 'sanitize_callback' => 'absint'],
+                    'anchor'     => ['type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_text_field'],
+                    'occurrence' => ['type' => 'integer', 'default' => 1, 'minimum' => 1, 'sanitize_callback' => 'absint'],
+                ],
+            ],
+            [
+                'methods'             => WP_REST_Server::DELETABLE,
+                'callback'            => [$this, 'revertLinks'],
+                'permission_callback' => [$this, 'canAnalyze'],
+                'args'                => [
+                    'id'        => ['type' => 'integer', 'sanitize_callback' => 'absint'],
+                    'target_id' => ['type' => 'integer', 'sanitize_callback' => 'absint'],
+                ],
+            ],
         ]);
 
         register_rest_route(self::NAMESPACE, '/authors/(?P<user_id>\d+)/trust', [
@@ -161,7 +188,66 @@ final class InsightController extends AbstractController
             'post_id'  => $post->ID,
             'outbound' => $engine->suggestFor($post),
             'inbound'  => $engine->inboundOpportunities($post),
+            'applied'  => $this->container->get(LinkApplier::class)->countApplied($post),
         ]);
+    }
+
+    /**
+     * Wrap an existing phrase in a suggested internal link.
+     *
+     * One link, chosen by a human, wrapping words already present. The applier
+     * refuses anything else.
+     */
+    public function applyLink(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        if (! $this->container->get(ModuleRegistry::class)->isBooted('linking')) {
+            return $this->badRequest(__('The Internal Linking module is not active.', 'medora-authority'));
+        }
+
+        $post = $this->resolvePost($request);
+
+        if ($post instanceof WP_Error) {
+            return $post;
+        }
+
+        $result = $this->container->get(LinkApplier::class)->apply(
+            $post,
+            (int) $request->get_param('target_id'),
+            (string) $request->get_param('anchor'),
+            (int) $request->get_param('occurrence')
+        );
+
+        if ($result instanceof WP_Error) {
+            return $result;
+        }
+
+        return $this->ok($result);
+    }
+
+    public function revertLinks(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        if (! $this->container->get(ModuleRegistry::class)->isBooted('linking')) {
+            return $this->badRequest(__('The Internal Linking module is not active.', 'medora-authority'));
+        }
+
+        $post = $this->resolvePost($request);
+
+        if ($post instanceof WP_Error) {
+            return $post;
+        }
+
+        $targetId = (int) $request->get_param('target_id');
+
+        $result = $this->container->get(LinkApplier::class)->revert(
+            $post,
+            $targetId > 0 ? $targetId : null
+        );
+
+        if ($result instanceof WP_Error) {
+            return $result;
+        }
+
+        return $this->ok($result);
     }
 
     public function authorTrust(WP_REST_Request $request): WP_REST_Response|WP_Error

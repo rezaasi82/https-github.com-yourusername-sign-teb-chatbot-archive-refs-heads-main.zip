@@ -1,6 +1,6 @@
 {
   "name": "medora-authority",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "React dashboard for the Medora Authority WordPress plugin.",
   "license": "GPL-2.0-or-later",
   "private": true,
@@ -10,11 +10,14 @@
     "lint:js": "wp-scripts lint-js src",
     "lint:css": "wp-scripts lint-style \"src/**/*.css\"",
     "format": "wp-scripts format src",
-    "test:unit": "wp-scripts test-unit-js",
+    "test:unit": "wp-scripts test-unit-js --config jest.config.js",
+    "test:unit:coverage": "wp-scripts test-unit-js --config jest.config.js --coverage",
     "check-types": "tsc --noEmit",
     "check": "npm run check-types && npm run lint:js && npm run test:unit"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@wordpress/scripts": "^27.9.0",
