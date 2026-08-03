@@ -1,0 +1,29 @@
+{
+  "name": "medora-authority",
+  "version": "0.2.0",
+  "description": "React dashboard for the Medora Authority WordPress plugin.",
+  "license": "GPL-2.0-or-later",
+  "private": true,
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "lint:js": "wp-scripts lint-js src",
+    "lint:css": "wp-scripts lint-style \"src/**/*.css\"",
+    "format": "wp-scripts format src",
+    "test:unit": "wp-scripts test-unit-js",
+    "check-types": "tsc --noEmit",
+    "check": "npm run check-types && npm run lint:js && npm run test:unit"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@wordpress/scripts": "^27.9.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^7.6.0",
+    "@wordpress/components": "^28.6.0",
+    "@wordpress/element": "^6.6.0",
+    "@wordpress/i18n": "^5.6.0"
+  }
+}

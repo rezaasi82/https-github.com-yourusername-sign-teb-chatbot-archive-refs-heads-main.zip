@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+    bootstrap="tests/integration/bootstrap.php"
+    colors="true"
+    failOnRisky="true"
+    failOnWarning="true"
+    cacheDirectory=".phpunit.cache">
+
+    <testsuites>
+        <testsuite name="integration">
+            <directory suffix="Test.php">tests/integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <!-- The WordPress test harness sends headers and echoes; strict output
+             checking would fail every test for reasons unrelated to the code. -->
+        <const name="WP_TESTS_MULTISITE" value="0"/>
+    </php>
+
+    <source>
+        <include>
+            <directory suffix=".php">includes</directory>
+        </include>
+    </source>
+</phpunit>

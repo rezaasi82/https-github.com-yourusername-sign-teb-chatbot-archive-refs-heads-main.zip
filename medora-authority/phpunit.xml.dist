@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+    bootstrap="tests/phpunit/bootstrap.php"
+    colors="true"
+    beStrictAboutOutputDuringTests="true"
+    failOnRisky="true"
+    failOnWarning="true"
+    cacheDirectory=".phpunit.cache">
+
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests/phpunit/Unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">includes</directory>
+        </include>
+        <exclude>
+            <!-- Module wiring is integration surface; it is exercised by the
+                 WordPress integration suite, not by these unit tests. -->
+            <directory suffix="Module.php">includes</directory>
+        </exclude>
+    </source>
+</phpunit>

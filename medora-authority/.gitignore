@@ -1,0 +1,14 @@
+/vendor/
+/node_modules/
+/assets/js/*.js
+/assets/js/*.asset.php
+/assets/js/*.map
+/assets/css/*.css
+/languages/*.mo
+composer.lock
+package-lock.json
+.phpunit.cache/
+.phpunit.result.cache
+.phpcs-cache
+*.log
+.DS_Store

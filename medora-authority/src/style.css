@@ -1,0 +1,761 @@
+/**
+ * Medora dashboard styles.
+ *
+ * Two constraints shape everything here:
+ *
+ * 1. **RTL by construction.** All directional spacing uses logical properties
+ *    (`margin-inline`, `inset-inline`, `padding-block`), so Persian and Arabic
+ *    render correctly from the same stylesheet rather than from a mirrored
+ *    build. There is no `left`/`right` in this file.
+ * 2. **Theme-aware.** Colours come from custom properties that follow the
+ *    admin colour scheme and `prefers-color-scheme`, so the panel does not
+ *    glow white inside a dark admin.
+ */
+
+.medora-app {
+	--medora-accent: #2f6df6;
+	--medora-surface: #fff;
+	--medora-surface-2: #f4f6fa;
+	--medora-border: #dfe3ea;
+	--medora-text: #1d2327;
+	--medora-muted: #646970;
+	--medora-track: #e6e9ef;
+
+	--medora-grade-a: #16a34a;
+	--medora-grade-b: #65a30d;
+	--medora-grade-c: #d97706;
+	--medora-grade-d: #ea580c;
+	--medora-grade-f: #dc2626;
+
+	--medora-radius: 12px;
+	--medora-gap: 20px;
+
+	color: var(--medora-text);
+	font-size: 14px;
+	line-height: 1.55;
+	max-inline-size: 1400px;
+}
+
+@media (prefers-color-scheme: dark) {
+	.medora-app {
+		--medora-surface: #1e2126;
+		--medora-surface-2: #262a31;
+		--medora-border: #363b44;
+		--medora-text: #e6e8eb;
+		--medora-muted: #9aa1ab;
+		--medora-track: #333842;
+	}
+}
+
+/* --- Layout ------------------------------------------------------------ */
+
+.medora-page {
+	display: flex;
+	flex-direction: column;
+	gap: var(--medora-gap);
+	padding-block: 12px 40px;
+}
+
+.medora-page--split {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--medora-gap);
+}
+
+@media (min-width: 1100px) {
+	.medora-page--split {
+		grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
+		align-items: start;
+	}
+}
+
+.medora-page__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.medora-page__head h1 {
+	margin: 0;
+	font-size: 22px;
+}
+
+.medora-grid {
+	display: grid;
+	gap: var(--medora-gap);
+	grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+	.medora-grid--2 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+.medora-card,
+.medora-panel {
+	background: var(--medora-surface);
+	border: 1px solid var(--medora-border);
+	border-radius: var(--medora-radius);
+	padding: 20px;
+}
+
+.medora-card h2 {
+	margin-block: 0 12px;
+	font-size: 15px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--medora-muted);
+}
+
+.medora-panel {
+	position: sticky;
+	inset-block-start: 46px;
+	max-block-size: calc(100vh - 80px);
+	overflow-y: auto;
+}
+
+.medora-panel__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	margin-block-end: 16px;
+}
+
+.medora-panel__head h2 {
+	margin: 0;
+	font-size: 18px;
+	text-transform: none;
+	letter-spacing: 0;
+	color: var(--medora-text);
+}
+
+/* --- Tabs -------------------------------------------------------------- */
+
+.medora-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	border-block-end: 1px solid var(--medora-border);
+	margin-block-end: 8px;
+}
+
+.medora-tabs button {
+	appearance: none;
+	background: none;
+	border: 0;
+	border-block-end: 2px solid transparent;
+	padding: 10px 14px;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--medora-muted);
+	cursor: pointer;
+}
+
+.medora-tabs button.is-active {
+	color: var(--medora-accent);
+	border-block-end-color: var(--medora-accent);
+}
+
+/* --- Hero / score ------------------------------------------------------ */
+
+.medora-hero {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 32px;
+	background: var(--medora-surface);
+	border: 1px solid var(--medora-border);
+	border-radius: var(--medora-radius);
+	padding: 24px;
+}
+
+.medora-hero__stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	gap: 16px;
+	flex: 1;
+	min-inline-size: 280px;
+}
+
+.medora-score-ring {
+	position: relative;
+	text-align: center;
+}
+
+.medora-score-ring__value {
+	transition: stroke-dashoffset 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.medora-score-ring__value {
+		transition: none;
+	}
+}
+
+.medora-score-ring__center {
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline: 0;
+	block-size: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+}
+
+.medora-score-ring__center strong {
+	font-size: 30px;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+}
+
+.medora-score-ring__label {
+	margin-block: 8px 0;
+	font-size: 12px;
+	color: var(--medora-muted);
+}
+
+.medora-grade {
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+}
+
+.medora-grade--a { color: var(--medora-grade-a); }
+.medora-grade--b { color: var(--medora-grade-b); }
+.medora-grade--c { color: var(--medora-grade-c); }
+.medora-grade--d { color: var(--medora-grade-d); }
+.medora-grade--f { color: var(--medora-grade-f); }
+
+/* --- Stats ------------------------------------------------------------- */
+
+.medora-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	background: var(--medora-surface-2);
+	border-radius: 10px;
+	padding: 14px 16px;
+}
+
+.medora-stat__label {
+	font-size: 12px;
+	color: var(--medora-muted);
+}
+
+.medora-stat__value {
+	font-size: 24px;
+	font-variant-numeric: tabular-nums;
+}
+
+.medora-stat__trend {
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.medora-stat__trend--up { color: var(--medora-grade-a); }
+.medora-stat__trend--down { color: var(--medora-grade-f); }
+
+.medora-stat__hint {
+	font-size: 11px;
+	color: var(--medora-muted);
+}
+
+/* --- Lists and tables --------------------------------------------------- */
+
+.medora-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-list li {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	padding-block: 8px;
+	border-block-end: 1px solid var(--medora-border);
+}
+
+.medora-list li:last-child {
+	border-block-end: 0;
+}
+
+.medora-table {
+	inline-size: 100%;
+	border-collapse: collapse;
+}
+
+.medora-table th,
+.medora-table td {
+	text-align: start;
+	padding: 10px 12px;
+	border-block-end: 1px solid var(--medora-border);
+	vertical-align: top;
+}
+
+.medora-table th {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--medora-muted);
+}
+
+.medora-table tbody tr {
+	cursor: pointer;
+}
+
+.medora-table tbody tr:hover,
+.medora-table tbody tr.is-selected {
+	background: var(--medora-surface-2);
+}
+
+.medora-table p {
+	margin: 2px 0 0;
+	font-size: 12px;
+}
+
+/* --- Meters, pills, badges ---------------------------------------------- */
+
+.medora-meter {
+	background: var(--medora-track);
+	border-radius: 999px;
+	block-size: 6px;
+	overflow: hidden;
+	inline-size: 100%;
+	min-inline-size: 80px;
+}
+
+.medora-meter span {
+	display: block;
+	block-size: 100%;
+	background: var(--medora-accent);
+	border-radius: inherit;
+}
+
+.medora-pill {
+	display: inline-block;
+	margin-inline-start: 6px;
+	padding: 1px 8px;
+	border-radius: 999px;
+	background: var(--medora-surface-2);
+	border: 1px solid var(--medora-border);
+	font-size: 11px;
+	color: var(--medora-muted);
+}
+
+.medora-pill--ok { color: var(--medora-grade-a); }
+.medora-pill--warn { color: var(--medora-grade-c); }
+
+.medora-badge {
+	display: inline-block;
+	padding: 1px 7px;
+	border-radius: 4px;
+	font-size: 10px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: #fff;
+}
+
+.medora-badge--critical { background: var(--medora-grade-f); }
+.medora-badge--high { background: var(--medora-grade-d); }
+.medora-badge--medium { background: var(--medora-grade-c); }
+.medora-badge--low { background: var(--medora-muted); }
+
+/* --- Deductions --------------------------------------------------------- */
+
+.medora-deductions {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.medora-deduction {
+	background: var(--medora-surface-2);
+	border-radius: 8px;
+	padding: 12px 14px;
+	/* Border on the inline start so the severity stripe flips under RTL. */
+	border-inline-start: 3px solid var(--medora-border);
+}
+
+.medora-deduction--critical { border-inline-start-color: var(--medora-grade-f); }
+.medora-deduction--high { border-inline-start-color: var(--medora-grade-d); }
+.medora-deduction--medium { border-inline-start-color: var(--medora-grade-c); }
+.medora-deduction--low { border-inline-start-color: var(--medora-muted); }
+
+.medora-deduction__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.medora-deduction__points {
+	margin-inline-start: auto;
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	color: var(--medora-muted);
+}
+
+.medora-deduction__fix {
+	margin-block: 6px 0;
+	font-size: 13px;
+	color: var(--medora-muted);
+}
+
+/* --- Graph -------------------------------------------------------------- */
+
+.medora-graph__canvas {
+	inline-size: 100%;
+	block-size: auto;
+	background: var(--medora-surface-2);
+	border-radius: 10px;
+}
+
+.medora-graph__link {
+	stroke: var(--medora-border);
+	opacity: 0.6;
+}
+
+.medora-graph__link.is-active {
+	stroke: var(--medora-accent);
+	opacity: 1;
+}
+
+.medora-graph__node { cursor: pointer; }
+.medora-graph__node circle { stroke: var(--medora-surface); stroke-width: 1.5; }
+.medora-graph__node:focus-visible circle { stroke: var(--medora-accent); stroke-width: 3; }
+
+.medora-graph__label {
+	font-size: 10px;
+	fill: var(--medora-muted);
+}
+
+.medora-graph__legend {
+	margin-block: 10px 0;
+	font-size: 12px;
+	color: var(--medora-muted);
+}
+
+/* --- Sparkline ----------------------------------------------------------- */
+
+.medora-sparkline {
+	inline-size: 100%;
+	block-size: 72px;
+	display: block;
+}
+
+.medora-sparkline__line {
+	stroke: var(--medora-accent);
+	stroke-width: 2;
+	vector-effect: non-scaling-stroke;
+}
+
+.medora-sparkline__area {
+	fill: color-mix(in srgb, var(--medora-accent) 14%, transparent);
+}
+
+/* --- Forms --------------------------------------------------------------- */
+
+.medora-card label,
+.medora-panel label {
+	display: block;
+	margin-block: 14px 4px;
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.medora-card input[type='text'],
+.medora-card input[type='number'],
+.medora-card select,
+.medora-card textarea,
+.medora-panel input[type='text'],
+.medora-panel textarea {
+	inline-size: 100%;
+	max-inline-size: 480px;
+	padding: 7px 10px;
+	border: 1px solid var(--medora-border);
+	border-radius: 6px;
+	background: var(--medora-surface);
+	color: var(--medora-text);
+}
+
+.medora-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 400;
+}
+
+.medora-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin-block-start: 18px;
+}
+
+.medora-filters {
+	display: flex;
+	gap: 8px;
+}
+
+/* --- Presets and switches -------------------------------------------------- */
+
+.medora-presets,
+.medora-wizard__options {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.medora-preset {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 14px;
+	border: 1px solid var(--medora-border);
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: 400;
+	margin: 0;
+}
+
+.medora-preset.is-active {
+	border-color: var(--medora-accent);
+	box-shadow: 0 0 0 1px var(--medora-accent) inset;
+}
+
+.medora-switch {
+	position: relative;
+	inline-size: 40px;
+	block-size: 22px;
+	flex-shrink: 0;
+	margin: 0;
+}
+
+.medora-switch input {
+	position: absolute;
+	opacity: 0;
+	inline-size: 100%;
+	block-size: 100%;
+	margin: 0;
+	cursor: pointer;
+}
+
+.medora-switch span {
+	position: absolute;
+	inset: 0;
+	background: var(--medora-track);
+	border-radius: 999px;
+	transition: background 160ms ease;
+	pointer-events: none;
+}
+
+.medora-switch span::after {
+	content: '';
+	position: absolute;
+	inset-block-start: 3px;
+	inset-inline-start: 3px;
+	inline-size: 16px;
+	block-size: 16px;
+	background: #fff;
+	border-radius: 50%;
+	transition: translate 160ms ease;
+}
+
+.medora-switch input:checked + span {
+	background: var(--medora-accent);
+}
+
+.medora-switch input:checked + span::after {
+	/* Logical translate keeps the knob moving toward the end edge in RTL. */
+	translate: 18px 0;
+}
+
+[dir='rtl'] .medora-switch input:checked + span::after {
+	translate: -18px 0;
+}
+
+.medora-modules {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-modules li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding-block: 12px;
+	border-block-end: 1px solid var(--medora-border);
+}
+
+.medora-modules p {
+	margin: 2px 0 0;
+	font-size: 12px;
+}
+
+/* --- Checks and notices ------------------------------------------------------ */
+
+.medora-checks {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-check {
+	display: flex;
+	gap: 10px;
+	padding-block: 8px;
+	align-items: flex-start;
+}
+
+.medora-check span[aria-hidden] {
+	font-weight: 700;
+	line-height: 1.5;
+}
+
+.medora-check--pass span[aria-hidden] { color: var(--medora-grade-a); }
+.medora-check--fail span[aria-hidden] { color: var(--medora-grade-f); }
+
+.medora-check p {
+	margin: 2px 0 0;
+	font-size: 12px;
+	color: var(--medora-muted);
+}
+
+.medora-notice {
+	padding: 12px 16px;
+	border-radius: 8px;
+	background: var(--medora-surface-2);
+	border-inline-start: 3px solid var(--medora-accent);
+	font-size: 13px;
+}
+
+.medora-notice--warning { border-inline-start-color: var(--medora-grade-c); }
+.medora-notice--critical { border-inline-start-color: var(--medora-grade-f); }
+
+.medora-notice p { margin: 4px 0 0; }
+
+/* --- Issues, breakdown, misc -------------------------------------------------- */
+
+.medora-issues {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-issues li {
+	padding-block: 10px;
+	border-block-end: 1px solid var(--medora-border);
+}
+
+.medora-issues p {
+	margin: 4px 0 0;
+	font-size: 13px;
+	color: var(--medora-muted);
+}
+
+.medora-breakdown {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.medora-breakdown li { padding-block: 10px; }
+
+.medora-breakdown__head {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	margin-block-end: 4px;
+	font-size: 13px;
+}
+
+.medora-breakdown p {
+	margin: 4px 0 0;
+	font-size: 12px;
+}
+
+.medora-code {
+	background: var(--medora-surface-2);
+	border: 1px solid var(--medora-border);
+	border-radius: 8px;
+	padding: 14px;
+	overflow-x: auto;
+	font-size: 12px;
+	white-space: pre;
+	margin-block-start: 12px;
+	/* robots.txt is always LTR, even on an RTL admin. */
+	direction: ltr;
+	text-align: start;
+}
+
+.medora-muted { color: var(--medora-muted); font-size: 13px; }
+.medora-empty { color: var(--medora-muted); font-style: italic; }
+.medora-error { color: var(--medora-grade-f); }
+.medora-loading { color: var(--medora-muted); padding-block: 24px; }
+
+.medora-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-block-start: 16px;
+}
+
+/* --- Wizard --------------------------------------------------------------------- */
+
+.medora-wizard {
+	max-inline-size: 720px;
+	margin-block: 40px;
+	margin-inline: auto;
+	background: var(--medora-surface);
+	border: 1px solid var(--medora-border);
+	border-radius: var(--medora-radius);
+	overflow: hidden;
+}
+
+.medora-wizard__progress {
+	display: flex;
+	gap: 8px;
+	list-style: none;
+	margin: 0;
+	padding: 20px 24px 0;
+}
+
+.medora-wizard__progress li {
+	flex: 1;
+	block-size: 4px;
+	background: var(--medora-track);
+	border-radius: 999px;
+}
+
+.medora-wizard__progress li.is-done { background: var(--medora-accent); }
+.medora-wizard__progress li span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+
+.medora-wizard__body { padding: 24px; }
+.medora-wizard__body h1 { margin-block: 8px; font-size: 22px; }
+.medora-wizard__input { inline-size: 100%; padding: 10px 12px; border: 1px solid var(--medora-border); border-radius: 8px; }
+
+.medora-wizard__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px 24px;
+	border-block-start: 1px solid var(--medora-border);
+	background: var(--medora-surface-2);
+}

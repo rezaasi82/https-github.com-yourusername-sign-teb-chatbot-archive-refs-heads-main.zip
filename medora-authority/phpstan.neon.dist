@@ -1,0 +1,27 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 6
+
+    paths:
+        - includes
+        - medora-authority.php
+        - uninstall.php
+
+    excludePaths:
+        - vendor
+        - node_modules
+        - assets
+
+    bootstrapFiles:
+        - tests/phpstan/constants.php
+
+    ignoreErrors:
+        # WordPress hook callbacks are `mixed` by signature; the controllers
+        # narrow them at the top of each method.
+        - '#^Parameter \#1 \$(result|server|request) of method .* expects mixed#'
+        # $wpdb->get_results() is typed as returning mixed by the stubs.
+        - '#^Cannot access offset .* on mixed\.$#'
+
+    treatPhpDocTypesAsCertain: false
