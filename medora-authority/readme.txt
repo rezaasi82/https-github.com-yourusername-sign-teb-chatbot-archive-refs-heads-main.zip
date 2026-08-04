@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.5.0
+Stable tag: 0.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,14 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.5.1 =
+* Fixed: page scores were cached against the content alone, so any change to
+  the scoring setup — an upgrade adding a dimension, a module toggle, or
+  switching between general and medical mode — left unedited pages showing a
+  score calculated the old way, and the site report comparing the two.
+* Scores now re-calculate automatically after those changes, in the background
+  and in batches.
+
 = 0.5.0 =
 * GEO Optimizer: scores every passage of a page on whether it still makes sense
   once a retriever pulls it out on its own — which is how most AI answers
@@ -173,6 +181,10 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.5.1 =
+Recommended for anyone on 0.5.0. Page scores re-calculate in the background on
+first load after upgrading; expect the site average to move as they do.
 
 = 0.5.0 =
 Adds the GEO Optimizer and the LLM Compatibility score dimension. Existing

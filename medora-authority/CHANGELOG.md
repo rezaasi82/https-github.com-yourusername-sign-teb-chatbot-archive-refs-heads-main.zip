@@ -4,6 +4,40 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] — 2026-08-03
+
+### Fixed — analyses cached under the wrong configuration
+
+The analysis cache was keyed on the page's content hash alone. A stored score
+is a function of the *scorer set* as much as of the text, so any change to the
+scoring configuration left every unedited page holding a score computed the old
+way — and the site report then ranked six-dimension scores against
+seven-dimension ones as though they were comparable.
+
+The bug predates this release; adding a seventh dimension in 0.5.0 is what made
+it visible. It failed silently, which is the reason it went unnoticed: nothing
+errors, and no individual page looks wrong.
+
+* `AuthorityScoreCalculator::signature()` fingerprints the scoring
+  configuration — scorer ids *and* weights, since re-weighting moves every
+  score without changing which scorers ran. Sorted, so a change in registration
+  order (which the module dependency graph may legitimately make between
+  releases) does not needlessly invalidate the whole site.
+* `cacheKey()` folds that signature into the content hash, so the change is
+  self-invalidating with no schema migration.
+* `ReanalyzeSiteJob` re-scores the archive in batches of 100, re-queueing
+  itself. Queueing one job per published post is fine on a fifty-page site and
+  inserts fifty thousand rows in a single request on a large one.
+* The sweep is triggered by the three events that change what a score means
+  without touching content: an upgrade, a module toggle, and a general↔medical
+  mode switch. Mode is the case the signature cannot catch on its own —
+  `appliesTo()` is evaluated per post at score time, so switching mode changes
+  which dimensions apply without changing which are registered.
+
+`medora_settings_updated` carries the full settings array rather than the
+changed keys, so the previous mode is recorded in `medora_scored_mode` and the
+sweep runs only on a real transition, not on every save.
+
 ## [0.5.0] — 2026-08-03
 
 Adds the GEO Optimizer, the last of the twenty named modules without a

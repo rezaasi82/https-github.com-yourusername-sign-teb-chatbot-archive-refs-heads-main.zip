@@ -169,10 +169,35 @@ working a backlog actually needs.
 
 ## Caching and recomputation
 
-Scores are cached against the content hash, so re-analysis of unchanged content
-is a single indexed lookup. A nightly cron re-scores the 50 most recently
-modified pages so scores also track changes in *site-wide* signals — a newly
-blocked crawler, a new entity, an expired licence — and not only edits.
+An analysis is cached against a key covering the page's content **and** a
+fingerprint of the scoring configuration — every registered scorer's id and its
+weight. Re-analysis of unchanged content under an unchanged configuration is a
+single indexed lookup.
+
+Keying on content alone is wrong in a way that never surfaces as an error:
+change the configuration and every unedited page keeps a score computed the old
+way, while the site report ranks those against freshly computed ones. Weights
+are part of the fingerprint because re-weighting a dimension moves every score
+without changing which scorers ran; the scorer list is sorted before hashing,
+because registration order follows the module dependency graph and may change
+between releases without the scoring changing at all.
+
+Three events change what a score means without touching any content, and each
+queues a background re-score of the archive:
+
+| Event | Why |
+|---|---|
+| `medora_upgraded` | a release may ship a new dimension |
+| `medora_module_toggled` | a module may contribute or withdraw one |
+| general ↔ medical mode | changes which dimensions *apply*, not which are registered — so the fingerprint alone cannot catch it |
+
+The sweep runs in batches of 100 posts, re-queueing itself until the archive is
+covered, so it is bounded on a site of any size. Expect the site average to move
+while it runs.
+
+A nightly cron additionally re-scores the 50 most recently modified pages, so
+scores track changes in *site-wide* signals — a newly blocked crawler, a new
+entity, an expired licence — and not only edits.
 
 ## Extending
 

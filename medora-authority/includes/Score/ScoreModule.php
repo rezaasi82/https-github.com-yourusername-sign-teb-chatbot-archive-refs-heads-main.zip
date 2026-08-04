@@ -12,6 +12,7 @@ use Medora\Authority\Entity\EntityRepository;
 use Medora\Authority\Module\AbstractModule;
 use Medora\Authority\Performance\JobQueue;
 use Medora\Authority\Performance\Jobs\AnalyzePostJob;
+use Medora\Authority\Performance\Jobs\ReanalyzeSiteJob;
 use Medora\Authority\Prompt\PromptPackRepository;
 use Medora\Authority\Score\Scorers\AiReadinessScorer;
 use Medora\Authority\Score\Scorers\EntityScorer;
@@ -82,6 +83,49 @@ final class ScoreModule extends AbstractModule
     {
         add_action('deleted_post', static function (int $postId) use ($container): void {
             $container->get(AnalysisRepository::class)->delete('post', $postId);
+        });
+
+        // Three admin events change what a score *means* without touching any
+        // page's content: an upgrade that ships a new dimension, a module
+        // toggle that adds or removes one, and a switch between general and
+        // medical mode. Each queues a re-score of the archive, because until
+        // that finishes the site report is comparing scores computed two
+        // different ways.
+        //
+        // Hooked to the events rather than checked per request: resolving the
+        // calculator builds every scorer, and doing that on page views to
+        // catch a change that happens twice a year is the wrong trade.
+        $sweep = static function () use ($container): void {
+            $container->get(JobQueue::class)->push(ReanalyzeSiteJob::class, ['offset' => 0], 0, 'maintenance');
+        };
+
+        // Unconditional for both. An upgrade and a module toggle are rare,
+        // deliberate acts, and neither can be tested against the calculator's
+        // signature at the moment it fires — modules boot once per request, so
+        // a toggle's effect on the scorer set is not visible until the next
+        // one. That is why the REST response asks for a reload.
+        add_action('medora_upgraded', $sweep);
+        add_action('medora_module_toggled', $sweep);
+
+        // Settings saves are frequent and mostly irrelevant here, and the hook
+        // carries the full settings array rather than the changed keys — so
+        // the previous mode is kept alongside, and the sweep runs only on a
+        // real transition.
+        add_action('medora_settings_updated', static function (array $settings) use ($sweep): void {
+            $mode   = (string) ($settings['site_mode'] ?? 'general');
+            $scored = (string) get_option('medora_scored_mode', '');
+
+            if ($mode === $scored) {
+                return;
+            }
+
+            update_option('medora_scored_mode', $mode, true);
+
+            // A fresh install has nothing scored yet, so there is nothing to
+            // bring into line; recording the mode is enough.
+            if ($scored !== '') {
+                $sweep();
+            }
         });
 
         // Nightly refresh of the oldest analyses, so scores track changes in

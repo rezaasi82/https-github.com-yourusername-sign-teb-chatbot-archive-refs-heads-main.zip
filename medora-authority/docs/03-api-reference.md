@@ -319,6 +319,7 @@ Standard WordPress REST shape:
 | `medora_post_analyzed` | `WP_Post, array $result` | a page was scored |
 | `medora_post_embedded` | `WP_Post, int $chunks` | embeddings written |
 | `medora_prompt_pack_saved` | `array $pack, WP_Post, string $hash` | an extractive pack was persisted |
+| `medora_upgraded` | `string $from, string $to` | the stored DB version trailed the shipped one |
 | `medora_graph_rebuilt` | `int $posts, int $edges` | full graph rebuild finished |
 | `medora_ai_crawler_detected` | `array $crawler, string $decision` | before the response to a crawler |
 | `medora_ai_referral_recorded` | `array $match` | an assistant referral was logged |

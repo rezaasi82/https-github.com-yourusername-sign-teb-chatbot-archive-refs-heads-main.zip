@@ -29,6 +29,9 @@ final class AuthorityScoreCalculator
     /** @var list<ScorerInterface> */
     private array $scorers = [];
 
+    /** Memoised across a request; invalidated whenever a scorer is added. */
+    private ?string $signature = null;
+
     public function __construct(private readonly AnalysisRepository $repository)
     {
     }
@@ -36,6 +39,49 @@ final class AuthorityScoreCalculator
     public function addScorer(ScorerInterface $scorer): void
     {
         $this->scorers[] = $scorer;
+        $this->signature = null;
+    }
+
+    /**
+     * A fingerprint of the scoring configuration itself.
+     *
+     * Caching an analysis on the content hash alone is wrong, and quietly so:
+     * the stored score is a function of the *scorer set* as much as of the
+     * text. Add a dimension in an upgrade, enable a module that contributes
+     * one, or switch the site from general to medical mode, and every page
+     * whose content has not changed keeps a score computed under the old
+     * configuration — leaving the site report ranking six-dimension scores
+     * against seven-dimension ones as though they were comparable.
+     *
+     * Folding this into the cache key makes any such change self-invalidating.
+     * Weights are included as well as ids, because re-weighting a dimension
+     * changes every score without changing which scorers ran.
+     */
+    public function signature(): string
+    {
+        if ($this->signature !== null) {
+            return $this->signature;
+        }
+
+        $parts = array_map(
+            static fn (ScorerInterface $scorer): string => $scorer->id() . ':' . $scorer->weight(),
+            $this->scorers
+        );
+
+        // Sorted, so registration order — which the module graph may legitimately
+        // change between releases — does not invalidate every analysis on the site.
+        sort($parts);
+
+        return $this->signature = substr(Text::hash(implode('|', $parts)), 0, 12);
+    }
+
+    /**
+     * The cache key for one post: its content *and* the configuration the
+     * score would be computed under.
+     */
+    public function cacheKey(WP_Post $post): string
+    {
+        return Text::hash($post->post_title . "\n" . $post->post_content . "\n#" . $this->signature());
     }
 
     /** @return list<ScorerInterface> */
@@ -57,7 +103,7 @@ final class AuthorityScoreCalculator
      */
     public function analyze(WP_Post $post, bool $force = false): array
     {
-        $hash = Text::hash($post->post_title . "\n" . $post->post_content);
+        $hash = $this->cacheKey($post);
 
         if (! $force) {
             $cached = $this->repository->find('post', $post->ID);

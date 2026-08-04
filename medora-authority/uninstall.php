@@ -72,6 +72,7 @@ foreach ($medora_tables as $medora_table) {
 delete_option('medora_settings');
 delete_option('medora_db_version');
 delete_option('medora_needs_onboarding');
+delete_option('medora_scored_mode');
 delete_option('medora_delete_data_on_uninstall');
 
 // Post and user meta written by the plugin.
