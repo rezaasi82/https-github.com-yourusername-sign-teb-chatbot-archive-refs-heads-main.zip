@@ -316,6 +316,31 @@ export interface KnowledgeGraphResult {
   total_terms: number;
 }
 
+export interface ZombiePage {
+  id: number;
+  title: string;
+  url: string;
+  edit_url: string;
+  clicks: number;
+  impressions: number;
+  position: number;
+  words: number;
+  age_days: number;
+  inbound: number;
+  type: string;
+  action: string;
+  severity: 'high' | 'medium' | 'low';
+  reason: string;
+}
+
+export interface ZombieResult {
+  window_days: number;
+  scanned: number;
+  zombie_count: number;
+  has_gsc: boolean;
+  pages: ZombiePage[];
+}
+
 export interface ReportRow {
   id: number;
   type: string;
@@ -457,6 +482,8 @@ export const api = {
   contentLinks: (postId?: number) =>
     request<{ mode: string; items: LinkSuggestionGroup[] }>(`/content/links${postId ? `?post_id=${postId}` : ''}`),
   contentAudit: (force = false) => request<AuditResult>(`/content/audit${force ? '?force=true' : ''}`),
+  contentZombies: (days = 90, force = false) =>
+    request<ZombieResult>(`/content/zombies?days=${days}${force ? '&force=true' : ''}`),
   contentSchemaPreview: (postId: number) => request<SchemaBuildResult>(`/content/schema?post_id=${postId}`),
   contentSchemaSave: (postId: number, types: string[]) =>
     request<SchemaBuildResult>('/content/schema', { method: 'POST', body: JSON.stringify({ post_id: postId, types }) }),

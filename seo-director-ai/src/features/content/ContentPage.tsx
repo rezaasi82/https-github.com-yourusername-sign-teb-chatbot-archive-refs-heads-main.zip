@@ -10,6 +10,7 @@ import {
   type PostRef,
   type SchemaBuildResult,
   type ScoreResult,
+  type ZombieResult,
 } from '../../api/client';
 import { useLicense } from '../../app/license';
 import { t } from '../../i18n';
@@ -381,6 +382,123 @@ function AuditTool() {
   );
 }
 
+const ACTION_LABEL: Record<string, string> = {
+  wait: 'Wait',
+  improve: 'Improve content',
+  improve_meta: 'Rewrite title & meta',
+  internal_link: 'Add internal links',
+  prune: 'Prune (merge/301 or delete)',
+};
+
+const ACTION_COLOR: Record<string, string> = {
+  prune: 'var(--sda-negative)',
+  improve: 'var(--sda-warning)',
+  improve_meta: 'var(--sda-warning)',
+  internal_link: 'var(--sda-primary)',
+  wait: 'var(--sda-text-muted)',
+};
+
+function ZombiesTool() {
+  const [days, setDays] = useState(90);
+  const [force, setForce] = useState(false);
+  const zombies = useQuery<ZombieResult, Error>({
+    queryKey: ['content-zombies', days, force],
+    queryFn: () => api.contentZombies(days, force),
+  });
+
+  return (
+    <div className="sda-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div>
+          <h2 style={{ margin: 0 }}>{t('Zombie pages')}</h2>
+          <p style={{ fontSize: 13, color: 'var(--sda-text-muted)', margin: '4px 0 0' }}>
+            {t('Pages that earn zero organic clicks in the window — they waste crawl budget and dilute site quality. Each gets a recommended fix.')}
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <select className="sda-input" style={{ width: 'auto' }} value={days} onChange={(e) => setDays(Number(e.target.value))}>
+            <option value={90}>{t('last 90 days')}</option>
+            <option value={180}>{t('last 180 days')}</option>
+            <option value={365}>{t('last 365 days')}</option>
+          </select>
+          <button type="button" className="sda-btn" onClick={() => setForce(true)} disabled={zombies.isFetching}>
+            {zombies.isFetching ? t('Scanning…') : t('Re-scan')}
+          </button>
+        </div>
+      </div>
+
+      {zombies.error != null && <ErrorBox title={t('Failed to load')} error={zombies.error} />}
+      {zombies.isLoading && <div className="sda-skeleton" style={{ height: 160, marginBlockStart: 12 }} />}
+
+      {zombies.data && (
+        <>
+          {!zombies.data.has_gsc && (
+            <div className="sda-card" style={{ marginBlockStart: 12, borderInlineStart: '3px solid var(--sda-warning)', background: 'var(--sda-surface-2)' }}>
+              <p style={{ margin: 0, fontSize: 12, color: 'var(--sda-text-muted)' }}>
+                {t('Search Console isn’t connected, so this uses content signals only (thin + orphan pages). Connect Google for click-based detection.')}
+              </p>
+            </div>
+          )}
+          <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', marginBlockStart: 10 }}>
+            {zombies.data.scanned} {t('pages scanned')} · {zombies.data.zombie_count} {t('zombie page(s)')}
+          </p>
+
+          {zombies.data.pages.length === 0 ? (
+            <div className="sda-empty">
+              <strong>{t('No zombie pages found')}</strong>
+              {t('Every scanned page earns organic clicks — nice.')}
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table className="sda-table" style={{ marginBlockStart: 8 }}>
+                <thead>
+                  <tr>
+                    <th>{t('Page')}</th>
+                    <th>{t('Clicks')}</th>
+                    <th>{t('Impr.')}</th>
+                    <th>{t('Words')}</th>
+                    <th>{t('In-links')}</th>
+                    <th>{t('Recommended fix')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {zombies.data.pages.map((p) => (
+                    <tr key={p.id}>
+                      <td style={{ whiteSpace: 'normal', maxWidth: 280 }}>
+                        <a href={p.url} target="_blank" rel="noreferrer">
+                          {p.title || p.url}
+                        </a>
+                        <div style={{ fontSize: 11, color: 'var(--sda-text-muted)' }}>{p.reason}</div>
+                      </td>
+                      <td>{p.clicks}</td>
+                      <td>{p.impressions}</td>
+                      <td>{p.words}</td>
+                      <td style={{ color: p.inbound === 0 ? 'var(--sda-negative)' : 'inherit' }}>{p.inbound}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <span style={{ fontWeight: 600, color: ACTION_COLOR[p.action] ?? 'var(--sda-text)' }}>
+                          {t(ACTION_LABEL[p.action] ?? p.action)}
+                        </span>
+                        {p.edit_url && (
+                          <>
+                            {' · '}
+                            <a href={p.edit_url} target="_blank" rel="noreferrer" style={{ fontSize: 12 }}>
+                              {t('Edit')}
+                            </a>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 function SchemaTool() {
   const [postId, setPostId] = useState(0);
   const preview = useQuery<SchemaBuildResult, Error>({
@@ -525,6 +643,7 @@ const TABS = [
   { key: 'score', label: 'Score', pro: true },
   { key: 'links', label: 'Internal links', pro: false },
   { key: 'audit', label: 'Audit', pro: false },
+  { key: 'zombies', label: 'Zombies', pro: false },
   { key: 'schema', label: 'Schema', pro: false },
   { key: 'meta', label: 'Meta & Gap', pro: true },
 ] as const;
@@ -571,6 +690,7 @@ export function ContentPage() {
           {tab === 'score' && <ScoreTool />}
           {tab === 'links' && <LinksTool />}
           {tab === 'audit' && <AuditTool />}
+          {tab === 'zombies' && <ZombiesTool />}
           {tab === 'schema' && <SchemaTool />}
           {tab === 'meta' && (
             <>

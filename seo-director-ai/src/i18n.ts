@@ -297,6 +297,32 @@ const FA: Record<string, string> = {
   'Dermatology, hair & cosmetic (پوست، مو و زیبایی)': 'پوست، مو و زیبایی',
   'Obstetrics & gynecology (زنان و زایمان)': 'زنان و زایمان',
   'Medical web design, branding & SEO (ساین‌طب)': 'طراحی سایت، برندینگ و سئوی پزشکی (ساین‌طب)',
+
+  // Zombie pages
+  'Zombies': 'صفحات زامبی',
+  'Zombie pages': 'صفحات زامبی',
+  'Pages that earn zero organic clicks in the window — they waste crawl budget and dilute site quality. Each gets a recommended fix.':
+    'صفحاتی که در بازهٔ انتخابی هیچ کلیک ارگانیکی نمی‌گیرند — بودجهٔ خزش را هدر می‌دهند و کیفیت سایت را پایین می‌آورند. برای هرکدام یک اقدام پیشنهادی داده می‌شود.',
+  'last 90 days': '۹۰ روز اخیر',
+  'last 180 days': '۱۸۰ روز اخیر',
+  'last 365 days': '۳۶۵ روز اخیر',
+  'Search Console isn’t connected, so this uses content signals only (thin + orphan pages). Connect Google for click-based detection.':
+    'سرچ‌کنسول متصل نیست، پس فقط از سیگنال‌های محتوایی (صفحات کم‌محتوا و یتیم) استفاده می‌شود. برای تشخیص بر اساس کلیک، گوگل را متصل کنید.',
+  'zombie page(s)': 'صفحهٔ زامبی',
+  'No zombie pages found': 'صفحهٔ زامبی‌ای پیدا نشد',
+  'Every scanned page earns organic clicks — nice.': 'همهٔ صفحات اسکن‌شده کلیک ارگانیک می‌گیرند — عالی.',
+  'Page': 'صفحه',
+  'Clicks': 'کلیک',
+  'Impr.': 'نمایش',
+  'Words': 'کلمات',
+  'In-links': 'لینک ورودی',
+  'Recommended fix': 'اقدام پیشنهادی',
+  'Edit': 'ویرایش',
+  'Wait': 'صبر کنید',
+  'Improve content': 'بهبود محتوا',
+  'Rewrite title & meta': 'بازنویسی عنوان و متا',
+  'Add internal links': 'افزودن لینک داخلی',
+  'Prune (merge/301 or delete)': 'هرس (ادغام/۳۰۱ یا حذف)',
 };
 
 /** True when the wp-admin locale is Persian (fa_IR, fa_AF, …). */

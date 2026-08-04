@@ -40,6 +40,7 @@ use SEODirector\Content\InternalLinkSuggester;
 use SEODirector\Content\OnPageAuditor;
 use SEODirector\Content\OptimizationScorer;
 use SEODirector\Content\SchemaGenerator;
+use SEODirector\Content\ZombiePageDetector;
 use SEODirector\License\FeatureGate;
 use SEODirector\License\LicenseManager;
 use SEODirector\Reports\ReportGenerator;
@@ -148,6 +149,7 @@ final class RestServiceProvider {
 				$c->get( SchemaGenerator::class ),
 				$c->get( OnPageAuditor::class ),
 				$c->get( OptimizationScorer::class ),
+				$c->get( ZombiePageDetector::class ),
 				$c->get( FeatureGate::class ),
 				$c->get( RateLimiter::class )
 			),

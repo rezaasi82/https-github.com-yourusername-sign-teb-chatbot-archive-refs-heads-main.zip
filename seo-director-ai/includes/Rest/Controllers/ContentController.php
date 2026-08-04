@@ -21,6 +21,7 @@ use SEODirector\Content\InternalLinkSuggester;
 use SEODirector\Content\OnPageAuditor;
 use SEODirector\Content\OptimizationScorer;
 use SEODirector\Content\SchemaGenerator;
+use SEODirector\Content\ZombiePageDetector;
 use SEODirector\Core\Capabilities;
 use SEODirector\License\FeatureGate;
 use SEODirector\Support\RateLimiter;
@@ -36,6 +37,7 @@ final class ContentController extends AbstractController {
 		private SchemaGenerator $schema,
 		private OnPageAuditor $auditor,
 		private OptimizationScorer $scorer,
+		private ZombiePageDetector $zombies,
 		private FeatureGate $gate,
 		private RateLimiter $limiter,
 	) {}
@@ -141,6 +143,20 @@ final class ContentController extends AbstractController {
 					'args'                => [
 						'post_id' => [ 'type' => 'integer', 'required' => true ],
 					],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/content/zombies',
+			[
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'zombies' ],
+				'permission_callback' => $this->require_cap( Capabilities::MANAGE ),
+				'args'                => [
+					'days'  => [ 'type' => 'integer', 'default' => 90 ],
+					'force' => [ 'type' => 'boolean', 'default' => false ],
 				],
 			]
 		);
@@ -276,6 +292,17 @@ final class ContentController extends AbstractController {
 		$this->schema->remove( (int) $request->get_param( 'post_id' ) );
 
 		return rest_ensure_response( [ 'removed' => true ] );
+	}
+
+	public function zombies( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+		$guard = $this->guard_feature( 'core_detectors' );
+		if ( is_wp_error( $guard ) ) {
+			return $guard;
+		}
+
+		return rest_ensure_response(
+			$this->zombies->detect( (int) $request->get_param( 'days' ), (bool) $request->get_param( 'force' ) )
+		);
 	}
 
 	public function score( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
