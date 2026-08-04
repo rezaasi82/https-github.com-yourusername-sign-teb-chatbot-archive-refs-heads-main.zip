@@ -1,20 +1,22 @@
 <?php
 /**
- * SWC_Message_Repository — repository for individual chat messages.
+ * Repository for individual chat messages.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace SignTeb\WebChat\Database;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Message_Repository
+class MessageRepository
 {
     public function add(int $conversation_id, string $role, string $content, bool $flagged = false, ?int $tokens = null): int
     {
         global $wpdb;
-        $table = SWC_Schema::messages_table();
+        $table = \SignTeb\WebChat\Database\Schema::messages_table();
         $wpdb->insert(
             $table,
             [
@@ -39,7 +41,7 @@ class SWC_Message_Repository
     public function history(int $conversation_id, int $limit = 12): array
     {
         global $wpdb;
-        $table = SWC_Schema::messages_table();
+        $table = \SignTeb\WebChat\Database\Schema::messages_table();
 
         $rows = $wpdb->get_results(
             $wpdb->prepare(
@@ -59,11 +61,30 @@ class SWC_Message_Repository
         );
     }
 
+    /**
+     * All visitor (user) message texts, oldest-first. Used for lead scoring
+     * and the auto-summary.
+     *
+     * @return array<int,string>
+     */
+    public function user_texts(int $conversation_id): array
+    {
+        global $wpdb;
+        $table = \SignTeb\WebChat\Database\Schema::messages_table();
+        $rows  = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT content FROM {$table} WHERE conversation_id = %d AND role = 'user' ORDER BY id ASC",
+                $conversation_id
+            )
+        ) ?: [];
+        return array_map('strval', $rows);
+    }
+
     /** @return array<int,object> */
     public function for_conversation(int $conversation_id): array
     {
         global $wpdb;
-        $table = SWC_Schema::messages_table();
+        $table = \SignTeb\WebChat\Database\Schema::messages_table();
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$table} WHERE conversation_id = %d ORDER BY id ASC",

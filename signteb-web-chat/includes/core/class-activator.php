@@ -1,20 +1,25 @@
 <?php
 /**
- * SWC_Activator — runs on activation: builds tables and seeds defaults.
+ * Runs on activation: builds tables and seeds defaults.
  *
  * @package SignTeb_Web_Chat
  */
+
+namespace SignTeb\WebChat\Core;
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-class SWC_Activator
+class Activator
 {
     public static function activate(): void
     {
-        SWC_Schema::install();
+        \SignTeb\WebChat\Database\Schema::install();
         self::seed_default_settings();
+        if (! wp_next_scheduled(\SignTeb\WebChat\Jobs\Rollup::CRON)) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', \SignTeb\WebChat\Jobs\Rollup::CRON);
+        }
         flush_rewrite_rules();
     }
 
@@ -23,15 +28,19 @@ class SWC_Activator
      */
     public static function maybe_upgrade(): void
     {
-        if (get_option('swc_db_version') !== SWC_Schema::DB_VERSION) {
-            SWC_Schema::install();
+        if (get_option('swc_db_version') !== \SignTeb\WebChat\Database\Schema::DB_VERSION) {
+            \SignTeb\WebChat\Database\Schema::install();
+        }
+        if (! wp_next_scheduled(\SignTeb\WebChat\Jobs\Rollup::CRON)) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', \SignTeb\WebChat\Jobs\Rollup::CRON);
         }
     }
 
     public static function default_settings(): array
     {
         return [
-            'enabled'            => 1,
+            'float_enabled'      => 1,
+            'shortcode_enabled'  => 1,
 
             // --- AI provider ---
             'provider'           => 'anthropic', // anthropic | openai | gapgpt
@@ -53,6 +62,15 @@ class SWC_Activator
             'brand_footer'       => '',         // empty = no footer (white-label)
             'use_bundled_font'   => 1,
 
+            // --- Lead capture + communication channels ---
+            'lead_capture'       => 1,
+            'ch_booking'         => 1,
+            'ch_consult'         => 1,
+            'ch_whatsapp'        => 1,
+            'ch_call'            => 1,
+            'ch_bale'            => 0,
+            'bale_url'           => '',
+
             // --- Messaging ---
             'welcome_message'    => __('سلام! 👋 چطور می‌تونم کمکتون کنم؟', 'signteb-web-chat'),
             'quick_replies'      => "هزینه ویزیت\nآدرس کلینیک\nرزرو نوبت",
@@ -67,16 +85,18 @@ class SWC_Activator
             'address'            => '',
             'emergency_number'   => '115',
             'booking_url'        => '',
+            'consult_url'        => '', // online consultation (video/chat visit)
             'manual_services'    => '', // one "name | price" per line
+            'avg_service_price'  => 0,  // Toman — used for the revenue estimate
         ];
     }
 
     private static function seed_default_settings(): void
     {
-        $existing = get_option(SWC_Settings::OPTION, []);
+        $existing = get_option(\SignTeb\WebChat\Core\Settings::OPTION, []);
         if (! is_array($existing)) {
             $existing = [];
         }
-        update_option(SWC_Settings::OPTION, array_merge(self::default_settings(), $existing));
+        update_option(\SignTeb\WebChat\Core\Settings::OPTION, array_merge(self::default_settings(), $existing));
     }
 }
