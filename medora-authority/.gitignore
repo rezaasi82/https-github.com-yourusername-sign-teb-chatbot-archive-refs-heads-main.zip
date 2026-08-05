@@ -4,7 +4,10 @@
 /assets/js/*.asset.php
 /assets/js/*.map
 /assets/css/*.css
+# Compiled catalogues: sources are the .po files, builds ship in the release
+# artifact. `composer i18n:build` regenerates both.
 /languages/*.mo
+/languages/*.json
 composer.lock
 package-lock.json
 .phpunit.cache/

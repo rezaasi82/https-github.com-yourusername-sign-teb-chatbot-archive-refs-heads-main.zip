@@ -348,7 +348,8 @@ Standard WordPress REST shape:
 | `medora_entity_salience` | `float` | adjust computed salience |
 | `medora_entity_authority_score` | `float` | adjust entity authority |
 | `medora_authority_score` | `float` | adjust the page score |
-| `medora_topic_facets` | `array` | change expected sub-topics per type |
+| `medora_topic_facets` | `array` | change expected sub-topics per type — keyed by **slug**, not label |
+| `medora_topic_facet_label` | `string` | register the display label for a facet slug |
 | `medora_schema_graph` | `list<array>` | edit the JSON-LD graph before output |
 | `medora_schema_citations` | `list<array>` | attach citation nodes to an article |
 | `medora_article_schema_type` | `string` | override the Article type |

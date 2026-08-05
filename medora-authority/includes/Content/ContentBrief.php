@@ -10,6 +10,7 @@ use Medora\Authority\Entity\EntityType;
 use Medora\Authority\Linking\LinkSuggestionEngine;
 use Medora\Authority\Prompt\PromptPackRepository;
 use Medora\Authority\Semantic\SemanticAnalyzer;
+use Medora\Authority\Semantic\TopicCoverage;
 use Medora\Authority\Support\Text;
 use WP_Post;
 
@@ -72,8 +73,8 @@ final class ContentBrief
         $suggestions = $this->recommendations->forPost($post);
 
         $subject  = $indexed[0]['entity'] ?? null;
-        $sections = $this->sections($post, $analysis['missing_concepts']);
-        $target   = $this->targetWordCount($analysis['word_count'], count($analysis['missing_concepts']));
+        $sections = $this->sections($post, $analysis['missing_facets']);
+        $target   = $this->targetWordCount($analysis['word_count'], count($analysis['missing_facets']));
 
         return [
             'post_id'         => $post->ID,
@@ -127,7 +128,7 @@ final class ContentBrief
      * Existing headings are returned alongside the gaps so a writer sees the
      * whole outline rather than a detached list of complaints.
      *
-     * @param list<string> $missing
+     * @param list<string> $missing Facet slugs.
      * @return list<array{heading: string, why: string, cover: list<string>, status: string}>
      */
     private function sections(WP_Post $post, array $missing): array
@@ -149,7 +150,7 @@ final class ContentBrief
                 'why'     => sprintf(
                     /* translators: %s: facet name. */
                     __('"%s" is a question readers and assistants ask about this subject that the page cannot currently answer.', 'medora-authority'),
-                    $facet
+                    TopicCoverage::label($facet)
                 ),
                 'cover'   => $this->coverageHints($facet),
                 'status'  => 'missing',
@@ -167,33 +168,38 @@ final class ContentBrief
     private function headingFor(string $facet, string $title): string
     {
         $map = [
-            'Definition'          => __('What is it?', 'medora-authority'),
-            'Symptoms'            => __('What are the symptoms?', 'medora-authority'),
-            'Causes'              => __('What causes it?', 'medora-authority'),
-            'Diagnosis'           => __('How is it diagnosed?', 'medora-authority'),
-            'Treatment'           => __('How is it treated?', 'medora-authority'),
-            'Prognosis'           => __('What is the outlook?', 'medora-authority'),
-            'When to seek care'   => __('When should you see a doctor?', 'medora-authority'),
-            'Preparation'         => __('How do you prepare?', 'medora-authority'),
-            'Recovery'            => __('What does recovery involve?', 'medora-authority'),
-            'Risks'               => __('What are the risks?', 'medora-authority'),
-            'Cost'                => __('What does it cost?', 'medora-authority'),
-            'How it works'        => __('How does it work?', 'medora-authority'),
-            'Why it matters'      => __('Why does it matter?', 'medora-authority'),
-            'Examples'            => __('Examples', 'medora-authority'),
-            'Evidence and sources' => __('Evidence and sources', 'medora-authority'),
-            'Review date'         => __('Medical review', 'medora-authority'),
+            'definition'           => __('What is it?', 'medora-authority'),
+            'symptoms'             => __('What are the symptoms?', 'medora-authority'),
+            'causes'               => __('What causes it?', 'medora-authority'),
+            'diagnosis'            => __('How is it diagnosed?', 'medora-authority'),
+            'treatment'            => __('How is it treated?', 'medora-authority'),
+            'prognosis'            => __('What is the outlook?', 'medora-authority'),
+            'when_to_seek_care'    => __('When should you see a doctor?', 'medora-authority'),
+            'what_it_is'           => __('What is it?', 'medora-authority'),
+            'who_needs_it'         => __('Who is it for?', 'medora-authority'),
+            'preparation'          => __('How do you prepare?', 'medora-authority'),
+            'recovery'             => __('What does recovery involve?', 'medora-authority'),
+            'risks'                => __('What are the risks?', 'medora-authority'),
+            'cost'                 => __('What does it cost?', 'medora-authority'),
+            'what_it_does'         => __('What does it do?', 'medora-authority'),
+            'features'             => __('What does it include?', 'medora-authority'),
+            'pricing'              => __('What does it cost?', 'medora-authority'),
+            'comparison'           => __('How does it compare?', 'medora-authority'),
+            'reviews'              => __('What do people say?', 'medora-authority'),
+            'how_it_works'         => __('How does it work?', 'medora-authority'),
+            'why_it_matters'       => __('Why does it matter?', 'medora-authority'),
+            'examples'             => __('Examples', 'medora-authority'),
+            'common_questions'     => __('Common questions', 'medora-authority'),
+            'evidence_and_sources' => __('Evidence and sources', 'medora-authority'),
+            'review_date'          => __('Medical review', 'medora-authority'),
         ];
 
-        // The facet labels arrive translated, so the lookup is on the
-        // translated string; fall back to composing one from the title.
-        foreach ($map as $key => $heading) {
-            if ($facet === __($key, 'medora-authority') || $facet === $key) {
-                return $heading;
-            }
-        }
-
-        return sprintf('%s — %s', $facet, $title);
+        // Looked up on the slug. The previous version compared the facet against
+        // `__($key, …)` with a variable key — which gettext cannot extract, so
+        // the "translation" was always the English key and the lookup silently
+        // missed every facet on a translated site, sending every heading to the
+        // fallback below.
+        return $map[$facet] ?? sprintf('%s — %s', TopicCoverage::label($facet), $title);
     }
 
     /**
@@ -204,22 +210,17 @@ final class ContentBrief
     private function coverageHints(string $facet): array
     {
         $hints = [
-            'Diagnosis'  => [__('name the specific tests', 'medora-authority'), __('say what each rules in or out', 'medora-authority')],
-            'Treatment'  => [__('first-line option first', 'medora-authority'), __('expected timeframe', 'medora-authority'), __('what happens if untreated', 'medora-authority')],
-            'Symptoms'   => [__('most common first', 'medora-authority'), __('which are red flags', 'medora-authority')],
-            'Causes'     => [__('separate causes from risk factors', 'medora-authority')],
-            'Prognosis'  => [__('give a figure with a source', 'medora-authority')],
-            'Cost'       => [__('a range, with what changes it', 'medora-authority')],
-            'Risks'      => [__('rate the common ones', 'medora-authority'), __('name the rare serious ones', 'medora-authority')],
+            'diagnosis' => [__('name the specific tests', 'medora-authority'), __('say what each rules in or out', 'medora-authority')],
+            'treatment' => [__('first-line option first', 'medora-authority'), __('expected timeframe', 'medora-authority'), __('what happens if untreated', 'medora-authority')],
+            'symptoms'  => [__('most common first', 'medora-authority'), __('which are red flags', 'medora-authority')],
+            'causes'    => [__('separate causes from risk factors', 'medora-authority')],
+            'prognosis' => [__('give a figure with a source', 'medora-authority')],
+            'cost'      => [__('a range, with what changes it', 'medora-authority')],
+            'pricing'   => [__('a range, with what changes it', 'medora-authority')],
+            'risks'     => [__('rate the common ones', 'medora-authority'), __('name the rare serious ones', 'medora-authority')],
         ];
 
-        foreach ($hints as $key => $values) {
-            if ($facet === __($key, 'medora-authority') || $facet === $key) {
-                return $values;
-            }
-        }
-
-        return [];
+        return $hints[$facet] ?? [];
     }
 
     /**

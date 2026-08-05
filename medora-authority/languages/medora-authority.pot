@@ -1,21 +1,2824 @@
 # Copyright (C) 2026 Medora
 # This file is distributed under the GPL v2 or later.
+#
+# Regenerate with:
+#   php bin/make-pot.php
+#
+# Target locales for launch: en_US, fa_IR, ar. The dashboard is RTL-ready
+# by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.3.0\n"
+"Project-Id-Version: Medora Authority 0.6.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-02T00:00:00+00:00\n"
-"X-Generator: WP-CLI\n"
+"X-Generator: bin/make-pot.php\n"
 "X-Domain: medora-authority\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. Regenerate with:
-#.   wp i18n make-pot . languages/medora-authority.pot --domain=medora-authority
-#.
-#. Target locales for launch: en_US, fa_IR, ar. The dashboard is RTL-ready by
-#. construction, so an RTL locale needs no separate stylesheet build.
+#. translators: 1: score out of 100, 2: letter grade.
+#: includes/Admin/AdminMenu.php:149
+msgid "AI Authority: %1$s (%2$s)"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:43
+msgid "Medora"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:45
+#: includes/Admin/SetupWizard.php:212
+msgid "Medora Authority"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:58
+#: src/app/App.tsx:83
+msgid "Overview"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:59
+#: src/app/App.tsx:84
+#: src/pages/Entities.tsx:201
+#: src/pages/Overview.tsx:76
+msgid "Entities"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:60
+#: src/app/App.tsx:85
+#: src/pages/Graph.tsx:22
+msgid "Knowledge Graph"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:61
+#: src/app/App.tsx:86
+#: src/pages/Content.tsx:47
+msgid "Content"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:62
+#: src/app/App.tsx:87
+#: src/pages/Crawlers.tsx:69
+msgid "AI Crawlers"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:63
+#: includes/Analytics/AnalyticsModule.php:36
+#: src/app/App.tsx:88
+#: src/pages/Analytics.tsx:26
+msgid "AI Analytics"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:64
+#: includes/Admin/AdminMenu.php:110
+#: src/app/App.tsx:89
+#: src/pages/Settings.tsx:267
+msgid "Settings"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:95
+#: src/app/App.tsx:60
+msgid "Loading Medora…"
+msgstr ""
+
+#: includes/Admin/AdminModule.php:26
+msgid "Dashboard"
+msgstr ""
+
+#: includes/Admin/AdminModule.php:31
+msgid "The Medora admin experience: authority dashboard, entity explorer and setup wizard."
+msgstr ""
+
+#: includes/Admin/MetaBox.php:105
+msgid "Re-analyse now"
+msgstr ""
+
+#: includes/Admin/MetaBox.php:125
+msgid "Canonical answer"
+msgstr ""
+
+#: includes/Admin/MetaBox.php:127
+msgid "25–60 words that answer this page's question on their own. This is what assistants quote."
+msgstr ""
+
+#: includes/Admin/MetaBox.php:133
+msgid "Exclude from AI indexing"
+msgstr ""
+
+#: includes/Admin/MetaBox.php:139
+msgid "Exclude from llms.txt"
+msgstr ""
+
+#: includes/Admin/MetaBox.php:54
+msgid "Medora — AI Authority"
+msgstr ""
+
+#: includes/Admin/MetaBox.php:71
+msgid "Not analysed yet. Publish or update to queue an analysis."
+msgstr ""
+
+#: includes/Admin/MetaBox.php:86
+msgid "No issues found."
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:100
+msgid "This becomes the publisher node every page in your knowledge graph points back to."
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:105
+msgid "AI crawler policy"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:106
+msgid "Selective is the usual choice: stay citable in AI answers, opt out of model training. You can change any individual crawler later."
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:109
+msgid "Allow all — maximum AI visibility"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:110
+msgid "Selective — allow search, block training"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:111
+msgid "Block AI crawlers (classic search still allowed)"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:116
+msgid "How much do you want to see?"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:117
+msgid "Beginner hides the advanced panels. You can switch at any time."
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:120
+msgid "Beginner"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:121
+msgid "Professional"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:122
+#: includes/License/LicenseTier.php:53
+msgid "Agency"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:123
+#: includes/License/LicenseTier.php:54
+msgid "Enterprise"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:213
+msgid "Run the two-minute setup to start measuring your AI authority."
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:215
+msgid "Start setup"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:84
+msgid "Welcome to Medora"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:85
+msgid "Five questions. Then Medora analyses your site and shows you exactly what stands between it and being cited by AI assistants."
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:89
+msgid "What kind of site is this?"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:90
+msgid "Medical mode adds clinical vocabulary, reviewer metadata and YMYL trust scoring. Pick General for everything else."
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:93
+#: src/pages/Settings.tsx:294
+msgid "General"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:94
+#: src/pages/Settings.tsx:297
+msgid "Health / medical (YMYL)"
+msgstr ""
+
+#: includes/Admin/SetupWizard.php:99
+msgid "Who publishes this site?"
+msgstr ""
+
+#: includes/Analytics/AnalyticsModule.php:41
+msgid "Track visits arriving from ChatGPT, Claude, Perplexity, Gemini and other assistants."
+msgstr ""
+
+#: includes/Citation/CitationFormatter.php:26
+msgid "APA (7th edition)"
+msgstr ""
+
+#: includes/Citation/CitationFormatter.php:27
+msgid "Vancouver"
+msgstr ""
+
+#: includes/Citation/CitationFormatter.php:28
+msgid "Harvard"
+msgstr ""
+
+#: includes/Citation/CitationModule.php:29
+msgid "Citation Engine"
+msgstr ""
+
+#: includes/Citation/CitationModule.php:34
+msgid "Resolve DOIs and PubMed identifiers into structured, scored, schema-ready references."
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:56
+msgid "Systematic review / meta-analysis"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:57
+msgid "Randomised controlled trial"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:58
+msgid "Systematic review of cohort studies"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:59
+msgid "Cohort study"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:60
+msgid "Case-control study"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:61
+msgid "Case series"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:62
+msgid "Expert opinion"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:63
+msgid "Clinical practice guideline"
+msgstr ""
+
+#: includes/Citation/EvidenceLevel.php:64
+msgid "Unclassified"
+msgstr ""
+
+#. translators: %s: page title.
+#: includes/Content/ContentBrief.php:114
+msgid "Open with 30–70 words that answer \"%s\" outright. Name the subject in the first clause, give the answer in the second, and leave background for later. Do not begin with \"In this article\" or with a pronoun."
+msgstr ""
+
+#: includes/Content/ContentBrief.php:120
+msgid "The opening already answers the question directly. Leave it alone."
+msgstr ""
+
+#. translators: %s: facet name.
+#: includes/Content/ContentBrief.php:152
+msgid "\"%s\" is a question readers and assistants ask about this subject that the page cannot currently answer."
+msgstr ""
+
+#: includes/Content/ContentBrief.php:171
+#: includes/Content/ContentBrief.php:178
+msgid "What is it?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:172
+msgid "What are the symptoms?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:173
+msgid "What causes it?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:174
+msgid "How is it diagnosed?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:175
+msgid "How is it treated?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:176
+msgid "What is the outlook?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:177
+msgid "When should you see a doctor?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:179
+msgid "Who is it for?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:180
+msgid "How do you prepare?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:181
+msgid "What does recovery involve?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:182
+msgid "What are the risks?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:183
+#: includes/Content/ContentBrief.php:186
+msgid "What does it cost?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:184
+msgid "What does it do?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:185
+msgid "What does it include?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:187
+msgid "How does it compare?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:188
+msgid "What do people say?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:189
+msgid "How does it work?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:190
+msgid "Why does it matter?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:191
+#: includes/Semantic/TopicCoverage.php:179
+msgid "Examples"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:192
+#: includes/Semantic/TopicCoverage.php:180
+msgid "Common questions"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:193
+#: includes/Semantic/TopicCoverage.php:181
+msgid "Evidence and sources"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:194
+msgid "Medical review"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:213
+msgid "name the specific tests"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:213
+msgid "say what each rules in or out"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:214
+msgid "expected timeframe"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:214
+msgid "first-line option first"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:214
+msgid "what happens if untreated"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:215
+msgid "most common first"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:215
+msgid "which are red flags"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:216
+msgid "separate causes from risk factors"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:217
+msgid "give a figure with a source"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:218
+#: includes/Content/ContentBrief.php:219
+msgid "a range, with what changes it"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:220
+msgid "name the rare serious ones"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:220
+msgid "rate the common ones"
+msgstr ""
+
+#. translators: %s: page title.
+#: includes/Content/ContentBrief.php:275
+msgid "How long does %s take?"
+msgstr ""
+
+#. translators: %s: page title.
+#: includes/Content/ContentBrief.php:280
+msgid "Is %s safe?"
+msgstr ""
+
+#. translators: %s: page title.
+#: includes/Content/ContentBrief.php:285
+msgid "What are the alternatives to %s?"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:394
+msgid "Health claims need primary literature — a DOI or PubMed identifier, not a link to another blog. Attach at least one source per substantive claim."
+msgstr ""
+
+#: includes/Content/ContentBrief.php:395
+msgid "Cite at least one outbound source. A page that asserts without sourcing is a weak candidate for citation itself."
+msgstr ""
+
+#: includes/Content/ContentBrief.php:422
+msgid "Opening answers the title question in 30–70 words"
+msgstr ""
+
+#. translators: %d: number of sections.
+#: includes/Content/ContentBrief.php:428
+msgid "Add %d missing section"
+msgid_plural "Add %d missing sections"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Content/ContentBrief.php:439
+msgid "Every section stands alone when read without the rest of the page"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:443
+msgid "At least three sentences carry a checkable figure"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:447
+msgid "A passage is marked with the \"medora-answer\" class"
+msgstr ""
+
+#: includes/Content/ContentBrief.php:451
+msgid "Long enough to establish authority"
+msgstr ""
+
+#. translators: 1: relationship, 2: subject name.
+#: includes/Content/ContentModule.php:102
+msgid "%1$s %2$s elsewhere on this site."
+msgstr ""
+
+#: includes/Content/ContentModule.php:38
+msgid "AI Content Optimizer"
+msgstr ""
+
+#: includes/Content/ContentModule.php:43
+msgid "An ordered, effort-weighted to-do list for every page."
+msgstr ""
+
+#. translators: %s: page title.
+#: includes/Content/RecommendationEngine.php:136
+msgid "Open with 30–70 words that answer \"%s\" directly, before any background. Name the subject in the first sentence and avoid opening with \"This article will…\"."
+msgstr ""
+
+#: includes/Content/RecommendationEngine.php:139
+msgid "The opening already answers the question directly."
+msgstr ""
+
+#. translators: %s: sub-topic name.
+#: includes/Content/RecommendationEngine.php:89
+msgid "Add a section on %s"
+msgstr ""
+
+#: includes/Content/RecommendationEngine.php:92
+msgid "This is a question readers and assistants ask about this subject that the page currently cannot answer."
+msgstr ""
+
+#: includes/Core/Activator.php:57
+#: medora-authority.php:59
+msgid "Medora Authority requires PHP 8.2 or newer."
+msgstr ""
+
+#: includes/Core/Activator.php:61
+msgid "Medora Authority requires WordPress 6.4 or newer."
+msgstr ""
+
+#: includes/Core/Activator.php:65
+msgid "Medora Authority requires the PHP JSON extension."
+msgstr ""
+
+#: includes/Core/Cron.php:33
+msgid "Every five minutes (Medora)"
+msgstr ""
+
+#: includes/Crawler/CrawlerModule.php:121
+msgid "This site does not grant this AI crawler access to its content."
+msgstr ""
+
+#: includes/Crawler/CrawlerModule.php:32
+msgid "AI Crawler Manager"
+msgstr ""
+
+#: includes/Crawler/CrawlerModule.php:37
+msgid "Detect, control and measure the AI crawlers that read your site."
+msgstr ""
+
+#: includes/Crawler/CrawlerRegistry.php:140
+msgid "Model training"
+msgstr ""
+
+#: includes/Crawler/CrawlerRegistry.php:141
+msgid "AI search index"
+msgstr ""
+
+#: includes/Crawler/CrawlerRegistry.php:142
+msgid "Live answer retrieval"
+msgstr ""
+
+#: includes/Crawler/CrawlerRegistry.php:143
+msgid "Unknown"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:125
+msgid "Credentials"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:126
+msgid "Job title"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:127
+msgid "Affiliation"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:128
+msgid "Professional licence number"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:129
+msgid "ORCID"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:130
+msgid "Google Scholar URL"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:131
+msgid "ResearchGate URL"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:132
+msgid "LinkedIn URL"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:133
+msgid "Years of practice"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:134
+msgid "Awards"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:135
+msgid "Education"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:32
+msgid "E-E-A-T Engine"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:37
+msgid "Capture author credentials and verifiable profiles, and score the trust they carry."
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:64
+msgid "Medora — author authority"
+msgstr ""
+
+#: includes/Eeat/EeatModule.php:65
+msgid "These fields feed the article schema, the knowledge graph and the E-E-A-T score. Leave a field empty rather than guessing."
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:100
+msgid "A licence number is independently checkable, which is exactly what makes it a trust signal."
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:115
+msgid "No institutional affiliation"
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:117
+msgid "Name the hospital, clinic or university the author is attached to."
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:126
+msgid "No externally verifiable profile"
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:128
+msgid "Link an ORCID, Google Scholar or ResearchGate profile. Without one, the author cannot be verified to exist."
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:46
+msgid "No years of practice recorded"
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:48
+msgid "State how long the author has practised. First-hand experience is a distinct signal from qualifications."
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:65
+msgid "No author biography"
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:67
+msgid "Write a biography that names what the author does and where."
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:81
+msgid "No credentials listed"
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:83
+msgid "Add the author's qualification (MD, PhD, RN…)."
+msgstr ""
+
+#: includes/Eeat/TrustScorer.php:98
+msgid "No professional licence number"
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:102
+msgid "Graph connectivity"
+msgstr ""
+
+#. translators: %d: number of relationships.
+#: includes/Entity/EntityAuthorityScorer.php:107
+msgid "%d relationship in the knowledge graph."
+msgid_plural "%d relationships in the knowledge graph."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Entity/EntityAuthorityScorer.php:113
+#: includes/Semantic/TopicCoverage.php:159
+msgid "Definition"
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:117
+msgid "No description. Add one — this is the text an answer engine quotes."
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:118
+msgid "Description present."
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:122
+msgid "Type specificity"
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:126
+msgid "Generic type. Assign a specific Schema.org type."
+msgstr ""
+
+#. translators: %s: Schema.org type.
+#: includes/Entity/EntityAuthorityScorer.php:129
+msgid "Typed as %s."
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:69
+msgid "Topical depth"
+msgstr ""
+
+#. translators: %d: number of pages.
+#: includes/Entity/EntityAuthorityScorer.php:74
+msgid "%d page covers this entity."
+msgid_plural "%d pages cover this entity."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Entity/EntityAuthorityScorer.php:80
+msgid "Editorial focus"
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:84
+msgid "At least one page is primarily about this entity."
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:85
+msgid "No page treats this entity as its main subject."
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:89
+msgid "External reconciliation"
+msgstr ""
+
+#: includes/Entity/EntityAuthorityScorer.php:93
+msgid "No sameAs identifiers. AI systems cannot match this to a known entity."
+msgstr ""
+
+#. translators: %d: number of identifiers.
+#: includes/Entity/EntityAuthorityScorer.php:96
+msgid "%d external identifier linked."
+msgid_plural "%d external identifiers linked."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Entity/EntityModule.php:39
+msgid "Entity Intelligence"
+msgstr ""
+
+#: includes/Entity/EntityModule.php:44
+msgid "Detect the people, places, conditions and concepts your content covers, and score your authority on each."
+msgstr ""
+
+#: includes/Entity/EntityType.php:100
+msgid "Creative work"
+msgstr ""
+
+#: includes/Entity/EntityType.php:101
+msgid "Topic"
+msgstr ""
+
+#: includes/Entity/EntityType.php:102
+msgid "Event"
+msgstr ""
+
+#: includes/Entity/EntityType.php:103
+msgid "Physician"
+msgstr ""
+
+#: includes/Entity/EntityType.php:104
+msgid "Medical organization"
+msgstr ""
+
+#: includes/Entity/EntityType.php:105
+msgid "Hospital"
+msgstr ""
+
+#: includes/Entity/EntityType.php:106
+msgid "Clinic"
+msgstr ""
+
+#: includes/Entity/EntityType.php:107
+msgid "Condition"
+msgstr ""
+
+#: includes/Entity/EntityType.php:108
+msgid "Procedure"
+msgstr ""
+
+#: includes/Entity/EntityType.php:109
+msgid "Specialty"
+msgstr ""
+
+#: includes/Entity/EntityType.php:110
+msgid "Drug"
+msgstr ""
+
+#: includes/Entity/EntityType.php:111
+msgid "Sign or symptom"
+msgstr ""
+
+#: includes/Entity/EntityType.php:112
+msgid "Anatomical structure"
+msgstr ""
+
+#: includes/Entity/EntityType.php:113
+msgid "Thing"
+msgstr ""
+
+#: includes/Entity/EntityType.php:95
+msgid "Person"
+msgstr ""
+
+#: includes/Entity/EntityType.php:96
+msgid "Organization"
+msgstr ""
+
+#: includes/Entity/EntityType.php:97
+msgid "Place"
+msgstr ""
+
+#: includes/Entity/EntityType.php:98
+msgid "Product"
+msgstr ""
+
+#: includes/Entity/EntityType.php:99
+msgid "Service"
+msgstr ""
+
+#: includes/Geo/GeoModule.php:40
+msgid "GEO Optimizer"
+msgstr ""
+
+#: includes/Geo/GeoModule.php:45
+msgid "Score every passage on whether it stands on its own once retrieved out of the page."
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:111
+msgid "Long page with nothing an assistant can lift whole"
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:113
+msgid "Add a table, a numbered procedure or a bulleted set of criteria. Structure is quoted intact; prose gets paraphrased."
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:122
+msgid "No H2 or H3 headings"
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:124
+msgid "Headings are where chunk boundaries come from. Without them the page is split mid-argument."
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:131
+msgid "No heading is phrased as a question"
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:133
+msgid "Phrase at least one H2 the way a person would ask it. A question heading makes the passage under it a direct answer."
+msgstr ""
+
+#. translators: 1: passage number, 2: heading or a placeholder, 3: first issue.
+#: includes/Geo/LlmCompatibilityScorer.php:177
+msgid "Passage %1$d (%2$s): %3$s"
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:179
+#: src/components/PassagePanel.tsx:119
+msgid "no heading"
+msgstr ""
+
+#. translators: %d: number of further passages.
+#: includes/Geo/LlmCompatibilityScorer.php:189
+msgid "…and %d more, listed in full on the Passages tab."
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:46
+msgid "LLM Compatibility"
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:72
+msgid "Page has no retrievable content"
+msgstr ""
+
+#: includes/Geo/LlmCompatibilityScorer.php:74
+msgid "There is nothing here to chunk. Add body copy — a page built entirely from shortcodes or embeds is invisible to retrieval."
+msgstr ""
+
+#. translators: 1: number of passages, 2: total passages.
+#: includes/Geo/LlmCompatibilityScorer.php:97
+msgid "%1$d of %2$d passages do not stand on their own"
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:159
+msgid "Passage sits under no heading"
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:160
+msgid "Move this text under an H2, or add one above it. A retrieved passage with no heading arrives with no label."
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:168
+msgid "Passage is too short to answer anything"
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:169
+msgid "Expand to at least 40 words, or merge it into the section above. Fragments are retrieved and then discarded."
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:177
+msgid "Opens by continuing an argument that is not here"
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:178
+msgid "Start the passage with a statement rather than \"However\", \"Therefore\" or \"اما\". Read alone, a connective points at nothing."
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:184
+msgid "Opens with a pronoun whose subject is elsewhere"
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:185
+msgid "Name the subject in the first sentence. \"This condition affects…\" survives retrieval; \"This is why…\" does not."
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:193
+msgid "Refers to another part of the page"
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:194
+msgid "Replace \"as mentioned above\" / \"در ادامه\" with the fact itself. Once retrieved, this passage has no above and no below."
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:202
+msgid "Never names the page subject"
+msgstr ""
+
+#: includes/Geo/PassageAnalyzer.php:203
+msgid "Use the subject term once in this passage. A retriever matching a query against this chunk alone has nothing to match on."
+msgstr ""
+
+#: includes/Graph/GraphModule.php:28
+msgid "Knowledge Graph Engine"
+msgstr ""
+
+#: includes/Graph/GraphModule.php:33
+msgid "Connect entities into a navigable graph and publish it as JSON-LD."
+msgstr ""
+
+#: includes/Graph/RelationType.php:109
+msgid "mentions"
+msgstr ""
+
+#: includes/Graph/RelationType.php:110
+msgid "is about"
+msgstr ""
+
+#: includes/Graph/RelationType.php:111
+msgid "written by"
+msgstr ""
+
+#: includes/Graph/RelationType.php:112
+msgid "reviewed by"
+msgstr ""
+
+#: includes/Graph/RelationType.php:113
+msgid "is part of"
+msgstr ""
+
+#: includes/Graph/RelationType.php:114
+msgid "is related to"
+msgstr ""
+
+#: includes/Graph/RelationType.php:115
+msgid "is the same as"
+msgstr ""
+
+#: includes/Graph/RelationType.php:116
+msgid "is located in"
+msgstr ""
+
+#: includes/Graph/RelationType.php:117
+msgid "provides"
+msgstr ""
+
+#: includes/Graph/RelationType.php:118
+msgid "is a treatment for"
+msgstr ""
+
+#: includes/Graph/RelationType.php:119
+msgid "is a symptom of"
+msgstr ""
+
+#: includes/Graph/RelationType.php:120
+msgid "is affiliated with"
+msgstr ""
+
+#: includes/Graph/RelationType.php:121
+msgid "is diagnosed by"
+msgstr ""
+
+#: includes/Graph/RelationType.php:122
+msgid "is a risk factor for"
+msgstr ""
+
+#: includes/Graph/RelationType.php:123
+msgid "affects"
+msgstr ""
+
+#: includes/Graph/RelationType.php:124
+msgid "is a complication of"
+msgstr ""
+
+#: includes/Graph/RelationType.php:125
+msgid "is a drug for"
+msgstr ""
+
+#: includes/Graph/RelationType.php:126
+msgid "is treated by the specialty"
+msgstr ""
+
+#: includes/License/LicenseManager.php:148
+msgid "Enter a licence key."
+msgstr ""
+
+#: includes/License/LicenseManager.php:176
+msgid "Licence activated."
+msgstr ""
+
+#: includes/License/LicenseManager.php:197
+msgid "Licence deactivated."
+msgstr ""
+
+#: includes/License/LicenseManager.php:210
+msgid "No licence key is stored on this site."
+msgstr ""
+
+#: includes/License/LicenseManager.php:219
+msgid "This licence was transferred within the last 30 days. Contact support if you need another move."
+msgstr ""
+
+#: includes/License/LicenseManager.php:242
+msgid "Licence moved to this domain."
+msgstr ""
+
+#: includes/License/LicenseManager.php:351
+msgid "The licence server rejected the request."
+msgstr ""
+
+#: includes/License/LicenseModule.php:27
+msgid "Licensing"
+msgstr ""
+
+#: includes/License/LicenseModule.php:32
+msgid "Licence activation, self-service domain transfer and automatic updates."
+msgstr ""
+
+#: includes/License/LicenseModule.php:72
+msgid "Medora Authority:"
+msgstr ""
+
+#. translators: %d: number of days.
+#: includes/License/LicenseModule.php:75
+msgid "Your licence has expired. Everything keeps working for %d more day — renew to avoid interruption."
+msgid_plural "Your licence has expired. Everything keeps working for %d more days — renew to avoid interruption."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/License/LicenseStatus.php:23
+msgid "Active"
+msgstr ""
+
+#: includes/License/LicenseStatus.php:24
+msgid "Renewal due"
+msgstr ""
+
+#: includes/License/LicenseStatus.php:25
+msgid "Expired"
+msgstr ""
+
+#: includes/License/LicenseStatus.php:26
+msgid "Invalid"
+msgstr ""
+
+#: includes/License/LicenseStatus.php:27
+msgid "Not licensed"
+msgstr ""
+
+#: includes/License/LicenseTier.php:52
+msgid "Pro"
+msgstr ""
+
+#: includes/License/LicenseTier.php:55
+msgid "Free"
+msgstr ""
+
+#. translators: 1: the anchor phrase, 2: number of eligible places found.
+#: includes/Linking/LinkApplier.php:106
+msgid "Could not link \"%1$s\" at that position — %2$d linkable occurrence(s) found in the body text."
+msgstr ""
+
+#: includes/Linking/LinkApplier.php:61
+#: includes/Linking/LinkApplier.php:162
+msgid "You cannot edit this post."
+msgstr ""
+
+#: includes/Linking/LinkApplier.php:71
+#: includes/Linking/LinkApplier.php:173
+msgid "Link target not found."
+msgstr ""
+
+#: includes/Linking/LinkApplier.php:79
+msgid "A page cannot link to itself."
+msgstr ""
+
+#: includes/Linking/LinkApplier.php:89
+msgid "That link was not suggested for this page. Only suggested targets and anchors can be applied."
+msgstr ""
+
+#: includes/Linking/LinkSuggestionEngine.php:80
+msgid "Semantically related subject."
+msgstr ""
+
+#. translators: %s: comma-separated entity names.
+#: includes/Linking/LinkSuggestionEngine.php:83
+msgid "Both pages cover: %s"
+msgstr ""
+
+#: includes/Linking/LinkingModule.php:38
+msgid "Internal Linking AI"
+msgstr ""
+
+#: includes/Linking/LinkingModule.php:43
+msgid "Suggest context-aware internal links from semantic similarity and shared entities."
+msgstr ""
+
+#: includes/Llm/LlmModule.php:44
+#: src/pages/Settings.tsx:369
+msgid "AI Writer"
+msgstr ""
+
+#: includes/Llm/LlmModule.php:49
+msgid "Rewrite page summaries and canonical answers with a model, keeping only what the page itself supports."
+msgstr ""
+
+#: includes/Llm/Providers/AnthropicProvider.php:46
+msgid "Anthropic (Claude)"
+msgstr ""
+
+#: includes/Llms/LlmsModule.php:29
+msgid "llms.txt Engine"
+msgstr ""
+
+#: includes/Llms/LlmsModule.php:34
+msgid "Publish a curated, always-current Markdown map of your site for language models."
+msgstr ""
+
+#. translators: %s: site name.
+#: includes/Llms/LlmsTxtGenerator.php:298
+msgid "Reference content published by %s."
+msgstr ""
+
+#: includes/Medical/MedicalModule.php:112
+msgid "Medora — clinical review"
+msgstr ""
+
+#: includes/Medical/MedicalModule.php:127
+msgid "Medical reviewer"
+msgstr ""
+
+#: includes/Medical/MedicalModule.php:133
+msgid "— none —"
+msgstr ""
+
+#: includes/Medical/MedicalModule.php:144
+msgid "Last reviewed"
+msgstr ""
+
+#: includes/Medical/MedicalModule.php:146
+msgid "Published in the page schema as lastReviewed. Leave empty rather than entering a date the reviewer did not sign off."
+msgstr ""
+
+#: includes/Medical/MedicalModule.php:36
+msgid "Medical Intelligence"
+msgstr ""
+
+#: includes/Medical/MedicalModule.php:41
+msgid "Clinical vocabulary, review metadata and YMYL trust signals for health content."
+msgstr ""
+
+#: includes/Performance/PerformanceModule.php:35
+msgid "Performance & Queues"
+msgstr ""
+
+#: includes/Performance/PerformanceModule.php:40
+msgid "Object caching, background workers and scheduled maintenance."
+msgstr ""
+
+#: includes/Prompt/PromptModule.php:33
+msgid "AI Prompt Engine"
+msgstr ""
+
+#: includes/Prompt/PromptModule.php:38
+msgid "Give every page a canonical answer, fact sheet, question pack and packed context window."
+msgstr ""
+
+#: includes/Rest/AbstractController.php:113
+#: includes/Rest/AbstractController.php:120
+msgid "Post not found."
+msgstr ""
+
+#: includes/Rest/AbstractController.php:39
+msgid "You do not have permission to view Medora data."
+msgstr ""
+
+#: includes/Rest/AbstractController.php:46
+msgid "You do not have permission to change Medora settings."
+msgstr ""
+
+#: includes/Rest/AbstractController.php:53
+msgid "You do not have permission to run analysis."
+msgstr ""
+
+#: includes/Rest/AbstractController.php:60
+msgid "You do not have permission to edit entities."
+msgstr ""
+
+#. translators: %s: the identifier the user supplied.
+#: includes/Rest/Controllers/CitationController.php:102
+msgid "Could not resolve \"%s\". Supply a DOI or a PubMed ID."
+msgstr ""
+
+#: includes/Rest/Controllers/CitationController.php:125
+msgid "Citation not found."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:145
+msgid "The AI Analytics module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:154
+msgid "The AI Crawler Manager module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:163
+msgid "The Schema Intelligence module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:192
+msgid "The GEO Optimizer module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:211
+#: includes/Rest/Controllers/InsightController.php:239
+#: includes/Rest/Controllers/InsightController.php:265
+msgid "The Internal Linking module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:293
+msgid "User not found."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:313
+#: includes/Rest/Controllers/InsightController.php:329
+msgid "The Medical Intelligence module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/InsightController.php:320
+msgid "This site does not cover that condition."
+msgstr ""
+
+#: includes/Rest/Controllers/KnowledgeController.php:146
+#: includes/Rest/Controllers/KnowledgeController.php:166
+#: includes/Rest/Controllers/KnowledgeController.php:220
+msgid "Entity not found."
+msgstr ""
+
+#: includes/Rest/Controllers/KnowledgeController.php:172
+msgid "Unknown entity type."
+msgstr ""
+
+#: includes/Rest/Controllers/KnowledgeController.php:231
+msgid "The Knowledge Graph module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/KnowledgeController.php:252
+msgid "The AI Prompt Engine module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/KnowledgeController.php:268
+msgid "The Vector Engine module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/ScoreController.php:97
+#: includes/Rest/Controllers/ScoreController.php:121
+msgid "The AI Content Optimizer module is not active."
+msgstr ""
+
+#: includes/Rest/Controllers/SettingsController.php:128
+msgid "No settings supplied."
+msgstr ""
+
+#: includes/Rest/Controllers/SettingsController.php:148
+msgid "No recognised settings supplied."
+msgstr ""
+
+#: includes/Rest/Controllers/SettingsController.php:168
+msgid "Unknown module."
+msgstr ""
+
+#. translators: %s: licence tier name.
+#: includes/Rest/Controllers/SettingsController.php:178
+msgid "This module requires the %s plan."
+msgstr ""
+
+#. translators: %s: comma-separated module names.
+#: includes/Rest/Controllers/SettingsController.php:199
+msgid "Disable these modules first, they depend on this one: %s"
+msgstr ""
+
+#: includes/Rest/Controllers/SettingsController.php:241
+msgid "Unknown crawler."
+msgstr ""
+
+#: includes/Rest/Controllers/SettingsController.php:271
+msgid "Licence operation failed."
+msgstr ""
+
+#: includes/Rest/Controllers/SettingsController.php:287
+msgid "Licence status refreshed."
+msgstr ""
+
+#: includes/Rest/RestModule.php:118
+msgid "Too many requests. Try again in a minute."
+msgstr ""
+
+#: includes/Rest/RestModule.php:36
+msgid "AI API"
+msgstr ""
+
+#: includes/Rest/RestModule.php:41
+msgid "REST endpoints for the dashboard, and a public knowledge API for AI systems."
+msgstr ""
+
+#: includes/Schema/Nodes/BreadcrumbNode.php:43
+msgid "Home"
+msgstr ""
+
+#: includes/Schema/SchemaModule.php:36
+msgid "Schema Intelligence"
+msgstr ""
+
+#: includes/Schema/SchemaModule.php:41
+msgid "Generate one connected JSON-LD graph per page, validated before it ships."
+msgstr ""
+
+#: includes/Schema/SchemaValidator.php:122
+msgid "Referenced @id is not defined in this graph."
+msgstr ""
+
+#: includes/Schema/SchemaValidator.php:62
+msgid "Missing @context. Consumers cannot resolve the vocabulary."
+msgstr ""
+
+#: includes/Schema/SchemaValidator.php:79
+msgid "Node has no @type."
+msgstr ""
+
+#. translators: 1: property name, 2: schema type.
+#: includes/Schema/SchemaValidator.php:96
+msgid "Missing required property \"%1$s\" on %2$s."
+msgstr ""
+
+#: includes/Score/ScoreModule.php:41
+#: src/components/ScoreRing.tsx:49
+msgid "AI Authority Score"
+msgstr ""
+
+#: includes/Score/ScoreModule.php:46
+msgid "One explainable 0–100 score per page, with every deduction and its fix."
+msgstr ""
+
+#. translators: %d: number of crawlers.
+#: includes/Score/Scorers/AiReadinessScorer.php:111
+msgid "%d recommended AI crawler is blocked"
+msgid_plural "%d recommended AI crawlers are blocked"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: comma-separated crawler names.
+#: includes/Score/Scorers/AiReadinessScorer.php:117
+msgid "Currently blocked: %s. Review the policy if you want to appear in AI answers."
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:141
+msgid "Schema output is disabled"
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:143
+msgid "Enable Schema Intelligence so pages ship a JSON-LD graph."
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:153
+msgid "Structured data has validation errors"
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:155
+msgid "Fix the missing required properties listed in the schema panel."
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:165
+msgid "llms.txt is not published"
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:167
+msgid "Enable the llms.txt engine so models get a curated map of the site."
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:177
+msgid "AI sitemap is not published"
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:179
+msgid "Enable the AI Sitemap Engine."
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:45
+msgid "AI Readiness"
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:69
+msgid "Page is excluded from indexing"
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:71
+msgid "Remove the noindex directive, or accept that no AI system will cite this page."
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:80
+msgid "Site discourages search engines"
+msgstr ""
+
+#: includes/Score/Scorers/AiReadinessScorer.php:82
+msgid "Turn off \"Discourage search engines\" in Settings → Reading."
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:113
+msgid "No entity is linked to an external identifier"
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:115
+msgid "Add Wikidata, MeSH or official-site links to your key terms so AI systems can match them to their own knowledge base."
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:139
+msgid "Entities are untyped"
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:141
+msgid "Assign specific Schema.org types (Person, MedicalCondition, Product…) instead of leaving everything as a generic topic."
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:157
+msgid "The site has thin coverage of this subject"
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:159
+msgid "One page rarely establishes authority. Publish supporting pages that cover adjacent questions and link them together."
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:40
+msgid "Entity Authority"
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:73
+msgid "No entities detected"
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:75
+msgid "Assign categories or tags, and name the subject explicitly in the title and opening paragraph."
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:91
+msgid "No clear primary subject"
+msgstr ""
+
+#: includes/Score/Scorers/EntityScorer.php:93
+msgid "The page touches several topics without committing to one. Name the main subject in the title and first sentence."
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:106
+msgid "Barely linked to the rest of the site"
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:108
+msgid "Link to related pages. Isolated pages read as one-off answers rather than part of a body of expertise."
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:118
+msgid "No images or diagrams"
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:120
+msgid "Add a labelled image or diagram. Multimodal models increasingly index visual content alongside text."
+msgstr ""
+
+#. translators: %d: number of images.
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:136
+msgid "%d image has no alt text"
+msgid_plural "%d images have no alt text"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:140
+msgid "Alt text is the only machine-readable description of an image. Without it the image contributes nothing."
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:33
+msgid "Knowledge Quality"
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:73
+msgid "Not updated in over two years"
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:75
+msgid "Review and re-date the page. Assistants strongly prefer recently maintained sources for anything that can change."
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:82
+msgid "Not updated in over a year"
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:84
+msgid "Schedule a content review."
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:94
+msgid "No outbound sources"
+msgstr ""
+
+#: includes/Score/Scorers/KnowledgeQualityScorer.php:96
+msgid "Cite where your claims come from. A page that asserts without sourcing is a weak candidate for citation itself."
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:107
+msgid "No named medical reviewer"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:109
+msgid "Assign a clinical reviewer. Independent review is the strongest YMYL trust signal available."
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:118
+msgid "No review date"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:120
+msgid "Record when the page was last clinically reviewed, and surface it on the page."
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:130
+msgid "Clinical review is over two years old"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:132
+msgid "Re-review the page. Guidance changes, and a stale review date is worse than none for evaluator trust."
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:143
+msgid "No clinical citations"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:145
+msgid "Attach the primary literature behind your claims — DOI or PubMed identifiers, not just links to other blogs."
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:163
+msgid "No medical disclaimer"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:165
+msgid "State plainly that the page is informational and does not replace individual medical advice."
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:43
+msgid "Medical Trust"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:80
+msgid "Author has no stated credentials"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:82
+msgid "Add the author's qualification and licence number to their profile. Anonymous health content is heavily discounted."
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:94
+msgid "Author has no verifiable scholarly profile"
+msgstr ""
+
+#: includes/Score/Scorers/MedicalTrustScorer.php:96
+msgid "Add an ORCID or Google Scholar link so the author can be independently verified."
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:106
+msgid "Few extractable facts"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:108
+msgid "Add concrete figures, dates and measures. Sentences without a number are rarely quoted as evidence."
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:117
+msgid "Covers few distinct questions"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:119
+msgid "Add question-shaped H2s. Each one is a query the page becomes eligible to answer."
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:128
+msgid "No summary"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:130
+msgid "Write an excerpt. It becomes the description in schema, llms.txt and the AI sitemap."
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:139
+msgid "Prompt pack is out of date"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:141
+msgid "The content changed after the pack was generated. Re-run analysis."
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:34
+msgid "Prompt Quality"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:59
+msgid "No prompt pack generated"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:61
+msgid "Run analysis on this page to generate its summary, canonical answer and fact sheet."
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:86
+msgid "No canonical answer"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:88
+msgid "Mark a passage with the class \"medora-answer\", or open the page with a direct, self-contained answer."
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:95
+msgid "Canonical answer is poorly sized"
+msgstr ""
+
+#: includes/Score/Scorers/PromptQualityScorer.php:97
+msgid "Aim for 25–60 words: long enough to stand alone, short enough to be quoted whole."
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:108
+msgid "Too short to establish authority"
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:110
+msgid "Under 300 words rarely carries enough substance to be cited over a competing source."
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:33
+msgid "Semantic Strength"
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:54
+msgid "The answer is buried"
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:56
+msgid "Open with a 30–70 word direct answer to the question in the title. Assistants quote the top of a page far more often than the middle."
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:64
+msgid "Sections do not stand alone"
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:66
+msgid "Add subheadings and avoid opening paragraphs with \"this\" or \"it\" — retrievers surface single sections without their context."
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:74
+msgid "Low knowledge density"
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:76
+msgid "The page repeats a narrow vocabulary. Introduce the related concepts, measures and named things a specialist would expect."
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:84
+msgid "Expected sub-topics are missing"
+msgstr ""
+
+#. translators: %s: comma-separated list of missing facets.
+#: includes/Score/Scorers/SemanticStrengthScorer.php:88
+msgid "Not covered: %s. Each one is a query this page currently cannot answer."
+msgstr ""
+
+#: includes/Score/Scorers/SemanticStrengthScorer.php:98
+msgid "Structure"
+msgstr ""
+
+#: includes/Security/AuditLogRepository.php:71
+msgid "System"
+msgstr ""
+
+#: includes/Security/SecurityModule.php:32
+msgid "Security"
+msgstr ""
+
+#: includes/Security/SecurityModule.php:37
+msgid "Audit trail, configuration scanning and capability enforcement."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:100
+msgid "WP_DEBUG_DISPLAY is on. Errors leak paths and internals into page output — including into what crawlers index."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:106
+msgid "Dashboard file editing is disabled"
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:108
+msgid "Define DISALLOW_FILE_EDIT to stop plugin and theme files being edited from the admin."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:117
+msgid "Log retention is bounded"
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:119
+msgid "Set a retention period between 1 and 400 days so crawl and referral logs do not grow without limit."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:43
+msgid "Site is served over HTTPS"
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:45
+msgid "Several AI crawlers skip plain-HTTP origins entirely."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:52
+msgid "Embedding API key is not stored in the database"
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:54
+msgid "Move the key to the MEDORA_EMBEDDING_API_KEY constant or environment variable so it stays out of database backups."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:60
+msgid "AI Writer API key is not stored in the database"
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:62
+msgid "Move the key to the MEDORA_LLM_API_KEY constant or environment variable so it stays out of database backups."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:69
+msgid "robots.txt is managed by WordPress"
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:71
+msgid "A physical robots.txt file overrides the virtual one, so the crawler policy configured here is never served."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:77
+msgid "Search engine visibility is enabled"
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:79
+msgid "Settings → Reading is currently discouraging search engines."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:86
+msgid "PHP is a supported version"
+msgstr ""
+
+#. translators: %s: PHP version.
+#: includes/Security/SecurityScanner.php:90
+msgid "Running PHP %s. Medora requires 8.2 or newer."
+msgstr ""
+
+#: includes/Security/SecurityScanner.php:98
+msgid "Debug output is not shown to visitors"
+msgstr ""
+
+#: includes/Semantic/ReadabilityAnalyzer.php:49
+msgid "No readable content found."
+msgstr ""
+
+#: includes/Semantic/ReadabilityAnalyzer.php:74
+msgid "Sentences are long. Split them so each carries one claim an AI can quote."
+msgstr ""
+
+#: includes/Semantic/ReadabilityAnalyzer.php:77
+msgid "Sentences are very short, which fragments the context around each claim."
+msgstr ""
+
+#: includes/Semantic/ReadabilityAnalyzer.php:82
+msgid "Paragraphs are long. Aim for 40–80 words so each becomes a clean retrieval chunk."
+msgstr ""
+
+#: includes/Semantic/ReadabilityAnalyzer.php:87
+msgid "Too few subheadings. Add an H2 or H3 roughly every 250 words to give retrievers clear chunk boundaries."
+msgstr ""
+
+#: includes/Semantic/ReadabilityAnalyzer.php:92
+msgid "No lists or tables. Structured blocks are extracted far more reliably than prose."
+msgstr ""
+
+#: includes/Semantic/SemanticModule.php:29
+msgid "Semantic Engine"
+msgstr ""
+
+#: includes/Semantic/SemanticModule.php:34
+msgid "Measure knowledge density, topic coverage, answer readiness and chunk quality."
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:160
+msgid "Symptoms"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:161
+msgid "Causes"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:162
+msgid "Diagnosis"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:163
+msgid "Treatment"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:164
+msgid "Prognosis"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:165
+msgid "When to seek care"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:166
+msgid "What it is"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:167
+msgid "Who needs it"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:168
+msgid "Preparation"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:169
+msgid "Recovery"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:170
+msgid "Risks"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:171
+msgid "Cost"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:172
+msgid "What it does"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:173
+msgid "Features"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:174
+msgid "Pricing"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:175
+msgid "Comparison"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:176
+msgid "Reviews"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:177
+msgid "How it works"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:178
+msgid "Why it matters"
+msgstr ""
+
+#: includes/Semantic/TopicCoverage.php:182
+msgid "Review date"
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:169
+msgid "LLM site guide"
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:173
+msgid "Curated Markdown map of this site for language models."
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:177
+msgid "LLM full content bundle"
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:181
+msgid "Every indexed page inlined as Markdown."
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:185
+msgid "Knowledge graph (JSON-LD)"
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:189
+msgid "Entities and their relationships as Schema.org JSON-LD."
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:193
+msgid "Entity index (JSON)"
+msgstr ""
+
+#: includes/Sitemap/SitemapBuilder.php:197
+msgid "Every entity this site covers, with authority scores."
+msgstr ""
+
+#: includes/Sitemap/SitemapModule.php:39
+msgid "AI Sitemap Engine"
+msgstr ""
+
+#: includes/Sitemap/SitemapModule.php:44
+msgid "Publish entity-annotated sitemaps in XML, JSON and Markdown."
+msgstr ""
+
+#: includes/Vector/Providers/HashingEmbeddingProvider.php:42
+#: src/pages/Settings.tsx:348
+msgid "Built-in (offline, no API key)"
+msgstr ""
+
+#: includes/Vector/Providers/OpenAiEmbeddingProvider.php:38
+#: src/pages/Settings.tsx:351
+msgid "OpenAI-compatible API"
+msgstr ""
+
+#: includes/Vector/VectorModule.php:31
+msgid "Vector Engine"
+msgstr ""
+
+#: includes/Vector/VectorModule.php:36
+msgid "Embed your content for semantic search, related-content and retrieval-augmented answers."
+msgstr ""
+
+#: includes/WhiteLabel/WhiteLabelModule.php:33
+msgid "White Label"
+msgstr ""
+
+#: includes/WhiteLabel/WhiteLabelModule.php:38
+msgid "Present the platform under your own brand."
+msgstr ""
+
+#: src/api/client.ts:125
+msgid "Something went wrong."
+msgstr ""
+
+#: src/app/App.tsx:80
+msgid "Medora sections"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:105
+msgid "Nothing outstanding"
+msgstr ""
+
+#. translators: %d: number of outstanding tasks.
+#: src/components/BriefPanel.tsx:108
+msgid "%d thing(s) left"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:133
+msgid "Opening"
+msgstr ""
+
+#. translators: 1: current word count, 2: target.
+#: src/components/BriefPanel.tsx:155
+msgid "Outline — %1$d words now, ~%2$d target"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:171
+msgid "add"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:193
+msgid "Questions not yet answered"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:206
+msgid "Entities to introduce"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:208
+msgid "Drawn from your own knowledge graph — concepts this subject connects to elsewhere on the site."
+msgstr ""
+
+#: src/components/BriefPanel.tsx:230
+msgid "Evidence"
+msgstr ""
+
+#. translators: 1: citations attached, 2: target.
+#: src/components/BriefPanel.tsx:240
+msgid "%1$d of %2$d sources attached. "
+msgstr ""
+
+#: src/components/BriefPanel.tsx:42
+msgid "Could not copy. Open the brief endpoint directly to grab the Markdown."
+msgstr ""
+
+#: src/components/BriefPanel.tsx:53
+msgid "Building brief…"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:75
+msgid "Writing brief"
+msgstr ""
+
+#. translators: 1: current score, 2: achievable score.
+#: src/components/BriefPanel.tsx:79
+msgid "%1$s now → about %2$s if everything below is done."
+msgstr ""
+
+#: src/components/BriefPanel.tsx:95
+msgid "Copied"
+msgstr ""
+
+#: src/components/BriefPanel.tsx:96
+msgid "Copy as Markdown"
+msgstr ""
+
+#: src/components/DeductionList.tsx:11
+msgid "Critical"
+msgstr ""
+
+#: src/components/DeductionList.tsx:12
+msgid "High"
+msgstr ""
+
+#: src/components/DeductionList.tsx:13
+msgid "Medium"
+msgstr ""
+
+#: src/components/DeductionList.tsx:14
+msgid "Low"
+msgstr ""
+
+#: src/components/DeductionList.tsx:33
+msgid "No issues found on this page."
+msgstr ""
+
+#. translators: %s: number of points.
+#: src/components/DeductionList.tsx:57
+msgid "−%s pts"
+msgstr ""
+
+#. translators: %d: number of remaining issues.
+#: src/components/DeductionList.tsx:72
+msgid "%d more issue(s)."
+msgstr ""
+
+#: src/components/GraphCanvas.tsx:164
+msgid "No entities yet. Publish content and run an analysis to build the graph."
+msgstr ""
+
+#: src/components/GraphCanvas.tsx:180
+msgid "Knowledge graph"
+msgstr ""
+
+#: src/components/GraphCanvas.tsx:263
+msgid "Circle size = number of relationships. Fill = authority score. Click a node to open it."
+msgstr ""
+
+#: src/components/LinkPanel.tsx:111
+msgid "Internal links"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:113
+msgid "Suggested from semantic similarity and shared entities. Anchors are phrases already in your text — nothing is inserted."
+msgstr ""
+
+#. translators: %d: number of links.
+#: src/components/LinkPanel.tsx:129
+msgid "Undo %d Medora link(s)"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:139
+msgid "Pages this one should link to"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:143
+msgid "No related pages found yet. Publish more on this subject, or check the Vector Engine is running."
+msgstr ""
+
+#: src/components/LinkPanel.tsx:173
+msgid "already linked"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:186
+msgid "Anchor text"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:231
+msgid "Linking…"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:232
+msgid "Add link"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:237
+msgid "No shared phrase in this page to use as an anchor."
+msgstr ""
+
+#: src/components/LinkPanel.tsx:253
+msgid "Pages that should link here"
+msgstr ""
+
+#: src/components/LinkPanel.tsx:256
+msgid "Inbound links are what actually move authority toward a page. Open each and add the link there."
+msgstr ""
+
+#. translators: 1: anchor text, 2: target page title.
+#: src/components/LinkPanel.tsx:53
+msgid "Linked \"%1$s\" to %2$s."
+msgstr ""
+
+#. translators: %d: number of links removed.
+#: src/components/LinkPanel.tsx:78
+msgid "Removed %d link(s) added by Medora."
+msgstr ""
+
+#: src/components/LinkPanel.tsx:94
+msgid "Finding related pages…"
+msgstr ""
+
+#. translators: %d: passage number.
+#: src/components/PassagePanel.tsx:111
+msgid "Passage %d"
+msgstr ""
+
+#. translators: %d: passage number. */
+#. __( 'Passage %d', 'medora-authority' ),
+#. passage.index + 1
+#. ) }
+#. </strong>
+#. 
+#. <span className="medora-muted">
+#. { passage.heading !== ''
+#. ? passage.heading
+#. : __( 'no heading', 'medora-authority' ) }
+#. </span>
+#. 
+#. <span className="medora-pill">
+#. { sprintf(
+#. /* translators: %d: word count.
+#: src/components/PassagePanel.tsx:125
+msgid "%d words"
+msgstr ""
+
+#: src/components/PassagePanel.tsx:135
+msgid "Reads on its own."
+msgstr ""
+
+#: src/components/PassagePanel.tsx:159
+msgid "Long page with no table, procedure or list. Structure gets quoted intact; prose gets paraphrased."
+msgstr ""
+
+#: src/components/PassagePanel.tsx:168
+msgid "No H2 or H3 headings, so passage boundaries fall mid-argument."
+msgstr ""
+
+#: src/components/PassagePanel.tsx:175
+msgid "No heading is phrased as a question. A question heading makes the passage under it a direct answer."
+msgstr ""
+
+#: src/components/PassagePanel.tsx:27
+msgid "Reading passages…"
+msgstr ""
+
+#: src/components/PassagePanel.tsx:43
+msgid "Nothing here to retrieve. This page has no body copy a model could be handed."
+msgstr ""
+
+#: src/components/PassagePanel.tsx:63
+#: src/pages/Content.tsx:125
+msgid "Passages"
+msgstr ""
+
+#. translators: 1: self-contained passages, 2: total, 3: percentage.
+#: src/components/PassagePanel.tsx:67
+msgid "%1$d of %2$d passages (%3$d%%) stand on their own when retrieved without the rest of the page."
+msgstr ""
+
+#: src/editor.ts:31
+msgid "Analysing…"
+msgstr ""
+
+#: src/editor.ts:38
+msgid "Done — reloading"
+msgstr ""
+
+#. translators: %d: number of days.
+#: src/pages/Analytics.tsx:112
+msgid "No assistant referrals in the last %d days."
+msgstr ""
+
+#: src/pages/Analytics.tsx:18
+#: src/pages/Content.tsx:196
+#: src/pages/Crawlers.tsx:51
+#: src/pages/Entities.tsx:28
+#: src/pages/Entities.tsx:290
+#: src/pages/Overview.tsx:19
+#: src/pages/Settings.tsx:33
+#: src/pages/Wizard.tsx:31
+msgid "Loading…"
+msgstr ""
+
+#: src/pages/Analytics.tsx:30
+#: src/pages/Overview.tsx:54
+msgid "Reporting window"
+msgstr ""
+
+#: src/pages/Analytics.tsx:32
+#: src/pages/Overview.tsx:56
+msgid "Last 7 days"
+msgstr ""
+
+#: src/pages/Analytics.tsx:33
+#: src/pages/Overview.tsx:57
+msgid "Last 30 days"
+msgstr ""
+
+#: src/pages/Analytics.tsx:34
+#: src/pages/Overview.tsx:58
+msgid "Last 90 days"
+msgstr ""
+
+#: src/pages/Analytics.tsx:39
+msgid "These are observed referrals. Several assistants strip the referrer header, so treat this as a lower bound on your real AI traffic, not a total."
+msgstr ""
+
+#: src/pages/Analytics.tsx:47
+#: src/pages/Overview.tsx:99
+msgid "Visits from assistants"
+msgstr ""
+
+#: src/pages/Analytics.tsx:52
+msgid "Previous period"
+msgstr ""
+
+#: src/pages/Analytics.tsx:56
+msgid "Distinct sources"
+msgstr ""
+
+#: src/pages/Analytics.tsx:62
+msgid "Trend"
+msgstr ""
+
+#: src/pages/Analytics.tsx:66
+#: src/pages/Overview.tsx:130
+msgid "AI referrals"
+msgstr ""
+
+#: src/pages/Analytics.tsx:72
+msgid "By assistant"
+msgstr ""
+
+#: src/pages/Analytics.tsx:76
+msgid "Source"
+msgstr ""
+
+#: src/pages/Analytics.tsx:77
+msgid "Visits"
+msgstr ""
+
+#: src/pages/Analytics.tsx:78
+msgid "Visitors"
+msgstr ""
+
+#: src/pages/Analytics.tsx:94
+msgid "Pages assistants send people to"
+msgstr ""
+
+#: src/pages/Analytics.tsx:96
+msgid "The closest available proxy for which of your pages are being cited."
+msgstr ""
+
+#: src/pages/Content.tsx:110
+#: src/pages/Entities.tsx:69
+msgid "Close"
+msgstr ""
+
+#: src/pages/Content.tsx:116
+msgid "Page tools"
+msgstr ""
+
+#: src/pages/Content.tsx:120
+msgid "Fixes"
+msgstr ""
+
+#: src/pages/Content.tsx:121
+msgid "Brief"
+msgstr ""
+
+#: src/pages/Content.tsx:122
+msgid "Links"
+msgstr ""
+
+#. translators: %s: potential score.
+#: src/pages/Content.tsx:146
+msgid "Completing every action below would take this page to roughly %s / 100."
+msgstr ""
+
+#: src/pages/Content.tsx:157
+msgid "Answer-first rewrite"
+msgstr ""
+
+#: src/pages/Content.tsx:167
+msgid "Do these, in this order"
+msgstr ""
+
+#: src/pages/Content.tsx:173
+msgid "Ordered by points recovered per unit of effort, not by severity alone."
+msgstr ""
+
+#: src/pages/Content.tsx:49
+msgid "Lowest-scoring pages first. Pick one to see its ordered fix list."
+msgstr ""
+
+#: src/pages/Content.tsx:63
+msgid "Page"
+msgstr ""
+
+#: src/pages/Content.tsx:64
+msgid "Score"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:10
+msgid "Allow all"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:11
+msgid "Maximum AI visibility, including model training."
+msgstr ""
+
+#: src/pages/Crawlers.tsx:114
+msgid "Crawler"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:115
+msgid "Used for"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:116
+msgid "Visits (30d)"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:117
+msgid "Access"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:127
+msgid "override"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:145
+msgid "Allow"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:148
+msgid "Allow, throttled"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:15
+msgid "Selective"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:151
+msgid "Block"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:155
+msgid "Use site policy"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:16
+msgid "Stay citable in AI answers, opt out of corpus collection. This is what most publishers want."
+msgstr ""
+
+#: src/pages/Crawlers.tsx:171
+msgid "robots.txt preview"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:179
+msgid "Hide"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:180
+msgid "Show what is served"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:190
+msgid "Most-crawled URLs"
+msgstr ""
+
+#. translators: %d: number of days.
+#: src/pages/Crawlers.tsx:194
+msgid "What AI crawlers fetched most over the last %d days — the pages most likely to end up cited."
+msgstr ""
+
+#: src/pages/Crawlers.tsx:23
+msgid "Block AI crawlers"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:24
+msgid "Classic search crawlers still allowed."
+msgstr ""
+
+#: src/pages/Crawlers.tsx:74
+msgid "A physical robots.txt file exists in your site root. It overrides the virtual one, so none of the policy below is actually being served. Delete or merge that file."
+msgstr ""
+
+#: src/pages/Crawlers.tsx:82
+msgid "Site policy"
+msgstr ""
+
+#: src/pages/Entities.tsx:113
+msgid "Edit"
+msgstr ""
+
+#: src/pages/Entities.tsx:116
+msgid "Description"
+msgstr ""
+
+#: src/pages/Entities.tsx:126
+msgid "sameAs identifiers (one per line)"
+msgstr ""
+
+#: src/pages/Entities.tsx:136
+msgid "These are what let an AI system match this entity to the one in its own knowledge base. It is the single highest-value field here."
+msgstr ""
+
+#: src/pages/Entities.tsx:149
+#: src/pages/Settings.tsx:253
+msgid "Saving…"
+msgstr ""
+
+#: src/pages/Entities.tsx:150
+msgid "Save entity"
+msgstr ""
+
+#: src/pages/Entities.tsx:159
+msgid "Relationships"
+msgstr ""
+
+#: src/pages/Entities.tsx:205
+msgid "Search entities…"
+msgstr ""
+
+#: src/pages/Entities.tsx:218
+msgid "Entity type"
+msgstr ""
+
+#: src/pages/Entities.tsx:221
+msgid "All types"
+msgstr ""
+
+#: src/pages/Entities.tsx:240
+msgid "Entity"
+msgstr ""
+
+#: src/pages/Entities.tsx:241
+msgid "Type"
+msgstr ""
+
+#: src/pages/Entities.tsx:242
+msgid "Authority"
+msgstr ""
+
+#: src/pages/Entities.tsx:243
+msgid "sameAs"
+msgstr ""
+
+#: src/pages/Entities.tsx:281
+msgid "none"
+msgstr ""
+
+#: src/pages/Entities.tsx:300
+msgid "Previous"
+msgstr ""
+
+#. translators: 1: current page, 2: total entities.
+#: src/pages/Entities.tsx:305
+msgid "Page %1$d — %2$d entities"
+msgstr ""
+
+#: src/pages/Entities.tsx:316
+msgid "Next"
+msgstr ""
+
+#: src/pages/Entities.tsx:52
+msgid "Saved."
+msgstr ""
+
+#. translators: %s: score out of 100.
+#: src/pages/Entities.tsx:78
+msgid "Entity authority: %s / 100"
+msgstr ""
+
+#: src/pages/Graph.tsx:107
+msgid "Curated site map for LLMs"
+msgstr ""
+
+#: src/pages/Graph.tsx:111
+msgid "Full content bundle"
+msgstr ""
+
+#: src/pages/Graph.tsx:115
+msgid "Annotated AI sitemap index"
+msgstr ""
+
+#: src/pages/Graph.tsx:119
+msgid "Knowledge graph as JSON-LD"
+msgstr ""
+
+#. translators: 1: entity count, 2: relationship count.
+#: src/pages/Graph.tsx:27
+msgid "%1$d entities, %2$d relationships across the site."
+msgstr ""
+
+#: src/pages/Graph.tsx:41
+msgid "Nodes to display"
+msgstr ""
+
+#: src/pages/Graph.tsx:43
+msgid "Top 60 entities"
+msgstr ""
+
+#: src/pages/Graph.tsx:44
+msgid "Top 150 entities"
+msgstr ""
+
+#: src/pages/Graph.tsx:45
+msgid "Top 300 entities"
+msgstr ""
+
+#: src/pages/Graph.tsx:51
+msgid "Building layout…"
+msgstr ""
+
+#: src/pages/Graph.tsx:73
+msgid "Open entity page"
+msgstr ""
+
+#: src/pages/Graph.tsx:97
+msgid "Machine-readable endpoints"
+msgstr ""
+
+#: src/pages/Graph.tsx:99
+msgid "These are what AI systems consume. They are public and require no key."
+msgstr ""
+
+#. translators: %d: number of failed jobs.
+#: src/pages/Overview.tsx:115
+msgid "%d background job(s) failed. Check the site health log — analysis may be incomplete."
+msgstr ""
+
+#: src/pages/Overview.tsx:127
+msgid "AI referral traffic"
+msgstr ""
+
+#: src/pages/Overview.tsx:141
+msgid "No assistant referrals observed yet. Note that several assistants strip the referrer, so this is a floor, not a total."
+msgstr ""
+
+#: src/pages/Overview.tsx:153
+msgid "AI crawler activity"
+msgstr ""
+
+#: src/pages/Overview.tsx:156
+msgid "Crawler hits"
+msgstr ""
+
+#. translators: %s: comma-separated crawler names.
+#: src/pages/Overview.tsx:174
+msgid "Allowed but never seen: %s. Usually a robots, DNS or firewall issue rather than disinterest."
+msgstr ""
+
+#: src/pages/Overview.tsx:192
+msgid "Biggest wins available"
+msgstr ""
+
+#: src/pages/Overview.tsx:194
+msgid "The issues that recur most across your site — one fix each, applied broadly."
+msgstr ""
+
+#. translators: %d: number of pages.
+#: src/pages/Overview.tsx:207
+msgid "%d pages"
+msgstr ""
+
+#: src/pages/Overview.tsx:219
+msgid "Weakest pages"
+msgstr ""
+
+#: src/pages/Overview.tsx:27
+msgid "Retry"
+msgstr ""
+
+#: src/pages/Overview.tsx:45
+msgid "AI Authority"
+msgstr ""
+
+#: src/pages/Overview.tsx:66
+msgid "Site AI Authority Score"
+msgstr ""
+
+#: src/pages/Overview.tsx:72
+msgid "Pages analysed"
+msgstr ""
+
+#. translators: %d: number of relationships.
+#: src/pages/Overview.tsx:80
+msgid "%d relationships"
+msgstr ""
+
+#: src/pages/Overview.tsx:85
+msgid "AI crawler visits"
+msgstr ""
+
+#. translators: %d: number of relationships. */
+#. __( '%d relationships', 'medora-authority' ),
+#. data.graph?.relations ?? 0
+#. ) }
+#. />
+#. <StatCard
+#. label={ __( 'AI crawler visits', 'medora-authority' ) }
+#. value={ crawlers?.total_hits ?? 0 }
+#. hint={
+#. crawlers
+#. ? sprintf(
+#. /* translators: 1: crawlers seen, 2: crawlers known.
+#: src/pages/Overview.tsx:91
+msgid "%1$d of %2$d known crawlers"
+msgstr ""
+
+#: src/pages/Settings.tsx:109
+msgid "Licence"
+msgstr ""
+
+#. translators: %d: days remaining.
+#: src/pages/Settings.tsx:124
+msgid "Licence expired. Everything keeps working for %d more day(s)."
+msgstr ""
+
+#: src/pages/Settings.tsx:143
+msgid "Refresh status"
+msgstr ""
+
+#: src/pages/Settings.tsx:153
+msgid "Move licence to this domain"
+msgstr ""
+
+#: src/pages/Settings.tsx:163
+msgid "Deactivate"
+msgstr ""
+
+#: src/pages/Settings.tsx:169
+msgid "This licence is bound to a different domain. You can move it yourself — no support ticket needed. Once a month."
+msgstr ""
+
+#: src/pages/Settings.tsx:181
+msgid "Licence key"
+msgstr ""
+
+#: src/pages/Settings.tsx:19
+msgid "Saved. Reload the page for the change to take full effect."
+msgstr ""
+
+#: src/pages/Settings.tsx:190
+msgid "Activate"
+msgstr ""
+
+#. translators: 1: checks passed, 2: total checks.
+#: src/pages/Settings.tsx:212
+msgid "Configuration check — %1$d of %2$d passing"
+msgstr ""
+
+#: src/pages/Settings.tsx:257
+msgid "Settings saved."
+msgstr ""
+
+#: src/pages/Settings.tsx:271
+msgid "Publisher"
+msgstr ""
+
+#: src/pages/Settings.tsx:274
+msgid "Organisation name"
+msgstr ""
+
+#: src/pages/Settings.tsx:286
+msgid "Site mode"
+msgstr ""
+
+#: src/pages/Settings.tsx:302
+msgid "Log retention (days)"
+msgstr ""
+
+#: src/pages/Settings.tsx:315
+msgid "Published artefacts"
+msgstr ""
+
+#: src/pages/Settings.tsx:319
+msgid "Publish llms.txt"
+msgstr ""
+
+#: src/pages/Settings.tsx:320
+msgid "Publish AI sitemaps"
+msgstr ""
+
+#: src/pages/Settings.tsx:321
+msgid "Output JSON-LD schema"
+msgstr ""
+
+#: src/pages/Settings.tsx:322
+msgid "Track AI referrals"
+msgstr ""
+
+#: src/pages/Settings.tsx:335
+msgid "Embeddings"
+msgstr ""
+
+#: src/pages/Settings.tsx:338
+msgid "Provider"
+msgstr ""
+
+#: src/pages/Settings.tsx:356
+#: src/pages/Settings.tsx:408
+msgid "An API key is configured."
+msgstr ""
+
+#: src/pages/Settings.tsx:357
+msgid "No API key configured. Set MEDORA_EMBEDDING_API_KEY in wp-config.php rather than storing it in the database."
+msgstr ""
+
+#: src/pages/Settings.tsx:363
+msgid "Switching provider clears the existing index — the two vector spaces are not comparable — and content is re-embedded in the background."
+msgstr ""
+
+#: src/pages/Settings.tsx:379
+msgid "Let a model rewrite page summaries and canonical answers"
+msgstr ""
+
+#: src/pages/Settings.tsx:38
+msgid "Modules"
+msgstr ""
+
+#: src/pages/Settings.tsx:385
+msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
+msgstr ""
+
+#: src/pages/Settings.tsx:391
+msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
+msgstr ""
+
+#: src/pages/Settings.tsx:398
+msgid "Model"
+msgstr ""
+
+#: src/pages/Settings.tsx:40
+msgid "Every module is independent. Turn off what you do not need — disabled modules add no queries and no page weight."
+msgstr ""
+
+#: src/pages/Settings.tsx:409
+msgid "No API key configured. Set MEDORA_LLM_API_KEY in wp-config.php rather than storing it in the database."
+msgstr ""
+
+#: src/pages/Settings.tsx:422
+msgid "Save settings"
+msgstr ""
+
+#: src/pages/Settings.tsx:61
+msgid "not running"
+msgstr ""
+
+#: src/pages/Wizard.tsx:137
+msgid "Analyse my existing content now (runs in the background)"
+msgstr ""
+
+#: src/pages/Wizard.tsx:154
+msgid "Back"
+msgstr ""
+
+#. translators: 1: current step, 2: total steps.
+#: src/pages/Wizard.tsx:160
+msgid "Step %1$d of %2$d"
+msgstr ""
+
+#: src/pages/Wizard.tsx:174
+msgid "Setting up…"
+msgstr ""
+
+#: src/pages/Wizard.tsx:175
+msgid "Finish setup"
+msgstr ""
+
+#: src/pages/Wizard.tsx:183
+msgid "Continue"
+msgstr ""

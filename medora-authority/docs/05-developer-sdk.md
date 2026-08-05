@@ -248,3 +248,67 @@ composer analyse   # PHPStan
 composer lint      # WPCS
 npm run check      # tsc + eslint + jest
 ```
+
+
+## Translations
+
+The plugin ships one template, `languages/medora-authority.pot`, covering every
+string in both the PHP and the dashboard. Two tools maintain it, and neither
+needs WP-CLI, Composer or `node_modules` — a checkout and PHP is the whole
+toolchain.
+
+```bash
+php bin/make-pot.php          # regenerate the template  (composer i18n)
+php bin/make-pot.php --check  # fail if stale            (composer i18n:check, runs in CI)
+php bin/make-l10n.php         # compile languages/*.po   (composer i18n:build)
+php bin/make-l10n.php fa_IR   # …one locale
+```
+
+To add a locale, copy the template to `languages/medora-authority-{locale}.po`,
+fill in the `msgstr` lines, and run `make-l10n.php`. It writes both artefacts
+WordPress loads:
+
+| Artefact | Loaded by | Notes |
+|---|---|---|
+| `medora-authority-{locale}.mo` | `load_plugin_textdomain()` | PHP strings |
+| `medora-authority-{locale}-{md5}.json` | `wp_set_script_translations()` | dashboard strings |
+
+The `{md5}` is a hash of the enqueued script's path relative to the plugin root
+(`assets/js/app.js`). It is not cosmetic: WordPress looks the file up by that
+exact name, and a mismatch leaves the dashboard in English with no error
+anywhere. `make-l10n.php` derives it from a constant that must stay in step with
+`AssetManager::enqueueApp()`.
+
+Untranslated and `#, fuzzy` entries are omitted from the compiled catalogue, so
+a partial translation falls back per string rather than shipping blanks.
+
+### The extractor is also a lint
+
+`make-pot.php` exits non-zero — and CI fails — on anything it cannot extract:
+
+* a call whose text domain is missing, wrong, or not a literal;
+* a message built from a variable or a template literal;
+* a string with several placeholders and no `/* translators: */` comment.
+
+Each of those is a string that ships untranslated with nothing else in the
+pipeline to say so, which is why they are failures rather than warnings.
+
+### Facets are identified by slug
+
+Coverage facets carry stable slugs (`symptoms`, `when_to_seek_care`) and are
+translated only at display, through `TopicCoverage::label()`. Using a translated
+string as an identifier makes identity locale-dependent — see the 0.6.0 entry
+in `CHANGELOG.md` for what that broke. When adding a facet through
+`medora_topic_facets`, key it by slug and register its label:
+
+```php
+add_filter('medora_topic_facets', function (array $facets): array {
+    $facets['insurance'] = ['insurer', 'reimburse', 'بیمه'];
+
+    return $facets;
+});
+
+add_filter('medora_topic_facet_label', function (string $label, string $facet): string {
+    return $facet === 'insurance' ? __('Insurance', 'my-plugin') : $label;
+}, 10, 2);
+```

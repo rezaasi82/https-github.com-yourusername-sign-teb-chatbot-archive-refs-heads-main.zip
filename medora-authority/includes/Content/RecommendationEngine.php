@@ -7,6 +7,7 @@ namespace Medora\Authority\Content;
 use Medora\Authority\Prompt\PromptPackRepository;
 use Medora\Authority\Score\AuthorityScoreCalculator;
 use Medora\Authority\Semantic\SemanticAnalyzer;
+use Medora\Authority\Semantic\TopicCoverage;
 use WP_Post;
 
 if (! defined('ABSPATH')) {
@@ -46,7 +47,8 @@ final class RecommendationEngine
      *     grade: string,
      *     potential_score: float,
      *     actions: list<array<string, mixed>>,
-     *     missing_concepts: list<string>
+     *     missing_concepts: list<string>,
+     *     missing_facets: list<string>
      * }
      */
     public function forPost(WP_Post $post): array
@@ -76,13 +78,16 @@ final class RecommendationEngine
 
         // Missing sub-topics are not deductions but they are the highest-value
         // content work available, so they are promoted into the action list.
-        foreach ($semantic['missing_concepts'] as $concept) {
+        foreach ($semantic['missing_facets'] as $facet) {
             $actions[] = [
-                'code'           => 'add_section_' . sanitize_key($concept),
+                // Keyed on the slug: `sanitize_key()` of a translated label
+                // strips every non-ASCII character, so on a Persian site every
+                // one of these actions would collapse to the same empty code.
+                'code'           => 'add_section_' . $facet,
                 'title'          => sprintf(
                     /* translators: %s: sub-topic name. */
                     __('Add a section on %s', 'medora-authority'),
-                    $concept
+                    TopicCoverage::label($facet)
                 ),
                 'recommendation' => __('This is a question readers and assistants ask about this subject that the page currently cannot answer.', 'medora-authority'),
                 'severity'       => 'medium',

@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.5.1
+Stable tag: 0.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,17 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.6.0 =
+* Fixed: on a translated site, every writing-brief section fell back to a
+  generic heading instead of its real one, because coverage topics were
+  identified by their translated name. Topics now have stable identifiers.
+* The plugin is now genuinely translatable: the translation template contains
+  all 662 strings, where before it was empty.
+* Added translation tooling that needs only PHP — regenerate the template, and
+  compile a finished .po into the files WordPress loads, including the JSON
+  catalogue the dashboard needs.
+* Persian and Arabic catalogues are not included yet; the groundwork for them is.
+
 = 0.5.1 =
 * Fixed: page scores were cached against the content alone, so any change to
   the scoring setup — an upgrade adding a dimension, a module toggle, or
@@ -181,6 +192,10 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.6.0 =
+Required if you run the plugin in any language other than English. No database
+changes and no re-analysis needed.
 
 = 0.5.1 =
 Recommended for anyone on 0.5.0. Page scores re-calculate in the background on

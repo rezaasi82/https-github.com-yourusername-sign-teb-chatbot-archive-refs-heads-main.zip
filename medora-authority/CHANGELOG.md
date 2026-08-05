@@ -4,6 +4,78 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] — 2026-08-03
+
+Makes the plugin actually translatable. The wiring was in place —
+`load_plugin_textdomain()` and `wp_set_script_translations()` were both called —
+but the translation template was a header with no strings in it, so there was
+nothing for a translator to translate.
+
+### Fixed — facet identity was locale-dependent
+
+`TopicCoverage` keyed its coverage facets by their *translated* label, so the
+same page produced `Symptoms` in English and `علائم` in Persian. Everything that
+matched on the key stopped matching the moment the site was translated:
+
+* `ContentBrief::headingFor()` compared the facet against `__($key, …)` with a
+  variable key. gettext cannot extract a variable, so that call had no
+  translation and always returned the English string — meaning the comparison
+  was dead code and, on a translated site, **every** brief section fell through
+  to the generic `"facet — title"` fallback instead of its real heading.
+* `RecommendationEngine` built action codes with `sanitize_key($label)`, which
+  strips non-ASCII. On a Persian site every "add a section" action collapsed to
+  the same empty code.
+
+Facets now carry stable slugs (`symptoms`, `when_to_seek_care`, …) and are
+translated only at the point of display, via `TopicCoverage::label()`.
+`SemanticAnalyzer` returns both forms explicitly: `missing_concepts` is display
+text, `missing_facets` is identity. Nothing changes on an English site — the
+slugs match what `sanitize_key()` produced before — so no re-analysis is needed.
+
+**Breaking for extenders:** the `medora_topic_facets` filter now receives slugs
+as keys rather than labels. New filter `medora_topic_facet_label` registers a
+label for a custom facet.
+
+### Added — translation toolchain (`bin/`)
+
+Neither tool needs WP-CLI, Composer or node_modules: a translator with a
+checkout and PHP can do the whole cycle.
+
+* `bin/make-pot.php` extracts the template. PHP is read through
+  `token_get_all`, so concatenation, calls inside comments, and methods that
+  merely share a name with a gettext function are all handled exactly.
+  **662 strings** now, from zero.
+* It also lints. A call whose text domain is missing, wrong or non-literal, a
+  message built from a variable, or a multi-placeholder string with no
+  translators comment — each is reported rather than skipped, because a string
+  that silently fails to extract is a string that silently ships untranslated.
+* `bin/make-l10n.php` compiles `languages/*.po` into the two artefacts
+  WordPress actually loads: binary `.mo` for PHP, and the Jed-format JSON whose
+  *filename* encodes an md5 of the script path for
+  `wp_set_script_translations()`. Get that hash wrong and the dashboard stays
+  English while the menu around it translates.
+* `composer i18n`, `i18n:check`, `i18n:build`; `i18n:check` joins
+  `composer check` and runs as its own CI job.
+
+### Fixed — build
+
+* The CI workflow's own path filter named `ci.yml`, a file that does not exist,
+  so edits to the workflow never triggered it.
+* The JS extractor's first version matched call bodies with a non-greedy regex,
+  which closes at the parenthesis inside `'%d thing(s) left'` and truncates the
+  call to one argument — indistinguishable from a missing text domain. Eleven
+  strings were being dropped. Call extents are now found by a paren scanner
+  that understands string literals.
+
+### Notes
+
+* Compiled `.mo` and `.json` are gitignored alongside the other build outputs:
+  the repository holds `.po` sources, the release artefact holds builds.
+* **The fa_IR and ar catalogues are not written.** The toolchain, the template
+  and the loading path are all in place and verified; what remains is the
+  translation itself, which is a content task needing a native reviewer rather
+  than an engineering one.
+
 ## [0.5.1] — 2026-08-03
 
 ### Fixed — analyses cached under the wrong configuration

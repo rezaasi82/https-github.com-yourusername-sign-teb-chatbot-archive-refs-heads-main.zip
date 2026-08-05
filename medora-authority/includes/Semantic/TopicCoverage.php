@@ -30,6 +30,10 @@ final class TopicCoverage
 
     /**
      * @param list<array{entity: Entity, salience: float, occurrences: int}> $entities
+     * `covered` and `missing` hold facet slugs, not labels — see
+     * {@see self::facetsFor()}. Call {@see self::label()} at the point of
+     * display.
+     *
      * @return array{score: float, covered: list<string>, missing: list<string>}
      */
     public function forPost(WP_Post $post, array $entities): array
@@ -44,7 +48,7 @@ final class TopicCoverage
         $covered  = [];
         $missing  = [];
 
-        foreach ($facets as $label => $signals) {
+        foreach ($facets as $facet => $signals) {
             $hit = false;
 
             foreach ($signals as $signal) {
@@ -55,9 +59,9 @@ final class TopicCoverage
             }
 
             if ($hit) {
-                $covered[] = $label;
+                $covered[] = $facet;
             } else {
-                $missing[] = $label;
+                $missing[] = $facet;
             }
         }
 
@@ -73,8 +77,14 @@ final class TopicCoverage
     /**
      * Facet set chosen from the page's primary entity type.
      *
+     * Keyed by a stable slug, never by a label. A translated string used as an
+     * array key makes a facet's identity locale-dependent: the same page yields
+     * `Symptoms` in English and `علائم` in Persian, so anything that matches on
+     * the key — the brief's heading map, a recommendation code, a stored
+     * result — silently stops matching the moment the site is translated.
+     *
      * @param list<array{entity: Entity, salience: float, occurrences: int}> $entities
-     * @return array<string, list<string>> facet label => surface signals
+     * @return array<string, list<string>> facet slug => surface signals
      */
     private function facetsFor(array $entities): array
     {
@@ -84,51 +94,113 @@ final class TopicCoverage
 
         $facets = match (true) {
             $type === \Medora\Authority\Entity\EntityType::MEDICAL_CONDITION => [
-                __('Definition', 'medora-authority')  => ['is a', 'defined as', 'چیست', 'تعریف', 'یعنی'],
-                __('Symptoms', 'medora-authority')    => ['symptom', 'sign', 'علائم', 'نشانه', 'أعراض'],
-                __('Causes', 'medora-authority')      => ['cause', 'risk factor', 'علت', 'عوامل خطر', 'أسباب'],
-                __('Diagnosis', 'medora-authority')   => ['diagnos', 'test', 'تشخیص', 'آزمایش'],
-                __('Treatment', 'medora-authority')   => ['treatment', 'therapy', 'درمان', 'دارو', 'علاج'],
-                __('Prognosis', 'medora-authority')   => ['prognosis', 'outlook', 'recovery', 'پیش‌آگهی', 'بهبود'],
-                __('When to seek care', 'medora-authority') => ['see a doctor', 'emergency', 'مراجعه به پزشک', 'اورژانس'],
+                'definition'         => ['is a', 'defined as', 'چیست', 'تعریف', 'یعنی'],
+                'symptoms'           => ['symptom', 'sign', 'علائم', 'نشانه', 'أعراض'],
+                'causes'             => ['cause', 'risk factor', 'علت', 'عوامل خطر', 'أسباب'],
+                'diagnosis'          => ['diagnos', 'test', 'تشخیص', 'آزمایش'],
+                'treatment'          => ['treatment', 'therapy', 'درمان', 'دارو', 'علاج'],
+                'prognosis'          => ['prognosis', 'outlook', 'recovery', 'پیش‌آگهی', 'بهبود'],
+                'when_to_seek_care'  => ['see a doctor', 'emergency', 'مراجعه به پزشک', 'اورژانس'],
             ],
             $type === \Medora\Authority\Entity\EntityType::MEDICAL_PROCEDURE => [
-                __('What it is', 'medora-authority')     => ['is a procedure', 'involves', 'چیست', 'شامل'],
-                __('Who needs it', 'medora-authority')   => ['candidate', 'indicated', 'کاندید', 'نامزد'],
-                __('Preparation', 'medora-authority')    => ['prepare', 'before the', 'آمادگی', 'قبل از'],
-                __('Recovery', 'medora-authority')       => ['recovery', 'aftercare', 'دوره نقاهت', 'بعد از'],
-                __('Risks', 'medora-authority')          => ['risk', 'complication', 'عوارض', 'خطر'],
-                __('Cost', 'medora-authority')           => ['cost', 'price', 'هزینه', 'قیمت'],
+                'what_it_is'   => ['is a procedure', 'involves', 'چیست', 'شامل'],
+                'who_needs_it' => ['candidate', 'indicated', 'کاندید', 'نامزد'],
+                'preparation'  => ['prepare', 'before the', 'آمادگی', 'قبل از'],
+                'recovery'     => ['recovery', 'aftercare', 'دوره نقاهت', 'بعد از'],
+                'risks'        => ['risk', 'complication', 'عوارض', 'خطر'],
+                'cost'         => ['cost', 'price', 'هزینه', 'قیمت'],
             ],
             $type === \Medora\Authority\Entity\EntityType::PRODUCT => [
-                __('What it does', 'medora-authority') => ['is a', 'designed to', 'چیست'],
-                __('Features', 'medora-authority')     => ['feature', 'includes', 'ویژگی', 'امکانات'],
-                __('Pricing', 'medora-authority')      => ['price', 'cost', 'plan', 'قیمت', 'هزینه'],
-                __('Comparison', 'medora-authority')   => ['versus', 'compared to', 'alternative', 'مقایسه'],
-                __('Reviews', 'medora-authority')      => ['review', 'rating', 'نظرات', 'امتیاز'],
+                'what_it_does' => ['is a', 'designed to', 'چیست'],
+                'features'     => ['feature', 'includes', 'ویژگی', 'امکانات'],
+                'pricing'      => ['price', 'cost', 'plan', 'قیمت', 'هزینه'],
+                'comparison'   => ['versus', 'compared to', 'alternative', 'مقایسه'],
+                'reviews'      => ['review', 'rating', 'نظرات', 'امتیاز'],
             ],
             default => [
-                __('Definition', 'medora-authority')   => ['is a', 'refers to', 'means', 'چیست', 'یعنی'],
-                __('How it works', 'medora-authority') => ['how', 'process', 'step', 'چگونه', 'مراحل'],
-                __('Why it matters', 'medora-authority') => ['because', 'important', 'benefit', 'چرا', 'مزیت'],
-                __('Examples', 'medora-authority')     => ['for example', 'such as', 'مثال', 'برای نمونه'],
-                __('Common questions', 'medora-authority') => ['?', '؟'],
+                'definition'       => ['is a', 'refers to', 'means', 'چیست', 'یعنی'],
+                'how_it_works'     => ['how', 'process', 'step', 'چگونه', 'مراحل'],
+                'why_it_matters'   => ['because', 'important', 'benefit', 'چرا', 'مزیت'],
+                'examples'         => ['for example', 'such as', 'مثال', 'برای نمونه'],
+                'common_questions' => ['?', '؟'],
             ],
         };
 
         if ($medical && $type !== '' && \Medora\Authority\Entity\EntityType::isMedical($type)) {
             // YMYL content is judged partly on whether it says where its claims
             // come from and when it was last checked.
-            $facets[__('Evidence and sources', 'medora-authority')] = ['study', 'guideline', 'reference', 'مطالعه', 'منبع', 'راهنما'];
-            $facets[__('Review date', 'medora-authority')]          = ['reviewed', 'updated', 'بازبینی', 'به‌روزرسانی'];
+            $facets['evidence_and_sources'] = ['study', 'guideline', 'reference', 'مطالعه', 'منبع', 'راهنما'];
+            $facets['review_date']          = ['reviewed', 'updated', 'بازبینی', 'به‌روزرسانی'];
         }
 
         /**
          * Filter the coverage facets applied to a page.
          *
-         * @param array<string, list<string>> $facets
-         * @param string                      $type Primary entity type.
+         * Keys are stable slugs, not labels. Register a label for a custom
+         * facet through `medora_topic_facet_label`.
+         *
+         * @param array<string, list<string>> $facets slug => surface signals
+         * @param string                      $type   Primary entity type.
          */
         return (array) apply_filters('medora_topic_facets', $facets, $type);
+    }
+
+    /**
+     * The display label for a facet slug.
+     *
+     * The only place facet text is translated. An unknown slug — one added
+     * through the filter — falls back to its own humanised form rather than
+     * rendering blank, so a third-party facet is usable without registering
+     * anything.
+     */
+    public static function label(string $facet): string
+    {
+        $labels = [
+            'definition'           => __('Definition', 'medora-authority'),
+            'symptoms'             => __('Symptoms', 'medora-authority'),
+            'causes'               => __('Causes', 'medora-authority'),
+            'diagnosis'            => __('Diagnosis', 'medora-authority'),
+            'treatment'            => __('Treatment', 'medora-authority'),
+            'prognosis'            => __('Prognosis', 'medora-authority'),
+            'when_to_seek_care'    => __('When to seek care', 'medora-authority'),
+            'what_it_is'           => __('What it is', 'medora-authority'),
+            'who_needs_it'         => __('Who needs it', 'medora-authority'),
+            'preparation'          => __('Preparation', 'medora-authority'),
+            'recovery'             => __('Recovery', 'medora-authority'),
+            'risks'                => __('Risks', 'medora-authority'),
+            'cost'                 => __('Cost', 'medora-authority'),
+            'what_it_does'         => __('What it does', 'medora-authority'),
+            'features'             => __('Features', 'medora-authority'),
+            'pricing'              => __('Pricing', 'medora-authority'),
+            'comparison'           => __('Comparison', 'medora-authority'),
+            'reviews'              => __('Reviews', 'medora-authority'),
+            'how_it_works'         => __('How it works', 'medora-authority'),
+            'why_it_matters'       => __('Why it matters', 'medora-authority'),
+            'examples'             => __('Examples', 'medora-authority'),
+            'common_questions'     => __('Common questions', 'medora-authority'),
+            'evidence_and_sources' => __('Evidence and sources', 'medora-authority'),
+            'review_date'          => __('Review date', 'medora-authority'),
+        ];
+
+        /**
+         * Filter the label shown for a facet slug.
+         *
+         * @param string $label
+         * @param string $facet Slug.
+         */
+        return (string) apply_filters(
+            'medora_topic_facet_label',
+            $labels[$facet] ?? ucfirst(str_replace('_', ' ', $facet)),
+            $facet
+        );
+    }
+
+    /**
+     * @param list<string> $facets
+     * @return list<string>
+     */
+    public static function labels(array $facets): array
+    {
+        return array_map(static fn (string $facet): string => self::label($facet), $facets);
     }
 }

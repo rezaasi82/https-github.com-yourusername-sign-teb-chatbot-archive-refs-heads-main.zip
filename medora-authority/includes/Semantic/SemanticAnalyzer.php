@@ -51,6 +51,7 @@ final class SemanticAnalyzer
      *     chunk_integrity: float,
      *     readability: array<string, mixed>,
      *     missing_concepts: list<string>,
+     *     missing_facets: list<string>,
      *     chunks: int
      * }
      */
@@ -86,7 +87,11 @@ final class SemanticAnalyzer
             'context_quality'   => round($context, 1),
             'chunk_integrity'   => round($integrity, 1),
             'readability'       => $reading,
-            'missing_concepts'  => $coverage['missing'],
+            // Two forms, deliberately. `missing_concepts` is display text and
+            // is what the API and dashboard show; `missing_facets` is the
+            // stable slug, and is what anything matching on identity must use.
+            'missing_concepts'  => TopicCoverage::labels($coverage['missing']),
+            'missing_facets'    => $coverage['missing'],
             'chunks'            => count($chunks),
         ];
     }

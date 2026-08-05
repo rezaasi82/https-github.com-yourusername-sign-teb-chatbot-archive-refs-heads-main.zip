@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'medora-authority/**'
-      - '.github/workflows/ci.yml'
+      - '.github/workflows/medora-ci.yml'
   pull_request:
     paths:
       - 'medora-authority/**'
@@ -55,6 +55,29 @@ jobs:
 
       - name: Unit tests
         run: composer test
+
+  i18n:
+    name: Translations
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: json, mbstring
+          coverage: none
+
+      # Fails when the template is stale, and also when a gettext call cannot
+      # be extracted — a missing text domain or a variable message is a string
+      # that ships untranslated with nothing else in the pipeline to say so.
+      - name: Template is current and every string is extractable
+        run: php bin/make-pot.php --check
+
+      - name: Compile any translations present
+        run: php bin/make-l10n.php
 
   integration:
     name: Integration (WP ${{ matrix.wp }})
