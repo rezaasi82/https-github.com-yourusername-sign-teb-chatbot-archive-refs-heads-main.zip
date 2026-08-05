@@ -107,6 +107,22 @@ source page and discarded on failure, so this endpoint's response is either the
 publisher's own sentences or text verified to introduce nothing the page does
 not contain. Hook `medora_prompt_pack` to substitute your own text instead.
 
+### `GET /audit-log`
+
+Paginated record of everything the plugin changed, including every generated
+sentence it accepted and every one it discarded. Requires
+`medora_view_audit_log`, which is its own capability rather than a consequence
+of seeing the dashboard.
+
+| Param | Type | Notes |
+|---|---|---|
+| `page` | int | default 1 |
+| `per_page` | int | default 50, max 200 |
+
+Context is redacted server-side: any key matching `key`, `token`, `secret`,
+`password` or `api_key` is replaced before the row is written, because audit
+context is assembled from request payloads.
+
 ### `GET /geo/{id}`
 
 Passage-level retrievability for one page. Requires the GEO Optimizer module.
@@ -330,6 +346,12 @@ Standard WordPress REST shape:
 | `medora_onboarding_completed` | `array $settings` | wizard finished |
 | `medora_job_failed` | `string $handler, Throwable` | a background job threw |
 | `medora_scorer_failed` | `string $id, Throwable` | a scorer threw (analysis continues) |
+| `medora_entity_updated` | `array $entity` | an entity was edited or merged |
+| `medora_entity_deleted` | `int $id` | an entity was removed |
+| `medora_citation_attached` | `int $postId, Citation` | a citation was resolved and stored |
+| `medora_author_profile_updated` | `int $userId` | an author's trust profile changed |
+| `medora_crawler_policy_changed` | `string $slug, string $decision` | one crawler's access changed |
+| `medora_sitemap_updated` | `string $sitemap` | a sitemap was rebuilt |
 
 ## Filter hooks
 
@@ -374,6 +396,13 @@ Standard WordPress REST shape:
 | `medora_experience_shows` | `bool` | show or hide one surface in the current experience mode |
 | `medora_content_language` | `string` | set the content language, per post — where multilingual plugins hook |
 | `medora_security_checks` | `array` | add configuration checks |
+| `medora_robots_headers` | `string` | edit the `X-Robots-Tag` directives sent to crawlers |
+| `medora_entity_type_valid` | `bool` | accept a custom entity type |
+| `medora_llms_txt_per_type` | `int` | cap entries per post type in llms.txt |
+| `medora_llms_txt_exclude` | `bool` | exclude one post from llms.txt |
+| `medora_admin_menu_title` / `medora_admin_page_title` | `string` | rename the admin menu and page (white-label uses these) |
+| `medora_update_endpoint` | `string` | point the updater at your own release server |
+| `medora_option` | `mixed` | force any single setting at read time |
 
 ## Published documents
 

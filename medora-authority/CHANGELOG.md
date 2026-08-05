@@ -4,6 +4,51 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] — 2026-08-03
+
+The dead-option audit from 0.8.0, widened to hooks, capabilities, tables, jobs
+and REST routes. Three findings survived triage.
+
+### Added — the audit log has a reader
+
+The log has been written to since the first release, has its own capability and
+its own endpoint, and 0.7.0 gave it an Enterprise feature flag. Nothing ever
+read it, so Enterprise mode's headline addition added nothing and every recorded
+event was write-only.
+
+That matters most for the AI Writer. Every generated sentence it accepted and
+every one it discarded is recorded with the model, the support ratio and the
+figures that were not in the page — and "which words on this page did a model
+write?" is exactly the question a clinical reviewer asks. An answer nobody can
+read is not an answer.
+
+Entries render as sentences rather than a slug plus a JSON blob, because the
+reader is a compliance reviewer rather than a developer. Unknown actions fall
+through to the raw slug instead of being hidden: a log that silently omits
+entries is worse than an ugly one.
+
+The page is gated on `medora_view_audit_log` — its own capability, not a
+consequence of seeing the dashboard.
+
+### Documentation
+
+* Thirteen hooks existed in code and appeared in no document:
+  `medora_entity_updated`, `medora_entity_deleted`, `medora_citation_attached`,
+  `medora_author_profile_updated`, `medora_crawler_policy_changed`,
+  `medora_sitemap_updated`, `medora_robots_headers`,
+  `medora_entity_type_valid`, `medora_llms_txt_per_type`,
+  `medora_llms_txt_exclude`, `medora_admin_menu_title`,
+  `medora_admin_page_title`, `medora_update_endpoint`. All are now in the API
+  reference, along with `medora_option` and the `/audit-log` endpoint.
+* **Corrected a claim from 0.7.0.** Experience mode was documented as leaving
+  hidden surfaces "reachable by URL". That is wrong for admin pages: a submenu
+  that is not registered is a URL WordPress declines to render. The REST API is
+  what stays untouched — every endpoint remains registered and capability-gated,
+  so the data behind a hidden screen is fully reachable by anyone entitled to
+  it. The conclusion is unchanged and the mechanism now described accurately;
+  the wording is fixed in the security doc, the class docblock, the settings
+  copy and the readme.
+
 ## [0.8.0] — 2026-08-03
 
 Found by auditing every declared option for a consumer, after the same pattern

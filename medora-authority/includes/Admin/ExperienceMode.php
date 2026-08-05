@@ -20,12 +20,16 @@ if (! defined('ABSPATH')) {
  * is not condescension, it is the difference between a tool that gets used and
  * one that gets deactivated in week two.
  *
- * **This is presentation, never authorisation.** Every surface it hides is
- * still reachable by URL and still served by the REST API, because the security
- * boundary is `Capabilities` and duplicating it here would create two places to
- * get authorisation wrong. Anything that must not be reachable belongs behind a
- * capability check in the controller, not behind a mode. Treat this class the
- * way you would treat `display: none`.
+ * **This is presentation, never authorisation.** The REST API is untouched:
+ * every endpoint stays registered and capability-gated, so the data behind a
+ * hidden screen remains fully reachable by anyone entitled to it. A hidden admin
+ * page is simply not registered, so WordPress declines to render that URL — a
+ * rendering outcome, not an access decision, since the same user reaches the
+ * same data through the API a moment later.
+ *
+ * The security boundary is `Capabilities`, and duplicating it here would create
+ * a second place to get authorisation wrong. Anything that must not be reachable
+ * belongs behind a capability check in the controller, not behind a mode.
  */
 final class ExperienceMode
 {

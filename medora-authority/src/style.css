@@ -356,6 +356,7 @@
 
 .medora-pill--ok { color: var(--medora-grade-a); }
 .medora-pill--warn { color: var(--medora-grade-c); }
+.medora-pill--error { color: var(--medora-grade-f); }
 
 .medora-badge {
 	display: inline-block;
@@ -965,4 +966,25 @@
 
 .medora-passage .medora-quote {
 	margin-block: 8px;
+}
+
+/* --- Audit log ----------------------------------------------------------- */
+
+.medora-table--audit td {
+	vertical-align: top;
+}
+
+.medora-table--audit time {
+	white-space: nowrap;
+	color: var(--medora-muted);
+}
+
+.medora-table--audit .medora-pill {
+	/* The action slug stays visible next to the sentence: the prose is for the
+	   reviewer, the slug is what they quote when asking a question about it. */
+	margin-inline-end: 6px;
+}
+
+.medora-table--audit p {
+	margin-block: 4px 0;
 }

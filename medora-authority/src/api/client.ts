@@ -181,6 +181,11 @@ export const api = {
 	geo: ( id: number ) =>
 		request< import('../types').GeoReport >( `geo/${ id }` ),
 
+	auditLog: ( page = 1, perPage = 50 ) =>
+		request< import('../types').AuditReport >( 'audit-log', {
+			params: { page, per_page: perPage },
+		} ),
+
 	applyLink: (
 		id: number,
 		targetId: number,

@@ -8,6 +8,7 @@ import { Content } from '../pages/Content';
 import { Crawlers } from '../pages/Crawlers';
 import { Analytics } from '../pages/Analytics';
 import { Settings } from '../pages/Settings';
+import { Audit } from '../pages/Audit';
 import { Wizard } from '../pages/Wizard';
 
 const ROUTES: Record< string, () => JSX.Element > = {
@@ -18,6 +19,7 @@ const ROUTES: Record< string, () => JSX.Element > = {
 	crawlers: Crawlers,
 	analytics: Analytics,
 	settings: Settings,
+	audit: Audit,
 };
 
 /**

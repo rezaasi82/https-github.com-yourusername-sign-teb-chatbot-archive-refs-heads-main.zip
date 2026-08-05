@@ -8,7 +8,7 @@
 # by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.8.0\n"
+"Project-Id-Version: Medora Authority 0.9.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,13 +19,13 @@ msgstr ""
 "X-Domain: medora-authority\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: includes/Admin/AdminMenu.php:105
-#: src/app/App.tsx:60
+#: includes/Admin/AdminMenu.php:112
+#: src/app/App.tsx:62
 msgid "Loading Medora…"
 msgstr ""
 
 #. translators: 1: score out of 100, 2: letter grade.
-#: includes/Admin/AdminMenu.php:159
+#: includes/Admin/AdminMenu.php:166
 msgid "AI Authority: %1$s (%2$s)"
 msgstr ""
 
@@ -39,45 +39,50 @@ msgid "Medora Authority"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:62
-#: src/app/App.tsx:83
+#: src/app/App.tsx:85
 msgid "Overview"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:63
-#: src/app/App.tsx:84
+#: src/app/App.tsx:86
 #: src/pages/Entities.tsx:201
 #: src/pages/Overview.tsx:76
 msgid "Entities"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:64
-#: src/app/App.tsx:85
+#: src/app/App.tsx:87
 #: src/pages/Graph.tsx:22
 msgid "Knowledge Graph"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:65
-#: src/app/App.tsx:86
+#: src/app/App.tsx:88
 #: src/pages/Content.tsx:59
 msgid "Content"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:66
-#: src/app/App.tsx:87
+#: src/app/App.tsx:89
 #: src/pages/Crawlers.tsx:69
 msgid "AI Crawlers"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:67
 #: includes/Analytics/AnalyticsModule.php:36
-#: src/app/App.tsx:88
+#: src/app/App.tsx:90
 #: src/pages/Analytics.tsx:26
 msgid "AI Analytics"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:68
-#: includes/Admin/AdminMenu.php:120
-#: src/app/App.tsx:89
+#: src/pages/Audit.tsx:34
+msgid "Audit log"
+msgstr ""
+
+#: includes/Admin/AdminMenu.php:69
+#: includes/Admin/AdminMenu.php:127
+#: src/app/App.tsx:91
 #: src/pages/Settings.tsx:394
 msgid "Settings"
 msgstr ""
@@ -91,37 +96,37 @@ msgstr ""
 msgid "The Medora admin experience: authority dashboard, entity explorer and setup wizard."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:149
+#: includes/Admin/ExperienceMode.php:153
 msgid "Beginner"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:150
+#: includes/Admin/ExperienceMode.php:154
 msgid "The score, what is wrong with each page, and how to fix it. Nothing else."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:154
+#: includes/Admin/ExperienceMode.php:158
 msgid "Professional"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:155
+#: includes/Admin/ExperienceMode.php:159
 msgid "Adds the entity explorer, referral analytics, passage-level detail and the full score breakdown."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:159
+#: includes/Admin/ExperienceMode.php:163
 #: includes/License/LicenseTier.php:53
 msgid "Agency"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:160
+#: includes/Admin/ExperienceMode.php:164
 msgid "Adds the knowledge graph, module control, white-labelling and raw metrics."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:164
+#: includes/Admin/ExperienceMode.php:168
 #: includes/License/LicenseTier.php:54
 msgid "Enterprise"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:165
+#: includes/Admin/ExperienceMode.php:169
 msgid "Adds the audit log, API credentials and queue health."
 msgstr ""
 
@@ -1992,7 +1997,7 @@ msgstr ""
 msgid "Something went wrong."
 msgstr ""
 
-#: src/app/App.tsx:80
+#: src/app/App.tsx:82
 msgid "Medora sections"
 msgstr ""
 
@@ -2241,6 +2246,7 @@ msgid "No assistant referrals in the last %d days."
 msgstr ""
 
 #: src/pages/Analytics.tsx:18
+#: src/pages/Audit.tsx:47
 #: src/pages/Content.tsx:200
 #: src/pages/Crawlers.tsx:51
 #: src/pages/Entities.tsx:28
@@ -2319,6 +2325,206 @@ msgstr ""
 
 #: src/pages/Analytics.tsx:96
 msgid "The closest available proxy for which of your pages are being cited."
+msgstr ""
+
+#: src/pages/Audit.tsx:100
+msgid "Older"
+msgstr ""
+
+#. translators: 1: object type, 2: object id.
+#: src/pages/Audit.tsx:151
+msgid "%1$s #%2$d"
+msgstr ""
+
+#. translators: 1: object type, 2: object id. */
+#. __( '%1$s #%2$d', 'medora-authority' ),
+#. entry.object_type,
+#. entry.object_id
+#. )
+#. : '';
+#. 
+#. switch ( entry.action ) {
+#. case 'llm.generated':
+#. return {
+#. tone: 'ok',
+#. label: sprintf(
+#. /* translators: 1: field list, 2: object.
+#: src/pages/Audit.tsx:163
+msgid "A model rewrote %1$s on %2$s."
+msgstr ""
+
+#: src/pages/Audit.tsx:165
+msgid "nothing"
+msgstr ""
+
+#. translators: 1: field list, 2: object. */
+#. __( 'A model rewrote %1$s on %2$s.', 'medora-authority' ),
+#. ( ( entry.context.fields as string[] ) ?? [] ).join( ', ' ) ||
+#. __( 'nothing', 'medora-authority' ),
+#. target
+#. ),
+#. };
+#. 
+#. case 'llm.rejected':
+#. return {
+#. tone: 'warn',
+#. label: sprintf(
+#. /* translators: 1: field name, 2: object.
+#: src/pages/Audit.tsx:175
+msgid "Generated %1$s for %2$s was discarded — the page did not support it."
+msgstr ""
+
+#. translators: 1: field name, 2: object. */
+#. __(
+#. 'Generated %1$s for %2$s was discarded — the page did not support it.',
+#. 'medora-authority'
+#. ),
+#. String( entry.context.field ?? '' ),
+#. target
+#. ),
+#. };
+#. 
+#. case 'llm.refused':
+#. return {
+#. tone: 'warn',
+#. label: sprintf(
+#. /* translators: %s: object.
+#: src/pages/Audit.tsx:189
+msgid "The model declined to write for %s."
+msgstr ""
+
+#. translators: %s: object. */
+#. __( 'The model declined to write for %s.', 'medora-authority' ),
+#. target
+#. ),
+#. };
+#. 
+#. case 'llm.failed':
+#. return {
+#. tone: 'error',
+#. label: sprintf(
+#. /* translators: %s: object.
+#: src/pages/Audit.tsx:199
+msgid "The model request failed for %s."
+msgstr ""
+
+#. translators: %s: object. */
+#. __( 'The model request failed for %s.', 'medora-authority' ),
+#. target
+#. ),
+#. };
+#. 
+#. case 'llm.unusable':
+#. return {
+#. tone: 'warn',
+#. label: sprintf(
+#. /* translators: %s: object.
+#: src/pages/Audit.tsx:209
+msgid "The model reply could not be used for %s."
+msgstr ""
+
+#. translators: %s: object. */
+#. __(
+#. 'The model reply could not be used for %s.',
+#. 'medora-authority'
+#. ),
+#. target
+#. ),
+#. };
+#. 
+#. case 'link.applied':
+#. return {
+#. tone: 'ok',
+#. label: sprintf(
+#. /* translators: %s: object.
+#: src/pages/Audit.tsx:222
+msgid "An internal link was added to %s."
+msgstr ""
+
+#. translators: %s: object. */
+#. __( 'An internal link was added to %s.', 'medora-authority' ),
+#. target
+#. ),
+#. };
+#. 
+#. case 'link.reverted':
+#. return {
+#. tone: 'ok',
+#. label: sprintf(
+#. /* translators: %s: object.
+#: src/pages/Audit.tsx:232
+msgid "Medora links were removed from %s."
+msgstr ""
+
+#: src/pages/Audit.tsx:238
+msgid "Settings were saved."
+msgstr ""
+
+#: src/pages/Audit.tsx:241
+msgid "A module was turned on or off."
+msgstr ""
+
+#: src/pages/Audit.tsx:244
+msgid "The AI crawler policy changed."
+msgstr ""
+
+#: src/pages/Audit.tsx:247
+msgid "The licence status changed."
+msgstr ""
+
+#. translators: %s: percentage of the text supported by the page.
+#: src/pages/Audit.tsx:272
+msgid "%s%% supported"
+msgstr ""
+
+#. translators: %s: percentage of the text supported by the page. */
+#. __( '%s%% supported', 'medora-authority' ),
+#. Math.round( entry.context.support_ratio * 100 ).toString()
+#. )
+#. );
+#. }
+#. 
+#. const invented = entry.context.invented_numbers;
+#. 
+#. if ( Array.isArray( invented ) && invented.length > 0 ) {
+#. bits.push(
+#. sprintf(
+#. /* translators: %s: comma-separated list of figures.
+#: src/pages/Audit.tsx:284
+msgid "figures not in the page: %s"
+msgstr ""
+
+#: src/pages/Audit.tsx:36
+msgid "Every change Medora made, and every generated sentence it accepted or threw away. Kept for the retention period set in Settings."
+msgstr ""
+
+#: src/pages/Audit.tsx:53
+msgid "Nothing recorded yet."
+msgstr ""
+
+#: src/pages/Audit.tsx:62
+msgid "When"
+msgstr ""
+
+#: src/pages/Audit.tsx:63
+msgid "Who"
+msgstr ""
+
+#: src/pages/Audit.tsx:64
+msgid "What happened"
+msgstr ""
+
+#: src/pages/Audit.tsx:75
+msgid "Pages"
+msgstr ""
+
+#: src/pages/Audit.tsx:82
+msgid "Newer"
+msgstr ""
+
+#. translators: 1: current page, 2: total pages.
+#: src/pages/Audit.tsx:88
+msgid "Page %1$d of %2$d"
 msgstr ""
 
 #: src/pages/Content.tsx:122
@@ -2884,7 +3090,7 @@ msgid "Enterprise — adds the audit log and queue health"
 msgstr ""
 
 #: src/pages/Settings.tsx:559
-msgid "Changes what is on screen, nothing else. It grants no extra access — permissions are set by WordPress roles — and hidden screens stay reachable by direct link. Reload after saving."
+msgid "Changes what is on screen, nothing else. It grants no extra access and takes none away — permissions come from WordPress roles, and the API still serves everything your role allows. Reload after saving."
 msgstr ""
 
 #: src/pages/Settings.tsx:575

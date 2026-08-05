@@ -339,3 +339,19 @@ export interface GeoReport {
 		has_steps: boolean;
 	};
 }
+
+export interface AuditEntry {
+	id: number;
+	user_id: number;
+	user_name: string;
+	action: string;
+	object_type: string;
+	object_id: number;
+	context: Record< string, unknown >;
+	created_at: string;
+}
+
+export interface AuditReport {
+	items: AuditEntry[];
+	total: number;
+}

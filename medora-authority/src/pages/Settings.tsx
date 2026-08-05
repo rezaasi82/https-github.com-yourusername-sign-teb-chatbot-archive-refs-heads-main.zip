@@ -557,7 +557,7 @@ export function Settings(): JSX.Element {
 				</select>
 				<p className="medora-muted">
 					{ __(
-						'Changes what is on screen, nothing else. It grants no extra access — permissions are set by WordPress roles — and hidden screens stay reachable by direct link. Reload after saving.',
+						'Changes what is on screen, nothing else. It grants no extra access and takes none away — permissions come from WordPress roles, and the API still serves everything your role allows. Reload after saving.',
 						'medora-authority'
 					) }
 				</p>

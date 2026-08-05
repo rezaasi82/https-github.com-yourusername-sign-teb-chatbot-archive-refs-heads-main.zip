@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.8.0
+Stable tag: 0.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,13 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.9.0 =
+* Added the Audit log screen (Enterprise mode). The log was being written from
+  day one and had no way to read it.
+* It shows every change Medora made, and for the AI Writer, every generated
+  sentence it kept and every one it threw away — with the reason.
+* Reading it requires its own permission, separate from seeing the dashboard.
+
 = 0.8.0 =
 * Fixed: the language declared to AI crawlers came from your WordPress admin
   language, not from your content. If your site is Persian or Arabic but your
@@ -145,9 +152,8 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * Beginner shows the working loop and nothing else: your score, what is wrong
   with each page, and how to fix it. Higher modes add the entity explorer,
   analytics, the knowledge graph, module control and the audit log.
-* Changing mode only changes what is on screen. It grants nobody extra access —
-  permissions still come from WordPress roles — and hidden screens stay
-  reachable by direct link.
+* Changing mode only changes what is on screen. It grants nobody extra access
+  and takes none away — permissions still come from WordPress roles.
 * The mode is now changeable in Settings, not only during setup.
 
 = 0.6.0 =
@@ -221,6 +227,9 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.9.0 =
+No database changes. Enterprise-mode installs gain an Audit log menu item.
 
 = 0.8.0 =
 Important if your content is not in the same language as your WordPress admin.

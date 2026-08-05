@@ -65,6 +65,7 @@ final class AdminMenu
             'content'   => [__('Content', 'medora-authority'), 'content'],
             'crawlers'  => [__('AI Crawlers', 'medora-authority'), 'crawlers'],
             'analytics' => [__('AI Analytics', 'medora-authority'), 'analytics'],
+            'audit'     => [__('Audit log', 'medora-authority'), 'audit_log'],
             'settings'  => [__('Settings', 'medora-authority'), 'settings'],
         ];
 
@@ -79,7 +80,13 @@ final class AdminMenu
                 self::SLUG,
                 $label,
                 $label,
-                $route === 'settings' ? Capabilities::MANAGE_SETTINGS : Capabilities::VIEW_DASHBOARD,
+                match ($route) {
+                    'settings' => Capabilities::MANAGE_SETTINGS,
+                    // The log carries who did what; reading it is its own
+                    // permission, not a side effect of seeing the dashboard.
+                    'audit'    => Capabilities::VIEW_AUDIT_LOG,
+                    default    => Capabilities::VIEW_DASHBOARD,
+                },
                 $route === '' ? self::SLUG : self::SLUG . '-' . $route,
                 [$this, 'render']
             );

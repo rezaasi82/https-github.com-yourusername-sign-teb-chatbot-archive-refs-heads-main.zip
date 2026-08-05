@@ -97,7 +97,13 @@ installs do not get a knowledge-graph canvas or an audit log in the menu. It is
 presentation only, and it is documented here so nobody mistakes it for access
 control during a review:
 
-* Hidden surfaces remain reachable by URL and remain served by the REST API.
+* The REST API is untouched. Every endpoint stays registered and stays served,
+  gated by capability alone, so the *data* behind a hidden screen is fully
+  reachable by anyone entitled to it.
+* A hidden admin page is genuinely not registered, so WordPress answers its URL
+  with "Sorry, you are not allowed to access this page". That is a rendering
+  outcome, not an access decision — the same user reaches the same data through
+  the API a moment later.
 * Unknown features fail **open** — a surface nobody registered is shown.
 * Anything that must not be reachable is gated by `Capabilities` in the
   controller, which is the single authorisation boundary.
