@@ -4,6 +4,45 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] — 2026-08-03
+
+### Fixed — the white-label accent colour never applied
+
+`BrandingManager` published the chosen colour as `--medora-accent` on `:root`.
+The stylesheet declares the same custom property on `.medora-app` — a nearer
+ancestor, which wins — so every agency's accent colour was overridden for the
+whole dashboard. The style tag was present in the markup and nothing errored,
+which is why it went unnoticed.
+
+The colour is now published as `--medora-brand-accent`, and `.medora-app` reads
+it as the source of its own token:
+
+```css
+--medora-accent: var(--medora-brand-accent, #2f6df6);
+```
+
+### Added — a white-label panel
+
+White-labelling worked but had no interface: the only ways in were the
+`medora_branding` filter or a hand-written REST PATCH. Settings now has a panel
+— product name, menu label, vendor, support URL, accent colour, and whether to
+rewrite the Plugins screen row — shown at the Agency experience mode, which
+gives the `white_label` feature flag added in 0.7.0 its consumer.
+
+The panel states that branding forced from code by a SaaS host wins over
+anything saved there, rather than leaving an agency wondering why their name
+will not stick.
+
+### Security
+
+White-label values are now sanitised for where they end up rather than through
+the generic array path. `vendor_url`, `support_url` and `logo_url` go through
+`esc_url_raw`, so a `javascript:` or `data:` URI is dropped at the boundary
+instead of being stored and left to every consumer to escape — these are
+written into the Plugins screen's `AuthorURI` and `PluginURI`. `accent_color`
+must match a hex pattern to be stored at all, which is now checked in two
+places: before storage, and again before it reaches the style block.
+
 ## [0.7.0] — 2026-08-03
 
 ### Added — experience modes actually do something

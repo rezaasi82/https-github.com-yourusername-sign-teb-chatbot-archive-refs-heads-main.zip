@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.7.0
+Stable tag: 0.7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,15 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.7.1 =
+* Fixed: the white-label accent colour had no effect. The dashboard's own
+  styling always won over it.
+* Added a white-label panel under Settings (Agency mode and above) — product
+  name, menu label, your company and links, accent colour. Previously this was
+  only reachable from code.
+* Hardened: branding URLs are validated when saved, so only real web addresses
+  are stored.
+
 = 0.7.0 =
 * The Beginner / Professional / Agency / Enterprise modes now genuinely change
   the dashboard. Previously the setting was saved and ignored, so every install
@@ -204,6 +213,10 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.7.1 =
+Recommended for anyone white-labelling. Your accent colour will start applying
+once you upgrade.
 
 = 0.7.0 =
 If you picked Beginner during setup, the dashboard will now be simpler than it

@@ -136,3 +136,37 @@ Each site gets its own tables (`$wpdb->prefix` is resolved per site), its own
 settings and its own install salt — so visitor hashes are not comparable across
 tenants even within one network. Capabilities are per-site roles. Licence
 binding uses the site's own `home_url()` host.
+
+
+## The accent colour
+
+`BrandingManager` publishes the configured colour as `--medora-brand-accent` on
+`:root`, and the dashboard stylesheet consumes it:
+
+```css
+.medora-app {
+	--medora-accent: var(--medora-brand-accent, #2f6df6);
+}
+```
+
+The indirection is load-bearing. Publishing `--medora-accent` directly does not
+work: `.medora-app` declares that property itself, and a custom property set on
+a nearer ancestor beats one set on `:root`, so the branded value is overridden
+for everything inside the dashboard. It fails silently — the style tag is in the
+markup, the colour simply never applies.
+
+Only values matching `#[0-9a-f]{3,8}` are accepted. That is enforced twice: the
+REST layer refuses to store anything else, and `printAccentColor()` checks again
+before writing into a `<style>` block, so a value written directly into the
+option cannot escape it.
+
+## Where branding can be set
+
+| Route | Wins over | Use when |
+|---|---|---|
+| `medora_branding` filter | everything | a SaaS host fixes the branding its customers cannot change |
+| Settings → White label | stored defaults | an agency brands its own install |
+| defaults | — | unbranded |
+
+The panel appears at the Agency experience mode and above, and requires
+`MANAGE_SETTINGS`. The mode controls visibility; the capability controls access.

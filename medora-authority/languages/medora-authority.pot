@@ -8,7 +8,7 @@
 # by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.7.0\n"
+"Project-Id-Version: Medora Authority 0.7.1\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -78,12 +78,12 @@ msgstr ""
 #: includes/Admin/AdminMenu.php:68
 #: includes/Admin/AdminMenu.php:120
 #: src/app/App.tsx:89
-#: src/pages/Settings.tsx:267
+#: src/pages/Settings.tsx:394
 msgid "Settings"
 msgstr ""
 
 #: includes/Admin/AdminModule.php:27
-#: src/pages/Settings.tsx:369
+#: src/pages/Settings.tsx:496
 msgid "Dashboard"
 msgstr ""
 
@@ -214,12 +214,12 @@ msgid "Medical mode adds clinical vocabulary, reviewer metadata and YMYL trust s
 msgstr ""
 
 #: includes/Admin/SetupWizard.php:93
-#: src/pages/Settings.tsx:294
+#: src/pages/Settings.tsx:421
 msgid "General"
 msgstr ""
 
 #: includes/Admin/SetupWizard.php:94
-#: src/pages/Settings.tsx:297
+#: src/pages/Settings.tsx:424
 msgid "Health / medical (YMYL)"
 msgstr ""
 
@@ -1144,7 +1144,7 @@ msgid "Suggest context-aware internal links from semantic similarity and shared 
 msgstr ""
 
 #: includes/Llm/LlmModule.php:44
-#: src/pages/Settings.tsx:413
+#: src/pages/Settings.tsx:540
 msgid "AI Writer"
 msgstr ""
 
@@ -1959,12 +1959,12 @@ msgid "Publish entity-annotated sitemaps in XML, JSON and Markdown."
 msgstr ""
 
 #: includes/Vector/Providers/HashingEmbeddingProvider.php:42
-#: src/pages/Settings.tsx:348
+#: src/pages/Settings.tsx:475
 msgid "Built-in (offline, no API key)"
 msgstr ""
 
 #: includes/Vector/Providers/OpenAiEmbeddingProvider.php:38
-#: src/pages/Settings.tsx:351
+#: src/pages/Settings.tsx:478
 msgid "OpenAI-compatible API"
 msgstr ""
 
@@ -2473,7 +2473,7 @@ msgid "These are what let an AI system match this entity to the one in its own k
 msgstr ""
 
 #: src/pages/Entities.tsx:149
-#: src/pages/Settings.tsx:253
+#: src/pages/Settings.tsx:380
 msgid "Saving…"
 msgstr ""
 
@@ -2718,120 +2718,180 @@ msgstr ""
 msgid "Configuration check — %1$d of %2$d passing"
 msgstr ""
 
-#: src/pages/Settings.tsx:257
-msgid "Settings saved."
+#: src/pages/Settings.tsx:261
+msgid "Product name"
+msgstr ""
+
+#: src/pages/Settings.tsx:262
+msgid "Shown as the plugin name and the dashboard title."
+msgstr ""
+
+#: src/pages/Settings.tsx:266
+msgid "Menu label"
+msgstr ""
+
+#: src/pages/Settings.tsx:267
+msgid "The admin menu entry. Keep it short."
 msgstr ""
 
 #: src/pages/Settings.tsx:271
-msgid "Publisher"
+msgid "Your company"
 msgstr ""
 
-#: src/pages/Settings.tsx:274
-msgid "Organisation name"
+#: src/pages/Settings.tsx:272
+msgid "Replaces the author on the Plugins screen."
 msgstr ""
 
-#: src/pages/Settings.tsx:286
-msgid "Site mode"
+#: src/pages/Settings.tsx:276
+msgid "Your website"
 msgstr ""
 
-#: src/pages/Settings.tsx:302
-msgid "Log retention (days)"
+#: src/pages/Settings.tsx:281
+msgid "Support URL"
 msgstr ""
 
-#: src/pages/Settings.tsx:315
-msgid "Published artefacts"
+#: src/pages/Settings.tsx:282
+msgid "Where your clients go for help."
 msgstr ""
 
-#: src/pages/Settings.tsx:319
-msgid "Publish llms.txt"
+#: src/pages/Settings.tsx:288
+msgid "White label"
 msgstr ""
 
-#: src/pages/Settings.tsx:320
-msgid "Publish AI sitemaps"
+#: src/pages/Settings.tsx:290
+msgid "Present the plugin under your own name. Nothing here changes what it does."
 msgstr ""
 
-#: src/pages/Settings.tsx:321
-msgid "Output JSON-LD schema"
+#: src/pages/Settings.tsx:304
+msgid "Use my branding"
 msgstr ""
 
-#: src/pages/Settings.tsx:322
-msgid "Track AI referrals"
+#: src/pages/Settings.tsx:325
+msgid "Accent colour"
 msgstr ""
 
-#: src/pages/Settings.tsx:335
-msgid "Embeddings"
+#: src/pages/Settings.tsx:347
+msgid "Replace the author and links on the Plugins screen too"
 msgstr ""
 
-#: src/pages/Settings.tsx:338
-msgid "Provider"
-msgstr ""
-
-#: src/pages/Settings.tsx:356
-#: src/pages/Settings.tsx:452
-msgid "An API key is configured."
-msgstr ""
-
-#: src/pages/Settings.tsx:357
-msgid "No API key configured. Set MEDORA_EMBEDDING_API_KEY in wp-config.php rather than storing it in the database."
-msgstr ""
-
-#: src/pages/Settings.tsx:363
-msgid "Switching provider clears the existing index — the two vector spaces are not comparable — and content is re-embedded in the background."
-msgstr ""
-
-#: src/pages/Settings.tsx:372
-msgid "How much to show"
+#: src/pages/Settings.tsx:354
+msgid "Branding forced from code by a host takes precedence over anything saved here."
 msgstr ""
 
 #: src/pages/Settings.tsx:38
 msgid "Modules"
 msgstr ""
 
-#: src/pages/Settings.tsx:382
-msgid "Beginner — score, problems, fixes"
+#: src/pages/Settings.tsx:384
+msgid "Settings saved."
 msgstr ""
 
-#: src/pages/Settings.tsx:388
-msgid "Professional — adds entities, analytics, passages"
-msgstr ""
-
-#: src/pages/Settings.tsx:394
-msgid "Agency — adds the graph, modules, white-label"
+#: src/pages/Settings.tsx:398
+msgid "Publisher"
 msgstr ""
 
 #: src/pages/Settings.tsx:40
 msgid "Every module is independent. Turn off what you do not need — disabled modules add no queries and no page weight."
 msgstr ""
 
-#: src/pages/Settings.tsx:400
-msgid "Enterprise — adds the audit log and queue health"
+#: src/pages/Settings.tsx:401
+msgid "Organisation name"
 msgstr ""
 
-#: src/pages/Settings.tsx:407
-msgid "Changes what is on screen, nothing else. It grants no extra access — permissions are set by WordPress roles — and hidden screens stay reachable by direct link. Reload after saving."
-msgstr ""
-
-#: src/pages/Settings.tsx:423
-msgid "Let a model rewrite page summaries and canonical answers"
+#: src/pages/Settings.tsx:413
+msgid "Site mode"
 msgstr ""
 
 #: src/pages/Settings.tsx:429
-msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
-msgstr ""
-
-#: src/pages/Settings.tsx:435
-msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
+msgid "Log retention (days)"
 msgstr ""
 
 #: src/pages/Settings.tsx:442
+msgid "Published artefacts"
+msgstr ""
+
+#: src/pages/Settings.tsx:446
+msgid "Publish llms.txt"
+msgstr ""
+
+#: src/pages/Settings.tsx:447
+msgid "Publish AI sitemaps"
+msgstr ""
+
+#: src/pages/Settings.tsx:448
+msgid "Output JSON-LD schema"
+msgstr ""
+
+#: src/pages/Settings.tsx:449
+msgid "Track AI referrals"
+msgstr ""
+
+#: src/pages/Settings.tsx:462
+msgid "Embeddings"
+msgstr ""
+
+#: src/pages/Settings.tsx:465
+msgid "Provider"
+msgstr ""
+
+#: src/pages/Settings.tsx:483
+#: src/pages/Settings.tsx:579
+msgid "An API key is configured."
+msgstr ""
+
+#: src/pages/Settings.tsx:484
+msgid "No API key configured. Set MEDORA_EMBEDDING_API_KEY in wp-config.php rather than storing it in the database."
+msgstr ""
+
+#: src/pages/Settings.tsx:490
+msgid "Switching provider clears the existing index — the two vector spaces are not comparable — and content is re-embedded in the background."
+msgstr ""
+
+#: src/pages/Settings.tsx:499
+msgid "How much to show"
+msgstr ""
+
+#: src/pages/Settings.tsx:509
+msgid "Beginner — score, problems, fixes"
+msgstr ""
+
+#: src/pages/Settings.tsx:515
+msgid "Professional — adds entities, analytics, passages"
+msgstr ""
+
+#: src/pages/Settings.tsx:521
+msgid "Agency — adds the graph, modules, white-label"
+msgstr ""
+
+#: src/pages/Settings.tsx:527
+msgid "Enterprise — adds the audit log and queue health"
+msgstr ""
+
+#: src/pages/Settings.tsx:534
+msgid "Changes what is on screen, nothing else. It grants no extra access — permissions are set by WordPress roles — and hidden screens stay reachable by direct link. Reload after saving."
+msgstr ""
+
+#: src/pages/Settings.tsx:550
+msgid "Let a model rewrite page summaries and canonical answers"
+msgstr ""
+
+#: src/pages/Settings.tsx:556
+msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
+msgstr ""
+
+#: src/pages/Settings.tsx:562
+msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
+msgstr ""
+
+#: src/pages/Settings.tsx:569
 msgid "Model"
 msgstr ""
 
-#: src/pages/Settings.tsx:453
+#: src/pages/Settings.tsx:580
 msgid "No API key configured. Set MEDORA_LLM_API_KEY in wp-config.php rather than storing it in the database."
 msgstr ""
 
-#: src/pages/Settings.tsx:466
+#: src/pages/Settings.tsx:593
 msgid "Save settings"
 msgstr ""
 

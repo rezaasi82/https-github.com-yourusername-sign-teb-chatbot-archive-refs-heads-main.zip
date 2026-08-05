@@ -102,6 +102,12 @@ final class BrandingManager
     /**
      * Publish the accent colour as a CSS custom property so the React
      * dashboard picks it up without a rebuild.
+     *
+     * Written as `--medora-brand-accent`, not `--medora-accent`. The stylesheet
+     * declares `--medora-accent` on `.medora-app`, and a custom property set on
+     * a nearer ancestor beats one set on `:root` — so writing the token
+     * directly here was overridden for the entire dashboard and did nothing at
+     * all. `.medora-app` now reads this as its fallback source.
      */
     public function printAccentColor(): void
     {
@@ -114,7 +120,7 @@ final class BrandingManager
         }
 
         printf(
-            '<style id="medora-branding">:root{--medora-accent:%s;}</style>',
+            '<style id="medora-branding">:root{--medora-brand-accent:%s;}</style>',
             esc_attr($accent)
         );
     }

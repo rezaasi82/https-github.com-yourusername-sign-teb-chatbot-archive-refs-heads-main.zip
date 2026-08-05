@@ -300,11 +300,47 @@ final class SettingsController extends AbstractController
             return (int) $value;
         }
 
+        if ($key === 'white_label') {
+            return $this->sanitizeBranding((array) $value);
+        }
+
         if (is_array($default) || is_array($value)) {
             return $this->sanitizeArray((array) $value);
         }
 
         return sanitize_text_field((string) $value);
+    }
+
+    /**
+     * White-label values, each sanitised for where it ends up.
+     *
+     * The URLs are written into the Plugins screen's `AuthorURI` and
+     * `PluginURI`. Core escapes those on output, but storing a `javascript:`
+     * URI and relying on every consumer to escape it is the wrong end to fix
+     * it at — `esc_url_raw` drops the scheme here instead.
+     *
+     * @param array<mixed> $value
+     * @return array<string, string>
+     */
+    private function sanitizeBranding(array $value): array
+    {
+        $clean = [];
+
+        foreach ($value as $key => $item) {
+            $key   = sanitize_key((string) $key);
+            $item  = is_scalar($item) ? (string) $item : '';
+
+            $clean[$key] = match ($key) {
+                'vendor_url', 'support_url', 'logo_url' => esc_url_raw($item),
+                // Anything that is not a hex colour is dropped rather than
+                // stored, so a bad value cannot reach the style block at all.
+                'accent_color' => preg_match('/^#[0-9a-f]{3,8}$/i', $item) === 1 ? $item : '',
+                'enabled', 'hide_vendor' => $item === '' || $item === '0' ? '' : '1',
+                default => sanitize_text_field($item),
+            };
+        }
+
+        return $clean;
     }
 
     /**

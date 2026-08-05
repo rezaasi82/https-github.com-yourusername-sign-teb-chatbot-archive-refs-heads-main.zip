@@ -235,6 +235,133 @@ function Security(): JSX.Element {
 	);
 }
 
+/**
+ * White-label branding.
+ *
+ * A SaaS host can force these from code through the `medora_branding` filter,
+ * in which case what is saved here is overridden at read time — so the panel
+ * says as much rather than letting an agency wonder why their name will not
+ * stick.
+ */
+function WhiteLabel( {
+	value,
+	onChange,
+}: {
+	value: Record< string, string >;
+	onChange: ( next: Record< string, string > ) => void;
+} ): JSX.Element {
+	const set = ( key: string, next: string ) =>
+		onChange( { ...value, [ key ]: next } );
+
+	const enabled = Boolean( value.enabled );
+
+	const fields: Array< [ string, string, string ] > = [
+		[
+			'product_name',
+			__( 'Product name', 'medora-authority' ),
+			__( 'Shown as the plugin name and the dashboard title.', 'medora-authority' ),
+		],
+		[
+			'short_name',
+			__( 'Menu label', 'medora-authority' ),
+			__( 'The admin menu entry. Keep it short.', 'medora-authority' ),
+		],
+		[
+			'vendor_name',
+			__( 'Your company', 'medora-authority' ),
+			__( 'Replaces the author on the Plugins screen.', 'medora-authority' ),
+		],
+		[
+			'vendor_url',
+			__( 'Your website', 'medora-authority' ),
+			'',
+		],
+		[
+			'support_url',
+			__( 'Support URL', 'medora-authority' ),
+			__( 'Where your clients go for help.', 'medora-authority' ),
+		],
+	];
+
+	return (
+		<section className="medora-card">
+			<h2>{ __( 'White label', 'medora-authority' ) }</h2>
+			<p className="medora-muted">
+				{ __(
+					'Present the plugin under your own name. Nothing here changes what it does.',
+					'medora-authority'
+				) }
+			</p>
+
+			<label className="medora-checkbox">
+				<input
+					type="checkbox"
+					checked={ enabled }
+					onChange={ ( event ) =>
+						set( 'enabled', event.target.checked ? '1' : '' )
+					}
+				/>
+				{ __( 'Use my branding', 'medora-authority' ) }
+			</label>
+
+			{ enabled && (
+				<>
+					{ fields.map( ( [ key, label, help ] ) => (
+						<div key={ key }>
+							<label htmlFor={ `medora-wl-${ key }` }>{ label }</label>
+							<input
+								id={ `medora-wl-${ key }` }
+								type={ key.endsWith( '_url' ) ? 'url' : 'text' }
+								value={ value[ key ] ?? '' }
+								onChange={ ( event ) =>
+									set( key, event.target.value )
+								}
+							/>
+							{ help && <p className="medora-muted">{ help }</p> }
+						</div>
+					) ) }
+
+					<label htmlFor="medora-wl-accent">
+						{ __( 'Accent colour', 'medora-authority' ) }
+					</label>
+					<input
+						id="medora-wl-accent"
+						type="color"
+						value={ value.accent_color || '#2f6df6' }
+						onChange={ ( event ) =>
+							set( 'accent_color', event.target.value )
+						}
+					/>
+
+					<label className="medora-checkbox">
+						<input
+							type="checkbox"
+							checked={ Boolean( value.hide_vendor ) }
+							onChange={ ( event ) =>
+								set(
+									'hide_vendor',
+									event.target.checked ? '1' : ''
+								)
+							}
+						/>
+						{ __(
+							'Replace the author and links on the Plugins screen too',
+							'medora-authority'
+						) }
+					</label>
+
+					<p className="medora-muted">
+						{ __(
+							'Branding forced from code by a host takes precedence over anything saved here.',
+							'medora-authority'
+						) }
+					</p>
+				</>
+			) }
+		</section>
+	);
+}
+
 export function Settings(): JSX.Element {
 	const { data, reload } = useAsync( () => api.settings(), [] );
 	const [ draft, setDraft ] = useState< Record< string, unknown > >( {} );
@@ -468,6 +595,15 @@ export function Settings(): JSX.Element {
 					{ status && <span className="medora-muted">{ status }</span> }
 				</div>
 			</section>
+
+			{ shows( 'white_label' ) && boot.capabilities.manage && (
+				<WhiteLabel
+					value={
+						( draft.white_label as Record< string, string > ) ?? {}
+					}
+					onChange={ ( next ) => set( 'white_label', next ) }
+				/>
+			) }
 
 			{ shows( 'modules' ) && <Modules /> }
 			<License />

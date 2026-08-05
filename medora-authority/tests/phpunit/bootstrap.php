@@ -70,6 +70,30 @@ if (! function_exists('esc_url')) {
     }
 }
 
+if (! function_exists('esc_attr')) {
+    function esc_attr(string $text): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('esc_url_raw')) {
+    /**
+     * Mirrors the part of WordPress's behaviour the tests depend on: only the
+     * protocols core allows survive, everything else becomes empty.
+     */
+    function esc_url_raw(string $url): string
+    {
+        $url = trim($url);
+
+        if ($url === '' || str_starts_with($url, '/')) {
+            return $url;
+        }
+
+        return preg_match('#^(https?|ftp|mailto):#i', $url) === 1 ? $url : '';
+    }
+}
+
 if (! function_exists('apply_filters')) {
     function apply_filters(string $hook, mixed $value, mixed ...$args): mixed
     {
