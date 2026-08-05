@@ -4,6 +4,59 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] — 2026-08-03
+
+### Added — experience modes actually do something
+
+`experience_mode` was collected by the setup wizard, stored, and echoed back by
+the settings endpoint. Nothing read it. Beginner and Enterprise installs got a
+byte-identical dashboard, so the four modes the product advertises did not
+exist.
+
+`Admin\ExperienceMode` now decides which surfaces appear:
+
+| Mode | Adds |
+|---|---|
+| Beginner | the working loop only — overview, content, fixes, brief, crawlers, settings |
+| Professional | entities, referral analytics, passages, links, score breakdown |
+| Agency | knowledge graph, module control, white-label, raw metrics |
+| Enterprise | audit log, API credentials, queue health |
+
+It drives the admin submenu, the Content screen's sub-tabs, the Modules card,
+and the setup wizard's copy and its accepted values — all from one table, so a
+fifth mode is one entry rather than five edits.
+
+**It is presentation, never authorisation.** Every hidden surface stays
+reachable by URL and stays served by the REST API, because the security
+boundary is `Capabilities` and a second place to get authorisation wrong is
+worse than none. Unknown features are *shown*, not hidden — failing open is
+right for a presentational filter and would be wrong for a permission. The
+in-code documentation, the settings copy and the wizard copy all say so, so
+nobody mistakes a hidden menu item for a locked door.
+
+Two invariants are pinned by tests because they are easy to break while editing
+the feature table:
+
+* **The beginner loop is complete.** Score, problem, fix, and the settings
+  needed to act — a mode that hides part of that leaves someone with no path
+  forward.
+* **Modes are monotonic.** Moving up never removes a screen, so "switch to
+  Agency" cannot cost someone the panel they were using.
+
+New filter `medora_experience_shows` to override a single surface.
+
+### Changed
+
+* The setup wizard's mode descriptions and its accepted values are both derived
+  from `ExperienceMode::choices()`, so the wizard cannot describe a mode
+  differently from the class implementing it.
+* Settings gains a "How much to show" control, so the choice is not locked in
+  at setup time.
+* The unit bootstrap's `get_option()` shim now reads from
+  `$GLOBALS['medora_test_options']`, letting a test stand up a configuration
+  without replacing `Options` — which is `final`, correctly.
+* Template regenerated: 672 strings.
+
 ## [0.6.0] — 2026-08-03
 
 Makes the plugin actually translatable. The wiring was in place —

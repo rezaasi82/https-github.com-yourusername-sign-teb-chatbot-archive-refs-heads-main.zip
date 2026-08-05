@@ -20,6 +20,10 @@ final class AssetManager
 {
     public const HANDLE_APP = 'medora-app';
 
+    public function __construct(private readonly ExperienceMode $experience)
+    {
+    }
+
     public function enqueueApp(string $screenId): void
     {
         $asset = $this->manifest('app');
@@ -105,6 +109,11 @@ final class AssetManager
                 'entities' => current_user_can(\Medora\Authority\Core\Capabilities::MANAGE_ENTITIES),
                 'audit'    => current_user_can(\Medora\Authority\Core\Capabilities::VIEW_AUDIT_LOG),
             ],
+
+            // Presentational only. `capabilities` above is the boundary; these
+            // decide how much of the product this install chose to show.
+            'experience' => $this->experience->current(),
+            'features'   => $this->experience->all(),
         ];
 
         /**

@@ -8,7 +8,7 @@
 # by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.6.0\n"
+"Project-Id-Version: Medora Authority 0.7.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,8 +19,13 @@ msgstr ""
 "X-Domain: medora-authority\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: includes/Admin/AdminMenu.php:105
+#: src/app/App.tsx:60
+msgid "Loading Medora…"
+msgstr ""
+
 #. translators: 1: score out of 100, 2: letter grade.
-#: includes/Admin/AdminMenu.php:149
+#: includes/Admin/AdminMenu.php:159
 msgid "AI Authority: %1$s (%2$s)"
 msgstr ""
 
@@ -29,65 +34,95 @@ msgid "Medora"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:45
-#: includes/Admin/SetupWizard.php:212
+#: includes/Admin/SetupWizard.php:217
 msgid "Medora Authority"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:58
+#: includes/Admin/AdminMenu.php:62
 #: src/app/App.tsx:83
 msgid "Overview"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:59
+#: includes/Admin/AdminMenu.php:63
 #: src/app/App.tsx:84
 #: src/pages/Entities.tsx:201
 #: src/pages/Overview.tsx:76
 msgid "Entities"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:60
+#: includes/Admin/AdminMenu.php:64
 #: src/app/App.tsx:85
 #: src/pages/Graph.tsx:22
 msgid "Knowledge Graph"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:61
+#: includes/Admin/AdminMenu.php:65
 #: src/app/App.tsx:86
-#: src/pages/Content.tsx:47
+#: src/pages/Content.tsx:59
 msgid "Content"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:62
+#: includes/Admin/AdminMenu.php:66
 #: src/app/App.tsx:87
 #: src/pages/Crawlers.tsx:69
 msgid "AI Crawlers"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:63
+#: includes/Admin/AdminMenu.php:67
 #: includes/Analytics/AnalyticsModule.php:36
 #: src/app/App.tsx:88
 #: src/pages/Analytics.tsx:26
 msgid "AI Analytics"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:64
-#: includes/Admin/AdminMenu.php:110
+#: includes/Admin/AdminMenu.php:68
+#: includes/Admin/AdminMenu.php:120
 #: src/app/App.tsx:89
 #: src/pages/Settings.tsx:267
 msgid "Settings"
 msgstr ""
 
-#: includes/Admin/AdminMenu.php:95
-#: src/app/App.tsx:60
-msgid "Loading Medora…"
-msgstr ""
-
-#: includes/Admin/AdminModule.php:26
+#: includes/Admin/AdminModule.php:27
+#: src/pages/Settings.tsx:369
 msgid "Dashboard"
 msgstr ""
 
-#: includes/Admin/AdminModule.php:31
+#: includes/Admin/AdminModule.php:32
 msgid "The Medora admin experience: authority dashboard, entity explorer and setup wizard."
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:149
+msgid "Beginner"
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:150
+msgid "The score, what is wrong with each page, and how to fix it. Nothing else."
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:154
+msgid "Professional"
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:155
+msgid "Adds the entity explorer, referral analytics, passage-level detail and the full score breakdown."
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:159
+#: includes/License/LicenseTier.php:53
+msgid "Agency"
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:160
+msgid "Adds the knowledge graph, module control, white-labelling and raw metrics."
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:164
+#: includes/License/LicenseTier.php:54
+msgid "Enterprise"
+msgstr ""
+
+#: includes/Admin/ExperienceMode.php:165
+msgid "Adds the audit log, API credentials and queue health."
 msgstr ""
 
 #: includes/Admin/MetaBox.php:105
@@ -151,32 +186,14 @@ msgid "How much do you want to see?"
 msgstr ""
 
 #: includes/Admin/SetupWizard.php:117
-msgid "Beginner hides the advanced panels. You can switch at any time."
+msgid "This only changes how much of the dashboard is on screen. It grants nobody any extra access, and you can switch at any time."
 msgstr ""
 
-#: includes/Admin/SetupWizard.php:120
-msgid "Beginner"
-msgstr ""
-
-#: includes/Admin/SetupWizard.php:121
-msgid "Professional"
-msgstr ""
-
-#: includes/Admin/SetupWizard.php:122
-#: includes/License/LicenseTier.php:53
-msgid "Agency"
-msgstr ""
-
-#: includes/Admin/SetupWizard.php:123
-#: includes/License/LicenseTier.php:54
-msgid "Enterprise"
-msgstr ""
-
-#: includes/Admin/SetupWizard.php:213
+#: includes/Admin/SetupWizard.php:218
 msgid "Run the two-minute setup to start measuring your AI authority."
 msgstr ""
 
-#: includes/Admin/SetupWizard.php:215
+#: includes/Admin/SetupWizard.php:220
 msgid "Start setup"
 msgstr ""
 
@@ -1127,7 +1144,7 @@ msgid "Suggest context-aware internal links from semantic similarity and shared 
 msgstr ""
 
 #: includes/Llm/LlmModule.php:44
-#: src/pages/Settings.tsx:369
+#: src/pages/Settings.tsx:413
 msgid "AI Writer"
 msgstr ""
 
@@ -1967,7 +1984,7 @@ msgstr ""
 msgid "Present the platform under your own brand."
 msgstr ""
 
-#: src/api/client.ts:125
+#: src/api/client.ts:139
 msgid "Something went wrong."
 msgstr ""
 
@@ -2197,7 +2214,7 @@ msgid "Nothing here to retrieve. This page has no body copy a model could be han
 msgstr ""
 
 #: src/components/PassagePanel.tsx:63
-#: src/pages/Content.tsx:125
+#: src/pages/Content.tsx:23
 msgid "Passages"
 msgstr ""
 
@@ -2220,7 +2237,7 @@ msgid "No assistant referrals in the last %d days."
 msgstr ""
 
 #: src/pages/Analytics.tsx:18
-#: src/pages/Content.tsx:196
+#: src/pages/Content.tsx:200
 #: src/pages/Crawlers.tsx:51
 #: src/pages/Entities.tsx:28
 #: src/pages/Entities.tsx:290
@@ -2300,53 +2317,53 @@ msgstr ""
 msgid "The closest available proxy for which of your pages are being cited."
 msgstr ""
 
-#: src/pages/Content.tsx:110
+#: src/pages/Content.tsx:122
 #: src/pages/Entities.tsx:69
 msgid "Close"
 msgstr ""
 
-#: src/pages/Content.tsx:116
+#: src/pages/Content.tsx:128
 msgid "Page tools"
 msgstr ""
 
-#: src/pages/Content.tsx:120
-msgid "Fixes"
-msgstr ""
-
-#: src/pages/Content.tsx:121
-msgid "Brief"
-msgstr ""
-
-#: src/pages/Content.tsx:122
-msgid "Links"
-msgstr ""
-
 #. translators: %s: potential score.
-#: src/pages/Content.tsx:146
+#: src/pages/Content.tsx:150
 msgid "Completing every action below would take this page to roughly %s / 100."
 msgstr ""
 
-#: src/pages/Content.tsx:157
+#: src/pages/Content.tsx:161
 msgid "Answer-first rewrite"
 msgstr ""
 
-#: src/pages/Content.tsx:167
+#: src/pages/Content.tsx:171
 msgid "Do these, in this order"
 msgstr ""
 
-#: src/pages/Content.tsx:173
+#: src/pages/Content.tsx:177
 msgid "Ordered by points recovered per unit of effort, not by severity alone."
 msgstr ""
 
-#: src/pages/Content.tsx:49
+#: src/pages/Content.tsx:20
+msgid "Fixes"
+msgstr ""
+
+#: src/pages/Content.tsx:21
+msgid "Brief"
+msgstr ""
+
+#: src/pages/Content.tsx:22
+msgid "Links"
+msgstr ""
+
+#: src/pages/Content.tsx:61
 msgid "Lowest-scoring pages first. Pick one to see its ordered fix list."
 msgstr ""
 
-#: src/pages/Content.tsx:63
+#: src/pages/Content.tsx:75
 msgid "Page"
 msgstr ""
 
-#: src/pages/Content.tsx:64
+#: src/pages/Content.tsx:76
 msgid "Score"
 msgstr ""
 
@@ -2750,7 +2767,7 @@ msgid "Provider"
 msgstr ""
 
 #: src/pages/Settings.tsx:356
-#: src/pages/Settings.tsx:408
+#: src/pages/Settings.tsx:452
 msgid "An API key is configured."
 msgstr ""
 
@@ -2762,35 +2779,59 @@ msgstr ""
 msgid "Switching provider clears the existing index — the two vector spaces are not comparable — and content is re-embedded in the background."
 msgstr ""
 
-#: src/pages/Settings.tsx:379
-msgid "Let a model rewrite page summaries and canonical answers"
+#: src/pages/Settings.tsx:372
+msgid "How much to show"
 msgstr ""
 
 #: src/pages/Settings.tsx:38
 msgid "Modules"
 msgstr ""
 
-#: src/pages/Settings.tsx:385
-msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
+#: src/pages/Settings.tsx:382
+msgid "Beginner — score, problems, fixes"
 msgstr ""
 
-#: src/pages/Settings.tsx:391
-msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
+#: src/pages/Settings.tsx:388
+msgid "Professional — adds entities, analytics, passages"
 msgstr ""
 
-#: src/pages/Settings.tsx:398
-msgid "Model"
+#: src/pages/Settings.tsx:394
+msgid "Agency — adds the graph, modules, white-label"
 msgstr ""
 
 #: src/pages/Settings.tsx:40
 msgid "Every module is independent. Turn off what you do not need — disabled modules add no queries and no page weight."
 msgstr ""
 
-#: src/pages/Settings.tsx:409
+#: src/pages/Settings.tsx:400
+msgid "Enterprise — adds the audit log and queue health"
+msgstr ""
+
+#: src/pages/Settings.tsx:407
+msgid "Changes what is on screen, nothing else. It grants no extra access — permissions are set by WordPress roles — and hidden screens stay reachable by direct link. Reload after saving."
+msgstr ""
+
+#: src/pages/Settings.tsx:423
+msgid "Let a model rewrite page summaries and canonical answers"
+msgstr ""
+
+#: src/pages/Settings.tsx:429
+msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
+msgstr ""
+
+#: src/pages/Settings.tsx:435
+msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
+msgstr ""
+
+#: src/pages/Settings.tsx:442
+msgid "Model"
+msgstr ""
+
+#: src/pages/Settings.tsx:453
 msgid "No API key configured. Set MEDORA_LLM_API_KEY in wp-config.php rather than storing it in the database."
 msgstr ""
 
-#: src/pages/Settings.tsx:422
+#: src/pages/Settings.tsx:466
 msgid "Save settings"
 msgstr ""
 

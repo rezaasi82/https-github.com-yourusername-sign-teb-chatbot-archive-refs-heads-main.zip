@@ -1,6 +1,6 @@
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { api, boot } from '../api/client';
+import { api, boot, shows } from '../api/client';
 import { useAsync } from '../hooks/useAsync';
 import type { LicenseState, ModuleInfo, SecurityScan } from '../types';
 
@@ -366,6 +366,50 @@ export function Settings(): JSX.Element {
 					) }
 				</p>
 
+				<h3>{ __( 'Dashboard', 'medora-authority' ) }</h3>
+
+				<label htmlFor="medora-experience">
+					{ __( 'How much to show', 'medora-authority' ) }
+				</label>
+				<select
+					id="medora-experience"
+					value={ String( draft.experience_mode ?? 'beginner' ) }
+					onChange={ ( event ) =>
+						set( 'experience_mode', event.target.value )
+					}
+				>
+					<option value="beginner">
+						{ __(
+							'Beginner — score, problems, fixes',
+							'medora-authority'
+						) }
+					</option>
+					<option value="professional">
+						{ __(
+							'Professional — adds entities, analytics, passages',
+							'medora-authority'
+						) }
+					</option>
+					<option value="agency">
+						{ __(
+							'Agency — adds the graph, modules, white-label',
+							'medora-authority'
+						) }
+					</option>
+					<option value="enterprise">
+						{ __(
+							'Enterprise — adds the audit log and queue health',
+							'medora-authority'
+						) }
+					</option>
+				</select>
+				<p className="medora-muted">
+					{ __(
+						'Changes what is on screen, nothing else. It grants no extra access — permissions are set by WordPress roles — and hidden screens stay reachable by direct link. Reload after saving.',
+						'medora-authority'
+					) }
+				</p>
+
 				<h3>{ __( 'AI Writer', 'medora-authority' ) }</h3>
 
 				<label className="medora-checkbox">
@@ -425,7 +469,7 @@ export function Settings(): JSX.Element {
 				</div>
 			</section>
 
-			<Modules />
+			{ shows( 'modules' ) && <Modules /> }
 			<License />
 			<Security />
 		</div>

@@ -24,6 +24,9 @@ export interface BootData {
 		entities: boolean;
 		audit: boolean;
 	};
+	/** Presentational only — `capabilities` is the security boundary. */
+	experience: 'beginner' | 'professional' | 'agency' | 'enterprise';
+	features: Record< string, boolean >;
 }
 
 export interface Deduction {

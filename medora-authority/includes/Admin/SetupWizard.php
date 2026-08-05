@@ -56,7 +56,7 @@ final class SetupWizard
                 'permission_callback' => static fn (): bool => current_user_can(Capabilities::MANAGE_SETTINGS),
                 'args'                => [
                     'site_mode'         => ['type' => 'string', 'enum' => ['general', 'medical']],
-                    'experience_mode'   => ['type' => 'string', 'enum' => ['beginner', 'professional', 'agency', 'enterprise']],
+                    'experience_mode'   => ['type' => 'string', 'enum' => array_column(ExperienceMode::choices(), 'id')],
                     'organization_name' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'organization_type' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'crawler_policy'    => ['type' => 'string', 'enum' => ['allow', 'selective', 'block']],
@@ -114,14 +114,19 @@ final class SetupWizard
                 [
                     'id'          => 'experience',
                     'title'       => __('How much do you want to see?', 'medora-authority'),
-                    'description' => __('Beginner hides the advanced panels. You can switch at any time.', 'medora-authority'),
+                    'description' => __('This only changes how much of the dashboard is on screen. It grants nobody any extra access, and you can switch at any time.', 'medora-authority'),
                     'field'       => 'experience_mode',
-                    'options'     => [
-                        ['value' => 'beginner', 'label' => __('Beginner', 'medora-authority')],
-                        ['value' => 'professional', 'label' => __('Professional', 'medora-authority')],
-                        ['value' => 'agency', 'label' => __('Agency', 'medora-authority')],
-                        ['value' => 'enterprise', 'label' => __('Enterprise', 'medora-authority')],
-                    ],
+                    // Drawn from ExperienceMode so the wizard cannot describe a
+                    // mode differently from the class that implements it, and a
+                    // fifth mode needs adding in exactly one place.
+                    'options'     => array_map(
+                        static fn (array $choice): array => [
+                            'value'       => $choice['id'],
+                            'label'       => $choice['label'],
+                            'description' => $choice['description'],
+                        ],
+                        ExperienceMode::choices()
+                    ),
                 ],
             ],
         ]);

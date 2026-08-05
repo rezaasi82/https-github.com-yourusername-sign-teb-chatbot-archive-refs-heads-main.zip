@@ -122,9 +122,13 @@ if (! function_exists('get_bloginfo')) {
 }
 
 if (! function_exists('get_option')) {
+    /**
+     * Reads from `$GLOBALS['medora_test_options']` so a test can stand up a
+     * configuration without replacing `Options`, which is final on purpose.
+     */
     function get_option(string $option, mixed $default = false): mixed
     {
-        return $default;
+        return $GLOBALS['medora_test_options'][$option] ?? $default;
     }
 }
 

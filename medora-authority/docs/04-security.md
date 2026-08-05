@@ -90,6 +90,21 @@ The audit log redacts any context key matching `key`, `token`, `secret`,
 `password` or `api_key` before writing — audit context is assembled from request
 payloads, so without this a settings update would persist a key in plain text.
 
+### Experience mode is not a permission
+
+`Admin\ExperienceMode` decides how much of the dashboard is drawn — Beginner
+installs do not get a knowledge-graph canvas or an audit log in the menu. It is
+presentation only, and it is documented here so nobody mistakes it for access
+control during a review:
+
+* Hidden surfaces remain reachable by URL and remain served by the REST API.
+* Unknown features fail **open** — a surface nobody registered is shown.
+* Anything that must not be reachable is gated by `Capabilities` in the
+  controller, which is the single authorisation boundary.
+
+A second place to express authorisation is a second place to get it wrong, so
+this deliberately is not one.
+
 ### Abuse
 
 Anonymous `GET` requests to `medora/v1` are limited to 120 per minute per IP,

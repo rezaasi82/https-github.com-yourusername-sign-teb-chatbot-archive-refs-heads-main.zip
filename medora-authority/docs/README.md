@@ -87,6 +87,12 @@ not an article. The GEO Optimizer scores every passage on whether it survives
 that — and does it over the same chunks the Vector Engine embeds, so the score
 describes the text actually retrieved.
 
+**Show less by default.** The full surface — entity merging, relation
+predicates, passage lints — is genuinely too much for the clinic manager who
+installed this to "fix our Google". Beginner mode shows the working loop and
+nothing else. It hides, it never denies: the boundary is capabilities, and the
+mode is `display: none`.
+
 **Honest numbers.** Referral analytics report a floor, not a total, because
 several assistants strip the referrer. Trend percentages are `null` rather than
 fabricated when there is no baseline. Crawler detection is documented as a

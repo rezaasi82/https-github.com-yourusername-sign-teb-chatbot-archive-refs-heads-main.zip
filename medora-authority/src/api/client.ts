@@ -34,7 +34,21 @@ export const boot: BootData = window.medoraBoot ?? {
 		entities: false,
 		audit: false,
 	},
+	experience: 'professional',
+	features: {},
 };
+
+/**
+ * Whether a surface is shown in this install's experience mode.
+ *
+ * Unknown features are shown. This mirrors the server, which fails open for the
+ * same reason: it is a presentational filter, so a screen nobody registered
+ * should appear rather than vanish. Never use it to gate anything that matters
+ * — `boot.capabilities` is the boundary.
+ */
+export function shows( feature: string ): boolean {
+	return boot.features[ feature ] ?? true;
+}
 
 if ( boot.nonce ) {
 	apiFetch.use( apiFetch.createNonceMiddleware( boot.nonce ) );

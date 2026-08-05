@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.6.0
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,18 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.7.0 =
+* The Beginner / Professional / Agency / Enterprise modes now genuinely change
+  the dashboard. Previously the setting was saved and ignored, so every install
+  saw the full interface.
+* Beginner shows the working loop and nothing else: your score, what is wrong
+  with each page, and how to fix it. Higher modes add the entity explorer,
+  analytics, the knowledge graph, module control and the audit log.
+* Changing mode only changes what is on screen. It grants nobody extra access —
+  permissions still come from WordPress roles — and hidden screens stay
+  reachable by direct link.
+* The mode is now changeable in Settings, not only during setup.
+
 = 0.6.0 =
 * Fixed: on a translated site, every writing-brief section fell back to a
   generic heading instead of its real one, because coverage topics were
@@ -192,6 +204,10 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.7.0 =
+If you picked Beginner during setup, the dashboard will now be simpler than it
+was — the setting finally applies. Change it under Settings → Dashboard.
 
 = 0.6.0 =
 Required if you run the plugin in any language other than English. No database

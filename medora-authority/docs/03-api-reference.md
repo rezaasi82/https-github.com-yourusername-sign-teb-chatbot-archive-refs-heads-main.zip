@@ -371,6 +371,7 @@ Standard WordPress REST shape:
 | `medora_license_endpoint` / `medora_license_tier` | `string` | point at your own entitlement service |
 | `medora_branding` | `array` | force white-label values from code |
 | `medora_boot_data` | `array` | extend the dashboard bootstrap payload |
+| `medora_experience_shows` | `bool` | show or hide one surface in the current experience mode |
 | `medora_security_checks` | `array` | add configuration checks |
 
 ## Published documents

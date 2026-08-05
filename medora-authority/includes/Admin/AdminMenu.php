@@ -54,17 +54,27 @@ final class AdminMenu
             58
         );
 
+        // Route => [label, experience feature]. The feature decides whether the
+        // menu entry is drawn; it is not a permission check — the page itself
+        // still renders for anyone with the capability, because hiding a menu
+        // item is not security and must not be mistaken for it.
         $subpages = [
-            ''            => __('Overview', 'medora-authority'),
-            'entities'    => __('Entities', 'medora-authority'),
-            'graph'       => __('Knowledge Graph', 'medora-authority'),
-            'content'     => __('Content', 'medora-authority'),
-            'crawlers'    => __('AI Crawlers', 'medora-authority'),
-            'analytics'   => __('AI Analytics', 'medora-authority'),
-            'settings'    => __('Settings', 'medora-authority'),
+            ''          => [__('Overview', 'medora-authority'), 'overview'],
+            'entities'  => [__('Entities', 'medora-authority'), 'entities'],
+            'graph'     => [__('Knowledge Graph', 'medora-authority'), 'graph'],
+            'content'   => [__('Content', 'medora-authority'), 'content'],
+            'crawlers'  => [__('AI Crawlers', 'medora-authority'), 'crawlers'],
+            'analytics' => [__('AI Analytics', 'medora-authority'), 'analytics'],
+            'settings'  => [__('Settings', 'medora-authority'), 'settings'],
         ];
 
-        foreach ($subpages as $route => $label) {
+        $experience = $this->container->get(ExperienceMode::class);
+
+        foreach ($subpages as $route => [$label, $feature]) {
+            if (! $experience->shows($feature)) {
+                continue;
+            }
+
             add_submenu_page(
                 self::SLUG,
                 $label,

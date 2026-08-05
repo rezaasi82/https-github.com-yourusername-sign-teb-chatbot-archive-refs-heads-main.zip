@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medora\Authority\Admin;
 
 use Medora\Authority\Core\Container;
+use Medora\Authority\Core\Options;
 use Medora\Authority\Module\AbstractModule;
 
 if (! defined('ABSPATH')) {
@@ -38,7 +39,15 @@ final class AdminModule extends AbstractModule
 
     public function register(Container $container): void
     {
-        $container->singleton(AssetManager::class, static fn (): AssetManager => new AssetManager());
+        $container->singleton(
+            ExperienceMode::class,
+            static fn (Container $c): ExperienceMode => new ExperienceMode($c->get(Options::class))
+        );
+
+        $container->singleton(
+            AssetManager::class,
+            static fn (Container $c): AssetManager => new AssetManager($c->get(ExperienceMode::class))
+        );
         $container->singleton(
             AdminMenu::class,
             static fn (Container $c): AdminMenu => new AdminMenu($c, $c->get(AssetManager::class))

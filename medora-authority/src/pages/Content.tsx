@@ -1,6 +1,6 @@
 import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { api } from '../api/client';
+import { api, shows } from '../api/client';
 import { useAsync } from '../hooks/useAsync';
 import { ScoreRing } from '../components/ScoreRing';
 import { DeductionList } from '../components/DeductionList';
@@ -10,6 +10,18 @@ import { PassagePanel } from '../components/PassagePanel';
 import type { Deduction, SiteReport } from '../types';
 
 type PanelTab = 'fixes' | 'brief' | 'links' | 'passages';
+
+/**
+ * Tab ids double as experience-mode feature names, so a mode that hides
+ * "passages" hides both the menu entry and this tab without a second list to
+ * keep in step.
+ */
+const TABS: ReadonlyArray< readonly [ PanelTab, string ] > = [
+	[ 'fixes', __( 'Fixes', 'medora-authority' ) ],
+	[ 'brief', __( 'Brief', 'medora-authority' ) ],
+	[ 'links', __( 'Links', 'medora-authority' ) ],
+	[ 'passages', __( 'Passages', 'medora-authority' ) ],
+];
 
 interface Recommendations {
 	post_id: number;
@@ -115,27 +127,19 @@ export function Content(): JSX.Element {
 						className="medora-subtabs"
 						aria-label={ __( 'Page tools', 'medora-authority' ) }
 					>
-						{ (
-							[
-								[ 'fixes', __( 'Fixes', 'medora-authority' ) ],
-								[ 'brief', __( 'Brief', 'medora-authority' ) ],
-								[ 'links', __( 'Links', 'medora-authority' ) ],
-								[
-									'passages',
-									__( 'Passages', 'medora-authority' ),
-								],
-							] as const
-						 ).map( ( [ id, label ] ) => (
-							<button
-								key={ id }
-								type="button"
-								className={ tab === id ? 'is-active' : '' }
-								aria-current={ tab === id ? 'true' : undefined }
-								onClick={ () => setTab( id ) }
-							>
-								{ label }
-							</button>
-						) ) }
+						{ TABS.filter( ( [ id ] ) => shows( id ) ).map(
+							( [ id, label ] ) => (
+								<button
+									key={ id }
+									type="button"
+									className={ tab === id ? 'is-active' : '' }
+									aria-current={ tab === id ? 'true' : undefined }
+									onClick={ () => setTab( id ) }
+								>
+									{ label }
+								</button>
+							)
+						) }
 					</nav>
 
 					{ tab === 'fixes' && detail.data && (
