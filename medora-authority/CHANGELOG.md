@@ -4,6 +4,59 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] — 2026-08-03
+
+Found by auditing every declared option for a consumer, after the same pattern
+turned up real bugs in 0.7.0 and 0.7.1. Two of the thirty-four had none.
+
+### Fixed — the content language was taken from the admin
+
+Schema's `inLanguage`, and the language the AI Writer was told to write in, both
+came from `get_locale()` — which describes the person in wp-admin, not the
+pages. A Persian clinic running an English-locale WordPress is an ordinary
+setup, and it produced `inLanguage: "en-US"` on every Persian page: a wrong
+signal handed to precisely the AI crawlers this product exists to signal
+correctly. The same source told the AI Writer to summarise Persian content in
+English.
+
+`Support\ContentLanguage` resolves it properly, in this order:
+
+1. the `medora_content_language` filter, which carries the post — where
+   Polylang and WPML belong, because on a multilingual site the language is a
+   property of the page and no site-wide setting can be right;
+2. the `default_language` setting;
+3. `get_locale()`, exactly as before.
+
+It now drives `WebSiteNode`, `WebPageNode`, `PackGenerator` and a new
+`Language:` line in llms.txt, which previously left a model to infer the
+language from a sample of titles. It also exposes `isRtl()` derived from the
+content rather than from `is_rtl()`.
+
+`default_language` was the dead setting; it now has this job. Settings gains a
+control for it.
+
+### Changed
+
+* `default_language` now defaults to empty, meaning "follow WordPress". A
+  migration (DB 1.1.0) clears a stored `'en'`, which 0.7.x wrote at activation
+  and never read — leaving it in place would have started declaring English on
+  sites that are not in English.
+* Removed the `llm_provider` setting. It was declared, read by nothing, and
+  could only ever hold one value; `medora_llm_provider` is the swap point and
+  always was.
+
+### Fixed — the unit test bootstrap stubbed hooks out
+
+`apply_filters()` returned its input and `do_action()` did nothing, so any
+filter-driven branch was untestable and any test asserting filter behaviour
+passed without running the callback. Both now dispatch through a real registry
+with priority ordering, alongside `add_filter`, `add_action`, `get_locale` and
+`medora_test_reset_hooks()` — which tests must call, since the registry is
+global and callbacks otherwise leak between files.
+
+This is the second harness found lying this way; the module wiring harness had
+the same stubs until 0.5.0.
+
 ## [0.7.1] — 2026-08-03
 
 ### Fixed — the white-label accent colour never applied

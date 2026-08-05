@@ -55,7 +55,18 @@ final class Migrator
     private static function migrations(): array
     {
         return [
-            // '1.1.0' => static function (): void { ... },
+            // 0.7.x shipped `default_language => 'en'` as the declared default
+            // and read it nowhere. 0.8.0 gives it a job, so a stored 'en' that
+            // nobody chose would start declaring English on sites that are not
+            // in English. Clearing it restores "follow WordPress", which is
+            // what those installs were doing all along.
+            '1.1.0' => static function (): void {
+                $options = new Options();
+
+                if ($options->getString('default_language') === 'en') {
+                    $options->set('default_language', '');
+                }
+            },
         ];
     }
 }

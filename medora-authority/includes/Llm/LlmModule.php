@@ -12,6 +12,7 @@ use Medora\Authority\Module\AbstractModule;
 use Medora\Authority\Performance\JobQueue;
 use Medora\Authority\Performance\Jobs\GeneratePackJob;
 use Medora\Authority\Security\AuditLogRepository;
+use Medora\Authority\Support\ContentLanguage;
 use WP_Post;
 
 if (! defined('ABSPATH')) {
@@ -89,7 +90,8 @@ final class LlmModule extends AbstractModule
             PackGenerator::class,
             static fn (Container $c): PackGenerator => new PackGenerator(
                 $c->get(LlmProviderInterface::class),
-                $c->get(AuditLogRepository::class)
+                $c->get(AuditLogRepository::class),
+                $c->get(ContentLanguage::class)
             )
         );
     }

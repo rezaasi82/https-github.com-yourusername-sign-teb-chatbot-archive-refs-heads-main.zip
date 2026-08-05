@@ -493,6 +493,31 @@ export function Settings(): JSX.Element {
 					) }
 				</p>
 
+				<h3>{ __( 'Content language', 'medora-authority' ) }</h3>
+
+				<label htmlFor="medora-language">
+					{ __( 'Your pages are written in', 'medora-authority' ) }
+				</label>
+				<select
+					id="medora-language"
+					value={ String( draft.default_language ?? '' ) }
+					onChange={ ( event ) =>
+						set( 'default_language', event.target.value )
+					}
+				>
+					{ ( data?.languages ?? [] ).map( ( language ) => (
+						<option key={ language.value } value={ language.value }>
+							{ language.label }
+						</option>
+					) ) }
+				</select>
+				<p className="medora-muted">
+					{ __(
+						'Set this when your content is in a different language from the WordPress admin — a Persian site running an English admin is a common case. It is what gets declared to AI crawlers in your structured data and llms.txt, and what the AI Writer writes in.',
+						'medora-authority'
+					) }
+				</p>
+
 				<h3>{ __( 'Dashboard', 'medora-authority' ) }</h3>
 
 				<label htmlFor="medora-experience">

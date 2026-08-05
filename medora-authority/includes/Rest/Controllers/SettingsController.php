@@ -113,6 +113,7 @@ final class SettingsController extends AbstractController
             'has_llm_key'       => $options->getString('llm_api_key') !== ''
                 || getenv('MEDORA_LLM_API_KEY') !== false
                 || defined('MEDORA_LLM_API_KEY'),
+            'languages'         => \Medora\Authority\Support\ContentLanguage::choices(),
             'tiers'             => array_map(
                 static fn (string $tier): array => ['id' => $tier, 'label' => LicenseTier::label($tier)],
                 LicenseTier::all()

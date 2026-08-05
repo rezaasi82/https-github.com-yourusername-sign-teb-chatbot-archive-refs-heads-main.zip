@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medora\Authority\Schema;
 
 use Medora\Authority\Core\Options;
+use Medora\Authority\Support\ContentLanguage;
 use Medora\Authority\Entity\Entity;
 use WP_Post;
 
@@ -43,6 +44,18 @@ final class SchemaContext
     public function siteId(string $fragment): string
     {
         return rtrim(home_url('/'), '/') . '/#' . $fragment;
+    }
+
+    /**
+     * The BCP-47 tag for whatever this context describes.
+     *
+     * Lives here rather than on each node so `inLanguage` is derived once, the
+     * same way, everywhere — and so a per-post language from a multilingual
+     * plugin reaches the page node as well as the site node.
+     */
+    public function language(): string
+    {
+        return (new ContentLanguage($this->options))->tag($this->post);
     }
 
     public function organizationName(): string

@@ -33,7 +33,7 @@ final class WebSiteNode implements NodeInterface
             'name'            => $context->organizationName(),
             'description'     => (string) get_bloginfo('description'),
             'publisher'       => ['@id' => $context->siteId('organization')],
-            'inLanguage'      => $this->language(),
+            'inLanguage'      => $context->language(),
             // Declaring the search endpoint lets assistants query the site
             // directly instead of guessing URLs.
             'potentialAction' => [
@@ -49,9 +49,4 @@ final class WebSiteNode implements NodeInterface
         return [Arr::compact($node)];
     }
 
-    private function language(): string
-    {
-        // Schema expects a BCP-47 tag; WordPress stores an underscore locale.
-        return str_replace('_', '-', (string) get_locale());
-    }
 }

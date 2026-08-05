@@ -173,12 +173,18 @@ final class Options
             // makes no outbound model call and every published summary is the
             // publisher's own sentences. Same key precedence as embeddings —
             // MEDORA_LLM_API_KEY first, database last and flagged.
-            'llm_enabled'  => false,
-            'llm_provider' => 'anthropic',
-            'llm_model'    => 'claude-opus-5',
+            // No `llm_provider`: there is one implementation, and a setting
+            // that can only hold one value is noise. Swap it with the
+            // `medora_llm_provider` filter.
+            'llm_enabled' => false,
+            'llm_model'   => 'claude-opus-5',
 
             // Operations.
-            'default_language' => 'en',
+            // Empty means "follow the WordPress site language". Set it when
+            // the content language differs from the admin language, which is an
+            // ordinary setup rather than an edge case — see
+            // `Support\ContentLanguage`.
+            'default_language' => '',
             'retention_days'   => 180,
             'white_label'      => [],
             'modules'          => [],

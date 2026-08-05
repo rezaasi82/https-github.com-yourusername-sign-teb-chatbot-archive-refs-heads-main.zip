@@ -262,6 +262,7 @@ export const api = {
 			defaults: Record< string, unknown >;
 			has_embedding_key: boolean;
 			has_llm_key: boolean;
+			languages: Array< { value: string; label: string } >;
 		} >( 'settings' ),
 
 	saveSettings: ( data: Record< string, unknown > ) =>

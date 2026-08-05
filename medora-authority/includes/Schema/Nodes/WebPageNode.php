@@ -53,7 +53,7 @@ final class WebPageNode implements NodeInterface
             'isPartOf'         => ['@id' => $context->siteId('website')],
             'datePublished'    => get_post_time('c', true, $post),
             'dateModified'     => get_post_modified_time('c', true, $post),
-            'inLanguage'       => str_replace('_', '-', (string) get_locale()),
+            'inLanguage'       => $context->language(),
             'primaryImageOfPage' => $this->primaryImage($post),
             'mentions'         => $this->mentions($context),
             'about'            => $this->about($context),

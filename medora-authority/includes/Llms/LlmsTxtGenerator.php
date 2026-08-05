@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medora\Authority\Llms;
 
 use Medora\Authority\Core\Options;
+use Medora\Authority\Support\ContentLanguage;
 use Medora\Authority\Support\Cache;
 use Medora\Authority\Support\Text;
 use WP_Post;
@@ -36,6 +37,7 @@ final class LlmsTxtGenerator
     public function __construct(
         private readonly Options $options,
         private readonly Cache $cache,
+        private readonly ContentLanguage $language,
     ) {
     }
 
@@ -64,6 +66,11 @@ final class LlmsTxtGenerator
             sprintf('# %s', $name),
             '',
             sprintf('> %s', $description),
+            '',
+            // Stated explicitly: a model that has to infer the language from
+            // the sample of titles below will get a mixed-language site wrong,
+            // and llms.txt has no other place to say it.
+            sprintf('Language: %s', $this->language->tag()),
             '',
         ];
 

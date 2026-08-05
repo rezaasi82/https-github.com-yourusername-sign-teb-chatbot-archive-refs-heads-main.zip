@@ -372,6 +372,7 @@ Standard WordPress REST shape:
 | `medora_branding` | `array` | force white-label values from code |
 | `medora_boot_data` | `array` | extend the dashboard bootstrap payload |
 | `medora_experience_shows` | `bool` | show or hide one surface in the current experience mode |
+| `medora_content_language` | `string` | set the content language, per post — where multilingual plugins hook |
 | `medora_security_checks` | `array` | add configuration checks |
 
 ## Published documents

@@ -70,6 +70,68 @@ if (! function_exists('esc_url')) {
     }
 }
 
+if (! function_exists('add_filter')) {
+    /**
+     * A real hook registry, not a stub.
+     *
+     * Stubbing `apply_filters()` to return its input makes every filter-driven
+     * branch untestable *and* makes a test that asserts filter behaviour pass
+     * for the wrong reason — it never ran the callback. Priority is honoured
+     * because code that relies on ordering is exactly the code worth testing.
+     *
+     * `medora_test_reset_hooks()` must run between tests; callbacks otherwise
+     * leak into unrelated cases.
+     */
+    function add_filter(string $hook, callable $callback, int $priority = 10, int $args = 1): bool
+    {
+        $GLOBALS['medora_test_hooks'][$hook][$priority][] = $callback;
+
+        return true;
+    }
+}
+
+if (! function_exists('add_action')) {
+    function add_action(string $hook, callable $callback, int $priority = 10, int $args = 1): bool
+    {
+        return add_filter($hook, $callback, $priority, $args);
+    }
+}
+
+if (! function_exists('medora_test_callbacks')) {
+    /**
+     * @return list<callable>
+     */
+    function medora_test_callbacks(string $hook): array
+    {
+        $byPriority = $GLOBALS['medora_test_hooks'][$hook] ?? [];
+
+        ksort($byPriority);
+
+        return array_merge(...array_values($byPriority)) ?: [];
+    }
+}
+
+if (! function_exists('medora_test_reset_hooks')) {
+    function medora_test_reset_hooks(): void
+    {
+        $GLOBALS['medora_test_hooks'] = [];
+    }
+}
+
+if (! function_exists('get_locale')) {
+    function get_locale(): string
+    {
+        return $GLOBALS['medora_test_locale'] ?? 'en_US';
+    }
+}
+
+if (! function_exists('get_user_locale')) {
+    function get_user_locale(): string
+    {
+        return get_locale();
+    }
+}
+
 if (! function_exists('esc_attr')) {
     function esc_attr(string $text): string
     {
@@ -97,6 +159,10 @@ if (! function_exists('esc_url_raw')) {
 if (! function_exists('apply_filters')) {
     function apply_filters(string $hook, mixed $value, mixed ...$args): mixed
     {
+        foreach (medora_test_callbacks($hook) as $callback) {
+            $value = $callback($value, ...$args);
+        }
+
         return $value;
     }
 }
@@ -104,6 +170,9 @@ if (! function_exists('apply_filters')) {
 if (! function_exists('do_action')) {
     function do_action(string $hook, mixed ...$args): void
     {
+        foreach (medora_test_callbacks($hook) as $callback) {
+            $callback(...$args);
+        }
     }
 }
 

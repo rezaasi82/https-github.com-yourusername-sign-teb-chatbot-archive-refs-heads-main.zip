@@ -28,6 +28,7 @@ use Medora\Authority\Score\ScoreModule;
 use Medora\Authority\Security\SecurityModule;
 use Medora\Authority\Semantic\SemanticModule;
 use Medora\Authority\Sitemap\SitemapModule;
+use Medora\Authority\Support\ContentLanguage;
 use Medora\Authority\Vector\VectorModule;
 use Medora\Authority\WhiteLabel\WhiteLabelModule;
 
@@ -97,6 +98,10 @@ final class Plugin
         $this->container->instance(Container::class, $this->container);
 
         $this->container->singleton(Options::class, static fn (): Options => new Options());
+        $this->container->singleton(
+            ContentLanguage::class,
+            static fn (Container $c): ContentLanguage => new ContentLanguage($c->get(Options::class))
+        );
         $this->container->singleton(
             LicenseManager::class,
             static fn (Container $c): LicenseManager => new LicenseManager($c->get(Options::class))

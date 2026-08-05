@@ -8,7 +8,7 @@
 # by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.7.1\n"
+"Project-Id-Version: Medora Authority 0.8.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -83,7 +83,7 @@ msgid "Settings"
 msgstr ""
 
 #: includes/Admin/AdminModule.php:27
-#: src/pages/Settings.tsx:496
+#: src/pages/Settings.tsx:521
 msgid "Dashboard"
 msgstr ""
 
@@ -1143,12 +1143,12 @@ msgstr ""
 msgid "Suggest context-aware internal links from semantic similarity and shared entities."
 msgstr ""
 
-#: includes/Llm/LlmModule.php:44
-#: src/pages/Settings.tsx:540
+#: includes/Llm/LlmModule.php:45
+#: src/pages/Settings.tsx:565
 msgid "AI Writer"
 msgstr ""
 
-#: includes/Llm/LlmModule.php:49
+#: includes/Llm/LlmModule.php:50
 msgid "Rewrite page summaries and canonical answers with a model, keeping only what the page itself supports."
 msgstr ""
 
@@ -1165,7 +1165,7 @@ msgid "Publish a curated, always-current Markdown map of your site for language 
 msgstr ""
 
 #. translators: %s: site name.
-#: includes/Llms/LlmsTxtGenerator.php:298
+#: includes/Llms/LlmsTxtGenerator.php:305
 msgid "Reference content published by %s."
 msgstr ""
 
@@ -1305,37 +1305,37 @@ msgstr ""
 msgid "The AI Content Optimizer module is not active."
 msgstr ""
 
-#: includes/Rest/Controllers/SettingsController.php:128
+#: includes/Rest/Controllers/SettingsController.php:129
 msgid "No settings supplied."
 msgstr ""
 
-#: includes/Rest/Controllers/SettingsController.php:148
+#: includes/Rest/Controllers/SettingsController.php:149
 msgid "No recognised settings supplied."
 msgstr ""
 
-#: includes/Rest/Controllers/SettingsController.php:168
+#: includes/Rest/Controllers/SettingsController.php:169
 msgid "Unknown module."
 msgstr ""
 
 #. translators: %s: licence tier name.
-#: includes/Rest/Controllers/SettingsController.php:178
+#: includes/Rest/Controllers/SettingsController.php:179
 msgid "This module requires the %s plan."
 msgstr ""
 
 #. translators: %s: comma-separated module names.
-#: includes/Rest/Controllers/SettingsController.php:199
+#: includes/Rest/Controllers/SettingsController.php:200
 msgid "Disable these modules first, they depend on this one: %s"
 msgstr ""
 
-#: includes/Rest/Controllers/SettingsController.php:241
+#: includes/Rest/Controllers/SettingsController.php:242
 msgid "Unknown crawler."
 msgstr ""
 
-#: includes/Rest/Controllers/SettingsController.php:271
+#: includes/Rest/Controllers/SettingsController.php:272
 msgid "Licence operation failed."
 msgstr ""
 
-#: includes/Rest/Controllers/SettingsController.php:287
+#: includes/Rest/Controllers/SettingsController.php:288
 msgid "Licence status refreshed."
 msgstr ""
 
@@ -1956,6 +1956,10 @@ msgstr ""
 
 #: includes/Sitemap/SitemapModule.php:44
 msgid "Publish entity-annotated sitemaps in XML, JSON and Markdown."
+msgstr ""
+
+#: includes/Support/ContentLanguage.php:125
+msgid "Follow the WordPress site language"
 msgstr ""
 
 #: includes/Vector/Providers/HashingEmbeddingProvider.php:42
@@ -2835,7 +2839,7 @@ msgid "Provider"
 msgstr ""
 
 #: src/pages/Settings.tsx:483
-#: src/pages/Settings.tsx:579
+#: src/pages/Settings.tsx:604
 msgid "An API key is configured."
 msgstr ""
 
@@ -2847,56 +2851,68 @@ msgstr ""
 msgid "Switching provider clears the existing index — the two vector spaces are not comparable — and content is re-embedded in the background."
 msgstr ""
 
-#: src/pages/Settings.tsx:499
-msgid "How much to show"
+#: src/pages/Settings.tsx:496
+msgid "Content language"
 msgstr ""
 
-#: src/pages/Settings.tsx:509
-msgid "Beginner — score, problems, fixes"
+#: src/pages/Settings.tsx:499
+msgid "Your pages are written in"
 msgstr ""
 
 #: src/pages/Settings.tsx:515
-msgid "Professional — adds entities, analytics, passages"
+msgid "Set this when your content is in a different language from the WordPress admin — a Persian site running an English admin is a common case. It is what gets declared to AI crawlers in your structured data and llms.txt, and what the AI Writer writes in."
 msgstr ""
 
-#: src/pages/Settings.tsx:521
-msgid "Agency — adds the graph, modules, white-label"
-msgstr ""
-
-#: src/pages/Settings.tsx:527
-msgid "Enterprise — adds the audit log and queue health"
+#: src/pages/Settings.tsx:524
+msgid "How much to show"
 msgstr ""
 
 #: src/pages/Settings.tsx:534
+msgid "Beginner — score, problems, fixes"
+msgstr ""
+
+#: src/pages/Settings.tsx:540
+msgid "Professional — adds entities, analytics, passages"
+msgstr ""
+
+#: src/pages/Settings.tsx:546
+msgid "Agency — adds the graph, modules, white-label"
+msgstr ""
+
+#: src/pages/Settings.tsx:552
+msgid "Enterprise — adds the audit log and queue health"
+msgstr ""
+
+#: src/pages/Settings.tsx:559
 msgid "Changes what is on screen, nothing else. It grants no extra access — permissions are set by WordPress roles — and hidden screens stay reachable by direct link. Reload after saving."
 msgstr ""
 
-#: src/pages/Settings.tsx:550
+#: src/pages/Settings.tsx:575
 msgid "Let a model rewrite page summaries and canonical answers"
 msgstr ""
 
-#: src/pages/Settings.tsx:556
+#: src/pages/Settings.tsx:581
 msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
 msgstr ""
 
-#: src/pages/Settings.tsx:562
+#: src/pages/Settings.tsx:587
 msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
 msgstr ""
 
-#: src/pages/Settings.tsx:569
+#: src/pages/Settings.tsx:594
 msgid "Model"
 msgstr ""
 
-#: src/pages/Settings.tsx:580
+#: src/pages/Settings.tsx:605
 msgid "No API key configured. Set MEDORA_LLM_API_KEY in wp-config.php rather than storing it in the database."
-msgstr ""
-
-#: src/pages/Settings.tsx:593
-msgid "Save settings"
 msgstr ""
 
 #: src/pages/Settings.tsx:61
 msgid "not running"
+msgstr ""
+
+#: src/pages/Settings.tsx:618
+msgid "Save settings"
 msgstr ""
 
 #: src/pages/Wizard.tsx:137

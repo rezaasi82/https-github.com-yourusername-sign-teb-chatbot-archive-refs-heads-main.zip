@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Medora\Authority\Llm;
 
 use Medora\Authority\Security\AuditLogRepository;
+use Medora\Authority\Support\ContentLanguage;
 use Medora\Authority\Support\Text;
 use RuntimeException;
 use WP_Post;
@@ -39,6 +40,7 @@ final class PackGenerator
     public function __construct(
         private readonly LlmProviderInterface $provider,
         private readonly AuditLogRepository $audit,
+        private readonly ContentLanguage $language,
     ) {
     }
 
@@ -193,7 +195,7 @@ final class PackGenerator
 
     private function system(WP_Post $post): string
     {
-        $language = $this->language($post);
+        $language = $this->promptLanguage($post);
 
         // Kept byte-identical across every post on the site so the cached
         // system block actually hits — anything post-specific belongs in the
@@ -301,31 +303,20 @@ final class PackGenerator
         return Text::truncate($plain, (int) (mb_strlen($plain, 'UTF-8') * $ratio));
     }
 
-    private function language(WP_Post $post): string
+    private function promptLanguage(WP_Post $post): string
     {
         /**
          * Filter the language the generated pack is written in.
          *
+         * The default is now the *content* language rather than the admin's,
+         * resolved the same way schema and llms.txt resolve it — so a Persian
+         * page on an English-locale install is summarised in Persian instead of
+         * translated into English. Set `medora_content_language` to change it
+         * everywhere; use this filter to change only what the model is told.
+         *
          * @param string  $language Human-readable language name.
          * @param WP_Post $post
          */
-        return (string) apply_filters(
-            'medora_llm_language',
-            $this->languageName(get_locale()),
-            $post
-        );
-    }
-
-    private function languageName(string $locale): string
-    {
-        return match (substr($locale, 0, 2)) {
-            'fa'    => 'Persian (فارسی)',
-            'ar'    => 'Arabic (العربية)',
-            'tr'    => 'Turkish',
-            'fr'    => 'French',
-            'de'    => 'German',
-            'es'    => 'Spanish',
-            default => 'English',
-        };
+        return (string) apply_filters('medora_llm_language', $this->language->name($post), $post);
     }
 }

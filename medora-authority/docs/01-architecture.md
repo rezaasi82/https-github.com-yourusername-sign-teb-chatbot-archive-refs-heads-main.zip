@@ -146,3 +146,25 @@ the supported contract and degrades gracefully when a module is disabled.
   thousand chunks runs in tens of milliseconds and needs no extension. Past
   ~20k chunks the stats endpoint flags it and `medora_vector_search` lets an
   external index take over without touching calling code.
+
+
+## Content language
+
+`Support\ContentLanguage` answers "what language is this page written in", and
+is the only place that question is answered. It is deliberately separate from
+`get_locale()`, which answers a different question — what language the person in
+wp-admin reads — and the two are routinely different: a Persian or Arabic
+publisher running an English-locale WordPress is an ordinary setup, not an edge
+case.
+
+Resolution order:
+
+1. `medora_content_language` (carries the post) — for Polylang, WPML, or any
+   site where language is per-page;
+2. the `default_language` setting;
+3. `get_locale()`.
+
+Consumers: `WebSiteNode` and `WebPageNode` (`inLanguage`), `LlmsTxtGenerator`
+(the `Language:` line), `PackGenerator` (what the model is told to write in).
+Anything else needing a language should take this service rather than reading
+the locale, so a multilingual site stays consistent across every artefact.
