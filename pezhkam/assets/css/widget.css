@@ -1,0 +1,426 @@
+/* Pezhkam — floating chat widget. Mobile-first, direction-agnostic
+   (RTL/LTR), premium SaaS-grade UI, fully themeable via --pzk-bg / --pzk-accent
+   (printed inline by PZK_Widget). Touch targets >= 44px, no layout shift. */
+
+.pzk-root {
+	--pzk-bg: #0f1f3d;
+	--pzk-accent: #c8a04e;
+	--pzk-ink: #16233f;
+	--pzk-radius: 20px;
+	--pzk-shadow: 0 24px 60px rgba(15, 31, 61, 0.35);
+	position: fixed;
+	inset-inline-end: max(18px, env(safe-area-inset-right));
+	inset-block-end: max(18px, env(safe-area-inset-bottom));
+	z-index: 999999;
+	font-family: Vazirmatn, "Vazir", Tahoma, system-ui, sans-serif;
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- launcher ---------- */
+.pzk-launcher {
+	position: relative;
+	width: 62px;
+	height: 62px;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	color: #fff;
+	background: linear-gradient(135deg, var(--pzk-bg), #22468a);
+	box-shadow: 0 12px 30px rgba(15, 31, 61, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: visible;
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.pzk-launcher:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 16px 40px rgba(15, 31, 61, 0.6); }
+.pzk-launcher:active { transform: scale(0.97); }
+.pzk-launcher-icon { position: relative; z-index: 1; }
+.pzk-launcher-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.pzk-launcher-pulse {
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	background: var(--pzk-accent);
+	opacity: 0.55;
+	animation: pzk-pulse 2.2s ease-out infinite;
+}
+@keyframes pzk-pulse {
+	0%   { transform: scale(1); opacity: 0.5; }
+	70%  { transform: scale(1.55); opacity: 0; }
+	100% { opacity: 0; }
+}
+.pzk-open .pzk-launcher-pulse { display: none; }
+
+/* ---------- panel ---------- */
+.pzk-panel {
+	position: absolute;
+	inset-block-end: 78px;
+	inset-inline-end: 0;
+	width: 380px;
+	max-width: calc(100vw - 24px);
+	height: 560px;
+	max-height: calc(100vh - 120px);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border-radius: var(--pzk-radius);
+	background: #fff;
+	border: 1px solid rgba(15, 31, 61, 0.1);
+	box-shadow: var(--pzk-shadow);
+	animation: pzk-pop 0.2s ease;
+}
+.pzk-panel[hidden] { display: none !important; }
+@keyframes pzk-pop {
+	from { opacity: 0; transform: translateY(14px) scale(0.97); }
+	to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- header ---------- */
+.pzk-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 16px;
+	color: #fff;
+	background: linear-gradient(135deg, var(--pzk-bg), #22468a);
+	flex: 0 0 auto;
+}
+.pzk-header-id { display: flex; align-items: center; gap: 10px; }
+.pzk-header-avatar {
+	width: 40px; height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+	background: rgba(255, 255, 255, 0.15);
+	display: inline-flex; align-items: center; justify-content: center;
+	color: #fff;
+}
+.pzk-header-text { display: flex; flex-direction: column; line-height: 1.3; }
+.pzk-title { font-weight: 800; font-size: 15px; }
+.pzk-status { font-size: 11.5px; opacity: 0.85; display: inline-flex; align-items: center; gap: 5px; }
+.pzk-status-dot { width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,.25); }
+.pzk-close {
+	width: 34px; height: 34px;
+	background: rgba(255, 255, 255, 0.12);
+	border: none; border-radius: 10px;
+	color: #fff; cursor: pointer;
+	display: flex; align-items: center; justify-content: center;
+	transition: background 0.15s ease;
+}
+.pzk-close:hover { background: rgba(255, 255, 255, 0.24); }
+
+/* ---------- body / messages ---------- */
+.pzk-body { position: relative; flex: 1 1 auto; min-height: 0; display: flex; }
+.pzk-messages {
+	flex: 1;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain;
+	scroll-behavior: smooth;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	background: #f6f8fc;
+}
+.pzk-msg {
+	max-width: 84%;
+	padding: 11px 14px;
+	border-radius: 16px;
+	font-size: 14.5px;
+	line-height: 1.75;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+.pzk-msg-bot {
+	align-self: flex-start;
+	background: #fff;
+	color: var(--pzk-ink);
+	border: 1px solid rgba(15, 31, 61, 0.08);
+	border-end-start-radius: 5px;
+	box-shadow: 0 1px 2px rgba(15,31,61,.04);
+}
+.pzk-msg-user {
+	align-self: flex-end;
+	color: #fff;
+	background: linear-gradient(135deg, var(--pzk-bg), #22468a);
+	border-end-end-radius: 5px;
+}
+.pzk-typing { display: inline-flex; gap: 4px; align-items: center; }
+.pzk-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--pzk-accent); animation: pzk-bounce 1s infinite ease-in-out; }
+.pzk-typing span:nth-child(2) { animation-delay: 0.15s; }
+.pzk-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes pzk-bounce { 0%,80%,100% { transform: scale(0.5); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+
+/* ---------- lead capture ---------- */
+.pzk-lead {
+	position: absolute;
+	inset: 0;
+	background: #f6f8fc;
+	z-index: 3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 18px;
+	overflow-y: auto;
+}
+/* The `hidden` attribute must win over display:flex above, otherwise the lead
+   overlay stays on top and covers the chat after "start" (messages/AI reply
+   render underneath and appear to do nothing). */
+.pzk-lead[hidden] {
+	display: none !important;
+}
+.pzk-lead-card { width: 100%; max-width: 320px; text-align: center; }
+.pzk-lead-badge {
+	width: 62px; height: 62px; margin: 0 auto 12px;
+	border-radius: 50%;
+	display: flex; align-items: center; justify-content: center;
+	color: #fff;
+	background: linear-gradient(135deg, var(--pzk-bg), #22468a);
+	box-shadow: 0 8px 20px rgba(15,31,61,.25);
+}
+.pzk-lead-title { font-size: 18px; font-weight: 800; color: var(--pzk-ink); margin: 0 0 6px; }
+.pzk-lead-sub { font-size: 13px; line-height: 1.7; color: #5a6a86; margin: 0 0 16px; }
+.pzk-lead-label { display: block; text-align: start; font-size: 12.5px; font-weight: 700; color: var(--pzk-ink); margin: 10px 2px 5px; }
+.pzk-lead-name, .pzk-lead-phone {
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 48px;
+	border: 1.5px solid rgba(15, 31, 61, 0.15);
+	border-radius: 12px;
+	padding: 0 14px;
+	/* 16px prevents iOS Safari auto-zoom/shift on focus. */
+	font-size: 16px;
+	font-family: inherit;
+	background: #fff;
+	outline: none;
+	transition: border-color 0.15s ease;
+}
+.pzk-lead-name:focus, .pzk-lead-phone:focus { border-color: var(--pzk-accent); }
+.pzk-lead-error { color: #d63638; font-size: 12.5px; margin: 10px 0 0; }
+.pzk-lead-start {
+	width: 100%;
+	min-height: 50px;
+	margin-top: 16px;
+	border: none; border-radius: 12px;
+	cursor: pointer;
+	font-family: inherit; font-size: 15.5px; font-weight: 800;
+	color: var(--pzk-ink);
+	background: var(--pzk-accent);
+	box-shadow: 0 8px 18px rgba(200,160,78,.35);
+	transition: transform 0.15s ease, filter 0.15s ease;
+}
+.pzk-lead-start:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.pzk-lead-skip { margin-top: 10px; background: none; border: none; color: #8090a8; cursor: pointer; font-family: inherit; font-size: 12.5px; }
+.pzk-root.pzk-lead-active .pzk-form,
+.pzk-root.pzk-lead-active .pzk-quick { display: none; }
+
+/* ---------- CTA card + channels ---------- */
+.pzk-cta-card {
+	align-self: stretch;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 16px;
+	border-radius: 16px;
+	background: linear-gradient(160deg, #fff, #f3f6fd);
+	border: 1px solid rgba(200, 160, 78, 0.4);
+	box-shadow: 0 6px 18px rgba(15,31,61,.08);
+}
+.pzk-cta-head { text-align: center; }
+.pzk-cta-title { font-size: 15.5px; font-weight: 800; color: var(--pzk-ink); }
+.pzk-cta-text { font-size: 12.5px; line-height: 1.7; color: #5a6a86; margin-top: 4px; }
+.pzk-channel-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pzk-cta-btn {
+	flex: 1 1 auto;
+	min-height: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	text-decoration: none;
+	padding: 10px 12px;
+	border-radius: 12px;
+	font-size: 13.5px;
+	font-weight: 700;
+	color: var(--pzk-ink);
+	background: #eef1f7;
+	transition: transform 0.15s ease, filter 0.15s ease;
+}
+.pzk-cta-btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
+.pzk-cta-primary {
+	color: var(--pzk-ink);
+	background: var(--pzk-accent);
+	box-shadow: 0 8px 18px rgba(200,160,78,.35);
+	font-size: 15px;
+	min-height: 50px;
+}
+.pzk-cta-whatsapp { background: #25d366; color: #fff; }
+.pzk-cta-call { background: var(--pzk-bg); color: #fff; }
+.pzk-cta-bale { background: #1e6ff0; color: #fff; }
+.pzk-cta-emoji { font-size: 15px; }
+
+/* ---------- quick replies ---------- */
+.pzk-quick { display: flex; flex-wrap: wrap; gap: 7px; padding: 10px 14px 4px; flex: 0 0 auto; }
+.pzk-quick-reply {
+	min-height: 36px;
+	border: 1.5px solid var(--pzk-accent);
+	background: transparent;
+	color: var(--pzk-bg);
+	padding: 6px 14px;
+	border-radius: 20px;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	font-family: inherit;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+.pzk-quick-reply:hover { background: var(--pzk-accent); color: #fff; }
+
+/* ---------- input row ---------- */
+.pzk-form {
+	display: flex;
+	gap: 10px;
+	padding: 12px;
+	padding-block-end: max(12px, env(safe-area-inset-bottom));
+	border-top: 1px solid rgba(15, 31, 61, 0.08);
+	background: #fff;
+	flex: 0 0 auto;
+}
+.pzk-input {
+	flex: 1;
+	min-height: 48px;
+	border: 1.5px solid rgba(15, 31, 61, 0.15);
+	border-radius: 14px;
+	padding: 0 14px;
+	/* 16px prevents iOS Safari from auto-zooming (and shifting the page) on focus. */
+	font-size: 16px;
+	font-family: inherit;
+	outline: none;
+	background: #f6f8fc;
+	transition: border-color 0.15s ease;
+}
+.pzk-input:focus { border-color: var(--pzk-accent); background: #fff; }
+.pzk-send {
+	flex: 0 0 auto;
+	width: 50px;
+	height: 50px;
+	border: none;
+	cursor: pointer;
+	border-radius: 14px;
+	color: var(--pzk-ink);
+	background: var(--pzk-accent);
+	box-shadow: 0 6px 16px rgba(200, 160, 78, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.15s ease, filter 0.15s ease;
+}
+.pzk-send:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.pzk-send:active { transform: scale(0.95); }
+.pzk-root[dir="rtl"] .pzk-send svg { transform: scaleX(-1); }
+
+.pzk-footer { text-align: center; font-size: 10.5px; color: rgba(15, 31, 61, 0.45); padding: 6px; background: #fff; flex: 0 0 auto; }
+
+/* ---------- mobile: full-screen, keyboard-safe ---------- */
+@media (max-width: 480px) {
+	.pzk-root { inset-inline-end: 14px; inset-block-end: 14px; }
+	.pzk-panel {
+		/* Pinned to the TOP only (not bottom) so the JS can size the panel to
+		   the visual viewport when the keyboard opens — pinning bottom would
+		   override the height and hide the input behind the keyboard. */
+		position: fixed;
+		top: 0;
+		inset-inline: 0;
+		bottom: auto;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		max-width: 100vw;
+		max-height: none;
+		border-radius: 0;
+		transform-origin: top center;
+		will-change: height, transform;
+		animation: pzk-slide 0.22s ease;
+	}
+	@keyframes pzk-slide {
+		from { opacity: 0; transform: translateY(24px); }
+		to   { opacity: 1; transform: translateY(0); }
+	}
+	.pzk-msg { max-width: 88%; font-size: 15px; }
+}
+
+/* Page lock behind the full-screen mobile panel: stops the underlying document
+   from scrolling or jumping when the message input receives focus (iOS Safari). */
+body.pzk-body-lock {
+	position: fixed;
+	inset-inline: 0;
+	width: 100%;
+	overflow: hidden;
+}
+
+/* ---------- teaser greeting bubble ---------- */
+.pzk-teaser[hidden] { display: none !important; }
+.pzk-teaser {
+	position: absolute;
+	inset-block-end: 74px;
+	inset-inline-end: 0;
+	/* Fixed width: the 62px launcher is the containing block, so a
+	   shrink-to-fit bubble would collapse into a one-word column. */
+	width: 232px;
+	max-width: calc(100vw - 48px);
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 12px 32px 12px 14px;
+	background: #fff;
+	color: var(--pzk-ink);
+	border-radius: 16px;
+	border-end-inline-end: 4px solid var(--pzk-accent);
+	box-shadow: 0 12px 30px rgba(15, 31, 61, 0.28);
+	font-size: 13.5px;
+	line-height: 1.6;
+	cursor: pointer;
+	transform-origin: bottom right;
+	animation: pzk-teaser-in 0.35s cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+[dir="ltr"] .pzk-teaser { transform-origin: bottom left; padding: 12px 14px 12px 32px; }
+.pzk-teaser-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+.pzk-teaser-text { padding-top: 2px; }
+.pzk-teaser-close {
+	position: absolute;
+	inset-block-start: 4px;
+	inset-inline-end: 8px;
+	width: 22px; height: 22px;
+	border: none; background: transparent;
+	color: #9aa4b5; font-size: 18px; line-height: 1;
+	cursor: pointer; border-radius: 50%;
+}
+.pzk-teaser-close:hover { background: #f0f1f4; color: #16233f; }
+@keyframes pzk-teaser-in {
+	from { opacity: 0; transform: translateY(8px) scale(0.9); }
+	to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- inline (shortcode / sidebar) mode ---------- */
+.pzk-root.pzk-inline {
+	position: static;
+	inset: auto;
+	width: 100%;
+	max-width: 380px;
+	margin-inline: auto;
+	z-index: auto;
+}
+.pzk-inline .pzk-launcher,
+.pzk-inline .pzk-teaser { display: none; }
+.pzk-inline .pzk-close { display: none; }
+.pzk-inline .pzk-panel {
+	position: static;
+	inset: auto;
+	width: 100%;
+	max-width: 100%;
+	height: 520px;
+	max-height: 70vh;
+	box-shadow: 0 10px 30px rgba(15, 31, 61, 0.16);
+	animation: none;
+}

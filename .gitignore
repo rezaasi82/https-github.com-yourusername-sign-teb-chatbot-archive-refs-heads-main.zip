@@ -10,3 +10,6 @@
 # build artifacts (delivered separately)
 /medora-ai.zip
 /clinovix-ai.zip
+
+# build output
+dist/
