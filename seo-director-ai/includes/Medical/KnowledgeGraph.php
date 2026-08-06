@@ -26,8 +26,13 @@ final class KnowledgeGraph {
 	 * @return array{generated_at: string, posts_scanned: int, by_category: array<string, array<int, array{term: string, posts: int, mentions: int}>>, missing: array<int, array{term: string, category: string}>, covered_terms: int, total_terms: int}
 	 */
 	public function build( bool $force = false ): array {
+		// The cache key includes the active preset so switching specialty
+		// (e.g. to the SignTeb marketing dictionary) rebuilds instead of
+		// returning the previous specialty's cached graph.
+		$cache_key = self::CACHE_KEY . '_' . $this->entities->active_preset();
+
 		if ( ! $force ) {
-			$cached = get_transient( self::CACHE_KEY );
+			$cached = get_transient( $cache_key );
 			if ( is_array( $cached ) ) {
 				return $cached;
 			}
@@ -86,7 +91,7 @@ final class KnowledgeGraph {
 			'total_terms'   => $total,
 		];
 
-		set_transient( self::CACHE_KEY, $result, self::CACHE_TTL );
+		set_transient( $cache_key, $result, self::CACHE_TTL );
 
 		return $result;
 	}

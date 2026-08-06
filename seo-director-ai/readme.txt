@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.13.0
+Stable tag: 0.13.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.13.1 =
+* Fix: the Medical knowledge graph didn't refresh after switching the specialty dictionary (e.g. to the SignTeb marketing preset) — it kept returning the previously cached graph because the 6-hour cache key ignored the active preset. The cache key now includes the preset, so changing the dictionary rebuilds the graph immediately (or press Re-scan to force).
 
 = 0.13.0 =
 * New Zombie Pages detector (Content → Zombies): finds published pages that earn zero organic clicks over a chosen window (90/180/365 days) by crossing Search Console page data with the content itself (word count, age, internal inbound links). For each zombie it recommends the single best fix following the content-audit playbook — Wait (too new), Add internal links (orphan), Rewrite title & meta (ranks but no clicks / low CTR), Improve content (ranks poorly or invisible with substance), or Prune = merge + 301 or delete (thin & invisible) — with a plain-language reason. Works with content-only signals when Search Console isn't connected. Deterministic, cached 1h. New endpoint GET /content/zombies (Starter+).

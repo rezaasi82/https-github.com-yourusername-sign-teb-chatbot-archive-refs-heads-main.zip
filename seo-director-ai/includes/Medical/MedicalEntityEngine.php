@@ -22,6 +22,13 @@ final class MedicalEntityEngine {
 
 	public function __construct( private ?Settings $settings = null ) {}
 
+	/** The currently selected specialty preset slug (from settings). */
+	public function active_preset(): string {
+		$preset = null !== $this->settings ? (string) $this->settings->get( 'med_specialty_preset', 'general' ) : 'general';
+
+		return array_key_exists( $preset, MedicalDictionaries::PRESETS ) ? $preset : 'general';
+	}
+
 	/**
 	 * The active dictionary: the general base plus the selected specialty
 	 * preset, then the sda_medical_dictionary filter. Longer terms first so
@@ -30,7 +37,7 @@ final class MedicalEntityEngine {
 	 * @return array<string, string[]>
 	 */
 	public function dictionary(): array {
-		$preset = null !== $this->settings ? (string) $this->settings->get( 'med_specialty_preset', 'general' ) : 'general';
+		$preset = $this->active_preset();
 		$base   = MedicalDictionaries::for_preset( $preset );
 
 		/**
