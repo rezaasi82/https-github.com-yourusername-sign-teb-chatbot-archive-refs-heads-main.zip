@@ -1,0 +1,488 @@
+/*
+ * SignTeb Login — the branded login screen shipped on client sites
+ * built by SIGNTEB.com. GitHub-dark palette (#0d1117 canvas, #161b22
+ * card, #30363d borders, #e6edf3 text) with gold VIP accents.
+ * Every rule is scoped to body.signteb-login (added via the
+ * login_body_class filter) so the interim re-auth iframe and any
+ * unstyled fallback keep the stock WordPress look.
+ */
+
+body.signteb-login {
+    --stb-canvas: #0d1117;
+    --stb-card: #161b22;
+    --stb-border: #30363d;
+    --stb-ink: #e6edf3;
+    --stb-muted: #8b949e;
+    --stb-accent: #d4a72c;
+    --stb-accent-rgb: 212, 167, 44;
+    --stb-accent-bright: #f2cc60;
+    --stb-accent-bright-rgb: 242, 204, 96;
+    --stb-link: #58a6ff;
+    --stb-card-radius: 14px;
+
+    background: var(--stb-canvas);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: Vazirmatn, Vazir, IRANSansX, IRANSans, Tahoma, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--stb-ink);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Faint gold aurora at the top of the canvas. */
+body.signteb-login::before {
+    content: "";
+    position: fixed;
+    top: -240px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(var(--stb-accent-rgb), 0.16) 0%, rgba(88, 166, 255, 0.07) 45%, rgba(13, 17, 23, 0) 72%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.signteb-login #login {
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    max-width: calc(100vw - 32px);
+    padding: 32px 0;
+    /* Vertical auto margins center the box like justify-content:center,
+       but collapse gracefully when the content is taller than the
+       viewport, so the logo at the top never gets clipped. */
+    margin: auto;
+}
+
+/* ------------------------------------------------------- floating icons */
+
+body.signteb-login .signteb-login-icons {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.signteb-login .signteb-icon {
+    position: absolute;
+    color: var(--stb-accent);
+    opacity: 0.16;
+    animation: signteb-float 9s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 14px rgba(var(--stb-accent-rgb), 0.35));
+}
+
+body.signteb-login .signteb-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+body.signteb-login .signteb-icon-cross {
+    width: 64px;
+    height: 64px;
+    top: 16%;
+    inset-inline-start: 12%;
+    animation-duration: 11s;
+}
+
+body.signteb-login .signteb-icon-pulse {
+    width: 46px;
+    height: 46px;
+    top: 62%;
+    inset-inline-start: 18%;
+    animation-duration: 8s;
+    animation-delay: -3s;
+}
+
+body.signteb-login .signteb-icon-pill {
+    width: 42px;
+    height: 42px;
+    top: 24%;
+    inset-inline-end: 16%;
+    animation-duration: 10s;
+    animation-delay: -5s;
+}
+
+body.signteb-login .signteb-icon-star {
+    width: 30px;
+    height: 30px;
+    top: 74%;
+    inset-inline-end: 22%;
+    animation-duration: 7s;
+    animation-delay: -2s;
+    opacity: 0.22;
+}
+
+body.signteb-login .signteb-icon-code {
+    width: 52px;
+    height: 52px;
+    top: 80%;
+    inset-inline-start: 40%;
+    animation-duration: 12s;
+    animation-delay: -6s;
+    opacity: 0.1;
+}
+
+body.signteb-login .signteb-icon-monitor {
+    width: 58px;
+    height: 58px;
+    top: 48%;
+    inset-inline-end: 8%;
+    animation-duration: 13s;
+    animation-delay: -8s;
+    opacity: 0.12;
+}
+
+@keyframes signteb-float {
+    from {
+        transform: translateY(-14px) rotate(-7deg);
+    }
+
+    to {
+        transform: translateY(16px) rotate(8deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.signteb-login .signteb-icon {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------- logo */
+
+body.signteb-login #login h1 a,
+body.signteb-login .wp-login-logo a {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 12px;
+    border-radius: 20px;
+    background-color: var(--stb-card);
+    /* Vector recreation of the SignTeb mark: medical cross + stethoscope. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e3b341' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 2.5h5v5.5H19v5h-5.5V19h-5v-6H3v-5h5.5z'/%3E%3Ccircle cx='15' cy='15.5' r='3.6'/%3E%3Cpath d='M17.6 13l2.7-2.7'/%3E%3Ccircle cx='21' cy='9.6' r='1.1' fill='%23e3b341' stroke='none'/%3E%3Cpath d='M14.6 11.9l-.4-3.2'/%3E%3Ccircle cx='14' cy='7.6' r='1.1' fill='%23e3b341' stroke='none'/%3E%3C/svg%3E");
+    background-size: 46px 46px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(var(--stb-accent-rgb), 0.45);
+    box-shadow: 0 0 0 6px rgba(var(--stb-accent-rgb), 0.07), 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* SignTeb wordmark under the logo. */
+body.signteb-login #login h1::after,
+body.signteb-login .wp-login-logo::after {
+    content: "SignTeb";
+    display: block;
+    text-align: center;
+    margin: 0 0 6px;
+    color: var(--stb-accent-bright);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+body.signteb-login .signteb-login-welcome {
+    color: var(--stb-muted);
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.9;
+    margin: 8px 0 4px;
+}
+
+/* ---------------------------------------------------------------- card */
+
+body.signteb-login #loginform,
+body.signteb-login #lostpasswordform,
+body.signteb-login #resetpassform,
+body.signteb-login #registerform {
+    background: var(--stb-card);
+    border: 1px solid var(--stb-border);
+    border-radius: var(--stb-card-radius);
+    box-shadow: 0 0 0 1px rgba(var(--stb-accent-rgb), 0.06), 0 24px 48px rgba(0, 0, 0, 0.5);
+    padding: 30px 28px 28px;
+    margin-top: 18px;
+    animation: signteb-card-in 0.4s ease both;
+}
+
+@keyframes signteb-card-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.signteb-login #loginform,
+    body.signteb-login #lostpasswordform,
+    body.signteb-login #resetpassform,
+    body.signteb-login #registerform {
+        animation: none;
+    }
+}
+
+/* --------------------------------------------------------------- fields */
+
+body.signteb-login form label {
+    color: var(--stb-ink);
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+body.signteb-login form .input,
+body.signteb-login form input[type="text"],
+body.signteb-login form input[type="password"],
+body.signteb-login form input[type="email"] {
+    background: var(--stb-canvas);
+    border: 1px solid var(--stb-border);
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-size: 15px;
+    color: var(--stb-ink);
+    box-shadow: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.signteb-login form .input:focus,
+body.signteb-login form input[type="text"]:focus,
+body.signteb-login form input[type="password"]:focus,
+body.signteb-login form input[type="email"]:focus {
+    border-color: var(--stb-accent);
+    box-shadow: 0 0 0 3px rgba(var(--stb-accent-rgb), 0.25);
+    outline: none;
+}
+
+body.signteb-login form .input::placeholder {
+    color: var(--stb-muted);
+}
+
+body.signteb-login .wp-pwd .wp-hide-pw {
+    color: var(--stb-muted);
+}
+
+body.signteb-login .wp-pwd .wp-hide-pw:hover,
+body.signteb-login .wp-pwd .wp-hide-pw:focus {
+    color: var(--stb-accent-bright);
+    border-color: var(--stb-accent);
+    box-shadow: 0 0 0 2px rgba(var(--stb-accent-rgb), 0.25);
+}
+
+body.signteb-login .forgetmenot {
+    color: var(--stb-muted);
+    font-size: 13px;
+}
+
+body.signteb-login input[type="checkbox"] {
+    accent-color: var(--stb-accent);
+    background: var(--stb-canvas);
+    border: 1px solid var(--stb-border);
+    border-radius: 4px;
+}
+
+body.signteb-login input[type="checkbox"]:focus {
+    box-shadow: 0 0 0 2px rgba(var(--stb-accent-rgb), 0.3);
+}
+
+/* --------------------------------------------------------------- button */
+
+body.signteb-login .submit .button-primary,
+body.signteb-login p.submit input[type="submit"] {
+    width: 100%;
+    float: none;
+    margin-top: 14px;
+    padding: 10px 16px;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1c1502;
+    background: linear-gradient(180deg, var(--stb-accent-bright) 0%, var(--stb-accent) 100%);
+    border: 1px solid rgba(var(--stb-accent-bright-rgb), 0.6);
+    border-radius: 8px;
+    box-shadow: 0 8px 22px rgba(var(--stb-accent-rgb), 0.28);
+    text-shadow: none;
+    transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.signteb-login .submit .button-primary:hover,
+body.signteb-login p.submit input[type="submit"]:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(var(--stb-accent-rgb), 0.38);
+}
+
+body.signteb-login .submit .button-primary:focus,
+body.signteb-login p.submit input[type="submit"]:focus {
+    box-shadow: 0 0 0 3px rgba(var(--stb-accent-rgb), 0.45);
+    outline: none;
+}
+
+body.signteb-login .submit .button-primary:active,
+body.signteb-login p.submit input[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* -------------------------------------------------------------- notices */
+
+body.signteb-login #login_error,
+body.signteb-login .notice,
+body.signteb-login .message,
+body.signteb-login .success {
+    border: 1px solid var(--stb-border);
+    border-inline-start: 4px solid var(--stb-accent);
+    border-radius: 10px;
+    background: var(--stb-card);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    color: var(--stb-ink);
+    padding: 13px 17px;
+    line-height: 1.8;
+}
+
+body.signteb-login #login_error,
+body.signteb-login .notice-error {
+    border-inline-start-color: #f85149;
+}
+
+body.signteb-login .success,
+body.signteb-login .notice-success {
+    border-inline-start-color: #3fb950;
+}
+
+body.signteb-login #login_error a,
+body.signteb-login .message a {
+    color: var(--stb-link);
+}
+
+/* ---------------------------------------------------------- footer links */
+
+body.signteb-login #nav,
+body.signteb-login #backtoblog {
+    text-align: center;
+    padding: 0;
+    margin: 18px 0 0;
+}
+
+body.signteb-login #nav a,
+body.signteb-login #backtoblog a {
+    color: var(--stb-muted);
+    font-size: 13.5px;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+body.signteb-login #nav a:hover,
+body.signteb-login #backtoblog a:hover {
+    color: var(--stb-accent-bright);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+body.signteb-login .privacy-policy-page-link {
+    margin-top: 14px;
+}
+
+body.signteb-login .privacy-policy-page-link a {
+    color: var(--stb-muted);
+}
+
+/* --------------------------------------------------------- agency credit */
+
+body.signteb-login .signteb-login-credit {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    margin: 26px 0 12px;
+    color: var(--stb-muted);
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+}
+
+body.signteb-login .signteb-login-credit a {
+    color: var(--stb-accent-bright);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+body.signteb-login .signteb-login-credit a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* ------------------------------------------------------ language switch */
+
+body.signteb-login .language-switcher {
+    margin-top: 20px;
+}
+
+body.signteb-login .language-switcher label {
+    color: var(--stb-muted);
+}
+
+body.signteb-login .language-switcher select {
+    border-radius: 6px;
+    border: 1px solid var(--stb-border);
+    background-color: var(--stb-card);
+    color: var(--stb-ink);
+}
+
+body.signteb-login .language-switcher .button {
+    border-radius: 6px;
+    border: 1px solid var(--stb-border);
+    background: var(--stb-card);
+    color: var(--stb-ink);
+}
+
+body.signteb-login .language-switcher .button:hover {
+    border-color: var(--stb-accent);
+    color: var(--stb-accent-bright);
+}
+
+/* --------------------------------------------------------------- mobile */
+
+@media (max-width: 480px) {
+    body.signteb-login #login {
+        padding-top: 6vh;
+    }
+
+    body.signteb-login #loginform,
+    body.signteb-login #lostpasswordform,
+    body.signteb-login #resetpassform,
+    body.signteb-login #registerform {
+        padding: 24px 20px 22px;
+    }
+
+    /* Fewer, smaller icons so the small screen doesn't get busy. */
+    body.signteb-login .signteb-icon-code,
+    body.signteb-login .signteb-icon-monitor {
+        display: none;
+    }
+
+    body.signteb-login .signteb-icon-cross {
+        width: 44px;
+        height: 44px;
+        top: 8%;
+        inset-inline-start: 6%;
+    }
+
+    body.signteb-login .signteb-icon-pill {
+        top: 12%;
+        inset-inline-end: 8%;
+    }
+
+    body.signteb-login .signteb-icon-pulse {
+        top: 78%;
+        inset-inline-start: 8%;
+    }
+
+    body.signteb-login .signteb-icon-star {
+        top: 84%;
+        inset-inline-end: 10%;
+    }
+}
