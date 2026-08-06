@@ -37,6 +37,21 @@ final class Settings {
 	}
 
 	/**
+	 * The active site vertical: 'none', 'medical', or 'business'. Falls back to
+	 * the legacy medical_mode flag for installs that predate the vertical
+	 * selector, so existing medical users keep their screen.
+	 */
+	public function vertical(): string {
+		$vertical = (string) $this->get( 'site_vertical', '' );
+
+		if ( '' === $vertical ) {
+			$vertical = $this->get( 'medical_mode' ) ? 'medical' : 'none';
+		}
+
+		return in_array( $vertical, [ 'none', 'medical', 'business' ], true ) ? $vertical : 'none';
+	}
+
+	/**
 	 * Sanitize and persist a partial update. Unknown keys are dropped.
 	 *
 	 * @param array<string, mixed> $values Incoming key/value pairs.
@@ -113,6 +128,11 @@ final class Settings {
 			'serp_api_key'          => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'demo_mode'             => static fn( $v ) => in_array( $v, [ 'auto', 'off' ], true ) ? $v : 'auto',
 			'medical_mode'          => static fn( $v ) => (bool) $v,
+			'site_vertical'         => static fn( $v ) => in_array( $v, [ 'none', 'medical', 'business' ], true ) ? $v : 'none',
+			'biz_type_preset'       => static fn( $v ) => array_key_exists( (string) $v, \SEODirector\Vertical\BusinessDictionaries::PRESETS ) ? (string) $v : 'agency',
+			'biz_name'              => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'biz_phone'             => static fn( $v ) => sanitize_text_field( (string) $v ),
+			'biz_address'           => static fn( $v ) => sanitize_textarea_field( (string) $v ),
 			'med_physician_name'    => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'med_physician_specialty' => static fn( $v ) => sanitize_text_field( (string) $v ),
 			'med_physician_license' => static fn( $v ) => sanitize_text_field( (string) $v ),

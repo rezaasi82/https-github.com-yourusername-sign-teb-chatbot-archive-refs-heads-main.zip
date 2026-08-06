@@ -41,9 +41,17 @@ const NAV: NavItem[] = [
   { route: 'opportunities', label: 'Opportunities', page: OpportunitiesPage, feature: 'core_detectors', requires: 'starter' },
   { route: 'research', label: 'Research', page: ResearchPage, feature: 'keyword_research', requires: 'starter' },
   { route: 'content', label: 'Content', page: ContentPage, feature: 'content_strategist', requires: 'pro' },
-  // Medical Pack — only shown when the site enabled medical mode.
-  ...(boot().medicalMode
-    ? [{ route: 'medical', label: 'Medical', page: MedicalPage, feature: 'medical_pack', requires: 'pro' } as NavItem]
+  // Vertical pack — shown when the site picked a medical or business vertical.
+  ...(boot().siteVertical !== 'none'
+    ? [
+        {
+          route: 'medical',
+          label: boot().siteVertical === 'business' ? 'Business' : 'Medical',
+          page: MedicalPage,
+          feature: 'medical_pack',
+          requires: 'pro',
+        } as NavItem,
+      ]
     : []),
   { route: 'roadmap', label: 'Roadmap', page: RoadmapPage, feature: 'roadmap_monthly', requires: 'starter' },
   { route: 'alerts', label: 'Alerts', page: AlertsPage, feature: 'alerts_email', requires: 'starter' },

@@ -15,6 +15,7 @@
 namespace SEODirector\Medical;
 
 use SEODirector\Support\Settings;
+use SEODirector\Vertical\BusinessDictionaries;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,31 +23,58 @@ final class MedicalEntityEngine {
 
 	public function __construct( private ?Settings $settings = null ) {}
 
-	/** The currently selected specialty preset slug (from settings). */
-	public function active_preset(): string {
-		$preset = null !== $this->settings ? (string) $this->settings->get( 'med_specialty_preset', 'general' ) : 'general';
-
-		return array_key_exists( $preset, MedicalDictionaries::PRESETS ) ? $preset : 'general';
+	/** Active site vertical: 'medical', 'business', or 'none'. */
+	public function vertical(): string {
+		return null !== $this->settings ? $this->settings->vertical() : 'none';
 	}
 
 	/**
-	 * The active dictionary: the general base plus the selected specialty
-	 * preset, then the sda_medical_dictionary filter. Longer terms first so
-	 * "فتق ناف" matches before the substring "فتق".
+	 * The active dictionary preset, namespaced by vertical so cache keys never
+	 * collide (e.g. "medical:gastro_hepatology", "business:salon").
+	 */
+	public function active_preset(): string {
+		if ( 'business' === $this->vertical() ) {
+			$preset = null !== $this->settings ? (string) $this->settings->get( 'biz_type_preset', 'agency' ) : 'agency';
+			$preset = array_key_exists( $preset, BusinessDictionaries::PRESETS ) ? $preset : 'agency';
+
+			return 'business:' . $preset;
+		}
+
+		$preset = null !== $this->settings ? (string) $this->settings->get( 'med_specialty_preset', 'general' ) : 'general';
+		$preset = array_key_exists( $preset, MedicalDictionaries::PRESETS ) ? $preset : 'general';
+
+		return 'medical:' . $preset;
+	}
+
+	/** Category slug => human label for the active vertical (for the UI). */
+	public function category_labels(): array {
+		return 'business' === $this->vertical() ? BusinessDictionaries::CATEGORY_LABEL : [];
+	}
+
+	/**
+	 * The active dictionary for the current vertical + preset, then the
+	 * relevant filter. Longer terms first so "فتق ناف" matches before "فتق".
 	 *
 	 * @return array<string, string[]>
 	 */
 	public function dictionary(): array {
-		$preset = $this->active_preset();
-		$base   = MedicalDictionaries::for_preset( $preset );
+		// active_preset() is namespaced ("medical:foo" / "business:bar").
+		[ $vertical, $preset ] = array_pad( explode( ':', $this->active_preset(), 2 ), 2, '' );
 
-		/**
-		 * Filters the medical entity dictionary.
-		 *
-		 * @param array<string, string[]> $dictionary category => terms.
-		 * @param string                  $preset     Active specialty preset slug.
-		 */
-		$dictionary = (array) apply_filters( 'sda_medical_dictionary', $base, $preset );
+		if ( 'business' === $vertical ) {
+			$base = BusinessDictionaries::for_preset( $preset );
+		} else {
+			$base = MedicalDictionaries::for_preset( $preset );
+			/**
+			 * Filters the medical entity dictionary.
+			 *
+			 * @param array<string, string[]> $dictionary category => terms.
+			 * @param string                  $preset     Active specialty preset slug.
+			 */
+			$base = (array) apply_filters( 'sda_medical_dictionary', $base, $preset );
+		}
+
+		$dictionary = $base;
 
 		foreach ( $dictionary as &$terms ) {
 			$terms = array_values( array_unique( array_map( 'strval', (array) $terms ) ) );

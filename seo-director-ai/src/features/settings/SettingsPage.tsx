@@ -774,57 +774,92 @@ function MedicalCard() {
 
   if (!data) return null;
   const allowed = Boolean(licenseData?.features?.medical_pack);
-  const on = Boolean(data.settings.medical_mode);
+  const vertical = (data.settings.site_vertical as string) ?? 'none';
 
   return (
     <div className="sda-card">
-      <h2>{t('Medical mode (Medical Pack)')}</h2>
+      <h2>{t('Site type (vertical pack)')}</h2>
       <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', margin: '4px 0 8px' }}>
         {allowed
-          ? t('Turn this on for medical/clinic sites to unlock E-E-A-T analysis, medical entity detection, medical schema, and the knowledge graph. Reload the dashboard after toggling.')
-          : t('The Medical Pack requires a Pro license.')}
+          ? t('Pick what this site is. Medical/clinic and Business/services each unlock a tailored screen (entity detection, trust analysis, schema, knowledge graph). Reload the dashboard after changing.')
+          : t('The vertical pack requires a Pro license.')}
       </p>
       <div style={{ display: 'grid', gap: 10, opacity: allowed ? 1 : 0.6 }}>
         <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
-          {t('1) Choose your specialty dictionary (sharpens entity detection)')}
+          {t('Site type')}
           <select
             className="sda-input"
             style={{ marginBlockStart: 4 }}
-            defaultValue={(data.settings.med_specialty_preset as string) ?? 'general'}
+            value={vertical}
             disabled={!allowed}
-            onChange={(e) => save.mutate({ med_specialty_preset: e.target.value })}
+            onChange={(e) => save.mutate({ site_vertical: e.target.value })}
           >
-            <option value="general">{t('General medical')}</option>
-            <option value="gastro_hepatology">{t('Gastroenterology & hepatology (گوارش و کبد)')}</option>
-            <option value="general_surgery">{t('General & bariatric surgery (جراحی عمومی و چاقی)')}</option>
-            <option value="hand_shoulder_elbow">{t('Hand, shoulder & elbow surgery (دست، شانه و آرنج)')}</option>
-            <option value="dermatology_cosmetic">{t('Dermatology, hair & cosmetic (پوست، مو و زیبایی)')}</option>
-            <option value="obgyn">{t('Obstetrics & gynecology (زنان و زایمان)')}</option>
-            <option value="medical_marketing">{t('Medical web design, branding & SEO')}</option>
+            <option value="none">{t('General (off)')}</option>
+            <option value="medical">{t('Medical / clinic')}</option>
+            <option value="business">{t('Business & services')}</option>
           </select>
         </label>
 
-        <label style={{ fontSize: 13, color: 'var(--sda-text)', display: 'flex', gap: 8, alignItems: 'center' }}>
-          <input
-            type="checkbox"
-            defaultChecked={on}
-            disabled={!allowed}
-            onChange={(e) => save.mutate({ medical_mode: e.target.checked })}
-          />
-          {t('2) Enable medical mode')}
-        </label>
+        {vertical === 'medical' && (
+          <>
+            <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+              {t('Specialty dictionary')}
+              <select
+                className="sda-input"
+                style={{ marginBlockStart: 4 }}
+                defaultValue={(data.settings.med_specialty_preset as string) ?? 'general'}
+                disabled={!allowed}
+                onChange={(e) => save.mutate({ med_specialty_preset: e.target.value })}
+              >
+                <option value="general">{t('General medical')}</option>
+                <option value="gastro_hepatology">{t('Gastroenterology & hepatology (گوارش و کبد)')}</option>
+                <option value="general_surgery">{t('General & bariatric surgery (جراحی عمومی و چاقی)')}</option>
+                <option value="hand_shoulder_elbow">{t('Hand, shoulder & elbow surgery (دست، شانه و آرنج)')}</option>
+                <option value="dermatology_cosmetic">{t('Dermatology, hair & cosmetic (پوست، مو و زیبایی)')}</option>
+                <option value="obgyn">{t('Obstetrics & gynecology (زنان و زایمان)')}</option>
+              </select>
+            </label>
+            <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
+              <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>{t('Physician & clinic (for schema)')}</legend>
+              <div style={{ display: 'grid', gap: 8 }}>
+                <input className="sda-input" placeholder={t('Physician name')} defaultValue={(data.settings.med_physician_name as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_name: e.target.value })} />
+                <input className="sda-input" placeholder={t('Specialty (e.g. جراح عمومی)')} defaultValue={(data.settings.med_physician_specialty as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_specialty: e.target.value })} />
+                <input className="sda-input" placeholder={t('Medical license no. (شماره نظام پزشکی)')} defaultValue={(data.settings.med_physician_license as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_license: e.target.value })} />
+                <input className="sda-input" placeholder={t('Clinic name')} defaultValue={(data.settings.med_clinic_name as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_name: e.target.value })} />
+                <input className="sda-input" placeholder={t('Clinic phone')} defaultValue={(data.settings.med_clinic_phone as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_phone: e.target.value })} />
+                <textarea className="sda-input" style={{ minHeight: 48 }} placeholder={t('Clinic address')} defaultValue={(data.settings.med_clinic_address as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_address: e.target.value })} />
+              </div>
+            </fieldset>
+          </>
+        )}
 
-        <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
-          <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>{t('Physician & clinic (for schema)')}</legend>
-          <div style={{ display: 'grid', gap: 8 }}>
-            <input className="sda-input" placeholder={t('Physician name')} defaultValue={(data.settings.med_physician_name as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_name: e.target.value })} />
-            <input className="sda-input" placeholder={t('Specialty (e.g. جراح عمومی)')} defaultValue={(data.settings.med_physician_specialty as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_specialty: e.target.value })} />
-            <input className="sda-input" placeholder={t('Medical license no. (شماره نظام پزشکی)')} defaultValue={(data.settings.med_physician_license as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_physician_license: e.target.value })} />
-            <input className="sda-input" placeholder={t('Clinic name')} defaultValue={(data.settings.med_clinic_name as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_name: e.target.value })} />
-            <input className="sda-input" placeholder={t('Clinic phone')} defaultValue={(data.settings.med_clinic_phone as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_phone: e.target.value })} />
-            <textarea className="sda-input" style={{ minHeight: 48 }} placeholder={t('Clinic address')} defaultValue={(data.settings.med_clinic_address as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ med_clinic_address: e.target.value })} />
-          </div>
-        </fieldset>
+        {vertical === 'business' && (
+          <>
+            <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
+              {t('Business type')}
+              <select
+                className="sda-input"
+                style={{ marginBlockStart: 4 }}
+                defaultValue={(data.settings.biz_type_preset as string) ?? 'agency'}
+                disabled={!allowed}
+                onChange={(e) => save.mutate({ biz_type_preset: e.target.value })}
+              >
+                <option value="agency">{t('Web design, branding & SEO agency')}</option>
+                <option value="salon">{t('Beauty salon / hairdresser')}</option>
+                <option value="legal">{t('Lawyer / legal advisor')}</option>
+                <option value="fitness">{t('Gym / fitness')}</option>
+              </select>
+            </label>
+            <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>
+              <legend style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>{t('Business (for LocalBusiness schema)')}</legend>
+              <div style={{ display: 'grid', gap: 8 }}>
+                <input className="sda-input" placeholder={t('Business name')} defaultValue={(data.settings.biz_name as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ biz_name: e.target.value })} />
+                <input className="sda-input" placeholder={t('Business phone')} defaultValue={(data.settings.biz_phone as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ biz_phone: e.target.value })} />
+                <textarea className="sda-input" style={{ minHeight: 48 }} placeholder={t('Business address')} defaultValue={(data.settings.biz_address as string) ?? ''} disabled={!allowed} onBlur={(e) => save.mutate({ biz_address: e.target.value })} />
+              </div>
+            </fieldset>
+          </>
+        )}
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export interface BootData {
   isRtl: boolean;
   canManage: boolean;
   canManageClients: boolean;
-  medicalMode: boolean;
+  siteVertical: 'none' | 'medical' | 'business';
   version: string;
   siteName: string;
   branding: Branding;

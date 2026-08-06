@@ -303,6 +303,30 @@ const FA: Record<string, string> = {
   '1) Choose your specialty dictionary (sharpens entity detection)': '۱) ابتدا دیکشنری تخصصی را انتخاب کنید (تشخیص موجودیت را دقیق‌تر می‌کند)',
   '2) Enable medical mode': '۲) فعال‌سازی حالت پزشکی',
 
+  // Site-vertical architecture (v0.14.0)
+  'Business': 'کسب‌وکار',
+  'Site type (vertical pack)': 'نوع سایت (پک تخصصی)',
+  'Pick what this site is. Medical/clinic and Business/services each unlock a tailored screen (entity detection, trust analysis, schema, knowledge graph). Reload the dashboard after changing.':
+    'مشخص کنید این سایت چیست. پزشکی/کلینیک و کسب‌وکار/خدمات هرکدام یک صفحهٔ اختصاصی باز می‌کنند (تشخیص موجودیت، تحلیل اعتماد، اسکیما، گراف دانش). پس از تغییر، داشبورد را دوباره بارگذاری کنید.',
+  'The vertical pack requires a Pro license.': 'پک تخصصی نیازمند لایسنس Pro است.',
+  'The vertical pack is a Pro feature': 'پک تخصصی یک قابلیت Pro است',
+  'Site type': 'نوع سایت',
+  'General (off)': 'عمومی (غیرفعال)',
+  'Medical / clinic': 'پزشکی / کلینیک',
+  'Business & services': 'کسب‌وکار و خدمات',
+  'Specialty dictionary': 'دیکشنری تخصصی',
+  'Business type': 'نوع کسب‌وکار',
+  'Web design, branding & SEO agency': 'آژانس طراحی سایت، برندینگ و سئو',
+  'Beauty salon / hairdresser': 'سالن زیبایی / آرایشگاه',
+  'Lawyer / legal advisor': 'وکیل / مشاور حقوقی',
+  'Gym / fitness': 'باشگاه / تناسب اندام',
+  'Business (for LocalBusiness schema)': 'کسب‌وکار (برای اسکیمای LocalBusiness)',
+  'Business name': 'نام کسب‌وکار',
+  'Business phone': 'تلفن کسب‌وکار',
+  'Business address': 'آدرس کسب‌وکار',
+  'Entities & schema': 'موجودیت‌ها و اسکیما',
+  'Knowledge graph': 'گراف دانش',
+
   // Zombie pages
   'Zombies': 'صفحات زامبی',
   'Zombie pages': 'صفحات زامبی',

@@ -23,7 +23,6 @@ final class MedicalDictionaries {
 		'hand_shoulder_elbow' => 'جراحی دست، شانه و آرنج',
 		'dermatology_cosmetic' => 'پوست، مو و زیبایی',
 		'obgyn'               => 'زنان و زایمان',
-		'medical_marketing'   => 'طراحی و سئوی سایت پزشکی',
 	];
 
 	/**
@@ -290,45 +289,6 @@ final class MedicalDictionaries {
 	}
 
 	/**
-	 * Medical marketing / agency preset (SignTeb's own niche): medical website
-	 * design, medical branding, and medical SEO. Its categories describe an
-	 * agency's services and vocabulary rather than clinical concepts, so it
-	 * feeds entity detection and the knowledge graph (which services have we
-	 * written about?) without producing clinical MedicalWebPage schema.
-	 *
-	 * @return array<string, string[]>
-	 */
-	public static function medical_marketing(): array {
-		return [
-			'service'  => [
-				'طراحی سایت پزشکی', 'طراحی سایت پزشکان', 'طراحی سایت کلینیک', 'سئو پزشکی',
-				'سئو سایت پزشکی', 'برندینگ پزشکی', 'برند پزشک', 'طراحی لوگو پزشکی',
-				'لندینگ پیج پزشکی', 'صفحه فرود پزشکی', 'تولید محتوای پزشکی', 'محتوانویسی پزشکی',
-				'نوبت‌دهی آنلاین', 'رزرو نوبت آنلاین', 'اپلیکیشن پزشکی', 'دیجیتال مارکتینگ پزشکی',
-				'بازاریابی پزشکی', 'تبلیغات پزشکی', 'مشاوره سئو', 'پشتیبانی سایت',
-			],
-			'seo_term' => [
-				'سئو', 'بهینه‌سازی موتور جستجو', 'کلمات کلیدی', 'کلمه کلیدی', 'بک‌لینک',
-				'لینک‌سازی', 'رتبه گوگل', 'رتبه‌بندی', 'سرچ کنسول', 'گوگل آنالیتیکس',
-				'ترافیک ارگانیک', 'نرخ تبدیل', 'ایندکس', 'خزش', 'ریسپانسیو', 'سرعت سایت',
-				'کور وب وایتالز', 'اسکیما', 'سئو داخلی', 'سئو خارجی', 'سئو تکنیکال', 'سئو محلی',
-			],
-			'branding' => [
-				'برندینگ', 'برند شخصی', 'هویت بصری', 'هویت برند', 'لوگو', 'طراحی لوگو',
-				'رنگ سازمانی', 'شعار برند', 'اعتمادسازی', 'اعتبار برند', 'استوری برند',
-			],
-			'platform' => [
-				'وردپرس', 'المنتور', 'ووکامرس', 'قالب', 'افزونه', 'هاست', 'دامنه', 'سئو وردپرس',
-				'گوتنبرگ', 'ای‌دی‌سی', 'CMS',
-			],
-			'audience' => [
-				'پزشک', 'دندانپزشک', 'کلینیک', 'بیمارستان', 'مطب', 'جراح', 'متخصص', 'مرکز درمانی',
-				'پزشکان', 'مراکز زیبایی',
-			],
-		];
-	}
-
-	/**
 	 * Resolve a preset slug to its dictionary, merged onto the general base.
 	 *
 	 * @return array<string, string[]>
@@ -342,9 +302,6 @@ final class MedicalDictionaries {
 			'hand_shoulder_elbow' => self::merge( $base, self::hand_shoulder_elbow() ),
 			'dermatology_cosmetic' => self::merge( $base, self::dermatology_cosmetic() ),
 			'obgyn'               => self::merge( $base, self::obgyn() ),
-			// Agency preset is its own vocabulary; keep it standalone (no
-			// clinical base) so "درد"/"جراحی" don't pollute service detection.
-			'medical_marketing' => self::medical_marketing(),
 			default             => $base,
 		};
 	}

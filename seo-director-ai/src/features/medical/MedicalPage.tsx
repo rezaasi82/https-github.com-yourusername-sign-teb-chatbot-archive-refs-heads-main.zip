@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   api,
+  boot,
   type EeatResult,
   type KnowledgeGraphResult,
   type MedicalEntity,
@@ -10,6 +11,14 @@ import {
 import { useLicense } from '../../app/license';
 import { t } from '../../i18n';
 
+const IS_BUSINESS = (() => {
+  try {
+    return boot().siteVertical === 'business';
+  } catch {
+    return false;
+  }
+})();
+
 const CATEGORY_LABEL: Record<string, string> = {
   disease: 'بیماری',
   symptom: 'علامت',
@@ -17,12 +26,13 @@ const CATEGORY_LABEL: Record<string, string> = {
   drug: 'دارو',
   specialty: 'تخصص',
   body_part: 'عضو بدن',
-  // medical_marketing preset categories
+  // business vertical categories
   service: 'خدمت',
   seo_term: 'اصطلاح سئو',
   branding: 'برندینگ',
   platform: 'پلتفرم',
   audience: 'مخاطب',
+  concept: 'مفهوم',
 };
 
 function ErrorBox({ error }: { error: Error }) {
@@ -115,7 +125,7 @@ function EntitiesSchemaTool() {
 
   return (
     <div className="sda-card">
-      <h2 style={{ marginBlockStart: 0 }}>{t('Medical entities & schema')}</h2>
+      <h2 style={{ marginBlockStart: 0 }}>{IS_BUSINESS ? t('Entities & schema') : t('Medical entities & schema')}</h2>
       <p style={{ fontSize: 13, color: 'var(--sda-text-muted)' }}>
         {t('Detects the medical concepts a post covers, and generates MedicalWebPage schema (with those conditions/procedures) that you can inject into the page head. Physician / MedicalClinic come from the Settings card.')}
       </p>
@@ -165,7 +175,7 @@ function KnowledgeGraphTool() {
     <div className="sda-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h2 style={{ margin: 0 }}>{t('Medical knowledge graph')}</h2>
+          <h2 style={{ margin: 0 }}>{IS_BUSINESS ? t('Knowledge graph') : t('Medical knowledge graph')}</h2>
           <p style={{ fontSize: 13, color: 'var(--sda-text-muted)', margin: '4px 0 0' }}>
             {t('Which medical concepts your whole site covers, how deeply, and which important concepts you have no page for yet.')}
           </p>
@@ -234,7 +244,7 @@ export function MedicalPage() {
   if (!allows('medical_pack')) {
     return (
       <div className="sda-card sda-empty">
-        <strong>{t('The Medical Pack is a Pro feature')}</strong>
+        <strong>{IS_BUSINESS ? t('The vertical pack is a Pro feature') : t('The Medical Pack is a Pro feature')}</strong>
         {t('Upgrade your license to unlock medical E-E-A-T, entity detection, medical schema, and the knowledge graph.')}
       </div>
     );

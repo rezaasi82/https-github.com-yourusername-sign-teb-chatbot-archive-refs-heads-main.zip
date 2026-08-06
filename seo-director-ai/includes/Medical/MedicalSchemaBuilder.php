@@ -46,6 +46,10 @@ final class MedicalSchemaBuilder {
 	 * @return array<int, array<string, mixed>>
 	 */
 	public function site_nodes(): array {
+		if ( 'business' === $this->settings->vertical() ) {
+			return $this->business_site_nodes();
+		}
+
 		$physician_name = trim( (string) $this->settings->get( 'med_physician_name', '' ) );
 		$clinic_name    = trim( (string) $this->settings->get( 'med_clinic_name', '' ) );
 
@@ -87,7 +91,33 @@ final class MedicalSchemaBuilder {
 	}
 
 	/**
-	 * MedicalWebPage node for a post, with detected conditions as "about".
+	 * Site-level LocalBusiness node for the business vertical, from settings.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function business_site_nodes(): array {
+		$name = trim( (string) $this->settings->get( 'biz_name', '' ) );
+		if ( '' === $name ) {
+			return [];
+		}
+
+		$node = [
+			'@type'     => 'LocalBusiness',
+			'name'      => $name,
+			'url'       => (string) home_url( '/' ),
+			'telephone' => (string) $this->settings->get( 'biz_phone', '' ),
+		];
+		$address = trim( (string) $this->settings->get( 'biz_address', '' ) );
+		if ( '' !== $address ) {
+			$node['address'] = [ '@type' => 'PostalAddress', 'streetAddress' => $address ];
+		}
+
+		return [ array_filter( $node ) ];
+	}
+
+	/**
+	 * Per-post node: MedicalWebPage (medical vertical, with detected conditions
+	 * as "about") or a plain WebPage listing detected services (business).
 	 *
 	 * @return array{graph: array<int, array<string, mixed>>, entities: array<int, array{term: string, category: string, count: int}>}|\WP_Error
 	 */
@@ -98,6 +128,11 @@ final class MedicalSchemaBuilder {
 		}
 
 		$found = $this->entities->detect_in_post( $post_id );
+
+		if ( 'business' === $this->settings->vertical() ) {
+			return $this->build_business_post( $post, $found );
+		}
+
 		$about = [];
 		$seen  = [];
 		foreach ( $found as $entity ) {
@@ -125,6 +160,45 @@ final class MedicalSchemaBuilder {
 		$reviewer = trim( (string) $this->settings->get( 'med_physician_name', '' ) );
 		if ( '' !== $reviewer ) {
 			$node['reviewedBy'] = [ '@type' => 'Physician', 'name' => $reviewer ];
+		}
+
+		return [ 'graph' => [ $node ], 'entities' => $found ];
+	}
+
+	/**
+	 * Business vertical per-post node: a WebPage listing detected services as
+	 * generic Things (no clinical types).
+	 *
+	 * @param array<int, array{term: string, category: string, count: int}> $found
+	 * @return array{graph: array<int, array<string, mixed>>, entities: array<int, array<string, mixed>>}
+	 */
+	private function build_business_post( \WP_Post $post, array $found ): array {
+		$about = [];
+		$seen  = [];
+		foreach ( $found as $entity ) {
+			if ( isset( $seen[ $entity['term'] ] ) ) {
+				continue;
+			}
+			$seen[ $entity['term'] ] = true;
+			$about[]                 = [ '@type' => 'Thing', 'name' => $entity['term'] ];
+			if ( count( $about ) >= 15 ) {
+				break;
+			}
+		}
+
+		$node = [
+			'@type'        => 'WebPage',
+			'name'         => (string) get_the_title( $post ),
+			'url'          => (string) get_permalink( $post ),
+			'dateModified' => get_the_modified_date( 'c', $post ),
+			'inLanguage'   => get_bloginfo( 'language' ),
+		];
+		if ( [] !== $about ) {
+			$node['about'] = $about;
+		}
+		$biz = trim( (string) $this->settings->get( 'biz_name', '' ) );
+		if ( '' !== $biz ) {
+			$node['provider'] = [ '@type' => 'LocalBusiness', 'name' => $biz ];
 		}
 
 		return [ 'graph' => [ $node ], 'entities' => $found ];

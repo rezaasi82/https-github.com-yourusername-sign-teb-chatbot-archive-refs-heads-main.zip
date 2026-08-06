@@ -54,9 +54,9 @@ final class EeatAnalyzer {
 			return new \WP_Error( 'sda_not_found', __( 'Post not found or not published.', 'seo-director-ai' ), [ 'status' => 404 ] );
 		}
 
-		// The marketing preset is a non-clinical (agency) site — score trust
-		// signals that matter for a service business, not clinical YMYL ones.
-		if ( 'medical_marketing' === $this->entities->active_preset() ) {
+		// Business vertical — score service-business trust signals instead of
+		// clinical YMYL ones.
+		if ( 'business' === $this->entities->vertical() ) {
 			return $this->analyze_agency( $post );
 		}
 

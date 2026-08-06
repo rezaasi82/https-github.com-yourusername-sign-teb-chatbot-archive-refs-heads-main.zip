@@ -84,6 +84,7 @@ final class SchemaInjector {
 	}
 
 	private function medical_mode(): bool {
-		return (bool) $this->settings->get( 'medical_mode', false );
+		// Any active vertical (medical or business) prints its schema.
+		return 'none' !== $this->settings->vertical();
 	}
 }

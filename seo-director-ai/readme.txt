@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.13.2
+Stable tag: 0.14.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,12 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.14.0 =
+* New "Site type" selector cleanly separates medical from other businesses. Pick General (off), Medical / clinic, or Business & services in Settings — each vertical unlocks a tailored screen (entity detection, trust analysis, schema, knowledge graph) instead of forcing every site through the medical model.
+* Business & services vertical ships four ready dictionaries — web design/branding/SEO agency, beauty salon / hairdresser, lawyer / legal advisor, and gym / fitness — driving business entity detection, agency-trust analysis, and LocalBusiness/WebPage schema (from the business name/phone/address fields).
+* Medical vertical keeps the six clinical specialty dictionaries and Physician/MedicalClinic/MedicalWebPage schema. The "Medical/Business" dashboard tab and its headings now follow the selected vertical.
+* The old medical-marketing dictionary is retired in favour of the dedicated Business vertical; existing medical-mode sites are migrated to the Medical vertical automatically.
 
 = 0.13.2 =
 * Agency trust analyzer: when the "Medical web design, branding & SEO" dictionary is selected, the E-E-A-T tool now measures agency trust signals instead of clinical ones — contact info (phone/WhatsApp/email), pricing/tariff, portfolio/work samples, client testimonials, about/experience, a clear call to action, and freshness — each scored with a fix suggestion.
