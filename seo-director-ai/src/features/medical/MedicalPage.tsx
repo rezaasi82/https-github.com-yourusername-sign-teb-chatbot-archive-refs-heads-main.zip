@@ -56,9 +56,13 @@ function EeatTool() {
 
   return (
     <div className="sda-card">
-      <h2 style={{ marginBlockStart: 0 }}>{t('Medical E-E-A-T analyzer')}</h2>
+      <h2 style={{ marginBlockStart: 0 }}>
+        {eeat.data?.mode === 'agency' ? t('Agency trust analyzer') : t('Medical E-E-A-T analyzer')}
+      </h2>
       <p style={{ fontSize: 13, color: 'var(--sda-text-muted)' }}>
-        {t('Scores a medical (YMYL) page against Google’s trust signals: named author, author bio, medical reviewer, authoritative citations, freshness, disclaimer, and topic depth.')}
+        {eeat.data?.mode === 'agency'
+          ? t('Scores a service/agency page against trust signals: contact info, pricing, portfolio, testimonials, about/experience, a clear call to action, and freshness.')
+          : t('Scores a medical (YMYL) page against Google’s trust signals: named author, author bio, medical reviewer, authoritative citations, freshness, disclaimer, and topic depth.')}
       </p>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', maxWidth: 520 }}>
         <div style={{ flex: 1, minWidth: 240 }}>
@@ -74,7 +78,7 @@ function EeatTool() {
       {eeat.data && (
         <div style={{ marginBlockStart: 16 }}>
           <div style={{ fontSize: 40, fontWeight: 700, color: band(eeat.data.score) }}>{eeat.data.score} / 100</div>
-          {!eeat.data.is_medical && (
+          {eeat.data.mode === 'medical' && !eeat.data.is_medical && (
             <p style={{ fontSize: 12, color: 'var(--sda-warning)' }}>{t('No medical entities detected — is this a medical page?')}</p>
           )}
           <table className="sda-table" style={{ marginBlockStart: 10 }}>

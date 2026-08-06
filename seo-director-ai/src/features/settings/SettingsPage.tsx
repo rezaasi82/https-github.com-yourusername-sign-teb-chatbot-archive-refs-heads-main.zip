@@ -785,18 +785,8 @@ function MedicalCard() {
           : t('The Medical Pack requires a Pro license.')}
       </p>
       <div style={{ display: 'grid', gap: 10, opacity: allowed ? 1 : 0.6 }}>
-        <label style={{ fontSize: 13, color: 'var(--sda-text)', display: 'flex', gap: 8, alignItems: 'center' }}>
-          <input
-            type="checkbox"
-            defaultChecked={on}
-            disabled={!allowed}
-            onChange={(e) => save.mutate({ medical_mode: e.target.checked })}
-          />
-          {t('Enable medical mode')}
-        </label>
-
         <label style={{ fontSize: 12, color: 'var(--sda-text-muted)' }}>
-          {t('Specialty dictionary (sharpens entity detection)')}
+          {t('1) Choose your specialty dictionary (sharpens entity detection)')}
           <select
             className="sda-input"
             style={{ marginBlockStart: 4 }}
@@ -810,8 +800,18 @@ function MedicalCard() {
             <option value="hand_shoulder_elbow">{t('Hand, shoulder & elbow surgery (دست، شانه و آرنج)')}</option>
             <option value="dermatology_cosmetic">{t('Dermatology, hair & cosmetic (پوست، مو و زیبایی)')}</option>
             <option value="obgyn">{t('Obstetrics & gynecology (زنان و زایمان)')}</option>
-            <option value="medical_marketing">{t('Medical web design, branding & SEO (ساین‌طب)')}</option>
+            <option value="medical_marketing">{t('Medical web design, branding & SEO')}</option>
           </select>
+        </label>
+
+        <label style={{ fontSize: 13, color: 'var(--sda-text)', display: 'flex', gap: 8, alignItems: 'center' }}>
+          <input
+            type="checkbox"
+            defaultChecked={on}
+            disabled={!allowed}
+            onChange={(e) => save.mutate({ medical_mode: e.target.checked })}
+          />
+          {t('2) Enable medical mode')}
         </label>
 
         <fieldset style={{ border: '1px solid var(--sda-border)', borderRadius: 8, padding: 12 }}>

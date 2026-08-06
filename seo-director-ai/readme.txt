@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.13.1
+Stable tag: 0.13.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,12 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.13.2 =
+* Agency trust analyzer: when the "Medical web design, branding & SEO" dictionary is selected, the E-E-A-T tool now measures agency trust signals instead of clinical ones — contact info (phone/WhatsApp/email), pricing/tariff, portfolio/work samples, client testimonials, about/experience, a clear call to action, and freshness — each scored with a fix suggestion.
+* Settings: the medical card now asks you to choose the specialty dictionary first (step 1), then enable medical mode (step 2).
+* Removed the "SignTeb" brand from the marketing dictionary's label (now just "Medical web design, branding & SEO").
+* The plugin name shown in the WordPress plugins list now includes the version (e.g. "SEO Director AI 0.13.2").
 
 = 0.13.1 =
 * Fix: the Medical knowledge graph didn't refresh after switching the specialty dictionary (e.g. to the SignTeb marketing preset) — it kept returning the previously cached graph because the 6-hour cache key ignored the active preset. The cache key now includes the preset, so changing the dictionary rebuilds the graph immediately (or press Re-scan to force).

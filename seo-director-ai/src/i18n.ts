@@ -262,6 +262,9 @@ const FA: Record<string, string> = {
   'Upgrade your license to unlock medical E-E-A-T, entity detection, medical schema, and the knowledge graph.':
     'برای فعال‌سازی E-E-A-T پزشکی، تشخیص موجودیت، اسکیمای پزشکی و گراف دانش، لایسنس خود را ارتقا دهید.',
   'Medical E-E-A-T analyzer': 'تحلیلگر E-E-A-T پزشکی',
+  'Agency trust analyzer': 'تحلیلگر اعتماد آژانس',
+  'Scores a service/agency page against trust signals: contact info, pricing, portfolio, testimonials, about/experience, a clear call to action, and freshness.':
+    'یک صفحهٔ خدمات/آژانس را بر اساس سیگنال‌های اعتماد امتیاز می‌دهد: اطلاعات تماس، تعرفه، نمونه‌کار، نظرات مشتریان، درباره ما/سابقه، فراخوان اقدام روشن، و به‌روز بودن.',
   'Scores a medical (YMYL) page against Google’s trust signals: named author, author bio, medical reviewer, authoritative citations, freshness, disclaimer, and topic depth.':
     'یک صفحهٔ پزشکی (YMYL) را بر اساس سیگنال‌های اعتماد گوگل امتیاز می‌دهد: نویسندهٔ مشخص، بیوگرافی نویسنده، بازبین پزشکی، استناد به منابع معتبر، به‌روز بودن، سلب مسئولیت و عمق موضوعی.',
   'Analyze': 'تحلیل',
@@ -296,7 +299,9 @@ const FA: Record<string, string> = {
   'Hand, shoulder & elbow surgery (دست، شانه و آرنج)': 'جراحی دست، شانه و آرنج',
   'Dermatology, hair & cosmetic (پوست، مو و زیبایی)': 'پوست، مو و زیبایی',
   'Obstetrics & gynecology (زنان و زایمان)': 'زنان و زایمان',
-  'Medical web design, branding & SEO (ساین‌طب)': 'طراحی سایت، برندینگ و سئوی پزشکی (ساین‌طب)',
+  'Medical web design, branding & SEO': 'طراحی سایت، برندینگ و سئوی پزشکی',
+  '1) Choose your specialty dictionary (sharpens entity detection)': '۱) ابتدا دیکشنری تخصصی را انتخاب کنید (تشخیص موجودیت را دقیق‌تر می‌کند)',
+  '2) Enable medical mode': '۲) فعال‌سازی حالت پزشکی',
 
   // Zombie pages
   'Zombies': 'صفحات زامبی',

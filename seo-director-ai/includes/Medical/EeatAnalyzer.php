@@ -36,13 +36,28 @@ final class EeatAnalyzer {
 
 	public function __construct( private MedicalEntityEngine $entities ) {}
 
+	/** Agency trust markers (fa) for the marketing preset. */
+	private const AGENCY_MARKERS = [
+		'portfolio'   => [ 'نمونه کار', 'نمونه‌کار', 'نمونه‌کارها', 'نمونه کارها', 'نمونه‌ها', 'پروژه', 'portfolio' ],
+		'pricing'     => [ 'تعرفه', 'قیمت', 'هزینه', 'پکیج', 'پلن', 'plans', 'pricing' ],
+		'testimonial' => [ 'نظر مشتری', 'نظرات مشتری', 'رضایت مشتری', 'رضایت مشتریان', 'بازخورد', 'testimonial' ],
+		'about'       => [ 'درباره ما', 'تیم ما', 'سابقه', 'تجربه', 'چرا ما', 'رزومه' ],
+		'cta'         => [ 'مشاوره رایگان', 'تماس بگیرید', 'ثبت سفارش', 'درخواست', 'همین حالا', 'رزرو', 'استعلام قیمت', 'شروع کنید' ],
+	];
+
 	/**
-	 * @return array{score: int, checks: array<int, array{code: string, label: string, points: int, max: int, ok: bool, detail: string}>, entities_found: int, is_medical: bool}|\WP_Error
+	 * @return array{score: int, checks: array<int, array{code: string, label: string, points: int, max: int, ok: bool, detail: string}>, entities_found: int, is_medical: bool, mode: string}|\WP_Error
 	 */
 	public function analyze( int $post_id ): array|\WP_Error {
 		$post = get_post( $post_id );
 		if ( null === $post || 'publish' !== $post->post_status ) {
 			return new \WP_Error( 'sda_not_found', __( 'Post not found or not published.', 'seo-director-ai' ), [ 'status' => 404 ] );
+		}
+
+		// The marketing preset is a non-clinical (agency) site — score trust
+		// signals that matter for a service business, not clinical YMYL ones.
+		if ( 'medical_marketing' === $this->entities->active_preset() ) {
+			return $this->analyze_agency( $post );
 		}
 
 		$content = (string) $post->post_content;
@@ -125,6 +140,71 @@ final class EeatAnalyzer {
 			'checks'         => $checks,
 			'entities_found' => count( $found ),
 			'is_medical'     => count( $found ) > 0,
+			'mode'           => 'medical',
+		];
+	}
+
+	/**
+	 * Agency trust score for the marketing preset — measures the signals a
+	 * service business needs (portfolio, pricing, testimonials, contact,
+	 * about, and a clear call to action) instead of clinical YMYL signals.
+	 *
+	 * @return array{score: int, checks: array<int, array<string, mixed>>, entities_found: int, is_medical: bool, mode: string}
+	 */
+	private function analyze_agency( \WP_Post $post ): array {
+		$content = (string) $post->post_content;
+		$text    = mb_strtolower( wp_strip_all_tags( $content ) );
+		$found   = $this->entities->detect_in_post( (int) $post->ID );
+
+		$checks = [];
+
+		// Contact: a tel:/mailto:/wa.me link or contact wording.
+		$has_contact = (bool) preg_match( '/href=["\'](tel:|mailto:|https?:\/\/wa\.me)/i', $content )
+			|| $this->contains_any( $text, [ 'تماس', 'شماره تماس', 'واتساپ', 'واتس اپ', 'ایمیل', 'آدرس دفتر' ] );
+		$checks[] = $this->check( 'contact', __( 'Contact information', 'seo-director-ai' ), $has_contact ? 20 : 0, 20, $has_contact, $has_contact ? __( 'Present (phone/email/WhatsApp).', 'seo-director-ai' ) : __( 'Add a visible phone / WhatsApp / email so visitors can reach you.', 'seo-director-ai' ) );
+
+		// Pricing / tariff.
+		$has_pricing = $this->contains_any( $text, self::AGENCY_MARKERS['pricing'] );
+		$checks[] = $this->check( 'pricing', __( 'Pricing / tariff', 'seo-director-ai' ), $has_pricing ? 15 : 0, 15, $has_pricing, $has_pricing ? __( 'Mentioned.', 'seo-director-ai' ) : __( 'State pricing or a tariff/quote path — a strong trust and conversion signal.', 'seo-director-ai' ) );
+
+		// Portfolio / samples.
+		$has_portfolio = $this->contains_any( $text, self::AGENCY_MARKERS['portfolio'] );
+		$checks[] = $this->check( 'portfolio', __( 'Portfolio / work samples', 'seo-director-ai' ), $has_portfolio ? 15 : 0, 15, $has_portfolio, $has_portfolio ? __( 'Referenced.', 'seo-director-ai' ) : __( 'Show sample work / case studies to prove capability.', 'seo-director-ai' ) );
+
+		// Testimonials.
+		$has_testimonial = $this->contains_any( $text, self::AGENCY_MARKERS['testimonial'] );
+		$checks[] = $this->check( 'testimonial', __( 'Client testimonials', 'seo-director-ai' ), $has_testimonial ? 15 : 0, 15, $has_testimonial, $has_testimonial ? __( 'Present.', 'seo-director-ai' ) : __( 'Add client reviews / satisfaction quotes (social proof).', 'seo-director-ai' ) );
+
+		// About / experience.
+		$has_about = $this->contains_any( $text, self::AGENCY_MARKERS['about'] );
+		$checks[] = $this->check( 'about', __( 'About / experience', 'seo-director-ai' ), $has_about ? 10 : 0, 10, $has_about, $has_about ? __( 'Present.', 'seo-director-ai' ) : __( 'Describe your team, track record, and why-choose-us.', 'seo-director-ai' ) );
+
+		// Call to action.
+		$has_cta = $this->contains_any( $text, self::AGENCY_MARKERS['cta'] );
+		$checks[] = $this->check( 'cta', __( 'Call to action', 'seo-director-ai' ), $has_cta ? 10 : 0, 10, $has_cta, $has_cta ? __( 'Present.', 'seo-director-ai' ) : __( 'Add a clear next step (free consultation / request a quote / order).', 'seo-director-ai' ) );
+
+		// Freshness — updated within 12 months.
+		$age_days = ( time() - (int) get_post_timestamp( $post, 'modified' ) ) / DAY_IN_SECONDS;
+		$fresh_ok = $age_days <= 365;
+		$checks[] = $this->check(
+			'freshness',
+			__( 'Recently updated', 'seo-director-ai' ),
+			$fresh_ok ? 15 : 0,
+			15,
+			$fresh_ok,
+			sprintf(
+				/* translators: %d: days since last update */
+				__( 'Last updated %d days ago.', 'seo-director-ai' ),
+				(int) $age_days
+			)
+		);
+
+		return [
+			'score'          => array_sum( array_column( $checks, 'points' ) ),
+			'checks'         => $checks,
+			'entities_found' => count( $found ),
+			'is_medical'     => false,
+			'mode'           => 'agency',
 		];
 	}
 

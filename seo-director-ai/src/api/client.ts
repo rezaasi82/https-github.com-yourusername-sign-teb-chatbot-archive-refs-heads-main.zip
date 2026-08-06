@@ -305,6 +305,7 @@ export interface EeatResult {
   checks: Array<{ code: string; label: string; points: number; max: number; ok: boolean; detail: string }>;
   entities_found: number;
   is_medical: boolean;
+  mode: 'medical' | 'agency';
 }
 
 export interface KnowledgeGraphResult {
