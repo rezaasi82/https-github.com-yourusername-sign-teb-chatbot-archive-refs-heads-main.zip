@@ -331,6 +331,15 @@ const FA: Record<string, string> = {
   'Salon': 'سالن زیبایی',
   'Legal': 'حقوقی',
   'Fitness': 'باشگاه',
+  // Business-vertical entities & schema tool
+  'Detects the business concepts a post covers, and generates WebPage schema (with those services/topics) that you can inject into the page head. The business (LocalBusiness) comes from the Settings card.':
+    'مفاهیم کسب‌وکاری موجود در نوشته را تشخیص می‌دهد و اسکیمای WebPage (شامل همان خدمات/موضوعات) تولید می‌کند که می‌توانید در head صفحه تزریق کنید. اطلاعات کسب‌وکار (LocalBusiness) از کارت تنظیمات می‌آید.',
+  'Removing…': 'در حال حذف…',
+  'Saved — WebPage schema now prints on the page.': 'ذخیره شد — اسکیمای WebPage اکنون در صفحه چاپ می‌شود.',
+  'Removed — schema no longer prints on the page.': 'حذف شد — اسکیما دیگر در صفحه چاپ نمی‌شود.',
+  'No entities detected in this post.': 'در این نوشته موجودیتی تشخیص داده نشد.',
+  'Which concepts your whole site covers, how deeply, and which important concepts you have no page for yet.':
+    'کل سایت چه مفاهیمی را پوشش می‌دهد، با چه عمقی، و برای کدام مفاهیم مهم هنوز صفحه‌ای ندارید.',
 
   // Zombie pages
   'Zombies': 'صفحات زامبی',

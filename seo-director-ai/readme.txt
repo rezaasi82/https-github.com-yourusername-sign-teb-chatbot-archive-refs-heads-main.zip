@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.14.0
+Stable tag: 0.14.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,11 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.14.1 =
+* Fix (business vertical): the Entities & schema and E-E-A-T tools now show the business framing immediately — the heading and description follow the chosen site type up-front instead of only after you run an analysis.
+* Fix: the "Remove" button on the Entities & schema card now gives clear feedback ("Removed — schema no longer prints on the page") and no longer leaves the old "Saved" message on screen, so removing schema after saving is obviously working.
+* Business-vertical wording: entity/knowledge-graph/schema texts drop the "medical" phrasing when the site type is Business.
 
 = 0.14.0 =
 * New "Site type" selector cleanly separates medical from other businesses. Pick General (off), Medical / clinic, or Business & services in Settings — each vertical unlocks a tailored screen (entity detection, trust analysis, schema, knowledge graph) instead of forcing every site through the medical model.

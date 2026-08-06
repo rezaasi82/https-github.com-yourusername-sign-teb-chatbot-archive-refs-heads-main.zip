@@ -64,13 +64,18 @@ function EeatTool() {
 
   const band = (s: number) => (s >= 70 ? 'var(--sda-positive)' : s >= 40 ? 'var(--sda-warning)' : 'var(--sda-negative)');
 
+  // Pick the framing from the chosen site type up-front, so the heading and
+  // description are correct before any analysis runs; fall back to the result's
+  // own mode once we have it.
+  const isAgency = eeat.data ? eeat.data.mode === 'agency' : IS_BUSINESS;
+
   return (
     <div className="sda-card">
       <h2 style={{ marginBlockStart: 0 }}>
-        {eeat.data?.mode === 'agency' ? t('Agency trust analyzer') : t('Medical E-E-A-T analyzer')}
+        {isAgency ? t('Agency trust analyzer') : t('Medical E-E-A-T analyzer')}
       </h2>
       <p style={{ fontSize: 13, color: 'var(--sda-text-muted)' }}>
-        {eeat.data?.mode === 'agency'
+        {isAgency
           ? t('Scores a service/agency page against trust signals: contact info, pricing, portfolio, testimonials, about/experience, a clear call to action, and freshness.')
           : t('Scores a medical (YMYL) page against Google’s trust signals: named author, author bio, medical reviewer, authoritative citations, freshness, disclaimer, and topic depth.')}
       </p>
@@ -120,35 +125,54 @@ function EntitiesSchemaTool() {
     queryFn: () => api.medicalEntities(postId),
     enabled: postId > 0,
   });
-  const save = useMutation({ mutationFn: () => api.medicalSchemaSave(postId) });
-  const remove = useMutation({ mutationFn: () => api.medicalSchemaRemove(postId) });
+  // Single feedback line so it always reflects the last action (fixes "saved"
+  // lingering after a remove, which made Remove look like a no-op).
+  const [notice, setNotice] = useState<'saved' | 'removed' | null>(null);
+  const save = useMutation({ mutationFn: () => api.medicalSchemaSave(postId), onSuccess: () => setNotice('saved') });
+  const remove = useMutation({ mutationFn: () => api.medicalSchemaRemove(postId), onSuccess: () => setNotice('removed') });
+
+  const pickPost = (id: number) => {
+    setPostId(id);
+    setNotice(null);
+    save.reset();
+    remove.reset();
+  };
 
   return (
     <div className="sda-card">
       <h2 style={{ marginBlockStart: 0 }}>{IS_BUSINESS ? t('Entities & schema') : t('Medical entities & schema')}</h2>
       <p style={{ fontSize: 13, color: 'var(--sda-text-muted)' }}>
-        {t('Detects the medical concepts a post covers, and generates MedicalWebPage schema (with those conditions/procedures) that you can inject into the page head. Physician / MedicalClinic come from the Settings card.')}
+        {IS_BUSINESS
+          ? t('Detects the business concepts a post covers, and generates WebPage schema (with those services/topics) that you can inject into the page head. The business (LocalBusiness) comes from the Settings card.')
+          : t('Detects the medical concepts a post covers, and generates MedicalWebPage schema (with those conditions/procedures) that you can inject into the page head. Physician / MedicalClinic come from the Settings card.')}
       </p>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ flex: 1, minWidth: 240 }}>
-          <PostPicker value={postId} onChange={setPostId} />
+          <PostPicker value={postId} onChange={pickPost} />
         </div>
         <button type="button" className="sda-btn sda-btn--primary" disabled={postId === 0 || save.isPending} onClick={() => save.mutate()}>
           {save.isPending ? t('Saving…') : t('Save schema to page')}
         </button>
         <button type="button" className="sda-btn" disabled={postId === 0 || remove.isPending} onClick={() => remove.mutate()}>
-          {t('Remove')}
+          {remove.isPending ? t('Removing…') : t('Remove')}
         </button>
       </div>
 
-      {save.data?.saved && <p style={{ color: 'var(--sda-positive)', fontSize: 12 }}>{t('Saved — MedicalWebPage schema now prints on the page.')}</p>}
+      {notice === 'saved' && (
+        <p style={{ color: 'var(--sda-positive)', fontSize: 12 }}>
+          {IS_BUSINESS ? t('Saved — WebPage schema now prints on the page.') : t('Saved — MedicalWebPage schema now prints on the page.')}
+        </p>
+      )}
+      {notice === 'removed' && <p style={{ color: 'var(--sda-text-muted)', fontSize: 12 }}>{t('Removed — schema no longer prints on the page.')}</p>}
+      {save.error != null && <ErrorBox error={save.error} />}
+      {remove.error != null && <ErrorBox error={remove.error} />}
       {entities.error != null && <ErrorBox error={entities.error} />}
       {entities.isLoading && <div className="sda-skeleton" style={{ height: 100, marginBlockStart: 12 }} />}
 
       {entities.data && (
         <div style={{ marginBlockStart: 12 }}>
           {entities.data.entities.length === 0 ? (
-            <div className="sda-empty">{t('No medical entities detected in this post.')}</div>
+            <div className="sda-empty">{IS_BUSINESS ? t('No entities detected in this post.') : t('No medical entities detected in this post.')}</div>
           ) : (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {entities.data.entities.map((e) => (
@@ -177,7 +201,9 @@ function KnowledgeGraphTool() {
         <div>
           <h2 style={{ margin: 0 }}>{IS_BUSINESS ? t('Knowledge graph') : t('Medical knowledge graph')}</h2>
           <p style={{ fontSize: 13, color: 'var(--sda-text-muted)', margin: '4px 0 0' }}>
-            {t('Which medical concepts your whole site covers, how deeply, and which important concepts you have no page for yet.')}
+            {IS_BUSINESS
+              ? t('Which concepts your whole site covers, how deeply, and which important concepts you have no page for yet.')
+              : t('Which medical concepts your whole site covers, how deeply, and which important concepts you have no page for yet.')}
           </p>
         </div>
         <button type="button" className="sda-btn" onClick={() => setForce(true)} disabled={kg.isFetching}>
