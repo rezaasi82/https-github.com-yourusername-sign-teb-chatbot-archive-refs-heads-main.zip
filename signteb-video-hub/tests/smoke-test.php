@@ -225,6 +225,20 @@ $check(
 );
 $check('blank input yields nothing', AparatClient::normalize_video_ids("  \n , "), []);
 
+// The video field sits right under the playlist field. Pasting playlist links
+// into it is the mistake that actually happened, and dropping them silently is
+// what made it look like the setting was being ignored.
+$stvh_wrong = AparatClient::parse_video_ids(
+    "https://www.aparat.com/playlist/1058203\nhttps://www.aparat.com/playlist/1168261"
+);
+$check('playlist links are recognised, not discarded', $stvh_wrong['playlists'], ['1058203', '1168261']);
+$check('and produce no video ids', $stvh_wrong['ids'], []);
+
+$stvh_mixed = AparatClient::parse_video_ids("https://www.aparat.com/playlist/1058203\nhttps://www.aparat.com/v/ok1234\nنامفهوم/x.y");
+$check('a mixed paste keeps the videos', $stvh_mixed['ids'], ['ok1234']);
+$check('flags the playlist', $stvh_mixed['playlists'], ['1058203']);
+$check('and keeps what it could not read', $stvh_mixed['unknown'], ['نامفهوم/x.y']);
+
 echo "\nFormat::slug — the real titles that produced unusable slugs\n";
 $check(
     'drops the Persian question mark and the author suffix',
@@ -311,7 +325,12 @@ $stvh_source = static function (string $category, array $items): AparatSource {
 $check('no filter imports the whole channel', count($stvh_source('', $stvh_items)->fetch(10)['videos']), 3);
 $check('a category imports only its own videos', count($stvh_source('cat:12', $stvh_items)->fetch(10)['videos']), 2);
 $check('and the correct ones', $stvh_source('cat:12', $stvh_items)->fetch(10)['videos'][0]->title, 'سلامت ۱');
-$check('a stale category falls back to the channel', count($stvh_source('cat:999', $stvh_items)->fetch(10)['videos']), 3);
+// Importing the whole channel is the most destructive accident available, so
+// a selection that resolves to nothing imports nothing and says why.
+$stvh_stale = $stvh_source('cat:999', $stvh_items)->fetch(10);
+$check('a stale category imports nothing rather than the channel', count($stvh_stale['videos']), 0);
+$check('and reports that as a failure', $stvh_stale['ok'], false);
+$check('naming the reason', str_contains($stvh_stale['error'], 'دسته‌ی انتخاب‌شده هیچ ویدئویی نداشت'), true);
 $check('the sync limit still applies after filtering', count($stvh_source('cat:12', $stvh_items)->fetch(1)['videos']), 1);
 
 $stvh_groups = $stvh_source('', $stvh_items)->playlists();
@@ -364,7 +383,9 @@ $check('the sync limit applies to playlist results too', count($stvh_src->fetch(
 $check('a 405 falls back to the category filter', count($stvh_src->fetch(10)['videos']), 2);
 
 [$stvh_src] = $stvh_playlist_source('https://www.aparat.com/playlist/1234567', '', null);
-$check('…and to the whole channel when no category is set', count($stvh_src->fetch(10)['videos']), 3);
+$stvh_failed = $stvh_src->fetch(10);
+$check('a failed playlist never imports the whole channel', count($stvh_failed['videos']), 0);
+$check('it fails loudly instead', $stvh_failed['ok'], false);
 
 [$stvh_src, $stvh_client] = $stvh_playlist_source('https://www.aparat.com/mychannel', 'cat:12', $stvh_list);
 $check('a non-playlist url is ignored, not requested', $stvh_client->asked_playlist, '');
@@ -420,6 +441,20 @@ $check('and keeps the order it was written in', $stvh_picked['videos'][0]->title
 $stvh_partial = $stvh_manual('aa11bb, nosuchid', '', '')->fetch(10);
 $check('unknown ids are dropped, not invented', count($stvh_partial['videos']), 1);
 
+// The exact configuration that imported an entire channel by accident.
+$stvh_pasted = $stvh_manual(
+    "https://www.aparat.com/playlist/1058203\nhttps://www.aparat.com/playlist/1168261",
+    '',
+    ''
+)->fetch(10);
+$check('playlist links in the video field import nothing', count($stvh_pasted['videos']), 0);
+$check('and are reported rather than ignored', $stvh_pasted['ok'], false);
+$check(
+    'with the mistake named',
+    str_contains($stvh_pasted['error'], 'آدرس فهرست پخش وارد شده، نه آدرس ویدئو'),
+    true
+);
+
 $stvh_none = $stvh_manual('zzz999, yyy888', 'https://www.aparat.com/playlist/1234567', '')->fetch(10);
 $check('a list that matches nothing falls through to the playlist', count($stvh_none['videos']), 1);
 $check('and that fallback is the playlist result', $stvh_none['videos'][0]->title, 'از فهرست پخش');
@@ -456,8 +491,10 @@ $stvh_spy->set_deadline(microtime(true) + 30);
 $check('a distant deadline does not shorten it', $stvh_spy->public_budgeted_timeout(12), 12);
 
 // Rounded down, never up: a timeout that outlasts the deadline defeats it.
-$stvh_spy->set_deadline(microtime(true) + 7);
-$check('a near deadline clamps it, rounding down', $stvh_spy->public_budgeted_timeout(12), 6);
+// Offset deliberately off the integer boundary — at exactly +7 the result is
+// 6 or 7 depending on clock granularity, which is a flaky test, not a feature.
+$stvh_spy->set_deadline(microtime(true) + 7.5);
+$check('a near deadline clamps it, rounding down', $stvh_spy->public_budgeted_timeout(12), 7);
 
 $stvh_spy->set_deadline(microtime(true) + 1);
 $check('and a spent deadline refuses the request outright', $stvh_spy->public_budgeted_timeout(12), null);

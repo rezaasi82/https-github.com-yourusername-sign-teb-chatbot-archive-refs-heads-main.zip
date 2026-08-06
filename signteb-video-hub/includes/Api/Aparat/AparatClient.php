@@ -166,12 +166,28 @@ class AparatClient
      */
     public static function normalize_video_ids(string $input): array
     {
-        $input = str_replace('\\/', '/', trim($input));
+        return self::parse_video_ids($input)['ids'];
+    }
+
+    /**
+     * The same parse, but keeping what it could not use.
+     *
+     * The video field sits directly under the playlist field, so pasting
+     * playlist links into it is the obvious mistake — and silently ignoring
+     * them looked exactly like the feature not working. What is rejected has
+     * to be reportable, not just dropped.
+     *
+     * @return array{ids:array<int,string>,playlists:array<int,string>,unknown:array<int,string>}
+     */
+    public static function parse_video_ids(string $input): array
+    {
+        $input  = str_replace('\\/', '/', trim($input));
+        $result = ['ids' => [], 'playlists' => [], 'unknown' => []];
+
         if ($input === '') {
-            return [];
+            return $result;
         }
 
-        $ids = [];
         foreach (preg_split('/[\s,،;]+/u', $input) ?: [] as $token) {
             $token = trim((string) $token);
             if ($token === '') {
@@ -179,7 +195,12 @@ class AparatClient
             }
 
             if (preg_match('~/v/([A-Za-z0-9_-]{4,24})~', $token, $m)) {
-                $ids[] = $m[1];
+                $result['ids'][] = $m[1];
+                continue;
+            }
+
+            if (preg_match('~/playlist/(\d+)~', $token, $m)) {
+                $result['playlists'][] = $m[1];
                 continue;
             }
 
@@ -187,11 +208,17 @@ class AparatClient
             // read, not an id, and silently importing the wrong thing is worse
             // than skipping it.
             if (preg_match('~^[A-Za-z0-9_-]{4,24}$~', $token)) {
-                $ids[] = $token;
+                $result['ids'][] = $token;
+                continue;
             }
+
+            $result['unknown'][] = $token;
         }
 
-        return array_values(array_unique($ids));
+        return array_map(
+            static fn(array $list): array => array_values(array_unique($list)),
+            $result
+        );
     }
 
     /**

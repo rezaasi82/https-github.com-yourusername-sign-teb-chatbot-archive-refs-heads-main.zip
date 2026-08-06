@@ -119,10 +119,21 @@ $checkbox = static function (string $key, string $label, array $values, string $
                 <td>
                     <textarea id="aparat_video_ids" name="aparat_video_ids" rows="5" class="large-text code" dir="ltr" placeholder="https://www.aparat.com/v/abc123&#10;https://www.aparat.com/v/def456"><?php echo esc_textarea((string) $values['aparat_video_ids']); ?></textarea>
                     <p class="description">
-                        <?php esc_html_e('آدرس ویدئوها را (هر کدام در یک خط) از آپارات کپی کنید. شناسه‌ی خالی هم پذیرفته می‌شود.', 'signteb-video-hub'); ?>
+                        <strong><?php esc_html_e('آدرس تک‌تک ویدئوها، نه آدرس فهرست پخش.', 'signteb-video-hub'); ?></strong>
+                        <?php esc_html_e('درست: aparat.com/v/abc123 — نادرست: aparat.com/playlist/1058203', 'signteb-video-hub'); ?>
                         <br>
-                        <?php esc_html_e('این روش تنها روشی است که به هیچ چیزی در سمت آپارات وابسته نیست — اگر پر باشد، بر فهرست پخش و دسته اولویت دارد. ویدئوها باید متعلق به همان کانال بالا باشند و در ۱۰۰ ویدئوی اخیر آن قرار داشته باشند.', 'signteb-video-hub'); ?>
+                        <?php esc_html_e('این روش تنها روشی است که به هیچ چیزی در سمت آپارات وابسته نیست — اگر پر باشد، بر فهرست پخش و دسته اولویت دارد. ویدئوها باید متعلق به همان کانال بالا باشند و در ۱۰۰ ویدئوی اخیر آن قرار داشته باشند. می‌توانید ویدئوهای چند فهرست پخش را پشت سر هم اینجا بگذارید.', 'signteb-video-hub'); ?>
                     </p>
+                    <details>
+                        <summary><?php esc_html_e('گرفتن سریع آدرس همه‌ی ویدئوهای یک فهرست پخش', 'signteb-video-hub'); ?></summary>
+                        <p class="description">
+                            <?php esc_html_e('سرور نمی‌تواند صفحه‌ی فهرست پخش را بخواند (آپارات برایش صفحه‌ی بررسی ربات می‌فرستد)، ولی مرورگر شما می‌تواند. فهرست پخش را در مرورگر باز کنید، تا انتهای صفحه اسکرول کنید تا همه‌ی ویدئوها بارگذاری شوند، سپس F12 ← تب Console و این خط را اجرا کنید. آدرس‌ها در کلیپ‌بورد کپی می‌شوند و اینجا Paste می‌شوند:', 'signteb-video-hub'); ?>
+                        </p>
+                        <textarea rows="3" class="large-text code" dir="ltr" readonly onclick="this.select()">copy([...document.querySelectorAll('a[href*="/v/"]')].map(a =&gt; a.href.split('?')[0].replace(/\/$/, '')).filter((v, i, s) =&gt; s.indexOf(v) === i).join('\n'))</textarea>
+                        <p class="description">
+                            <?php esc_html_e('برای هر فهرست پخش یک بار تکرار کنید و نتیجه‌ها را پشت سر هم بچسبانید. ویدئوهای تکراری خودکار حذف می‌شوند.', 'signteb-video-hub'); ?>
+                        </p>
+                    </details>
                 </td>
             </tr>
             <tr>

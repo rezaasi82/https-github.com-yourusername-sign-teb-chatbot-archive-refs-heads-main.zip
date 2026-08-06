@@ -62,68 +62,88 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface, Dead
             return ['ok' => false, 'videos' => [], 'error' => 'شناسه کانال آپارات تنظیم نشده است.'];
         }
 
+        $manual   = AparatClient::parse_video_ids((string) $this->settings->get('aparat_video_ids', ''));
+        $playlist = $this->playlist_id();
+        $category = $this->selected_playlist();
+
+        // Whether the admin asked for a subset at all. This matters more than
+        // it looks: importing the whole channel is the most destructive thing
+        // this plugin can do by accident, and it must never be the consolation
+        // prize for a selection that failed.
+        $asked_for_subset = $manual['ids'] !== []
+            || $manual['playlists'] !== []
+            || $manual['unknown'] !== []
+            || $playlist !== ''
+            || $category !== '';
+
+        $reasons = [];
+
         // An explicit list of videos is the only selection that cannot fail on
         // Aparat's side, so nothing outranks it.
-        $chosen = $this->selected_video_ids();
-        if ($chosen !== []) {
-            $picked = $this->videos_by_ids($chosen, $limit);
+        if ($manual['ids'] !== []) {
+            $picked = $this->videos_by_ids($manual['ids'], $limit);
             if ($picked !== []) {
                 return ['ok' => true, 'videos' => $picked];
             }
-            Logger::warning(
-                'aparat',
-                'هیچ‌کدام از ویدئوهای فهرست دستی در ۱۰۰ ویدئوی اخیر کانال نبودند.',
-                ['ids' => count($chosen)]
+            $reasons[] = sprintf(
+                'هیچ‌کدام از %d ویدئوی فهرست دستی در ۱۰۰ ویدئوی اخیر کانال «%s» نبود.',
+                count($manual['ids']),
+                $this->username()
             );
         }
 
-        // A pasted playlist URL is the most explicit thing an admin can say, so
-        // it wins over the category dropdown. It can still fail — Aparat's
-        // playlist route is discovered at runtime, not documented — and the
-        // category filter below is the fallback that is already known to work.
-        $playlist = $this->playlist_id();
+        // Playlist links in the video field are the likeliest mistake, and the
+        // one that used to look like the plugin ignoring the setting entirely.
+        if ($manual['playlists'] !== []) {
+            $reasons[] = sprintf(
+                'در «فهرست دستی ویدئوها» %d آدرس فهرست پخش وارد شده، نه آدرس ویدئو.'
+                    . ' آن فیلد آدرس تک‌تک ویدئوها را می‌خواهد (مثل aparat.com/v/abc123).',
+                count($manual['playlists'])
+            );
+        }
+
+        if ($manual['unknown'] !== []) {
+            $reasons[] = sprintf('%d خط از فهرست دستی قابل تشخیص نبود.', count($manual['unknown']));
+        }
+
         if ($playlist !== '') {
             $result = $this->fetch_playlist($playlist, $limit);
             if ($result['videos'] !== []) {
                 return ['ok' => true, 'videos' => $result['videos']];
             }
-            Logger::warning(
-                'aparat',
-                'فهرست پخش خوانده نشد؛ به فیلتر دسته برگشتیم. ' . $result['error'],
-                ['playlist' => $playlist]
-            );
+            $reasons[] = 'فهرست پخش خوانده نشد: ' . $result['error'];
         }
-
-        $category = $this->selected_playlist();
 
         // Filtering happens over the channel list, so ask for more than the
         // limit — otherwise a category holding a handful of videos would be
         // starved by whatever happens to be newest.
-        $fetch_limit = $category !== '' ? 100 : $limit;
-
-        $raw = $this->client->videos_by_username($this->username(), $fetch_limit);
+        $raw = $this->client->videos_by_username($this->username(), $category !== '' ? 100 : $limit);
         if (! $raw['ok']) {
             return ['ok' => false, 'videos' => [], 'error' => $raw['error'] ?? 'خطای نامشخص آپارات.'];
         }
 
-        $items = $raw['items'];
         if ($category !== '') {
             $matched = array_values(array_filter(
-                $items,
+                $raw['items'],
                 fn(array $item): bool => $this->category_key($item) === $category
             ));
 
-            // An empty result means the category was renamed or emptied at the
-            // source. Import the channel rather than silently nothing, and say
-            // so in the log.
-            if ($matched === []) {
-                Logger::warning('aparat', 'دسته‌ی انتخاب‌شده ویدئویی نداشت؛ کل کانال وارد شد.', ['category' => $category]);
-            } else {
-                $items = $matched;
+            if ($matched !== []) {
+                return ['ok' => true, 'videos' => $this->to_dtos($matched, $limit)];
             }
+
+            $reasons[] = 'دسته‌ی انتخاب‌شده هیچ ویدئویی نداشت.';
         }
 
-        return ['ok' => true, 'videos' => $this->to_dtos($items, $limit)];
+        if ($asked_for_subset) {
+            $error = 'انتخاب شما اعمال نشد و برای جلوگیری از ورود کل کانال، هیچ ویدئویی وارد نشد — '
+                . implode(' ', $reasons);
+            Logger::error('aparat', $error);
+
+            return ['ok' => false, 'videos' => [], 'error' => $error];
+        }
+
+        return ['ok' => true, 'videos' => $this->to_dtos($raw['items'], $limit)];
     }
 
     /**
@@ -269,10 +289,26 @@ class AparatSource implements VideoSourceInterface, PlaylistAwareInterface, Dead
         // better than a sync that does. Budget clamps itself to that limit.
         $this->client->set_deadline((new Budget(25))->deadline());
 
+        $manual = AparatClient::parse_video_ids((string) $this->settings->get('aparat_video_ids', ''));
+
+        // Catch the paste-the-wrong-link mistake here, where an admin is
+        // looking at the answer, rather than in a cron run they never see.
+        if ($manual['playlists'] !== [] && $manual['ids'] === []) {
+            return [
+                'ok'      => false,
+                'message' => sprintf(
+                    'در «فهرست دستی ویدئوها» %d آدرس فهرست پخش هست، نه آدرس ویدئو.'
+                        . ' آن فیلد آدرس تک‌تک ویدئوها را می‌خواهد — مثل https://www.aparat.com/v/abc123 .'
+                        . ' فهرست پخش را در مرورگر باز کنید و آدرس ویدئوها را از آنجا کپی کنید.',
+                    count($manual['playlists'])
+                ),
+            ];
+        }
+
         // The manual list outranks the URL at sync time, so it is what a test
         // must report on when both are filled — otherwise the test would
         // describe a route the sync will never take.
-        $chosen = $this->selected_video_ids();
+        $chosen = $manual['ids'];
         if ($chosen !== []) {
             $matched = $this->videos_by_ids($chosen, 100);
 
