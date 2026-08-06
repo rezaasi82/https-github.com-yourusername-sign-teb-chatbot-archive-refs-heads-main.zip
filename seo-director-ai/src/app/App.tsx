@@ -21,6 +21,23 @@ const SettingsPage = lazy(() => import('../features/settings/SettingsPage').then
 const ResearchPage = lazy(() => import('../features/research/ResearchPage').then((m) => ({ default: m.ResearchPage })));
 const MedicalPage = lazy(() => import('../features/medical/MedicalPage').then((m) => ({ default: m.MedicalPage })));
 
+// Concrete label for the vertical section, so the nav mirrors the chosen site
+// type (like the old "Medical" tab) instead of a generic "Business" catch-all.
+const BIZ_NAV_LABEL: Record<string, string> = {
+  agency: 'Agency',
+  salon: 'Salon',
+  legal: 'Legal',
+  fitness: 'Fitness',
+};
+
+function verticalNavLabel(): string {
+  const b = boot();
+  if (b.siteVertical === 'business') {
+    return BIZ_NAV_LABEL[b.bizTypePreset ?? 'agency'] ?? 'Business';
+  }
+  return 'Medical';
+}
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 60_000, refetchOnWindowFocus: false } },
 });
@@ -42,11 +59,13 @@ const NAV: NavItem[] = [
   { route: 'research', label: 'Research', page: ResearchPage, feature: 'keyword_research', requires: 'starter' },
   { route: 'content', label: 'Content', page: ContentPage, feature: 'content_strategist', requires: 'pro' },
   // Vertical pack — shown when the site picked a medical or business vertical.
+  // The nav label follows the chosen site type so it reads as a concrete
+  // section ("Medical" / "Agency" / "Salon" / …) instead of a generic tab.
   ...(boot().siteVertical !== 'none'
     ? [
         {
           route: 'medical',
-          label: boot().siteVertical === 'business' ? 'Business' : 'Medical',
+          label: verticalNavLabel(),
           page: MedicalPage,
           feature: 'medical_pack',
           requires: 'pro',

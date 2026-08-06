@@ -326,6 +326,11 @@ const FA: Record<string, string> = {
   'Business address': 'آدرس کسب‌وکار',
   'Entities & schema': 'موجودیت‌ها و اسکیما',
   'Knowledge graph': 'گراف دانش',
+  // Vertical section nav labels (mirror the chosen site type).
+  // 'Agency' is already defined above (main nav).
+  'Salon': 'سالن زیبایی',
+  'Legal': 'حقوقی',
+  'Fitness': 'باشگاه',
 
   // Zombie pages
   'Zombies': 'صفحات زامبی',

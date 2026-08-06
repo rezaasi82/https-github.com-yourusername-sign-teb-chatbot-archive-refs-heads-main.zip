@@ -18,6 +18,7 @@ export interface BootData {
   canManage: boolean;
   canManageClients: boolean;
   siteVertical: 'none' | 'medical' | 'business';
+  bizTypePreset?: string;
   version: string;
   siteName: string;
   branding: Branding;

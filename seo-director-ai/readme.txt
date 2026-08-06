@@ -49,6 +49,8 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 * Business & services vertical ships four ready dictionaries — web design/branding/SEO agency, beauty salon / hairdresser, lawyer / legal advisor, and gym / fitness — driving business entity detection, agency-trust analysis, and LocalBusiness/WebPage schema (from the business name/phone/address fields).
 * Medical vertical keeps the six clinical specialty dictionaries and Physician/MedicalClinic/MedicalWebPage schema. The "Medical/Business" dashboard tab and its headings now follow the selected vertical.
 * The old medical-marketing dictionary is retired in favour of the dedicated Business vertical; existing medical-mode sites are migrated to the Medical vertical automatically.
+* The sidebar section now carries a concrete label for the chosen site type — "Medical" for clinics and "Agency / Salon / Legal / Fitness" for the matching business type — instead of a generic tab.
+* The plugin name in the WordPress plugins list is back to plain "SEO Director AI" (no version suffix); the release version now lives only in the download zip's filename.
 
 = 0.13.2 =
 * Agency trust analyzer: when the "Medical web design, branding & SEO" dictionary is selected, the E-E-A-T tool now measures agency trust signals instead of clinical ones — contact info (phone/WhatsApp/email), pricing/tariff, portfolio/work samples, client testimonials, about/experience, a clear call to action, and freshness — each scored with a fix suggestion.

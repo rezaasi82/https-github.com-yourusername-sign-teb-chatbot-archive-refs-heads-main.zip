@@ -65,6 +65,7 @@ final class Assets {
 					'canManage' => current_user_can( \SEODirector\Core\Capabilities::MANAGE ),
 					'canManageClients' => current_user_can( \SEODirector\Core\Capabilities::MANAGE_CLIENTS ),
 					'siteVertical' => $this->settings->vertical(),
+					'bizTypePreset' => (string) $this->settings->get( 'biz_type_preset', 'agency' ),
 					'version'   => SDA_VERSION,
 					'siteName'  => get_bloginfo( 'name' ),
 					'branding'  => $this->white_label->boot_payload(),
