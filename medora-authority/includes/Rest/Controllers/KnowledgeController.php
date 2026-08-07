@@ -8,6 +8,7 @@ use Medora\Authority\Core\Container;
 use Medora\Authority\Entity\Entity;
 use Medora\Authority\Entity\EntityAuthorityScorer;
 use Medora\Authority\Entity\EntityRepository;
+use Medora\Authority\Entity\SuppressionList;
 use Medora\Authority\Entity\EntityType;
 use Medora\Authority\Graph\GraphExporter;
 use Medora\Authority\Graph\RelationRepository;
@@ -82,7 +83,31 @@ final class KnowledgeController extends AbstractController
                 'methods'             => WP_REST_Server::DELETABLE,
                 'callback'            => [$this, 'deleteEntity'],
                 'permission_callback' => [$this, 'canEditEntities'],
-                'args'                => ['id' => ['type' => 'integer', 'sanitize_callback' => 'absint']],
+                'args'                => [
+                    'id' => ['type' => 'integer', 'sanitize_callback' => 'absint'],
+                    // Defaults to true because a delete without it is undone by
+                    // the next analysis; callers wanting a plain delete must
+                    // ask for one.
+                    'suppress' => ['type' => 'boolean', 'default' => true],
+                ],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/entities/suppressed', [
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [$this, 'suppressions'],
+                'permission_callback' => [$this, 'canEditEntities'],
+            ],
+            [
+                'methods'             => WP_REST_Server::DELETABLE,
+                'callback'            => [$this, 'suppressions'],
+                'permission_callback' => [$this, 'canEditEntities'],
+                'args'                => [
+                    // Omitted clears the whole list; restoring one at a time is
+                    // the common case.
+                    'uid' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                ],
             ],
         ]);
 
@@ -212,9 +237,36 @@ final class KnowledgeController extends AbstractController
         return $this->ok(($repository->find($stored->id) ?? $stored)->toArray());
     }
 
+    /**
+     * Remove an entity, and by default stop it being extracted again.
+     *
+     * Extraction is deterministic, so deleting alone puts the entity back on
+     * the next analysis. The entity is read before the delete because the
+     * suppression list needs its uid, name and type — after the row is gone
+     * there is nothing left to record.
+     */
     public function deleteEntity(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        $id = (int) $request->get_param('id');
+        $id     = (int) $request->get_param('id');
+        $entity = $this->container->get(EntityRepository::class)->find($id);
+
+        if ($entity === null) {
+            return $this->notFound(__('Entity not found.', 'medora-authority'));
+        }
+
+        $suppressed = false;
+
+        if ((bool) $request->get_param('suppress')) {
+            $suppressed = $this->container->get(SuppressionList::class)->suppress($entity);
+
+            if (! $suppressed) {
+                return $this->badRequest(sprintf(
+                    /* translators: %d: maximum number of suppressed entities. */
+                    __('The removed-entity list is full at %d. Clear some of it before removing more — a site needing this many is better served by narrowing extraction.', 'medora-authority'),
+                    SuppressionList::LIMIT
+                ));
+            }
+        }
 
         if (! $this->container->get(EntityRepository::class)->delete($id)) {
             return $this->notFound(__('Entity not found.', 'medora-authority'));
@@ -222,7 +274,33 @@ final class KnowledgeController extends AbstractController
 
         do_action('medora_entity_deleted', $id);
 
-        return $this->ok(['deleted' => true, 'id' => $id]);
+        return $this->ok([
+            'deleted'    => true,
+            'id'         => $id,
+            'suppressed' => $suppressed,
+        ]);
+    }
+
+    /**
+     * The removed-entity list, and the way back out of it.
+     */
+    public function suppressions(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $list = $this->container->get(SuppressionList::class);
+        $uid  = (string) $request->get_param('uid');
+
+        if ($request->get_method() === 'DELETE') {
+            if ($uid !== '') {
+                $list->restore($uid);
+            } else {
+                $list->clear();
+            }
+        }
+
+        return $this->ok([
+            'items' => $list->all(),
+            'limit' => SuppressionList::LIMIT,
+        ]);
     }
 
     public function graph(WP_REST_Request $request): WP_REST_Response|WP_Error

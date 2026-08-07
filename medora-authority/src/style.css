@@ -1061,3 +1061,17 @@
 	margin: 0 0 4px;
 	font-variant-numeric: tabular-nums;
 }
+
+/* --- Destructive actions ------------------------------------------------- */
+
+.medora-danger {
+	/* Marked on the reading edge so it reads as a warning in both directions,
+	   and separated so it cannot be clicked while aiming for Save. */
+	border-inline-start: 3px solid var(--medora-grade-f);
+	padding-inline-start: 12px;
+	margin-block-start: 24px;
+}
+
+.medora-danger h3 {
+	color: var(--medora-grade-f);
+}

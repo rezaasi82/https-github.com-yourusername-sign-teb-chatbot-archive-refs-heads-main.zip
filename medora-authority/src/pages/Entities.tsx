@@ -9,10 +9,12 @@ function EntityPanel( {
 	id,
 	onClose,
 	onSaved,
+	onDeleted,
 }: {
 	id: number;
 	onClose: () => void;
 	onSaved: () => void;
+	onDeleted: () => void;
 } ): JSX.Element {
 	const { data, loading, error } = useAsync< EntityDetail >(
 		() => api.entity( id ),
@@ -23,6 +25,7 @@ function EntityPanel( {
 	const [ description, setDescription ] = useState< string | null >( null );
 	const [ saving, setSaving ] = useState( false );
 	const [ message, setMessage ] = useState( '' );
+	const [ confirming, setConfirming ] = useState( false );
 
 	if ( loading && ! data ) {
 		return <aside className="medora-panel">{ __( 'Loading…', 'medora-authority' ) }</aside>;
@@ -55,6 +58,21 @@ function EntityPanel( {
 			setMessage( ( saveError as Error ).message );
 		} finally {
 			setSaving( false );
+		}
+	};
+
+	const remove = async () => {
+		setSaving( true );
+		setMessage( '' );
+
+		try {
+			await api.deleteEntity( data.id );
+
+			onDeleted();
+		} catch ( deleteError ) {
+			setMessage( ( deleteError as Error ).message );
+			setSaving( false );
+			setConfirming( false );
 		}
 	};
 
@@ -154,6 +172,47 @@ function EntityPanel( {
 				</section>
 			) }
 
+			{ boot.capabilities.entities && (
+				<section className="medora-danger">
+					<h3>{ __( 'Remove this entity', 'medora-authority' ) }</h3>
+					<p className="medora-muted">
+						{ __(
+							'Use this for something the extractor got wrong — a navigation label or a stray phrase read as a subject. It is deleted from the graph and from the structured data you publish, and it will not be extracted again.',
+							'medora-authority'
+						) }
+					</p>
+
+					{ confirming ? (
+						<div className="medora-actions">
+							<button
+								type="button"
+								className="button button-primary"
+								disabled={ saving }
+								onClick={ remove }
+							>
+								{ __( 'Yes, remove it', 'medora-authority' ) }
+							</button>
+							<button
+								type="button"
+								className="button"
+								disabled={ saving }
+								onClick={ () => setConfirming( false ) }
+							>
+								{ __( 'Cancel', 'medora-authority' ) }
+							</button>
+						</div>
+					) : (
+						<button
+							type="button"
+							className="button"
+							onClick={ () => setConfirming( true ) }
+						>
+							{ __( 'Remove entity', 'medora-authority' ) }
+						</button>
+					) }
+				</section>
+			) }
+
 			{ data.relations && data.relations.length > 0 && (
 				<section>
 					<h3>{ __( 'Relationships', 'medora-authority' ) }</h3>
@@ -181,6 +240,17 @@ export function Entities(): JSX.Element {
 	const [ type, setType ] = useState( '' );
 	const [ page, setPage ] = useState( 1 );
 	const [ selected, setSelected ] = useState< number | null >( null );
+
+	const {
+		data: suppressed,
+		reload: reloadSuppressed,
+	} = useAsync< import('../types').SuppressionReport >(
+		() =>
+			boot.capabilities.entities
+				? api.suppressedEntities()
+				: Promise.resolve( { items: [], limit: 0 } ),
+		[]
+	);
 
 	const { data, loading, error, reload } = useAsync(
 		() =>
@@ -319,13 +389,108 @@ export function Entities(): JSX.Element {
 				) }
 			</div>
 
+			{ suppressed && suppressed.items.length > 0 && (
+				<RemovedEntities
+					report={ suppressed }
+					onChanged={ () => {
+						reloadSuppressed();
+						reload();
+					} }
+				/>
+			) }
+
 			{ selected !== null && (
 				<EntityPanel
 					id={ selected }
 					onClose={ () => setSelected( null ) }
 					onSaved={ reload }
+					onDeleted={ () => {
+						setSelected( null );
+						reload();
+						reloadSuppressed();
+					} }
 				/>
 			) }
 		</div>
+	);
+}
+
+
+/**
+ * Entities the publisher removed, and the way back.
+ *
+ * Removal has to be reversible and inspectable, because it is not only a
+ * deletion: it also stops the entity being extracted again, which is a standing
+ * instruction rather than a one-off act. A standing instruction nobody can see
+ * or undo is how a knowledge graph quietly loses a subject and nobody works out
+ * why.
+ */
+function RemovedEntities( {
+	report,
+	onChanged,
+}: {
+	report: import('../types').SuppressionReport;
+	onChanged: () => void;
+} ): JSX.Element {
+	const [ busy, setBusy ] = useState( false );
+
+	const restore = async ( uid?: string ) => {
+		setBusy( true );
+
+		try {
+			await api.restoreEntity( uid );
+			onChanged();
+		} finally {
+			setBusy( false );
+		}
+	};
+
+	return (
+		<section className="medora-card">
+			<h2>
+				{ sprintf(
+					/* translators: 1: number removed, 2: maximum. */
+					__( 'Removed entities — %1$d of %2$d', 'medora-authority' ),
+					report.items.length,
+					report.limit
+				) }
+			</h2>
+			<p className="medora-muted">
+				{ __(
+					'These are skipped during extraction. Restoring one brings it back the next time the page it came from is analysed.',
+					'medora-authority'
+				) }
+			</p>
+
+			<ul className="medora-list">
+				{ report.items.map( ( item ) => (
+					<li key={ item.uid }>
+						<span>
+							<strong>{ item.name }</strong>
+							<em className="medora-muted"> · { item.type }</em>
+						</span>
+						<button
+							type="button"
+							className="button-link"
+							disabled={ busy }
+							onClick={ () => restore( item.uid ) }
+						>
+							{ __( 'Restore', 'medora-authority' ) }
+						</button>
+					</li>
+				) ) }
+			</ul>
+
+			<div className="medora-actions">
+				<button
+					type="button"
+					className="button"
+					disabled={ busy }
+					onClick={ () => restore() }
+				>
+					{ __( 'Restore all', 'medora-authority' ) }
+				</button>
+			</div>
+		</section>
 	);
 }

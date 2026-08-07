@@ -222,10 +222,22 @@ export const api = {
 			data,
 		} ),
 
-	deleteEntity: ( id: number ) =>
-		request< { deleted: boolean } >( `entities/${ id }`, {
-			method: 'DELETE',
-		} ),
+	deleteEntity: ( id: number, suppress = true ) =>
+		request< { deleted: boolean; suppressed: boolean } >(
+			`entities/${ id }`,
+			{ method: 'DELETE', data: { suppress } }
+		),
+
+	suppressedEntities: () =>
+		request< import('../types').SuppressionReport >(
+			'entities/suppressed'
+		),
+
+	restoreEntity: ( uid?: string ) =>
+		request< import('../types').SuppressionReport >(
+			'entities/suppressed',
+			{ method: 'DELETE', data: uid ? { uid } : {} }
+		),
 
 	graph: ( limit = 300 ) =>
 		request< import('../types').GraphData >( 'graph', {

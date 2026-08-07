@@ -8,7 +8,7 @@
 # by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.10.0\n"
+"Project-Id-Version: Medora Authority 0.11.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -45,7 +45,7 @@ msgstr ""
 
 #: includes/Admin/AdminMenu.php:63
 #: src/app/App.tsx:86
-#: src/pages/Entities.tsx:201
+#: src/pages/Entities.tsx:271
 #: src/pages/Overview.tsx:76
 msgid "Entities"
 msgstr ""
@@ -1283,25 +1283,31 @@ msgstr ""
 msgid "This site does not cover that condition."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:146
-#: includes/Rest/Controllers/KnowledgeController.php:166
-#: includes/Rest/Controllers/KnowledgeController.php:220
+#: includes/Rest/Controllers/KnowledgeController.php:171
+#: includes/Rest/Controllers/KnowledgeController.php:191
+#: includes/Rest/Controllers/KnowledgeController.php:254
+#: includes/Rest/Controllers/KnowledgeController.php:272
 msgid "Entity not found."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:172
+#: includes/Rest/Controllers/KnowledgeController.php:197
 msgid "Unknown entity type."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:231
+#. translators: %d: maximum number of suppressed entities.
+#: includes/Rest/Controllers/KnowledgeController.php:265
+msgid "The removed-entity list is full at %d. Clear some of it before removing more — a site needing this many is better served by narrowing extraction."
+msgstr ""
+
+#: includes/Rest/Controllers/KnowledgeController.php:309
 msgid "The Knowledge Graph module is not active."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:252
+#: includes/Rest/Controllers/KnowledgeController.php:330
 msgid "The AI Prompt Engine module is not active."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:268
+#: includes/Rest/Controllers/KnowledgeController.php:346
 msgid "The Vector Engine module is not active."
 msgstr ""
 
@@ -2264,7 +2270,7 @@ msgid "no"
 msgstr ""
 
 #: src/components/ScoreBreakdown.tsx:206
-#: src/pages/Entities.tsx:281
+#: src/pages/Entities.tsx:351
 msgid "none"
 msgstr ""
 
@@ -2273,8 +2279,8 @@ msgstr ""
 #: src/pages/Audit.tsx:47
 #: src/pages/Content.tsx:205
 #: src/pages/Crawlers.tsx:51
-#: src/pages/Entities.tsx:28
-#: src/pages/Entities.tsx:290
+#: src/pages/Entities.tsx:31
+#: src/pages/Entities.tsx:360
 #: src/pages/Overview.tsx:19
 #: src/pages/Settings.tsx:33
 #: src/pages/Wizard.tsx:31
@@ -2573,7 +2579,7 @@ msgid "Page %1$d of %2$d"
 msgstr ""
 
 #: src/pages/Content.tsx:124
-#: src/pages/Entities.tsx:69
+#: src/pages/Entities.tsx:87
 msgid "Close"
 msgstr ""
 
@@ -2712,82 +2718,119 @@ msgstr ""
 msgid "Site policy"
 msgstr ""
 
-#: src/pages/Entities.tsx:113
+#: src/pages/Entities.tsx:131
 msgid "Edit"
 msgstr ""
 
-#: src/pages/Entities.tsx:116
+#: src/pages/Entities.tsx:134
 msgid "Description"
 msgstr ""
 
-#: src/pages/Entities.tsx:126
+#: src/pages/Entities.tsx:144
 msgid "sameAs identifiers (one per line)"
 msgstr ""
 
-#: src/pages/Entities.tsx:136
+#: src/pages/Entities.tsx:154
 msgid "These are what let an AI system match this entity to the one in its own knowledge base. It is the single highest-value field here."
 msgstr ""
 
-#: src/pages/Entities.tsx:149
+#: src/pages/Entities.tsx:167
 #: src/pages/Settings.tsx:380
 msgid "Saving…"
 msgstr ""
 
-#: src/pages/Entities.tsx:150
+#: src/pages/Entities.tsx:168
 msgid "Save entity"
 msgstr ""
 
-#: src/pages/Entities.tsx:159
-msgid "Relationships"
+#: src/pages/Entities.tsx:177
+msgid "Remove this entity"
 msgstr ""
 
-#: src/pages/Entities.tsx:205
-msgid "Search entities…"
+#: src/pages/Entities.tsx:179
+msgid "Use this for something the extractor got wrong — a navigation label or a stray phrase read as a subject. It is deleted from the graph and from the structured data you publish, and it will not be extracted again."
+msgstr ""
+
+#: src/pages/Entities.tsx:193
+msgid "Yes, remove it"
+msgstr ""
+
+#: src/pages/Entities.tsx:201
+msgid "Cancel"
+msgstr ""
+
+#: src/pages/Entities.tsx:210
+msgid "Remove entity"
 msgstr ""
 
 #: src/pages/Entities.tsx:218
+msgid "Relationships"
+msgstr ""
+
+#: src/pages/Entities.tsx:275
+msgid "Search entities…"
+msgstr ""
+
+#: src/pages/Entities.tsx:288
 msgid "Entity type"
 msgstr ""
 
-#: src/pages/Entities.tsx:221
+#: src/pages/Entities.tsx:291
 msgid "All types"
 msgstr ""
 
-#: src/pages/Entities.tsx:240
+#: src/pages/Entities.tsx:310
 msgid "Entity"
 msgstr ""
 
-#: src/pages/Entities.tsx:241
+#: src/pages/Entities.tsx:311
 msgid "Type"
 msgstr ""
 
-#: src/pages/Entities.tsx:242
+#: src/pages/Entities.tsx:312
 msgid "Authority"
 msgstr ""
 
-#: src/pages/Entities.tsx:243
+#: src/pages/Entities.tsx:313
 msgid "sameAs"
 msgstr ""
 
-#: src/pages/Entities.tsx:300
+#: src/pages/Entities.tsx:370
 msgid "Previous"
 msgstr ""
 
 #. translators: 1: current page, 2: total entities.
-#: src/pages/Entities.tsx:305
+#: src/pages/Entities.tsx:375
 msgid "Page %1$d — %2$d entities"
 msgstr ""
 
-#: src/pages/Entities.tsx:316
+#: src/pages/Entities.tsx:386
 msgid "Next"
 msgstr ""
 
-#: src/pages/Entities.tsx:52
+#. translators: 1: number removed, 2: maximum.
+#: src/pages/Entities.tsx:453
+msgid "Removed entities — %1$d of %2$d"
+msgstr ""
+
+#: src/pages/Entities.tsx:459
+msgid "These are skipped during extraction. Restoring one brings it back the next time the page it came from is analysed."
+msgstr ""
+
+#: src/pages/Entities.tsx:478
+msgid "Restore"
+msgstr ""
+
+#: src/pages/Entities.tsx:491
+msgid "Restore all"
+msgstr ""
+
+#: src/pages/Entities.tsx:55
 msgid "Saved."
 msgstr ""
 
 #. translators: %s: score out of 100.
-#: src/pages/Entities.tsx:78
+#: src/pages/Entities.tsx:96
 msgid "Entity authority: %s / 100"
 msgstr ""
 

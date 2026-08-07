@@ -187,6 +187,10 @@ final class Options
             'default_language' => '',
             'retention_days'   => 180,
             'white_label'      => [],
+            // Entity uids the publisher has removed. Extraction skips these,
+            // because deleting an entity that is re-extracted an hour later is
+            // worse than not offering deletion at all.
+            'suppressed_entities' => [],
             'modules'          => [],
         ];
     }

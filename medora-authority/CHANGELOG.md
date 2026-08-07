@@ -4,6 +4,59 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] — 2026-08-03
+
+The audit, pointed at the dashboard: unstyled classes, uncalled client methods,
+unused types. One finding was real and it was a functional gap.
+
+### Added — removing an entity
+
+`DELETE /entities/{id}` has existed since the first release, capability-gated,
+and `api.deleteEntity()` sat in the client with no caller. The entity editor
+could change a description and add `sameAs` links, but a wrongly extracted
+entity — a navigation label read as an organisation, a stray phrase read as a
+subject — could not be removed at all. Those entities are not merely untidy:
+they are **published**, in the JSON-LD `@graph` handed to every AI crawler.
+
+But a delete button on its own would have been a trap. Extraction is
+deterministic: whatever the heuristic extractor found in the text once, it finds
+again on the next analysis. The entity would reappear within the hour and the
+editor would rightly conclude the feature was broken.
+
+So removal records the decision. `Entity\SuppressionList` keys on the entity
+uid — `sha256(type|normalised name)`, stable across re-extraction and across
+locales, which storing the *name* would not be — and `EntityExtractor` consults
+it before the `medora_entity_candidates` filter runs, so a third party that
+wants a suppressed entity back can add it deliberately rather than having its
+addition silently dropped afterwards.
+
+Removal is therefore a standing instruction, not a one-off act, and the UI
+treats it as one:
+
+* the removal control sits in its own marked section, separated so it cannot be
+  clicked while aiming for Save, and asks for confirmation;
+* the Entities screen lists what has been removed, with per-entity Restore and
+  Restore all. A standing instruction nobody can see or undo is how a knowledge
+  graph quietly loses a subject with no explanation;
+* the list is capped at 500. The option is autoloaded on every request, so it
+  cannot grow without bound — and a site suppressing hundreds of entities has an
+  extraction problem that a blocklist is the wrong fix for. Refusing makes that
+  visible; growing quietly would not.
+
+`GET`/`DELETE /entities/suppressed` back the list. `DELETE /entities/{id}` takes
+`suppress` (default true) so the API can still do a plain delete.
+
+### Fixed — the unit bootstrap again
+
+`update_option`, `delete_option` and `current_time` were missing, so any test
+touching a class that *writes* a setting fataled rather than failing. Writes now
+go back into the test option store, so a write-then-read test passes on its own
+merits rather than because `Options` happens to cache in-process.
+
+That is the third gap found in this bootstrap. Each one made a category of test
+impossible to write, which is why they went unnoticed: nobody writes the test
+that cannot run.
+
 ## [0.10.0] — 2026-08-03
 
 I turned the dead-code audit on the feature flags I introduced in 0.7.0. Four of

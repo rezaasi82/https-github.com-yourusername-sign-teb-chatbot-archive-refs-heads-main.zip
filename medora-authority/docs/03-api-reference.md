@@ -348,6 +348,10 @@ Standard WordPress REST shape:
 | `medora_scorer_failed` | `string $id, Throwable` | a scorer threw (analysis continues) |
 | `medora_entity_updated` | `array $entity` | an entity was edited or merged |
 | `medora_entity_deleted` | `int $id` | an entity was removed |
+
+The delete endpoint accepts `suppress` (default `true`), which records the
+entity's uid so extraction skips it. Without that, deletion is undone by the
+next analysis. `GET`/`DELETE /entities/suppressed` reads and clears that list.
 | `medora_citation_attached` | `int $postId, Citation` | a citation was resolved and stored |
 | `medora_author_profile_updated` | `int $userId` | an author's trust profile changed |
 | `medora_crawler_policy_changed` | `string $slug, string $decision` | one crawler's access changed |

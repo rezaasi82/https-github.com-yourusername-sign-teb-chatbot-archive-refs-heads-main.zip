@@ -54,9 +54,17 @@ final class EntityModule extends AbstractModule
         $container->singleton(EntityRepository::class, static fn (): EntityRepository => new EntityRepository());
 
         $container->singleton(
+            SuppressionList::class,
+            static fn (Container $c): SuppressionList => new SuppressionList($c->get(Options::class))
+        );
+
+        $container->singleton(
             EntityExtractor::class,
             static function (Container $c): EntityExtractor {
-                $extractor = new EntityExtractor($c->get(EntityRepository::class));
+                $extractor = new EntityExtractor(
+                    $c->get(EntityRepository::class),
+                    $c->get(SuppressionList::class)
+                );
 
                 $extractor->addExtractor(new TaxonomyExtractor());
                 $extractor->addExtractor(new AuthorExtractor($c->get(Options::class)));

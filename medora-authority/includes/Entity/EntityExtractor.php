@@ -25,7 +25,10 @@ final class EntityExtractor
     /** @var list<ExtractorInterface> */
     private array $extractors = [];
 
-    public function __construct(private readonly EntityRepository $repository)
+    public function __construct(
+        private readonly EntityRepository $repository,
+        private readonly SuppressionList $suppressed,
+    )
     {
     }
 
@@ -75,6 +78,11 @@ final class EntityExtractor
          * @param array<string, Candidate> $merged
          * @param WP_Post                  $post
          */
+        // Applied before the filter, so a third party that wants a suppressed
+        // entity back can add it deliberately rather than having its addition
+        // silently removed afterwards.
+        $merged = $this->suppressed->filter($merged);
+
         $merged = (array) apply_filters('medora_entity_candidates', $merged, $post);
 
         if ($merged === []) {

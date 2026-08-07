@@ -363,3 +363,15 @@ export interface AuditReport {
 	items: AuditEntry[];
 	total: number;
 }
+
+export interface SuppressedEntity {
+	uid: string;
+	name: string;
+	type: string;
+	at: string;
+}
+
+export interface SuppressionReport {
+	items: SuppressedEntity[];
+	limit: number;
+}

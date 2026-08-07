@@ -225,6 +225,37 @@ if (! function_exists('get_option')) {
     }
 }
 
+if (! function_exists('update_option')) {
+    /**
+     * Writes back into `$GLOBALS['medora_test_options']`, so a test that saves
+     * a setting and reads it again through a fresh object sees what it wrote.
+     * A no-op shim here would let write-then-read tests pass only because
+     * `Options` happens to cache in-process.
+     */
+    function update_option(string $option, mixed $value, bool $autoload = false): bool
+    {
+        $GLOBALS['medora_test_options'][$option] = $value;
+
+        return true;
+    }
+}
+
+if (! function_exists('delete_option')) {
+    function delete_option(string $option): bool
+    {
+        unset($GLOBALS['medora_test_options'][$option]);
+
+        return true;
+    }
+}
+
+if (! function_exists('current_time')) {
+    function current_time(string $format, bool $gmt = false): string
+    {
+        return $format === 'timestamp' ? (string) time() : gmdate('Y-m-d H:i:s');
+    }
+}
+
 if (! function_exists('sanitize_text_field')) {
     function sanitize_text_field(string $value): string
     {
