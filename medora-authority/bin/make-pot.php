@@ -621,8 +621,9 @@ function render(array $entries): string
         # Regenerate with:
         #   php bin/make-pot.php
         #
-        # Target locales for launch: en_US, fa_IR, ar. The dashboard is RTL-ready
-        # by construction, so an RTL locale needs no separate stylesheet build.
+        # Target locales: fa_IR then en_US. Arabic is deliberately out of scope.
+        # The dashboard is RTL-ready by construction, so an RTL locale needs no
+        # separate stylesheet build if one is added later.
         msgid ""
         msgstr ""
         "Project-Id-Version: Medora Authority {$version}\\n"

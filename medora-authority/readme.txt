@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.13.0
+Stable tag: 0.14.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,12 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 5. Per-page authority in the editor, with prioritised fixes.
 
 == Changelog ==
+
+= 0.14.0 =
+* Persian is now complete — all 740 strings across the plugin and dashboard.
+* Still needs review by a Persian speaker before you rely on it: it is complete,
+  not verified.
+* Arabic has been removed from the planned languages.
 
 = 0.13.0 =
 * Persian translation, first pass — 410 of 740 strings, covering the whole
@@ -262,6 +268,9 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.14.0 =
+Persian is complete but unreviewed. Read it before switching your site to it.
 
 = 0.13.0 =
 Persian is available but marked as a draft. Review it before relying on it.

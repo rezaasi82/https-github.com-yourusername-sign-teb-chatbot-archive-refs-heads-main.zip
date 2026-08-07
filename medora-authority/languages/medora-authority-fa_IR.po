@@ -4,11 +4,12 @@
 # Regenerate with:
 #   php bin/make-pot.php
 #
-# Target locales for launch: en_US, fa_IR, ar. The dashboard is RTL-ready
-# by construction, so an RTL locale needs no separate stylesheet build.
+# Target locales: fa_IR then en_US. Arabic is deliberately out of scope.
+# The dashboard is RTL-ready by construction, so an RTL locale needs no
+# separate stylesheet build if one is added later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.12.0\n"
+"Project-Id-Version: Medora Authority 0.13.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -28,7 +29,7 @@ msgstr "در حال بارگذاری مدورا…"
 #. translators: 1: score out of 100, 2: letter grade.
 #: includes/Admin/AdminMenu.php:166
 msgid "AI Authority: %1$s (%2$s)"
-msgstr ""
+msgstr "اعتبار هوش مصنوعی: %1$s (%2$s)"
 
 #: includes/Admin/AdminMenu.php:43
 msgid "Medora"
@@ -95,7 +96,7 @@ msgstr "داشبورد"
 
 #: includes/Admin/AdminModule.php:32
 msgid "The Medora admin experience: authority dashboard, entity explorer and setup wizard."
-msgstr ""
+msgstr "تجربهٔ مدیریت مدورا: داشبورد اعتبار، کاوشگر موجودیت‌ها و راهنمای راه‌اندازی."
 
 #: includes/Admin/ExperienceMode.php:154
 msgid "Beginner"
@@ -103,7 +104,7 @@ msgstr "مبتدی"
 
 #: includes/Admin/ExperienceMode.php:155
 msgid "The score, what is wrong with each page, and how to fix it. Nothing else."
-msgstr ""
+msgstr "امتیاز، اینکه هر صفحه چه ایرادی دارد، و راه اصلاح آن. هیچ چیز دیگر."
 
 #: includes/Admin/ExperienceMode.php:159
 msgid "Professional"
@@ -111,7 +112,7 @@ msgstr "حرفه‌ای"
 
 #: includes/Admin/ExperienceMode.php:160
 msgid "Adds the entity explorer, referral analytics, passage-level detail and the full score breakdown."
-msgstr ""
+msgstr "کاوشگر موجودیت‌ها، تحلیل ارجاع‌ها، جزئیات در سطح بند و تفکیک کامل امتیاز را اضافه می‌کند."
 
 #: includes/Admin/ExperienceMode.php:164
 #: includes/License/LicenseTier.php:53
@@ -120,7 +121,7 @@ msgstr "آژانس"
 
 #: includes/Admin/ExperienceMode.php:165
 msgid "Adds the knowledge graph, module control, white-labelling and raw metrics."
-msgstr ""
+msgstr "گراف دانش، کنترل ماژول‌ها، برچسب سفید و معیارهای خام را اضافه می‌کند."
 
 #: includes/Admin/ExperienceMode.php:169
 #: includes/License/LicenseTier.php:54
@@ -129,7 +130,7 @@ msgstr "سازمانی"
 
 #: includes/Admin/ExperienceMode.php:170
 msgid "Adds the audit log and background queue health."
-msgstr ""
+msgstr "گزارش رویدادها و سلامت صف پس‌زمینه را اضافه می‌کند."
 
 #: includes/Admin/MetaBox.php:105
 msgid "Re-analyse now"
@@ -141,23 +142,23 @@ msgstr "پاسخ مرجع"
 
 #: includes/Admin/MetaBox.php:127
 msgid "25–60 words that answer this page's question on their own. This is what assistants quote."
-msgstr ""
+msgstr "۲۵ تا ۶۰ کلمه که به‌تنهایی به پرسش این صفحه پاسخ می‌دهند. این همان چیزی است که دستیارها نقل می‌کنند."
 
 #: includes/Admin/MetaBox.php:133
 msgid "Exclude from AI indexing"
-msgstr ""
+msgstr "خارج کردن از نمایه‌سازی هوش مصنوعی"
 
 #: includes/Admin/MetaBox.php:139
 msgid "Exclude from llms.txt"
-msgstr ""
+msgstr "خارج کردن از llms.txt"
 
 #: includes/Admin/MetaBox.php:54
 msgid "Medora — AI Authority"
-msgstr ""
+msgstr "مدورا — اعتبار هوش مصنوعی"
 
 #: includes/Admin/MetaBox.php:71
 msgid "Not analysed yet. Publish or update to queue an analysis."
-msgstr ""
+msgstr "هنوز تحلیل نشده است. برای قرار گرفتن در صف تحلیل، منتشر یا به‌روزرسانی کنید."
 
 #: includes/Admin/MetaBox.php:86
 msgid "No issues found."
@@ -173,7 +174,7 @@ msgstr "سیاست خزنده‌های هوش مصنوعی"
 
 #: includes/Admin/SetupWizard.php:106
 msgid "Selective is the usual choice: stay citable in AI answers, opt out of model training. You can change any individual crawler later."
-msgstr ""
+msgstr "گزینشی انتخاب رایج است: در پاسخ‌های هوش مصنوعی قابل استناد بمانید و از آموزش مدل خارج شوید. بعداً می‌توانید هر خزنده را جداگانه تغییر دهید."
 
 #: includes/Admin/SetupWizard.php:109
 msgid "Allow all — maximum AI visibility"
@@ -189,11 +190,11 @@ msgstr "مسدود کردن خزنده‌های هوش مصنوعی (جست‌و
 
 #: includes/Admin/SetupWizard.php:116
 msgid "How much do you want to see?"
-msgstr ""
+msgstr "چقدر می‌خواهید ببینید؟"
 
 #: includes/Admin/SetupWizard.php:117
 msgid "This only changes how much of the dashboard is on screen. It grants nobody any extra access, and you can switch at any time."
-msgstr ""
+msgstr "این فقط میزان نمایش داشبورد را تغییر می‌دهد. به هیچ‌کس دسترسی اضافه‌ای نمی‌دهد و هر زمان می‌توانید تغییرش دهید."
 
 #: includes/Admin/SetupWizard.php:218
 msgid "Run the two-minute setup to start measuring your AI authority."
@@ -209,15 +210,15 @@ msgstr "به مدورا خوش آمدید"
 
 #: includes/Admin/SetupWizard.php:85
 msgid "Five questions. Then Medora analyses your site and shows you exactly what stands between it and being cited by AI assistants."
-msgstr ""
+msgstr "پنج پرسش. سپس مدورا سایت شما را تحلیل می‌کند و دقیقاً نشان می‌دهد چه چیزی میان آن و مورد استناد قرار گرفتن توسط دستیارهای هوش مصنوعی ایستاده است."
 
 #: includes/Admin/SetupWizard.php:89
 msgid "What kind of site is this?"
-msgstr ""
+msgstr "این چه نوع سایتی است؟"
 
 #: includes/Admin/SetupWizard.php:90
 msgid "Medical mode adds clinical vocabulary, reviewer metadata and YMYL trust scoring. Pick General for everything else."
-msgstr ""
+msgstr "حالت پزشکی واژگان بالینی، فراداده‌های بازبین و امتیازدهی اعتماد YMYL را اضافه می‌کند. برای بقیهٔ موارد «عمومی» را انتخاب کنید."
 
 #: includes/Admin/SetupWizard.php:93
 #: src/pages/Settings.tsx:421
@@ -231,11 +232,11 @@ msgstr "سلامت / پزشکی (YMYL)"
 
 #: includes/Admin/SetupWizard.php:99
 msgid "Who publishes this site?"
-msgstr ""
+msgstr "ناشر این سایت کیست؟"
 
 #: includes/Analytics/AnalyticsModule.php:41
 msgid "Track visits arriving from ChatGPT, Claude, Perplexity, Gemini and other assistants."
-msgstr ""
+msgstr "ردیابی بازدیدهایی که از ChatGPT، Claude، Perplexity، Gemini و دیگر دستیارها می‌آیند."
 
 #: includes/Citation/CitationFormatter.php:26
 msgid "APA (7th edition)"
@@ -255,19 +256,19 @@ msgstr "موتور استنادها"
 
 #: includes/Citation/CitationModule.php:34
 msgid "Resolve DOIs and PubMed identifiers into structured, scored, schema-ready references."
-msgstr ""
+msgstr "تبدیل شناسه‌های DOI و PubMed به منابع ساختاریافته، امتیازدهی‌شده و آمادهٔ دادهٔ ساختاریافته."
 
 #: includes/Citation/EvidenceLevel.php:56
 msgid "Systematic review / meta-analysis"
-msgstr ""
+msgstr "مرور نظام‌مند / فراتحلیل"
 
 #: includes/Citation/EvidenceLevel.php:57
 msgid "Randomised controlled trial"
-msgstr ""
+msgstr "کارآزمایی تصادفی‌شدهٔ شاهددار"
 
 #: includes/Citation/EvidenceLevel.php:58
 msgid "Systematic review of cohort studies"
-msgstr ""
+msgstr "مرور نظام‌مند مطالعات هم‌گروهی"
 
 #: includes/Citation/EvidenceLevel.php:59
 msgid "Cohort study"
@@ -296,16 +297,16 @@ msgstr "دسته‌بندی‌نشده"
 #. translators: %s: page title.
 #: includes/Content/ContentBrief.php:114
 msgid "Open with 30–70 words that answer \"%s\" outright. Name the subject in the first clause, give the answer in the second, and leave background for later. Do not begin with \"In this article\" or with a pronoun."
-msgstr ""
+msgstr "با ۳۰ تا ۷۰ کلمه شروع کنید که مستقیماً به «%s» پاسخ دهد. موضوع را در عبارت نخست نام ببرید، پاسخ را در عبارت دوم بدهید و پس‌زمینه را برای بعد بگذارید. با «در این مقاله» یا با یک ضمیر شروع نکنید."
 
 #: includes/Content/ContentBrief.php:120
 msgid "The opening already answers the question directly. Leave it alone."
-msgstr ""
+msgstr "شروع متن از قبل مستقیماً به پرسش پاسخ می‌دهد. دست نزنید."
 
 #. translators: %s: facet name.
 #: includes/Content/ContentBrief.php:152
 msgid "\"%s\" is a question readers and assistants ask about this subject that the page cannot currently answer."
-msgstr ""
+msgstr "«%s» پرسشی است که خواننده‌ها و دستیارها دربارهٔ این موضوع می‌پرسند و صفحه اکنون نمی‌تواند پاسخش دهد."
 
 #: includes/Content/ContentBrief.php:171
 #: includes/Content/ContentBrief.php:178
@@ -452,57 +453,56 @@ msgstr "شایع‌ها را با نرخ بیاورید"
 #. translators: %s: page title.
 #: includes/Content/ContentBrief.php:275
 msgid "How long does %s take?"
-msgstr ""
+msgstr "%s چقدر طول می‌کشد؟"
 
 #. translators: %s: page title.
 #: includes/Content/ContentBrief.php:280
 msgid "Is %s safe?"
-msgstr ""
+msgstr "آیا %s ایمن است؟"
 
 #. translators: %s: page title.
 #: includes/Content/ContentBrief.php:285
 msgid "What are the alternatives to %s?"
-msgstr ""
+msgstr "جایگزین‌های %s چیست؟"
 
 #: includes/Content/ContentBrief.php:394
 msgid "Health claims need primary literature — a DOI or PubMed identifier, not a link to another blog. Attach at least one source per substantive claim."
-msgstr ""
+msgstr "ادعاهای سلامت به متون علمی اولیه نیاز دارند — شناسهٔ DOI یا PubMed، نه پیوند به وبلاگی دیگر. برای هر ادعای اساسی دست‌کم یک منبع پیوست کنید."
 
 #: includes/Content/ContentBrief.php:395
 msgid "Cite at least one outbound source. A page that asserts without sourcing is a weak candidate for citation itself."
-msgstr ""
+msgstr "دست‌کم یک منبع بیرونی ذکر کنید. صفحه‌ای که بدون منبع ادعا می‌کند، خودش گزینهٔ ضعیفی برای استناد است."
 
 #: includes/Content/ContentBrief.php:422
 msgid "Opening answers the title question in 30–70 words"
-msgstr ""
+msgstr "شروع متن در ۳۰ تا ۷۰ کلمه به پرسش عنوان پاسخ می‌دهد"
 
 #. translators: %d: number of sections.
 #: includes/Content/ContentBrief.php:428
 msgid "Add %d missing section"
 msgid_plural "Add %d missing sections"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "افزودن %d بخش جاافتاده"
 
 #: includes/Content/ContentBrief.php:439
 msgid "Every section stands alone when read without the rest of the page"
-msgstr ""
+msgstr "هر بخش وقتی جدا از بقیهٔ صفحه خوانده شود به‌تنهایی معنا دارد"
 
 #: includes/Content/ContentBrief.php:443
 msgid "At least three sentences carry a checkable figure"
-msgstr ""
+msgstr "دست‌کم سه جمله یک عدد قابل بررسی دارند"
 
 #: includes/Content/ContentBrief.php:447
 msgid "A passage is marked with the \"medora-answer\" class"
-msgstr ""
+msgstr "یک بند با کلاس «medora-answer» علامت‌گذاری شده است"
 
 #: includes/Content/ContentBrief.php:451
 msgid "Long enough to establish authority"
-msgstr ""
+msgstr "به‌قدر کافی بلند برای ساختن اعتبار"
 
 #. translators: 1: relationship, 2: subject name.
 #: includes/Content/ContentModule.php:102
 msgid "%1$s %2$s elsewhere on this site."
-msgstr ""
+msgstr "%1$s %2$s در جای دیگری از این سایت."
 
 #: includes/Content/ContentModule.php:38
 msgid "AI Content Optimizer"
@@ -510,46 +510,46 @@ msgstr "بهینه‌ساز محتوای هوش مصنوعی"
 
 #: includes/Content/ContentModule.php:43
 msgid "An ordered, effort-weighted to-do list for every page."
-msgstr ""
+msgstr "فهرست کارهای مرتب‌شده و وزن‌دهی‌شده بر اساس تلاش، برای هر صفحه."
 
 #. translators: %s: page title.
 #: includes/Content/RecommendationEngine.php:136
 msgid "Open with 30–70 words that answer \"%s\" directly, before any background. Name the subject in the first sentence and avoid opening with \"This article will…\"."
-msgstr ""
+msgstr "با ۳۰ تا ۷۰ کلمه شروع کنید که مستقیماً به «%s» پاسخ دهد، پیش از هر پس‌زمینه‌ای. موضوع را در جملهٔ نخست نام ببرید و از شروع با «این مقاله…» بپرهیزید."
 
 #: includes/Content/RecommendationEngine.php:139
 msgid "The opening already answers the question directly."
-msgstr ""
+msgstr "شروع متن از قبل مستقیماً به پرسش پاسخ می‌دهد."
 
 #. translators: %s: sub-topic name.
 #: includes/Content/RecommendationEngine.php:89
 msgid "Add a section on %s"
-msgstr ""
+msgstr "افزودن بخشی دربارهٔ %s"
 
 #: includes/Content/RecommendationEngine.php:92
 msgid "This is a question readers and assistants ask about this subject that the page currently cannot answer."
-msgstr ""
+msgstr "این پرسشی است که خواننده‌ها و دستیارها دربارهٔ این موضوع می‌پرسند و صفحه اکنون نمی‌تواند پاسخش دهد."
 
 #: includes/Core/Activator.php:57
 #: medora-authority.php:59
 msgid "Medora Authority requires PHP 8.2 or newer."
-msgstr ""
+msgstr "مدورا اتوریتی به PHP نسخهٔ ۸.۲ یا جدیدتر نیاز دارد."
 
 #: includes/Core/Activator.php:61
 msgid "Medora Authority requires WordPress 6.4 or newer."
-msgstr ""
+msgstr "مدورا اتوریتی به وردپرس نسخهٔ ۶.۴ یا جدیدتر نیاز دارد."
 
 #: includes/Core/Activator.php:65
 msgid "Medora Authority requires the PHP JSON extension."
-msgstr ""
+msgstr "مدورا اتوریتی به افزونهٔ JSON در PHP نیاز دارد."
 
 #: includes/Core/Cron.php:33
 msgid "Every five minutes (Medora)"
-msgstr ""
+msgstr "هر پنج دقیقه (مدورا)"
 
 #: includes/Crawler/CrawlerModule.php:121
 msgid "This site does not grant this AI crawler access to its content."
-msgstr ""
+msgstr "این سایت به این خزندهٔ هوش مصنوعی اجازهٔ دسترسی به محتوایش را نمی‌دهد."
 
 #: includes/Crawler/CrawlerModule.php:32
 msgid "AI Crawler Manager"
@@ -557,7 +557,7 @@ msgstr "مدیریت خزنده‌های هوش مصنوعی"
 
 #: includes/Crawler/CrawlerModule.php:37
 msgid "Detect, control and measure the AI crawlers that read your site."
-msgstr ""
+msgstr "شناسایی، کنترل و سنجش خزنده‌های هوش مصنوعی که سایت شما را می‌خوانند."
 
 #: includes/Crawler/CrawlerRegistry.php:140
 msgid "Model training"
@@ -569,7 +569,7 @@ msgstr "نمایهٔ جست‌وجوی هوش مصنوعی"
 
 #: includes/Crawler/CrawlerRegistry.php:142
 msgid "Live answer retrieval"
-msgstr ""
+msgstr "بازیابی پاسخ زنده"
 
 #: includes/Crawler/CrawlerRegistry.php:143
 msgid "Unknown"
@@ -589,7 +589,7 @@ msgstr "وابستگی سازمانی"
 
 #: includes/Eeat/EeatModule.php:128
 msgid "Professional licence number"
-msgstr ""
+msgstr "شمارهٔ نظام پزشکی"
 
 #: includes/Eeat/EeatModule.php:129
 msgid "ORCID"
@@ -625,63 +625,63 @@ msgstr "موتور E-E-A-T"
 
 #: includes/Eeat/EeatModule.php:37
 msgid "Capture author credentials and verifiable profiles, and score the trust they carry."
-msgstr ""
+msgstr "ثبت مدارک نویسنده و نمایه‌های قابل راستی‌آزمایی، و امتیازدهی به اعتمادی که ایجاد می‌کنند."
 
 #: includes/Eeat/EeatModule.php:64
 msgid "Medora — author authority"
-msgstr ""
+msgstr "مدورا — اعتبار نویسنده"
 
 #: includes/Eeat/EeatModule.php:65
 msgid "These fields feed the article schema, the knowledge graph and the E-E-A-T score. Leave a field empty rather than guessing."
-msgstr ""
+msgstr "این فیلدها به دادهٔ ساختاریافتهٔ مقاله، گراف دانش و امتیاز E-E-A-T خوراک می‌دهند. به‌جای حدس زدن، فیلد را خالی بگذارید."
 
 #: includes/Eeat/TrustScorer.php:100
 msgid "A licence number is independently checkable, which is exactly what makes it a trust signal."
-msgstr ""
+msgstr "شمارهٔ نظام پزشکی مستقلاً قابل بررسی است، و دقیقاً همین آن را به یک نشانهٔ اعتماد تبدیل می‌کند."
 
 #: includes/Eeat/TrustScorer.php:115
 msgid "No institutional affiliation"
-msgstr ""
+msgstr "بدون وابستگی سازمانی"
 
 #: includes/Eeat/TrustScorer.php:117
 msgid "Name the hospital, clinic or university the author is attached to."
-msgstr ""
+msgstr "بیمارستان، کلینیک یا دانشگاهی که نویسنده به آن وابسته است را نام ببرید."
 
 #: includes/Eeat/TrustScorer.php:126
 msgid "No externally verifiable profile"
-msgstr ""
+msgstr "بدون نمایهٔ قابل راستی‌آزمایی بیرونی"
 
 #: includes/Eeat/TrustScorer.php:128
 msgid "Link an ORCID, Google Scholar or ResearchGate profile. Without one, the author cannot be verified to exist."
-msgstr ""
+msgstr "یک نمایهٔ ORCID، گوگل اسکالر یا ریسرچ‌گیت پیوند بزنید. بدون آن، نمی‌توان وجود نویسنده را تأیید کرد."
 
 #: includes/Eeat/TrustScorer.php:46
 msgid "No years of practice recorded"
-msgstr ""
+msgstr "سال‌های سابقه ثبت نشده است"
 
 #: includes/Eeat/TrustScorer.php:48
 msgid "State how long the author has practised. First-hand experience is a distinct signal from qualifications."
-msgstr ""
+msgstr "بنویسید نویسنده چند سال فعالیت کرده است. تجربهٔ دست‌اول نشانه‌ای متمایز از مدرک تحصیلی است."
 
 #: includes/Eeat/TrustScorer.php:65
 msgid "No author biography"
-msgstr ""
+msgstr "بدون زندگی‌نامهٔ نویسنده"
 
 #: includes/Eeat/TrustScorer.php:67
 msgid "Write a biography that names what the author does and where."
-msgstr ""
+msgstr "زندگی‌نامه‌ای بنویسید که بگوید نویسنده چه کار می‌کند و کجا."
 
 #: includes/Eeat/TrustScorer.php:81
 msgid "No credentials listed"
-msgstr ""
+msgstr "مدرکی فهرست نشده است"
 
 #: includes/Eeat/TrustScorer.php:83
 msgid "Add the author's qualification (MD, PhD, RN…)."
-msgstr ""
+msgstr "مدرک نویسنده را اضافه کنید (MD، PhD، RN…)."
 
 #: includes/Eeat/TrustScorer.php:98
 msgid "No professional licence number"
-msgstr ""
+msgstr "بدون شمارهٔ نظام پزشکی"
 
 #: includes/Entity/EntityAuthorityScorer.php:102
 msgid "Graph connectivity"
@@ -691,8 +691,7 @@ msgstr "پیوستگی گراف"
 #: includes/Entity/EntityAuthorityScorer.php:107
 msgid "%d relationship in the knowledge graph."
 msgid_plural "%d relationships in the knowledge graph."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d رابطه در گراف دانش."
 
 #: includes/Entity/EntityAuthorityScorer.php:113
 #: includes/Semantic/TopicCoverage.php:159
@@ -701,11 +700,11 @@ msgstr "تعریف"
 
 #: includes/Entity/EntityAuthorityScorer.php:117
 msgid "No description. Add one — this is the text an answer engine quotes."
-msgstr ""
+msgstr "بدون توضیح. یکی اضافه کنید — این همان متنی است که موتور پاسخ نقل می‌کند."
 
 #: includes/Entity/EntityAuthorityScorer.php:118
 msgid "Description present."
-msgstr ""
+msgstr "توضیح موجود است."
 
 #: includes/Entity/EntityAuthorityScorer.php:122
 msgid "Type specificity"
@@ -713,12 +712,12 @@ msgstr "دقت نوع"
 
 #: includes/Entity/EntityAuthorityScorer.php:126
 msgid "Generic type. Assign a specific Schema.org type."
-msgstr ""
+msgstr "نوع عمومی. یک نوع مشخص Schema.org تعیین کنید."
 
 #. translators: %s: Schema.org type.
 #: includes/Entity/EntityAuthorityScorer.php:129
 msgid "Typed as %s."
-msgstr ""
+msgstr "نوع‌گذاری‌شده به‌عنوان %s."
 
 #: includes/Entity/EntityAuthorityScorer.php:69
 msgid "Topical depth"
@@ -728,8 +727,7 @@ msgstr "عمق موضوعی"
 #: includes/Entity/EntityAuthorityScorer.php:74
 msgid "%d page covers this entity."
 msgid_plural "%d pages cover this entity."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d صفحه این موجودیت را پوشش می‌دهد."
 
 #: includes/Entity/EntityAuthorityScorer.php:80
 msgid "Editorial focus"
@@ -737,11 +735,11 @@ msgstr "تمرکز تحریریه"
 
 #: includes/Entity/EntityAuthorityScorer.php:84
 msgid "At least one page is primarily about this entity."
-msgstr ""
+msgstr "دست‌کم یک صفحه عمدتاً دربارهٔ این موجودیت است."
 
 #: includes/Entity/EntityAuthorityScorer.php:85
 msgid "No page treats this entity as its main subject."
-msgstr ""
+msgstr "هیچ صفحه‌ای این موجودیت را موضوع اصلی خود قرار نداده است."
 
 #: includes/Entity/EntityAuthorityScorer.php:89
 msgid "External reconciliation"
@@ -749,14 +747,13 @@ msgstr "تطبیق با منابع بیرونی"
 
 #: includes/Entity/EntityAuthorityScorer.php:93
 msgid "No sameAs identifiers. AI systems cannot match this to a known entity."
-msgstr ""
+msgstr "بدون شناسهٔ sameAs. سامانه‌های هوش مصنوعی نمی‌توانند این را با یک موجودیت شناخته‌شده تطبیق دهند."
 
 #. translators: %d: number of identifiers.
 #: includes/Entity/EntityAuthorityScorer.php:96
 msgid "%d external identifier linked."
 msgid_plural "%d external identifiers linked."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d شناسهٔ بیرونی پیوند شده است."
 
 #: includes/Entity/EntityModule.php:39
 msgid "Entity Intelligence"
@@ -764,7 +761,7 @@ msgstr "هوشمندی موجودیت‌ها"
 
 #: includes/Entity/EntityModule.php:44
 msgid "Detect the people, places, conditions and concepts your content covers, and score your authority on each."
-msgstr ""
+msgstr "شناسایی افراد، مکان‌ها، بیماری‌ها و مفاهیمی که محتوای شما پوشش می‌دهد، و امتیازدهی به اعتبار شما در هر کدام."
 
 #: includes/Entity/EntityType.php:100
 msgid "Creative work"
@@ -784,7 +781,7 @@ msgstr "پزشک"
 
 #: includes/Entity/EntityType.php:104
 msgid "Medical organization"
-msgstr ""
+msgstr "سازمان پزشکی"
 
 #: includes/Entity/EntityType.php:105
 msgid "Hospital"
@@ -848,36 +845,36 @@ msgstr "بهینه‌ساز GEO"
 
 #: includes/Geo/GeoModule.php:45
 msgid "Score every passage on whether it stands on its own once retrieved out of the page."
-msgstr ""
+msgstr "امتیازدهی به هر بند بر اساس اینکه پس از بازیابی جدا از صفحه، به‌تنهایی معنا دارد یا نه."
 
 #: includes/Geo/LlmCompatibilityScorer.php:111
 msgid "Long page with nothing an assistant can lift whole"
-msgstr ""
+msgstr "صفحهٔ بلند بدون چیزی که دستیار بتواند یکجا بردارد"
 
 #: includes/Geo/LlmCompatibilityScorer.php:113
 msgid "Add a table, a numbered procedure or a bulleted set of criteria. Structure is quoted intact; prose gets paraphrased."
-msgstr ""
+msgstr "یک جدول، مراحل شماره‌دار یا فهرست نشانه‌دار از معیارها اضافه کنید. ساختار دست‌نخورده نقل می‌شود؛ متن پیوسته بازنویسی می‌شود."
 
 #: includes/Geo/LlmCompatibilityScorer.php:122
 msgid "No H2 or H3 headings"
-msgstr ""
+msgstr "بدون عنوان H2 یا H3"
 
 #: includes/Geo/LlmCompatibilityScorer.php:124
 msgid "Headings are where chunk boundaries come from. Without them the page is split mid-argument."
-msgstr ""
+msgstr "مرز قطعه‌ها از عنوان‌ها می‌آید. بدون آن‌ها صفحه وسط بحث بریده می‌شود."
 
 #: includes/Geo/LlmCompatibilityScorer.php:131
 msgid "No heading is phrased as a question"
-msgstr ""
+msgstr "هیچ عنوانی به شکل پرسش نوشته نشده است"
 
 #: includes/Geo/LlmCompatibilityScorer.php:133
 msgid "Phrase at least one H2 the way a person would ask it. A question heading makes the passage under it a direct answer."
-msgstr ""
+msgstr "دست‌کم یک H2 را همان‌طور بنویسید که یک نفر می‌پرسد. عنوان پرسشی بند زیر خود را به پاسخی مستقیم تبدیل می‌کند."
 
 #. translators: 1: passage number, 2: heading or a placeholder, 3: first issue.
 #: includes/Geo/LlmCompatibilityScorer.php:177
 msgid "Passage %1$d (%2$s): %3$s"
-msgstr ""
+msgstr "بند %1$d (%2$s): %3$s"
 
 #: includes/Geo/LlmCompatibilityScorer.php:179
 #: src/components/PassagePanel.tsx:119
@@ -887,7 +884,7 @@ msgstr "بدون عنوان"
 #. translators: %d: number of further passages.
 #: includes/Geo/LlmCompatibilityScorer.php:189
 msgid "…and %d more, listed in full on the Passages tab."
-msgstr ""
+msgstr "…و %d مورد دیگر، فهرست کامل در زبانهٔ بندها."
 
 #: includes/Geo/LlmCompatibilityScorer.php:46
 msgid "LLM Compatibility"
@@ -895,64 +892,64 @@ msgstr "سازگاری با مدل‌های زبانی"
 
 #: includes/Geo/LlmCompatibilityScorer.php:72
 msgid "Page has no retrievable content"
-msgstr ""
+msgstr "صفحه محتوای قابل بازیابی ندارد"
 
 #: includes/Geo/LlmCompatibilityScorer.php:74
 msgid "There is nothing here to chunk. Add body copy — a page built entirely from shortcodes or embeds is invisible to retrieval."
-msgstr ""
+msgstr "چیزی برای قطعه‌بندی وجود ندارد. متن اصلی اضافه کنید — صفحه‌ای که تماماً از شورت‌کد یا امبد ساخته شده برای بازیابی نامرئی است."
 
 #. translators: 1: number of passages, 2: total passages.
 #: includes/Geo/LlmCompatibilityScorer.php:97
 msgid "%1$d of %2$d passages do not stand on their own"
-msgstr ""
+msgstr "%1$d از %2$d بند به‌تنهایی معنا ندارند"
 
 #: includes/Geo/PassageAnalyzer.php:159
 msgid "Passage sits under no heading"
-msgstr ""
+msgstr "بند زیر هیچ عنوانی قرار ندارد"
 
 #: includes/Geo/PassageAnalyzer.php:160
 msgid "Move this text under an H2, or add one above it. A retrieved passage with no heading arrives with no label."
-msgstr ""
+msgstr "این متن را زیر یک H2 ببرید، یا عنوانی بالای آن اضافه کنید. بند بازیابی‌شدهٔ بدون عنوان، بدون برچسب می‌رسد."
 
 #: includes/Geo/PassageAnalyzer.php:168
 msgid "Passage is too short to answer anything"
-msgstr ""
+msgstr "بند برای پاسخ دادن به چیزی بسیار کوتاه است"
 
 #: includes/Geo/PassageAnalyzer.php:169
 msgid "Expand to at least 40 words, or merge it into the section above. Fragments are retrieved and then discarded."
-msgstr ""
+msgstr "به دست‌کم ۴۰ کلمه گسترش دهید، یا آن را در بخش بالایی ادغام کنید. تکه‌های کوتاه بازیابی و سپس دور انداخته می‌شوند."
 
 #: includes/Geo/PassageAnalyzer.php:177
 msgid "Opens by continuing an argument that is not here"
-msgstr ""
+msgstr "با ادامهٔ بحثی شروع می‌شود که اینجا نیست"
 
 #: includes/Geo/PassageAnalyzer.php:178
 msgid "Start the passage with a statement rather than \"However\", \"Therefore\" or \"اما\". Read alone, a connective points at nothing."
-msgstr ""
+msgstr "بند را با یک جملهٔ خبری شروع کنید، نه با «اما»، «بنابراین» یا «However». وقتی جدا خوانده شود، حرف ربط به هیچ چیز اشاره نمی‌کند."
 
 #: includes/Geo/PassageAnalyzer.php:184
 msgid "Opens with a pronoun whose subject is elsewhere"
-msgstr ""
+msgstr "با ضمیری شروع می‌شود که مرجع آن جای دیگری است"
 
 #: includes/Geo/PassageAnalyzer.php:185
 msgid "Name the subject in the first sentence. \"This condition affects…\" survives retrieval; \"This is why…\" does not."
-msgstr ""
+msgstr "موضوع را در جملهٔ نخست نام ببرید. «این بیماری بر… اثر می‌گذارد» از بازیابی جان سالم به در می‌برد؛ «این نشان می‌دهد که…» نه."
 
 #: includes/Geo/PassageAnalyzer.php:193
 msgid "Refers to another part of the page"
-msgstr ""
+msgstr "به بخش دیگری از صفحه ارجاع می‌دهد"
 
 #: includes/Geo/PassageAnalyzer.php:194
 msgid "Replace \"as mentioned above\" / \"در ادامه\" with the fact itself. Once retrieved, this passage has no above and no below."
-msgstr ""
+msgstr "به‌جای «همان‌طور که در بالا گفته شد» یا «در ادامه»، خودِ مطلب را بنویسید. پس از بازیابی، این بند نه بالایی دارد نه پایینی."
 
 #: includes/Geo/PassageAnalyzer.php:202
 msgid "Never names the page subject"
-msgstr ""
+msgstr "هرگز موضوع صفحه را نام نمی‌برد"
 
 #: includes/Geo/PassageAnalyzer.php:203
 msgid "Use the subject term once in this passage. A retriever matching a query against this chunk alone has nothing to match on."
-msgstr ""
+msgstr "اصطلاح موضوع را یک بار در این بند بیاورید. بازیابی که فقط همین قطعه را با یک پرسش تطبیق می‌دهد، چیزی برای تطبیق ندارد."
 
 #: includes/Graph/GraphModule.php:28
 msgid "Knowledge Graph Engine"
@@ -960,7 +957,7 @@ msgstr "موتور گراف دانش"
 
 #: includes/Graph/GraphModule.php:33
 msgid "Connect entities into a navigable graph and publish it as JSON-LD."
-msgstr ""
+msgstr "اتصال موجودیت‌ها در یک گراف قابل پیمایش و انتشار آن به‌صورت JSON-LD."
 
 #: includes/Graph/RelationType.php:109
 msgid "mentions"
@@ -1000,7 +997,7 @@ msgstr "ارائه می‌دهد"
 
 #: includes/Graph/RelationType.php:118
 msgid "is a treatment for"
-msgstr ""
+msgstr "درمانی است برای"
 
 #: includes/Graph/RelationType.php:119
 msgid "is a symptom of"
@@ -1008,7 +1005,7 @@ msgstr "علامتی است از"
 
 #: includes/Graph/RelationType.php:120
 msgid "is affiliated with"
-msgstr ""
+msgstr "وابسته است به"
 
 #: includes/Graph/RelationType.php:121
 msgid "is diagnosed by"
@@ -1016,7 +1013,7 @@ msgstr "تشخیص داده می‌شود با"
 
 #: includes/Graph/RelationType.php:122
 msgid "is a risk factor for"
-msgstr ""
+msgstr "عامل خطری است برای"
 
 #: includes/Graph/RelationType.php:123
 msgid "affects"
@@ -1024,7 +1021,7 @@ msgstr "تأثیر می‌گذارد بر"
 
 #: includes/Graph/RelationType.php:124
 msgid "is a complication of"
-msgstr ""
+msgstr "عارضه‌ای است از"
 
 #: includes/Graph/RelationType.php:125
 msgid "is a drug for"
@@ -1032,7 +1029,7 @@ msgstr "دارویی است برای"
 
 #: includes/Graph/RelationType.php:126
 msgid "is treated by the specialty"
-msgstr ""
+msgstr "درمان می‌شود توسط تخصص"
 
 #: includes/License/LicenseManager.php:148
 msgid "Enter a licence key."
@@ -1040,27 +1037,27 @@ msgstr "کلید لایسنس را وارد کنید."
 
 #: includes/License/LicenseManager.php:176
 msgid "Licence activated."
-msgstr ""
+msgstr "لایسنس فعال شد."
 
 #: includes/License/LicenseManager.php:197
 msgid "Licence deactivated."
-msgstr ""
+msgstr "لایسنس غیرفعال شد."
 
 #: includes/License/LicenseManager.php:210
 msgid "No licence key is stored on this site."
-msgstr ""
+msgstr "هیچ کلید لایسنسی روی این سایت ذخیره نشده است."
 
 #: includes/License/LicenseManager.php:219
 msgid "This licence was transferred within the last 30 days. Contact support if you need another move."
-msgstr ""
+msgstr "این لایسنس در ۳۰ روز گذشته منتقل شده است. اگر به انتقال دیگری نیاز دارید با پشتیبانی تماس بگیرید."
 
 #: includes/License/LicenseManager.php:242
 msgid "Licence moved to this domain."
-msgstr ""
+msgstr "لایسنس به این دامنه منتقل شد."
 
 #: includes/License/LicenseManager.php:351
 msgid "The licence server rejected the request."
-msgstr ""
+msgstr "سرور لایسنس درخواست را رد کرد."
 
 #: includes/License/LicenseModule.php:27
 msgid "Licensing"
@@ -1068,18 +1065,18 @@ msgstr "صدور مجوز"
 
 #: includes/License/LicenseModule.php:32
 msgid "Licence activation, self-service domain transfer and automatic updates."
-msgstr ""
+msgstr "فعال‌سازی لایسنس، انتقال خوددرخواست دامنه و به‌روزرسانی خودکار."
 
 #: includes/License/LicenseModule.php:72
 msgid "Medora Authority:"
-msgstr ""
+msgstr "مدورا اتوریتی:"
 
 #. translators: %d: number of days.
 #: includes/License/LicenseModule.php:75
 msgid "Your licence has expired. Everything keeps working for %d more day — renew to avoid interruption."
 msgid_plural "Your licence has expired. Everything keeps working for %d more days — renew to avoid interruption."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "لایسنس شما منقضی شده است. همه چیز %d روز دیگر کار می‌کند — برای جلوگیری از قطعی تمدید کنید."
+msgstr[1] "لایسنس شما منقضی شده است. همه چیز %d روز دیگر کار می‌کند — برای جلوگیری از قطعی تمدید کنید."
 
 #: includes/License/LicenseStatus.php:23
 msgid "Active"
@@ -1112,17 +1109,17 @@ msgstr "رایگان"
 #. translators: 1: the anchor phrase, 2: number of eligible places found.
 #: includes/Linking/LinkApplier.php:106
 msgid "Could not link \"%1$s\" at that position — %2$d linkable occurrence(s) found in the body text."
-msgstr ""
+msgstr "نمی‌توان «%1$s» را در آن موقعیت پیوند داد — %2$d مورد قابل پیوند در متن یافت شد."
 
 #: includes/Linking/LinkApplier.php:61
 #: includes/Linking/LinkApplier.php:162
 msgid "You cannot edit this post."
-msgstr ""
+msgstr "شما نمی‌توانید این نوشته را ویرایش کنید."
 
 #: includes/Linking/LinkApplier.php:71
 #: includes/Linking/LinkApplier.php:173
 msgid "Link target not found."
-msgstr ""
+msgstr "مقصد پیوند پیدا نشد."
 
 #: includes/Linking/LinkApplier.php:79
 msgid "A page cannot link to itself."
@@ -1130,16 +1127,16 @@ msgstr "یک صفحه نمی‌تواند به خودش پیوند بدهد."
 
 #: includes/Linking/LinkApplier.php:89
 msgid "That link was not suggested for this page. Only suggested targets and anchors can be applied."
-msgstr ""
+msgstr "آن پیوند برای این صفحه پیشنهاد نشده بود. فقط مقصدها و متن‌های پیشنهادشده قابل اعمال هستند."
 
 #: includes/Linking/LinkSuggestionEngine.php:80
 msgid "Semantically related subject."
-msgstr ""
+msgstr "موضوع مرتبط از نظر معنایی."
 
 #. translators: %s: comma-separated entity names.
 #: includes/Linking/LinkSuggestionEngine.php:83
 msgid "Both pages cover: %s"
-msgstr ""
+msgstr "هر دو صفحه پوشش می‌دهند: %s"
 
 #: includes/Linking/LinkingModule.php:38
 msgid "Internal Linking AI"
@@ -1147,7 +1144,7 @@ msgstr "پیوندسازی داخلی هوشمند"
 
 #: includes/Linking/LinkingModule.php:43
 msgid "Suggest context-aware internal links from semantic similarity and shared entities."
-msgstr ""
+msgstr "پیشنهاد پیوندهای داخلی آگاه از بافت، بر پایهٔ شباهت معنایی و موجودیت‌های مشترک."
 
 #: includes/Llm/LlmModule.php:45
 #: src/pages/Settings.tsx:565
@@ -1156,7 +1153,7 @@ msgstr "نویسندهٔ هوش مصنوعی"
 
 #: includes/Llm/LlmModule.php:50
 msgid "Rewrite page summaries and canonical answers with a model, keeping only what the page itself supports."
-msgstr ""
+msgstr "بازنویسی خلاصه‌ها و پاسخ‌های مرجع صفحه با یک مدل، و نگه‌داشتن فقط آنچه خودِ صفحه پشتیبانی می‌کند."
 
 #: includes/Llm/Providers/AnthropicProvider.php:46
 msgid "Anthropic (Claude)"
@@ -1168,16 +1165,16 @@ msgstr "موتور llms.txt"
 
 #: includes/Llms/LlmsModule.php:34
 msgid "Publish a curated, always-current Markdown map of your site for language models."
-msgstr ""
+msgstr "انتشار نقشهٔ Markdown گزیده و همیشه‌به‌روز از سایت شما برای مدل‌های زبانی."
 
 #. translators: %s: site name.
 #: includes/Llms/LlmsTxtGenerator.php:305
 msgid "Reference content published by %s."
-msgstr ""
+msgstr "محتوای مرجع منتشرشده توسط %s."
 
 #: includes/Medical/MedicalModule.php:112
 msgid "Medora — clinical review"
-msgstr ""
+msgstr "مدورا — بازبینی بالینی"
 
 #: includes/Medical/MedicalModule.php:127
 msgid "Medical reviewer"
@@ -1185,7 +1182,7 @@ msgstr "بازبین پزشکی"
 
 #: includes/Medical/MedicalModule.php:133
 msgid "— none —"
-msgstr ""
+msgstr "— هیچ —"
 
 #: includes/Medical/MedicalModule.php:144
 msgid "Last reviewed"
@@ -1193,7 +1190,7 @@ msgstr "آخرین بازبینی"
 
 #: includes/Medical/MedicalModule.php:146
 msgid "Published in the page schema as lastReviewed. Leave empty rather than entering a date the reviewer did not sign off."
-msgstr ""
+msgstr "در دادهٔ ساختاریافتهٔ صفحه به‌عنوان lastReviewed منتشر می‌شود. به‌جای وارد کردن تاریخی که بازبین تأیید نکرده، خالی بگذارید."
 
 #: includes/Medical/MedicalModule.php:36
 msgid "Medical Intelligence"
@@ -1201,15 +1198,15 @@ msgstr "هوشمندی پزشکی"
 
 #: includes/Medical/MedicalModule.php:41
 msgid "Clinical vocabulary, review metadata and YMYL trust signals for health content."
-msgstr ""
+msgstr "واژگان بالینی، فراداده‌های بازبینی و نشانه‌های اعتماد YMYL برای محتوای سلامت."
 
 #: includes/Performance/PerformanceModule.php:35
 msgid "Performance & Queues"
-msgstr ""
+msgstr "کارایی و صف‌ها"
 
 #: includes/Performance/PerformanceModule.php:40
 msgid "Object caching, background workers and scheduled maintenance."
-msgstr ""
+msgstr "کش اشیا، کارگرهای پس‌زمینه و نگهداری زمان‌بندی‌شده."
 
 #: includes/Prompt/PromptModule.php:33
 msgid "AI Prompt Engine"
@@ -1217,7 +1214,7 @@ msgstr "موتور پرامپت"
 
 #: includes/Prompt/PromptModule.php:38
 msgid "Give every page a canonical answer, fact sheet, question pack and packed context window."
-msgstr ""
+msgstr "دادن پاسخ مرجع، برگهٔ حقایق، بستهٔ پرسش و پنجرهٔ بافت فشرده به هر صفحه."
 
 #: includes/Rest/AbstractController.php:113
 #: includes/Rest/AbstractController.php:120
@@ -1226,24 +1223,24 @@ msgstr "نوشته پیدا نشد."
 
 #: includes/Rest/AbstractController.php:39
 msgid "You do not have permission to view Medora data."
-msgstr ""
+msgstr "شما اجازهٔ دیدن داده‌های مدورا را ندارید."
 
 #: includes/Rest/AbstractController.php:46
 msgid "You do not have permission to change Medora settings."
-msgstr ""
+msgstr "شما اجازهٔ تغییر تنظیمات مدورا را ندارید."
 
 #: includes/Rest/AbstractController.php:53
 msgid "You do not have permission to run analysis."
-msgstr ""
+msgstr "شما اجازهٔ اجرای تحلیل را ندارید."
 
 #: includes/Rest/AbstractController.php:60
 msgid "You do not have permission to edit entities."
-msgstr ""
+msgstr "شما اجازهٔ ویرایش موجودیت‌ها را ندارید."
 
 #. translators: %s: the identifier the user supplied.
 #: includes/Rest/Controllers/CitationController.php:102
 msgid "Could not resolve \"%s\". Supply a DOI or a PubMed ID."
-msgstr ""
+msgstr "نمی‌توان «%s» را resolve کرد. یک DOI یا شناسهٔ PubMed وارد کنید."
 
 #: includes/Rest/Controllers/CitationController.php:125
 msgid "Citation not found."
@@ -1251,25 +1248,25 @@ msgstr "استناد پیدا نشد."
 
 #: includes/Rest/Controllers/InsightController.php:145
 msgid "The AI Analytics module is not active."
-msgstr ""
+msgstr "ماژول تحلیل هوش مصنوعی فعال نیست."
 
 #: includes/Rest/Controllers/InsightController.php:154
 msgid "The AI Crawler Manager module is not active."
-msgstr ""
+msgstr "ماژول مدیریت خزنده‌های هوش مصنوعی فعال نیست."
 
 #: includes/Rest/Controllers/InsightController.php:163
 msgid "The Schema Intelligence module is not active."
-msgstr ""
+msgstr "ماژول هوشمندی دادهٔ ساختاریافته فعال نیست."
 
 #: includes/Rest/Controllers/InsightController.php:192
 msgid "The GEO Optimizer module is not active."
-msgstr ""
+msgstr "ماژول بهینه‌ساز GEO فعال نیست."
 
 #: includes/Rest/Controllers/InsightController.php:211
 #: includes/Rest/Controllers/InsightController.php:239
 #: includes/Rest/Controllers/InsightController.php:265
 msgid "The Internal Linking module is not active."
-msgstr ""
+msgstr "ماژول پیوندسازی داخلی فعال نیست."
 
 #: includes/Rest/Controllers/InsightController.php:293
 msgid "User not found."
@@ -1278,11 +1275,11 @@ msgstr "کاربر پیدا نشد."
 #: includes/Rest/Controllers/InsightController.php:313
 #: includes/Rest/Controllers/InsightController.php:329
 msgid "The Medical Intelligence module is not active."
-msgstr ""
+msgstr "ماژول هوشمندی پزشکی فعال نیست."
 
 #: includes/Rest/Controllers/InsightController.php:320
 msgid "This site does not cover that condition."
-msgstr ""
+msgstr "این سایت آن بیماری را پوشش نمی‌دهد."
 
 #: includes/Rest/Controllers/KnowledgeController.php:176
 #: includes/Rest/Controllers/KnowledgeController.php:196
@@ -1293,29 +1290,29 @@ msgstr "موجودیت پیدا نشد."
 
 #: includes/Rest/Controllers/KnowledgeController.php:202
 msgid "Unknown entity type."
-msgstr ""
+msgstr "نوع موجودیت ناشناخته است."
 
 #. translators: %d: maximum number of suppressed entities.
 #: includes/Rest/Controllers/KnowledgeController.php:270
 msgid "The removed-entity list is full at %d. Clear some of it before removing more — a site needing this many is better served by narrowing extraction."
-msgstr ""
+msgstr "فهرست موجودیت‌های حذف‌شده در %d پر شده است. پیش از حذف بیشتر، بخشی از آن را پاک کنید — سایتی که به این تعداد نیاز دارد، بهتر است دامنهٔ استخراج را محدود کند."
 
 #: includes/Rest/Controllers/KnowledgeController.php:314
 msgid "The Knowledge Graph module is not active."
-msgstr ""
+msgstr "ماژول گراف دانش فعال نیست."
 
 #: includes/Rest/Controllers/KnowledgeController.php:335
 msgid "The AI Prompt Engine module is not active."
-msgstr ""
+msgstr "ماژول موتور پرامپت فعال نیست."
 
 #: includes/Rest/Controllers/KnowledgeController.php:351
 msgid "The Vector Engine module is not active."
-msgstr ""
+msgstr "ماژول موتور برداری فعال نیست."
 
 #: includes/Rest/Controllers/ScoreController.php:97
 #: includes/Rest/Controllers/ScoreController.php:121
 msgid "The AI Content Optimizer module is not active."
-msgstr ""
+msgstr "ماژول بهینه‌ساز محتوای هوش مصنوعی فعال نیست."
 
 #: includes/Rest/Controllers/SettingsController.php:129
 msgid "No settings supplied."
@@ -1323,7 +1320,7 @@ msgstr "تنظیماتی ارسال نشد."
 
 #: includes/Rest/Controllers/SettingsController.php:149
 msgid "No recognised settings supplied."
-msgstr ""
+msgstr "هیچ تنظیم شناخته‌شده‌ای ارسال نشد."
 
 #: includes/Rest/Controllers/SettingsController.php:169
 msgid "Unknown module."
@@ -1332,12 +1329,12 @@ msgstr "ماژول ناشناخته."
 #. translators: %s: licence tier name.
 #: includes/Rest/Controllers/SettingsController.php:179
 msgid "This module requires the %s plan."
-msgstr ""
+msgstr "این ماژول به طرح %s نیاز دارد."
 
 #. translators: %s: comma-separated module names.
 #: includes/Rest/Controllers/SettingsController.php:200
 msgid "Disable these modules first, they depend on this one: %s"
-msgstr ""
+msgstr "ابتدا این ماژول‌ها را غیرفعال کنید، چون به این یکی وابسته‌اند: %s"
 
 #: includes/Rest/Controllers/SettingsController.php:242
 msgid "Unknown crawler."
@@ -1345,15 +1342,15 @@ msgstr "خزندهٔ ناشناخته."
 
 #: includes/Rest/Controllers/SettingsController.php:272
 msgid "Licence operation failed."
-msgstr ""
+msgstr "عملیات لایسنس ناموفق بود."
 
 #: includes/Rest/Controllers/SettingsController.php:288
 msgid "Licence status refreshed."
-msgstr ""
+msgstr "وضعیت لایسنس به‌روزرسانی شد."
 
 #: includes/Rest/RestModule.php:118
 msgid "Too many requests. Try again in a minute."
-msgstr ""
+msgstr "درخواست‌ها بیش از حد است. یک دقیقهٔ دیگر دوباره تلاش کنید."
 
 #: includes/Rest/RestModule.php:36
 msgid "AI API"
@@ -1361,7 +1358,7 @@ msgstr "API هوش مصنوعی"
 
 #: includes/Rest/RestModule.php:41
 msgid "REST endpoints for the dashboard, and a public knowledge API for AI systems."
-msgstr ""
+msgstr "نقاط پایانی REST برای داشبورد، و یک API دانش عمومی برای سامانه‌های هوش مصنوعی."
 
 #: includes/Schema/Nodes/BreadcrumbNode.php:43
 msgid "Home"
@@ -1373,24 +1370,24 @@ msgstr "هوشمندی دادهٔ ساختاریافته"
 
 #: includes/Schema/SchemaModule.php:41
 msgid "Generate one connected JSON-LD graph per page, validated before it ships."
-msgstr ""
+msgstr "تولید یک گراف JSON-LD متصل برای هر صفحه، با اعتبارسنجی پیش از انتشار."
 
 #: includes/Schema/SchemaValidator.php:122
 msgid "Referenced @id is not defined in this graph."
-msgstr ""
+msgstr "شناسهٔ @id ارجاع‌داده‌شده در این گراف تعریف نشده است."
 
 #: includes/Schema/SchemaValidator.php:62
 msgid "Missing @context. Consumers cannot resolve the vocabulary."
-msgstr ""
+msgstr "@context وجود ندارد. مصرف‌کننده‌ها نمی‌توانند واژگان را resolve کنند."
 
 #: includes/Schema/SchemaValidator.php:79
 msgid "Node has no @type."
-msgstr ""
+msgstr "گره @type ندارد."
 
 #. translators: 1: property name, 2: schema type.
 #: includes/Schema/SchemaValidator.php:96
 msgid "Missing required property \"%1$s\" on %2$s."
-msgstr ""
+msgstr "ویژگی الزامی «%1$s» روی %2$s وجود ندارد."
 
 #: includes/Score/ScoreModule.php:41
 #: src/components/ScoreRing.tsx:49
@@ -1399,51 +1396,50 @@ msgstr "امتیاز اعتبار هوش مصنوعی"
 
 #: includes/Score/ScoreModule.php:46
 msgid "One explainable 0–100 score per page, with every deduction and its fix."
-msgstr ""
+msgstr "یک امتیاز قابل توضیح ۰ تا ۱۰۰ برای هر صفحه، به‌همراه هر کسر امتیاز و راه اصلاح آن."
 
 #. translators: %d: number of crawlers.
 #: includes/Score/Scorers/AiReadinessScorer.php:111
 msgid "%d recommended AI crawler is blocked"
 msgid_plural "%d recommended AI crawlers are blocked"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d خزندهٔ توصیه‌شدهٔ هوش مصنوعی مسدود است"
 
 #. translators: %s: comma-separated crawler names.
 #: includes/Score/Scorers/AiReadinessScorer.php:117
 msgid "Currently blocked: %s. Review the policy if you want to appear in AI answers."
-msgstr ""
+msgstr "در حال حاضر مسدود: %s. اگر می‌خواهید در پاسخ‌های هوش مصنوعی دیده شوید، سیاست را بازبینی کنید."
 
 #: includes/Score/Scorers/AiReadinessScorer.php:141
 msgid "Schema output is disabled"
-msgstr ""
+msgstr "خروجی دادهٔ ساختاریافته غیرفعال است"
 
 #: includes/Score/Scorers/AiReadinessScorer.php:143
 msgid "Enable Schema Intelligence so pages ship a JSON-LD graph."
-msgstr ""
+msgstr "ماژول هوشمندی دادهٔ ساختاریافته را فعال کنید تا صفحه‌ها یک گراف JSON-LD منتشر کنند."
 
 #: includes/Score/Scorers/AiReadinessScorer.php:153
 msgid "Structured data has validation errors"
-msgstr ""
+msgstr "دادهٔ ساختاریافته خطای اعتبارسنجی دارد"
 
 #: includes/Score/Scorers/AiReadinessScorer.php:155
 msgid "Fix the missing required properties listed in the schema panel."
-msgstr ""
+msgstr "ویژگی‌های الزامی گمشده را که در پنل دادهٔ ساختاریافته فهرست شده‌اند اصلاح کنید."
 
 #: includes/Score/Scorers/AiReadinessScorer.php:165
 msgid "llms.txt is not published"
-msgstr ""
+msgstr "فایل llms.txt منتشر نشده است"
 
 #: includes/Score/Scorers/AiReadinessScorer.php:167
 msgid "Enable the llms.txt engine so models get a curated map of the site."
-msgstr ""
+msgstr "موتور llms.txt را فعال کنید تا مدل‌ها نقشه‌ای گزیده از سایت دریافت کنند."
 
 #: includes/Score/Scorers/AiReadinessScorer.php:177
 msgid "AI sitemap is not published"
-msgstr ""
+msgstr "نقشهٔ سایت هوش مصنوعی منتشر نشده است"
 
 #: includes/Score/Scorers/AiReadinessScorer.php:179
 msgid "Enable the AI Sitemap Engine."
-msgstr ""
+msgstr "موتور نقشهٔ سایت هوش مصنوعی را فعال کنید."
 
 #: includes/Score/Scorers/AiReadinessScorer.php:45
 msgid "AI Readiness"
@@ -1451,43 +1447,43 @@ msgstr "آمادگی برای هوش مصنوعی"
 
 #: includes/Score/Scorers/AiReadinessScorer.php:69
 msgid "Page is excluded from indexing"
-msgstr ""
+msgstr "این صفحه از نمایه‌سازی کنار گذاشته شده است"
 
 #: includes/Score/Scorers/AiReadinessScorer.php:71
 msgid "Remove the noindex directive, or accept that no AI system will cite this page."
-msgstr ""
+msgstr "دستور noindex را بردارید، یا بپذیرید که هیچ سامانهٔ هوش مصنوعی به این صفحه استناد نخواهد کرد."
 
 #: includes/Score/Scorers/AiReadinessScorer.php:80
 msgid "Site discourages search engines"
-msgstr ""
+msgstr "سایت موتورهای جست‌وجو را منع می‌کند"
 
 #: includes/Score/Scorers/AiReadinessScorer.php:82
 msgid "Turn off \"Discourage search engines\" in Settings → Reading."
-msgstr ""
+msgstr "گزینهٔ «منع موتورهای جست‌وجو» را در تنظیمات ← خواندن خاموش کنید."
 
 #: includes/Score/Scorers/EntityScorer.php:113
 msgid "No entity is linked to an external identifier"
-msgstr ""
+msgstr "هیچ موجودیتی به شناسهٔ بیرونی متصل نیست"
 
 #: includes/Score/Scorers/EntityScorer.php:115
 msgid "Add Wikidata, MeSH or official-site links to your key terms so AI systems can match them to their own knowledge base."
-msgstr ""
+msgstr "به اصطلاح‌های کلیدی خود پیوند ویکی‌دیتا، MeSH یا سایت رسمی اضافه کنید تا سامانه‌های هوش مصنوعی بتوانند آن‌ها را با پایگاه دانش خودشان تطبیق دهند."
 
 #: includes/Score/Scorers/EntityScorer.php:139
 msgid "Entities are untyped"
-msgstr ""
+msgstr "موجودیت‌ها بدون نوع هستند"
 
 #: includes/Score/Scorers/EntityScorer.php:141
 msgid "Assign specific Schema.org types (Person, MedicalCondition, Product…) instead of leaving everything as a generic topic."
-msgstr ""
+msgstr "به‌جای رها کردن همه‌چیز به‌عنوان موضوع عمومی، نوع‌های مشخص Schema.org را تعیین کنید (Person، MedicalCondition، Product…)."
 
 #: includes/Score/Scorers/EntityScorer.php:157
 msgid "The site has thin coverage of this subject"
-msgstr ""
+msgstr "پوشش سایت دربارهٔ این موضوع کم‌عمق است"
 
 #: includes/Score/Scorers/EntityScorer.php:159
 msgid "One page rarely establishes authority. Publish supporting pages that cover adjacent questions and link them together."
-msgstr ""
+msgstr "یک صفحه به‌تنهایی به‌ندرت اعتبار می‌سازد. صفحه‌های پشتیبان منتشر کنید که پرسش‌های مجاور را پوشش دهند و آن‌ها را به هم پیوند بزنید."
 
 #: includes/Score/Scorers/EntityScorer.php:40
 msgid "Entity Authority"
@@ -1495,46 +1491,45 @@ msgstr "اعتبار موجودیت"
 
 #: includes/Score/Scorers/EntityScorer.php:73
 msgid "No entities detected"
-msgstr ""
+msgstr "هیچ موجودیتی شناسایی نشد"
 
 #: includes/Score/Scorers/EntityScorer.php:75
 msgid "Assign categories or tags, and name the subject explicitly in the title and opening paragraph."
-msgstr ""
+msgstr "دسته‌بندی یا برچسب تعیین کنید، و موضوع را صریحاً در عنوان و پاراگراف نخست نام ببرید."
 
 #: includes/Score/Scorers/EntityScorer.php:91
 msgid "No clear primary subject"
-msgstr ""
+msgstr "موضوع اصلی روشن نیست"
 
 #: includes/Score/Scorers/EntityScorer.php:93
 msgid "The page touches several topics without committing to one. Name the main subject in the title and first sentence."
-msgstr ""
+msgstr "صفحه به چند موضوع اشاره می‌کند بدون آنکه به یکی متعهد شود. موضوع اصلی را در عنوان و جملهٔ نخست نام ببرید."
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:106
 msgid "Barely linked to the rest of the site"
-msgstr ""
+msgstr "به‌سختی به بقیهٔ سایت پیوند دارد"
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:108
 msgid "Link to related pages. Isolated pages read as one-off answers rather than part of a body of expertise."
-msgstr ""
+msgstr "به صفحه‌های مرتبط پیوند بدهید. صفحه‌های منزوی مثل پاسخ‌های تک‌افتاده خوانده می‌شوند، نه بخشی از یک پیکرهٔ تخصصی."
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:118
 msgid "No images or diagrams"
-msgstr ""
+msgstr "بدون تصویر یا نمودار"
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:120
 msgid "Add a labelled image or diagram. Multimodal models increasingly index visual content alongside text."
-msgstr ""
+msgstr "یک تصویر یا نمودار برچسب‌دار اضافه کنید. مدل‌های چندوجهی به‌طور فزاینده محتوای دیداری را در کنار متن نمایه می‌کنند."
 
 #. translators: %d: number of images.
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:136
 msgid "%d image has no alt text"
 msgid_plural "%d images have no alt text"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d تصویر متن جایگزین ندارد"
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:140
 msgid "Alt text is the only machine-readable description of an image. Without it the image contributes nothing."
-msgstr ""
+msgstr "متن جایگزین تنها توصیف ماشین‌خوان یک تصویر است. بدون آن، تصویر هیچ کمکی نمی‌کند."
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:33
 msgid "Knowledge Quality"
@@ -1542,35 +1537,35 @@ msgstr "کیفیت دانش"
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:73
 msgid "Not updated in over two years"
-msgstr ""
+msgstr "بیش از دو سال به‌روزرسانی نشده"
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:75
 msgid "Review and re-date the page. Assistants strongly prefer recently maintained sources for anything that can change."
-msgstr ""
+msgstr "صفحه را بازبینی و تاریخ آن را به‌روز کنید. دستیارها برای هر چیزی که تغییرپذیر است، منابع تازه‌نگهداری‌شده را به‌شدت ترجیح می‌دهند."
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:82
 msgid "Not updated in over a year"
-msgstr ""
+msgstr "بیش از یک سال به‌روزرسانی نشده"
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:84
 msgid "Schedule a content review."
-msgstr ""
+msgstr "یک بازبینی محتوا زمان‌بندی کنید."
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:94
 msgid "No outbound sources"
-msgstr ""
+msgstr "بدون منبع بیرونی"
 
 #: includes/Score/Scorers/KnowledgeQualityScorer.php:96
 msgid "Cite where your claims come from. A page that asserts without sourcing is a weak candidate for citation itself."
-msgstr ""
+msgstr "منبع ادعاهای خود را ذکر کنید. صفحه‌ای که بدون منبع ادعا می‌کند، خودش گزینهٔ ضعیفی برای استناد است."
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:107
 msgid "No named medical reviewer"
-msgstr ""
+msgstr "بازبین پزشکی نام‌برده‌ای وجود ندارد"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:109
 msgid "Assign a clinical reviewer. Independent review is the strongest YMYL trust signal available."
-msgstr ""
+msgstr "یک بازبین بالینی تعیین کنید. بازبینی مستقل قوی‌ترین نشانهٔ اعتماد YMYL در دسترس است."
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:118
 msgid "No review date"
@@ -1578,31 +1573,31 @@ msgstr "بدون تاریخ بازبینی"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:120
 msgid "Record when the page was last clinically reviewed, and surface it on the page."
-msgstr ""
+msgstr "ثبت کنید صفحه آخرین بار چه زمانی از نظر بالینی بازبینی شده و آن را روی صفحه نمایش دهید."
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:130
 msgid "Clinical review is over two years old"
-msgstr ""
+msgstr "بازبینی بالینی بیش از دو سال قدمت دارد"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:132
 msgid "Re-review the page. Guidance changes, and a stale review date is worse than none for evaluator trust."
-msgstr ""
+msgstr "صفحه را دوباره بازبینی کنید. راهنماها تغییر می‌کنند و تاریخ بازبینی کهنه برای اعتماد ارزیاب بدتر از نبود آن است."
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:143
 msgid "No clinical citations"
-msgstr ""
+msgstr "بدون استناد بالینی"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:145
 msgid "Attach the primary literature behind your claims — DOI or PubMed identifiers, not just links to other blogs."
-msgstr ""
+msgstr "متون علمی اولیهٔ پشت ادعاهای خود را پیوست کنید — شناسهٔ DOI یا PubMed، نه صرفاً پیوند به وبلاگ‌های دیگر."
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:163
 msgid "No medical disclaimer"
-msgstr ""
+msgstr "بدون سلب مسئولیت پزشکی"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:165
 msgid "State plainly that the page is informational and does not replace individual medical advice."
-msgstr ""
+msgstr "صریحاً بیان کنید که صفحه جنبهٔ اطلاع‌رسانی دارد و جایگزین توصیهٔ پزشکی فردی نیست."
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:43
 msgid "Medical Trust"
@@ -1610,35 +1605,35 @@ msgstr "اعتماد پزشکی"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:80
 msgid "Author has no stated credentials"
-msgstr ""
+msgstr "نویسنده مدرکی اعلام نکرده است"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:82
 msgid "Add the author's qualification and licence number to their profile. Anonymous health content is heavily discounted."
-msgstr ""
+msgstr "مدرک و شمارهٔ نظام پزشکی نویسنده را به نمایهٔ او اضافه کنید. محتوای سلامتِ بی‌نام به‌شدت کم‌ارزش شمرده می‌شود."
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:94
 msgid "Author has no verifiable scholarly profile"
-msgstr ""
+msgstr "نویسنده نمایهٔ علمی قابل راستی‌آزمایی ندارد"
 
 #: includes/Score/Scorers/MedicalTrustScorer.php:96
 msgid "Add an ORCID or Google Scholar link so the author can be independently verified."
-msgstr ""
+msgstr "یک پیوند ORCID یا گوگل اسکالر اضافه کنید تا نویسنده مستقلاً قابل راستی‌آزمایی باشد."
 
 #: includes/Score/Scorers/PromptQualityScorer.php:106
 msgid "Few extractable facts"
-msgstr ""
+msgstr "حقایق قابل استخراج اندک است"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:108
 msgid "Add concrete figures, dates and measures. Sentences without a number are rarely quoted as evidence."
-msgstr ""
+msgstr "اعداد، تاریخ‌ها و معیارهای مشخص اضافه کنید. جمله‌های بدون عدد به‌ندرت به‌عنوان شاهد نقل می‌شوند."
 
 #: includes/Score/Scorers/PromptQualityScorer.php:117
 msgid "Covers few distinct questions"
-msgstr ""
+msgstr "پرسش‌های متمایز کمی را پوشش می‌دهد"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:119
 msgid "Add question-shaped H2s. Each one is a query the page becomes eligible to answer."
-msgstr ""
+msgstr "عنوان‌های H2 پرسشی اضافه کنید. هر کدام پرسشی است که صفحه صلاحیت پاسخ به آن را پیدا می‌کند."
 
 #: includes/Score/Scorers/PromptQualityScorer.php:128
 msgid "No summary"
@@ -1646,15 +1641,15 @@ msgstr "بدون خلاصه"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:130
 msgid "Write an excerpt. It becomes the description in schema, llms.txt and the AI sitemap."
-msgstr ""
+msgstr "یک چکیده بنویسید. همان توضیح در دادهٔ ساختاریافته، llms.txt و نقشهٔ سایت هوش مصنوعی می‌شود."
 
 #: includes/Score/Scorers/PromptQualityScorer.php:139
 msgid "Prompt pack is out of date"
-msgstr ""
+msgstr "بستهٔ پرامپت به‌روز نیست"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:141
 msgid "The content changed after the pack was generated. Re-run analysis."
-msgstr ""
+msgstr "محتوا پس از تولید بسته تغییر کرده است. تحلیل را دوباره اجرا کنید."
 
 #: includes/Score/Scorers/PromptQualityScorer.php:34
 msgid "Prompt Quality"
@@ -1662,35 +1657,35 @@ msgstr "کیفیت پرامپت"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:59
 msgid "No prompt pack generated"
-msgstr ""
+msgstr "بستهٔ پرامپتی تولید نشده است"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:61
 msgid "Run analysis on this page to generate its summary, canonical answer and fact sheet."
-msgstr ""
+msgstr "روی این صفحه تحلیل اجرا کنید تا خلاصه، پاسخ مرجع و برگهٔ حقایق آن ساخته شود."
 
 #: includes/Score/Scorers/PromptQualityScorer.php:86
 msgid "No canonical answer"
-msgstr ""
+msgstr "بدون پاسخ مرجع"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:88
 msgid "Mark a passage with the class \"medora-answer\", or open the page with a direct, self-contained answer."
-msgstr ""
+msgstr "یک بند را با کلاس «medora-answer» علامت بزنید، یا صفحه را با یک پاسخ مستقیم و خودبسنده آغاز کنید."
 
 #: includes/Score/Scorers/PromptQualityScorer.php:95
 msgid "Canonical answer is poorly sized"
-msgstr ""
+msgstr "اندازهٔ پاسخ مرجع مناسب نیست"
 
 #: includes/Score/Scorers/PromptQualityScorer.php:97
 msgid "Aim for 25–60 words: long enough to stand alone, short enough to be quoted whole."
-msgstr ""
+msgstr "حدود ۲۵ تا ۶۰ کلمه هدف بگیرید: به‌قدر کافی بلند که مستقل باشد، و کوتاه که کامل نقل شود."
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:108
 msgid "Too short to establish authority"
-msgstr ""
+msgstr "برای ساختن اعتبار بسیار کوتاه است"
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:110
 msgid "Under 300 words rarely carries enough substance to be cited over a competing source."
-msgstr ""
+msgstr "کمتر از ۳۰۰ کلمه به‌ندرت آن‌قدر محتوا دارد که بر منبع رقیب ترجیح داده شود."
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:33
 msgid "Semantic Strength"
@@ -1698,36 +1693,36 @@ msgstr "قدرت معنایی"
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:54
 msgid "The answer is buried"
-msgstr ""
+msgstr "پاسخ در متن مدفون شده است"
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:56
 msgid "Open with a 30–70 word direct answer to the question in the title. Assistants quote the top of a page far more often than the middle."
-msgstr ""
+msgstr "با یک پاسخ مستقیم ۳۰ تا ۷۰ کلمه‌ای به پرسش عنوان شروع کنید. دستیارها بسیار بیشتر از میانهٔ صفحه، ابتدای آن را نقل می‌کنند."
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:64
 msgid "Sections do not stand alone"
-msgstr ""
+msgstr "بخش‌ها به‌تنهایی معنا ندارند"
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:66
 msgid "Add subheadings and avoid opening paragraphs with \"this\" or \"it\" — retrievers surface single sections without their context."
-msgstr ""
+msgstr "زیرعنوان اضافه کنید و پاراگراف‌ها را با «این» یا «آن» شروع نکنید — بازیاب‌ها هر بخش را بدون بافت آن بیرون می‌کشند."
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:74
 msgid "Low knowledge density"
-msgstr ""
+msgstr "چگالی دانش پایین"
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:76
 msgid "The page repeats a narrow vocabulary. Introduce the related concepts, measures and named things a specialist would expect."
-msgstr ""
+msgstr "صفحه دایرهٔ واژگان محدودی را تکرار می‌کند. مفاهیم مرتبط، معیارها و نام‌هایی را که یک متخصص انتظار دارد معرفی کنید."
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:84
 msgid "Expected sub-topics are missing"
-msgstr ""
+msgstr "زیرموضوع‌های مورد انتظار وجود ندارند"
 
 #. translators: %s: comma-separated list of missing facets.
 #: includes/Score/Scorers/SemanticStrengthScorer.php:88
 msgid "Not covered: %s. Each one is a query this page currently cannot answer."
-msgstr ""
+msgstr "پوشش‌داده‌نشده: %s. هر کدام پرسشی است که این صفحه اکنون نمی‌تواند پاسخ دهد."
 
 #: includes/Score/Scorers/SemanticStrengthScorer.php:98
 msgid "Structure"
@@ -1743,104 +1738,104 @@ msgstr "امنیت"
 
 #: includes/Security/SecurityModule.php:37
 msgid "Audit trail, configuration scanning and capability enforcement."
-msgstr ""
+msgstr "ردّ رویدادها، پویش پیکربندی و اعمال سطوح دسترسی."
 
 #: includes/Security/SecurityScanner.php:100
 msgid "WP_DEBUG_DISPLAY is on. Errors leak paths and internals into page output — including into what crawlers index."
-msgstr ""
+msgstr "WP_DEBUG_DISPLAY روشن است. خطاها مسیرها و جزئیات داخلی را وارد خروجی صفحه می‌کنند — از جمله در آنچه خزنده‌ها نمایه می‌کنند."
 
 #: includes/Security/SecurityScanner.php:106
 msgid "Dashboard file editing is disabled"
-msgstr ""
+msgstr "ویرایش فایل از پنل مدیریت غیرفعال است"
 
 #: includes/Security/SecurityScanner.php:108
 msgid "Define DISALLOW_FILE_EDIT to stop plugin and theme files being edited from the admin."
-msgstr ""
+msgstr "ثابت DISALLOW_FILE_EDIT را تعریف کنید تا ویرایش فایل‌های افزونه و قالب از پنل مدیریت متوقف شود."
 
 #: includes/Security/SecurityScanner.php:117
 msgid "Log retention is bounded"
-msgstr ""
+msgstr "نگهداری گزارش‌ها محدود است"
 
 #: includes/Security/SecurityScanner.php:119
 msgid "Set a retention period between 1 and 400 days so crawl and referral logs do not grow without limit."
-msgstr ""
+msgstr "یک دورهٔ نگهداری بین ۱ تا ۴۰۰ روز تعیین کنید تا گزارش خزش و ارجاع بی‌حد رشد نکند."
 
 #: includes/Security/SecurityScanner.php:43
 msgid "Site is served over HTTPS"
-msgstr ""
+msgstr "سایت روی HTTPS ارائه می‌شود"
 
 #: includes/Security/SecurityScanner.php:45
 msgid "Several AI crawlers skip plain-HTTP origins entirely."
-msgstr ""
+msgstr "چند خزندهٔ هوش مصنوعی مبدأهای HTTP ساده را کلاً نادیده می‌گیرند."
 
 #: includes/Security/SecurityScanner.php:52
 msgid "Embedding API key is not stored in the database"
-msgstr ""
+msgstr "کلید API بردارها در پایگاه داده ذخیره نشده است"
 
 #: includes/Security/SecurityScanner.php:54
 msgid "Move the key to the MEDORA_EMBEDDING_API_KEY constant or environment variable so it stays out of database backups."
-msgstr ""
+msgstr "کلید را به ثابت یا متغیر محیطی MEDORA_EMBEDDING_API_KEY منتقل کنید تا از پشتیبان‌های پایگاه داده بیرون بماند."
 
 #: includes/Security/SecurityScanner.php:60
 msgid "AI Writer API key is not stored in the database"
-msgstr ""
+msgstr "کلید API نویسندهٔ هوش مصنوعی در پایگاه داده ذخیره نشده است"
 
 #: includes/Security/SecurityScanner.php:62
 msgid "Move the key to the MEDORA_LLM_API_KEY constant or environment variable so it stays out of database backups."
-msgstr ""
+msgstr "کلید را به ثابت یا متغیر محیطی MEDORA_LLM_API_KEY منتقل کنید تا از پشتیبان‌های پایگاه داده بیرون بماند."
 
 #: includes/Security/SecurityScanner.php:69
 msgid "robots.txt is managed by WordPress"
-msgstr ""
+msgstr "فایل robots.txt توسط وردپرس مدیریت می‌شود"
 
 #: includes/Security/SecurityScanner.php:71
 msgid "A physical robots.txt file overrides the virtual one, so the crawler policy configured here is never served."
-msgstr ""
+msgstr "یک فایل فیزیکی robots.txt بر نسخهٔ مجازی اولویت دارد، پس سیاست خزنده‌ای که اینجا تنظیم شده هرگز ارائه نمی‌شود."
 
 #: includes/Security/SecurityScanner.php:77
 msgid "Search engine visibility is enabled"
-msgstr ""
+msgstr "دیده‌شدن در موتورهای جست‌وجو فعال است"
 
 #: includes/Security/SecurityScanner.php:79
 msgid "Settings → Reading is currently discouraging search engines."
-msgstr ""
+msgstr "تنظیمات ← خواندن در حال حاضر موتورهای جست‌وجو را منع می‌کند."
 
 #: includes/Security/SecurityScanner.php:86
 msgid "PHP is a supported version"
-msgstr ""
+msgstr "نسخهٔ PHP پشتیبانی می‌شود"
 
 #. translators: %s: PHP version.
 #: includes/Security/SecurityScanner.php:90
 msgid "Running PHP %s. Medora requires 8.2 or newer."
-msgstr ""
+msgstr "PHP نسخهٔ %s در حال اجراست. مدورا به ۸.۲ یا جدیدتر نیاز دارد."
 
 #: includes/Security/SecurityScanner.php:98
 msgid "Debug output is not shown to visitors"
-msgstr ""
+msgstr "خروجی اشکال‌زدایی به بازدیدکنندگان نشان داده نمی‌شود"
 
 #: includes/Semantic/ReadabilityAnalyzer.php:49
 msgid "No readable content found."
-msgstr ""
+msgstr "محتوای خواندنی یافت نشد."
 
 #: includes/Semantic/ReadabilityAnalyzer.php:74
 msgid "Sentences are long. Split them so each carries one claim an AI can quote."
-msgstr ""
+msgstr "جمله‌ها بلندند. آن‌ها را بشکنید تا هر کدام یک ادعا داشته باشد که هوش مصنوعی بتواند نقل کند."
 
 #: includes/Semantic/ReadabilityAnalyzer.php:77
 msgid "Sentences are very short, which fragments the context around each claim."
-msgstr ""
+msgstr "جمله‌ها بسیار کوتاه‌اند و این بافت اطراف هر ادعا را تکه‌تکه می‌کند."
 
 #: includes/Semantic/ReadabilityAnalyzer.php:82
 msgid "Paragraphs are long. Aim for 40–80 words so each becomes a clean retrieval chunk."
-msgstr ""
+msgstr "پاراگراف‌ها بلندند. حدود ۴۰ تا ۸۰ کلمه هدف بگیرید تا هر کدام یک قطعهٔ بازیابی تمیز شود."
 
 #: includes/Semantic/ReadabilityAnalyzer.php:87
 msgid "Too few subheadings. Add an H2 or H3 roughly every 250 words to give retrievers clear chunk boundaries."
-msgstr ""
+msgstr "زیرعنوان‌ها کم‌اند. تقریباً هر ۲۵۰ کلمه یک H2 یا H3 اضافه کنید تا مرز قطعه‌ها برای بازیاب‌ها روشن باشد."
 
 #: includes/Semantic/ReadabilityAnalyzer.php:92
 msgid "No lists or tables. Structured blocks are extracted far more reliably than prose."
-msgstr ""
+msgstr "بدون فهرست یا جدول. بلوک‌های ساختاریافته بسیار مطمئن‌تر از متن پیوسته استخراج می‌شوند."
 
 #: includes/Semantic/SemanticModule.php:29
 msgid "Semantic Engine"
@@ -1848,7 +1843,7 @@ msgstr "موتور معنایی"
 
 #: includes/Semantic/SemanticModule.php:34
 msgid "Measure knowledge density, topic coverage, answer readiness and chunk quality."
-msgstr ""
+msgstr "سنجش چگالی دانش، پوشش موضوعی، آمادگی پاسخ و کیفیت قطعه‌ها."
 
 #: includes/Semantic/TopicCoverage.php:160
 msgid "Symptoms"
@@ -1936,23 +1931,23 @@ msgstr "راهنمای سایت برای مدل‌های زبانی"
 
 #: includes/Sitemap/SitemapBuilder.php:173
 msgid "Curated Markdown map of this site for language models."
-msgstr ""
+msgstr "نقشهٔ Markdown گزیده از این سایت برای مدل‌های زبانی."
 
 #: includes/Sitemap/SitemapBuilder.php:177
 msgid "LLM full content bundle"
-msgstr ""
+msgstr "بستهٔ کامل محتوا برای مدل‌های زبانی"
 
 #: includes/Sitemap/SitemapBuilder.php:181
 msgid "Every indexed page inlined as Markdown."
-msgstr ""
+msgstr "هر صفحهٔ نمایه‌شده به‌صورت Markdown درج‌شده."
 
 #: includes/Sitemap/SitemapBuilder.php:185
 msgid "Knowledge graph (JSON-LD)"
-msgstr ""
+msgstr "گراف دانش (JSON-LD)"
 
 #: includes/Sitemap/SitemapBuilder.php:189
 msgid "Entities and their relationships as Schema.org JSON-LD."
-msgstr ""
+msgstr "موجودیت‌ها و روابط آن‌ها به‌صورت Schema.org JSON-LD."
 
 #: includes/Sitemap/SitemapBuilder.php:193
 msgid "Entity index (JSON)"
@@ -1960,7 +1955,7 @@ msgstr "نمایهٔ موجودیت‌ها (JSON)"
 
 #: includes/Sitemap/SitemapBuilder.php:197
 msgid "Every entity this site covers, with authority scores."
-msgstr ""
+msgstr "هر موجودیتی که این سایت پوشش می‌دهد، به‌همراه امتیاز اعتبار."
 
 #: includes/Sitemap/SitemapModule.php:39
 msgid "AI Sitemap Engine"
@@ -1968,7 +1963,7 @@ msgstr "موتور نقشهٔ سایت هوش مصنوعی"
 
 #: includes/Sitemap/SitemapModule.php:44
 msgid "Publish entity-annotated sitemaps in XML, JSON and Markdown."
-msgstr ""
+msgstr "انتشار نقشه‌های سایت حاشیه‌نویسی‌شده با موجودیت، در قالب XML، JSON و Markdown."
 
 #: includes/Support/ContentLanguage.php:125
 msgid "Follow the WordPress site language"
@@ -1990,7 +1985,7 @@ msgstr "موتور برداری"
 
 #: includes/Vector/VectorModule.php:36
 msgid "Embed your content for semantic search, related-content and retrieval-augmented answers."
-msgstr ""
+msgstr "تبدیل محتوای شما به بردار برای جست‌وجوی معنایی، محتوای مرتبط و پاسخ‌های مبتنی بر بازیابی."
 
 #: includes/WhiteLabel/WhiteLabelModule.php:33
 msgid "White Label"
@@ -1998,7 +1993,7 @@ msgstr "برچسب سفید"
 
 #: includes/WhiteLabel/WhiteLabelModule.php:38
 msgid "Present the platform under your own brand."
-msgstr ""
+msgstr "ارائهٔ پلتفرم با برند خودتان."
 
 #: src/api/client.ts:139
 msgid "Something went wrong."
@@ -2015,7 +2010,7 @@ msgstr "کار باقی‌مانده‌ای نیست"
 #. translators: %d: number of outstanding tasks.
 #: src/components/BriefPanel.tsx:108
 msgid "%d thing(s) left"
-msgstr ""
+msgstr "%d مورد باقی مانده"
 
 #: src/components/BriefPanel.tsx:133
 msgid "Opening"
@@ -2024,7 +2019,7 @@ msgstr "شروع متن"
 #. translators: 1: current word count, 2: target.
 #: src/components/BriefPanel.tsx:155
 msgid "Outline — %1$d words now, ~%2$d target"
-msgstr ""
+msgstr "طرح کلی — اکنون %1$d کلمه، هدف حدود %2$d"
 
 #: src/components/BriefPanel.tsx:171
 msgid "add"
@@ -2049,7 +2044,7 @@ msgstr "شواهد"
 #. translators: 1: citations attached, 2: target.
 #: src/components/BriefPanel.tsx:240
 msgid "%1$d of %2$d sources attached. "
-msgstr ""
+msgstr "%1$d از %2$d منبع پیوست شده است. "
 
 #: src/components/BriefPanel.tsx:42
 msgid "Could not copy. Open the brief endpoint directly to grab the Markdown."
@@ -2094,17 +2089,17 @@ msgstr "کم"
 
 #: src/components/DeductionList.tsx:33
 msgid "No issues found on this page."
-msgstr ""
+msgstr "مشکلی در این صفحه یافت نشد."
 
 #. translators: %s: number of points.
 #: src/components/DeductionList.tsx:57
 msgid "−%s pts"
-msgstr ""
+msgstr "−%s امتیاز"
 
 #. translators: %d: number of remaining issues.
 #: src/components/DeductionList.tsx:72
 msgid "%d more issue(s)."
-msgstr ""
+msgstr "%d مشکل دیگر."
 
 #: src/components/GraphCanvas.tsx:164
 msgid "No entities yet. Publish content and run an analysis to build the graph."
@@ -2124,12 +2119,12 @@ msgstr "پیوندهای داخلی"
 
 #: src/components/LinkPanel.tsx:113
 msgid "Suggested from semantic similarity and shared entities. Anchors are phrases already in your text — nothing is inserted."
-msgstr ""
+msgstr "پیشنهادشده بر پایهٔ شباهت معنایی و موجودیت‌های مشترک. متن پیوندها عبارت‌هایی هستند که از قبل در متن شما وجود دارند — چیزی درج نمی‌شود."
 
 #. translators: %d: number of links.
 #: src/components/LinkPanel.tsx:129
 msgid "Undo %d Medora link(s)"
-msgstr ""
+msgstr "واگرد %d پیوند مدورا"
 
 #: src/components/LinkPanel.tsx:139
 msgid "Pages this one should link to"
@@ -2170,12 +2165,12 @@ msgstr "این پیوندهای ورودی هستند که واقعاً اعتب
 #. translators: 1: anchor text, 2: target page title.
 #: src/components/LinkPanel.tsx:53
 msgid "Linked \"%1$s\" to %2$s."
-msgstr ""
+msgstr "«%1$s» به %2$s پیوند داده شد."
 
 #. translators: %d: number of links removed.
 #: src/components/LinkPanel.tsx:78
 msgid "Removed %d link(s) added by Medora."
-msgstr ""
+msgstr "%d پیوند افزوده‌شده توسط مدورا حذف شد."
 
 #: src/components/LinkPanel.tsx:94
 msgid "Finding related pages…"
@@ -2184,7 +2179,7 @@ msgstr "در حال یافتن صفحه‌های مرتبط…"
 #. translators: %d: passage number.
 #: src/components/PassagePanel.tsx:111
 msgid "Passage %d"
-msgstr ""
+msgstr "بند %d"
 
 #. translators: %d: passage number. */
 #. __( 'Passage %d', 'medora-authority' ),
@@ -2203,7 +2198,7 @@ msgstr ""
 #. /* translators: %d: word count.
 #: src/components/PassagePanel.tsx:125
 msgid "%d words"
-msgstr ""
+msgstr "%d کلمه"
 
 #: src/components/PassagePanel.tsx:135
 msgid "Reads on its own."
@@ -2242,12 +2237,12 @@ msgstr "%1$d از %2$d بند (%3$d%%) وقتی جدا از بقیهٔ صفحه 
 #. translators: 1: share of the overall score, 2: points this dimension is costing.
 #: src/components/ScoreBreakdown.tsx:111
 msgid "%1$d%% of the score · costing %2$s points"
-msgstr ""
+msgstr "%1$d%% از امتیاز · هزینه: %2$s امتیاز"
 
 #. translators: 1: dimension name, 2: score out of 100.
 #: src/components/ScoreBreakdown.tsx:123
 msgid "%1$s scored %2$s out of 100"
-msgstr ""
+msgstr "%1$s امتیاز %2$s از ۱۰۰ گرفت"
 
 #: src/components/ScoreBreakdown.tsx:136
 msgid "Nothing deducted here."
@@ -2256,7 +2251,7 @@ msgstr "در این بخش امتیازی کسر نشده است."
 #. translators: 1: points lost, 2: what was deducted.
 #: src/components/ScoreBreakdown.tsx:145
 msgid "−%1$s %2$s"
-msgstr ""
+msgstr "−%1$s %2$s"
 
 #: src/components/ScoreBreakdown.tsx:183
 msgid "Measurements"
@@ -2307,7 +2302,7 @@ msgstr "انجام شد — در حال بارگذاری مجدد"
 #. translators: %d: number of days.
 #: src/pages/Analytics.tsx:112
 msgid "No assistant referrals in the last %d days."
-msgstr ""
+msgstr "در %d روز گذشته ارجاعی از دستیارها نبوده است."
 
 #: src/pages/Analytics.tsx:30
 #: src/pages/Overview.tsx:54
@@ -2331,12 +2326,12 @@ msgstr "۹۰ روز گذشته"
 
 #: src/pages/Analytics.tsx:39
 msgid "These are observed referrals. Several assistants strip the referrer header, so treat this as a lower bound on your real AI traffic, not a total."
-msgstr ""
+msgstr "این‌ها ارجاع‌های مشاهده‌شده هستند. چند دستیار هدر ارجاع‌دهنده را حذف می‌کنند، پس این را کف ترافیک واقعی هوش مصنوعی خود بدانید، نه کل آن."
 
 #: src/pages/Analytics.tsx:47
 #: src/pages/Overview.tsx:99
 msgid "Visits from assistants"
-msgstr ""
+msgstr "بازدید از سوی دستیارها"
 
 #: src/pages/Analytics.tsx:52
 msgid "Previous period"
@@ -2373,7 +2368,7 @@ msgstr "بازدیدکنندگان"
 
 #: src/pages/Analytics.tsx:94
 msgid "Pages assistants send people to"
-msgstr ""
+msgstr "صفحه‌هایی که دستیارها مردم را به آن‌ها می‌فرستند"
 
 #: src/pages/Analytics.tsx:96
 msgid "The closest available proxy for which of your pages are being cited."
@@ -2386,7 +2381,7 @@ msgstr "قدیمی‌تر"
 #. translators: 1: object type, 2: object id.
 #: src/pages/Audit.tsx:151
 msgid "%1$s #%2$d"
-msgstr ""
+msgstr "%1$s شمارهٔ %2$d"
 
 #. translators: 1: object type, 2: object id. */
 #. __( '%1$s #%2$d', 'medora-authority' ),
@@ -2473,7 +2468,7 @@ msgstr "درخواست مدل برای %s ناموفق بود."
 #. /* translators: %s: object.
 #: src/pages/Audit.tsx:209
 msgid "The model reply could not be used for %s."
-msgstr ""
+msgstr "پاسخ مدل برای %s قابل استفاده نبود."
 
 #. translators: %s: object. */
 #. __(
@@ -2527,7 +2522,7 @@ msgstr "وضعیت لایسنس تغییر کرد."
 #. translators: %s: percentage of the text supported by the page.
 #: src/pages/Audit.tsx:272
 msgid "%s%% supported"
-msgstr ""
+msgstr "%s%% پشتیبانی‌شده"
 
 #. translators: %s: percentage of the text supported by the page. */
 #. __( '%s%% supported', 'medora-authority' ),
@@ -2544,11 +2539,11 @@ msgstr ""
 #. /* translators: %s: comma-separated list of figures.
 #: src/pages/Audit.tsx:284
 msgid "figures not in the page: %s"
-msgstr ""
+msgstr "اعدادی که در صفحه نیستند: %s"
 
 #: src/pages/Audit.tsx:36
 msgid "Every change Medora made, and every generated sentence it accepted or threw away. Kept for the retention period set in Settings."
-msgstr ""
+msgstr "هر تغییری که مدورا اعمال کرده، و هر جملهٔ تولیدشده‌ای که پذیرفته یا دور انداخته است. تا پایان دورهٔ نگهداری تعیین‌شده در تنظیمات نگه داشته می‌شود."
 
 #: src/pages/Audit.tsx:53
 msgid "Nothing recorded yet."
@@ -2648,7 +2643,7 @@ msgstr "کاربرد"
 
 #: src/pages/Crawlers.tsx:116
 msgid "Visits (30d)"
-msgstr ""
+msgstr "بازدیدها (۳۰ روز)"
 
 #: src/pages/Crawlers.tsx:117
 msgid "Access"
@@ -2684,7 +2679,7 @@ msgstr "در پاسخ‌های هوش مصنوعی قابل استناد بما�
 
 #: src/pages/Crawlers.tsx:171
 msgid "robots.txt preview"
-msgstr ""
+msgstr "پیش‌نمایش robots.txt"
 
 #: src/pages/Crawlers.tsx:179
 msgid "Hide"
@@ -2692,7 +2687,7 @@ msgstr "پنهان کردن"
 
 #: src/pages/Crawlers.tsx:180
 msgid "Show what is served"
-msgstr ""
+msgstr "نمایش آنچه ارائه می‌شود"
 
 #: src/pages/Crawlers.tsx:190
 msgid "Most-crawled URLs"
@@ -2713,7 +2708,7 @@ msgstr "خزنده‌های جست‌وجوی کلاسیک همچنان مجاز
 
 #: src/pages/Crawlers.tsx:74
 msgid "A physical robots.txt file exists in your site root. It overrides the virtual one, so none of the policy below is actually being served. Delete or merge that file."
-msgstr ""
+msgstr "یک فایل فیزیکی robots.txt در ریشهٔ سایت شما وجود دارد. بر نسخهٔ مجازی اولویت دارد، پس هیچ‌کدام از سیاست‌های زیر واقعاً ارائه نمی‌شوند. آن فایل را حذف یا ادغام کنید."
 
 #: src/pages/Crawlers.tsx:82
 msgid "Site policy"
@@ -2729,11 +2724,11 @@ msgstr "توضیح"
 
 #: src/pages/Entities.tsx:144
 msgid "sameAs identifiers (one per line)"
-msgstr ""
+msgstr "شناسه‌های sameAs (هر خط یکی)"
 
 #: src/pages/Entities.tsx:154
 msgid "These are what let an AI system match this entity to the one in its own knowledge base. It is the single highest-value field here."
-msgstr ""
+msgstr "این‌ها چیزی هستند که به سامانهٔ هوش مصنوعی اجازه می‌دهند این موجودیت را با موجودیت متناظر در پایگاه دانش خودش تطبیق دهد. باارزش‌ترین فیلد این صفحه همین است."
 
 #: src/pages/Entities.tsx:167
 #: src/pages/Settings.tsx:380
@@ -2750,7 +2745,7 @@ msgstr "حذف این موجودیت"
 
 #: src/pages/Entities.tsx:179
 msgid "Use this for something the extractor got wrong — a navigation label or a stray phrase read as a subject. It is deleted from the graph and from the structured data you publish, and it will not be extracted again."
-msgstr ""
+msgstr "این را برای چیزی به کار ببرید که استخراج‌کننده اشتباه تشخیص داده — یک برچسب منو یا عبارتی پراکنده که به‌عنوان موضوع خوانده شده. از گراف و از دادهٔ ساختاریافته‌ای که منتشر می‌کنید حذف می‌شود و دوباره استخراج نخواهد شد."
 
 #: src/pages/Entities.tsx:193
 msgid "Yes, remove it"
@@ -2770,7 +2765,7 @@ msgstr "روابط"
 
 #: src/pages/Entities.tsx:275
 msgid "Search entities…"
-msgstr ""
+msgstr "جست‌وجوی موجودیت‌ها…"
 
 #: src/pages/Entities.tsx:288
 msgid "Entity type"
@@ -2803,7 +2798,7 @@ msgstr "قبلی"
 #. translators: 1: current page, 2: total entities.
 #: src/pages/Entities.tsx:375
 msgid "Page %1$d — %2$d entities"
-msgstr ""
+msgstr "صفحهٔ %1$d — %2$d موجودیت"
 
 #: src/pages/Entities.tsx:386
 msgid "Next"
@@ -2812,11 +2807,11 @@ msgstr "بعدی"
 #. translators: 1: number removed, 2: maximum.
 #: src/pages/Entities.tsx:453
 msgid "Removed entities — %1$d of %2$d"
-msgstr ""
+msgstr "موجودیت‌های حذف‌شده — %1$d از %2$d"
 
 #: src/pages/Entities.tsx:459
 msgid "These are skipped during extraction. Restoring one brings it back the next time the page it came from is analysed."
-msgstr ""
+msgstr "این‌ها هنگام استخراج نادیده گرفته می‌شوند. بازگردانی هر کدام، آن را در تحلیل بعدیِ صفحهٔ مبدأ برمی‌گرداند."
 
 #: src/pages/Entities.tsx:478
 msgid "Restore"
@@ -2833,7 +2828,7 @@ msgstr "ذخیره شد."
 #. translators: %s: score out of 100.
 #: src/pages/Entities.tsx:96
 msgid "Entity authority: %s / 100"
-msgstr ""
+msgstr "اعتبار موجودیت: %s از ۱۰۰"
 
 #: src/pages/Graph.tsx:107
 msgid "Curated site map for LLMs"
@@ -2845,11 +2840,11 @@ msgstr "بستهٔ کامل محتوا"
 
 #: src/pages/Graph.tsx:115
 msgid "Annotated AI sitemap index"
-msgstr ""
+msgstr "نمایهٔ نقشهٔ سایت هوش مصنوعی با حاشیه‌نویسی"
 
 #: src/pages/Graph.tsx:119
 msgid "Knowledge graph as JSON-LD"
-msgstr ""
+msgstr "گراف دانش به‌صورت JSON-LD"
 
 #. translators: 1: entity count, 2: relationship count.
 #: src/pages/Graph.tsx:27
@@ -2882,7 +2877,7 @@ msgstr "باز کردن صفحهٔ موجودیت"
 
 #: src/pages/Graph.tsx:97
 msgid "Machine-readable endpoints"
-msgstr ""
+msgstr "نقاط پایانی ماشین‌خوان"
 
 #: src/pages/Graph.tsx:99
 msgid "These are what AI systems consume. They are public and require no key."
@@ -2899,7 +2894,7 @@ msgstr "ترافیک ارجاعی هوش مصنوعی"
 
 #: src/pages/Overview.tsx:143
 msgid "No assistant referrals observed yet. Note that several assistants strip the referrer, so this is a floor, not a total."
-msgstr ""
+msgstr "هنوز ارجاعی از دستیارها مشاهده نشده است. توجه کنید چند دستیار ارجاع‌دهنده را حذف می‌کنند، پس این یک کف است، نه کل."
 
 #: src/pages/Overview.tsx:155
 msgid "AI crawler activity"
@@ -2925,7 +2920,7 @@ msgstr "مشکلاتی که در سراسر سایت بیشتر تکرار می�
 #. translators: %d: number of pages.
 #: src/pages/Overview.tsx:209
 msgid "%d pages"
-msgstr ""
+msgstr "%d صفحه"
 
 #: src/pages/Overview.tsx:221
 msgid "Weakest pages"
@@ -2961,7 +2956,7 @@ msgstr "اعتبار هوش مصنوعی"
 
 #: src/pages/Overview.tsx:66
 msgid "Site AI Authority Score"
-msgstr ""
+msgstr "امتیاز اعتبار هوش مصنوعی سایت"
 
 #: src/pages/Overview.tsx:72
 msgid "Pages analysed"
@@ -2970,7 +2965,7 @@ msgstr "صفحه‌های تحلیل‌شده"
 #. translators: %d: number of relationships.
 #: src/pages/Overview.tsx:80
 msgid "%d relationships"
-msgstr ""
+msgstr "%d رابطه"
 
 #: src/pages/Overview.tsx:85
 msgid "AI crawler visits"
@@ -2990,7 +2985,7 @@ msgstr "بازدید خزنده‌های هوش مصنوعی"
 #. /* translators: 1: crawlers seen, 2: crawlers known.
 #: src/pages/Overview.tsx:91
 msgid "%1$d of %2$d known crawlers"
-msgstr ""
+msgstr "%1$d از %2$d خزندهٔ شناخته‌شده"
 
 #: src/pages/Settings.tsx:109
 msgid "Licence"
@@ -3007,7 +3002,7 @@ msgstr "به‌روزرسانی وضعیت"
 
 #: src/pages/Settings.tsx:153
 msgid "Move licence to this domain"
-msgstr ""
+msgstr "انتقال لایسنس به این دامنه"
 
 #: src/pages/Settings.tsx:163
 msgid "Deactivate"
@@ -3015,7 +3010,7 @@ msgstr "غیرفعال‌سازی"
 
 #: src/pages/Settings.tsx:169
 msgid "This licence is bound to a different domain. You can move it yourself — no support ticket needed. Once a month."
-msgstr ""
+msgstr "این لایسنس به دامنهٔ دیگری متصل است. خودتان می‌توانید منتقلش کنید — بدون نیاز به تیکت پشتیبانی. ماهی یک بار."
 
 #: src/pages/Settings.tsx:181
 msgid "Licence key"
@@ -3032,7 +3027,7 @@ msgstr "فعال‌سازی"
 #. translators: 1: checks passed, 2: total checks.
 #: src/pages/Settings.tsx:212
 msgid "Configuration check — %1$d of %2$d passing"
-msgstr ""
+msgstr "بررسی پیکربندی — %1$d از %2$d قبول"
 
 #: src/pages/Settings.tsx:261
 msgid "Product name"
@@ -3108,7 +3103,7 @@ msgstr "ناشر"
 
 #: src/pages/Settings.tsx:40
 msgid "Every module is independent. Turn off what you do not need — disabled modules add no queries and no page weight."
-msgstr ""
+msgstr "هر ماژول مستقل است. آنچه نیاز ندارید را خاموش کنید — ماژول‌های غیرفعال هیچ کوئری و هیچ وزنی به صفحه اضافه نمی‌کنند."
 
 #: src/pages/Settings.tsx:401
 msgid "Organisation name"
@@ -3120,11 +3115,11 @@ msgstr "حالت سایت"
 
 #: src/pages/Settings.tsx:429
 msgid "Log retention (days)"
-msgstr ""
+msgstr "نگهداری گزارش (روز)"
 
 #: src/pages/Settings.tsx:442
 msgid "Published artefacts"
-msgstr ""
+msgstr "خروجی‌های منتشرشده"
 
 #: src/pages/Settings.tsx:446
 msgid "Publish llms.txt"
@@ -3132,15 +3127,15 @@ msgstr "انتشار llms.txt"
 
 #: src/pages/Settings.tsx:447
 msgid "Publish AI sitemaps"
-msgstr ""
+msgstr "انتشار نقشه‌های سایت هوش مصنوعی"
 
 #: src/pages/Settings.tsx:448
 msgid "Output JSON-LD schema"
-msgstr ""
+msgstr "خروجی دادهٔ ساختاریافتهٔ JSON-LD"
 
 #: src/pages/Settings.tsx:449
 msgid "Track AI referrals"
-msgstr ""
+msgstr "ردیابی ارجاع‌های هوش مصنوعی"
 
 #: src/pages/Settings.tsx:462
 msgid "Embeddings"
@@ -3161,7 +3156,7 @@ msgstr "کلید API تنظیم نشده است. به‌جای ذخیره در �
 
 #: src/pages/Settings.tsx:490
 msgid "Switching provider clears the existing index — the two vector spaces are not comparable — and content is re-embedded in the background."
-msgstr ""
+msgstr "تغییر ارائه‌دهنده نمایهٔ موجود را پاک می‌کند — دو فضای برداری قابل مقایسه نیستند — و محتوا در پس‌زمینه دوباره برداری می‌شود."
 
 #: src/pages/Settings.tsx:496
 msgid "Content language"
@@ -3173,7 +3168,7 @@ msgstr "زبان صفحه‌های شما"
 
 #: src/pages/Settings.tsx:515
 msgid "Set this when your content is in a different language from the WordPress admin — a Persian site running an English admin is a common case. It is what gets declared to AI crawlers in your structured data and llms.txt, and what the AI Writer writes in."
-msgstr ""
+msgstr "وقتی زبان محتوای شما با زبان پنل وردپرس فرق دارد این را تنظیم کنید — سایت فارسی با پنل انگلیسی حالتی رایج است. همین است که در دادهٔ ساختاریافته و llms.txt به خزنده‌های هوش مصنوعی اعلام می‌شود، و همین زبانی است که نویسندهٔ هوش مصنوعی با آن می‌نویسد."
 
 #: src/pages/Settings.tsx:524
 msgid "How much to show"
@@ -3197,7 +3192,7 @@ msgstr "سازمانی — به‌همراه گزارش رویدادها و سل
 
 #: src/pages/Settings.tsx:559
 msgid "Changes what is on screen, nothing else. It grants no extra access and takes none away — permissions come from WordPress roles, and the API still serves everything your role allows. Reload after saving."
-msgstr ""
+msgstr "فقط آنچه روی صفحه است را تغییر می‌دهد، نه چیز دیگر. دسترسی اضافه‌ای نمی‌دهد و چیزی هم نمی‌گیرد — سطوح دسترسی از نقش‌های وردپرس می‌آید و API همچنان هر چیزی را که نقش شما اجازه می‌دهد ارائه می‌کند. پس از ذخیره، صفحه را دوباره بارگذاری کنید."
 
 #: src/pages/Settings.tsx:575
 msgid "Let a model rewrite page summaries and canonical answers"
@@ -3205,11 +3200,11 @@ msgstr "اجازه بده یک مدل خلاصه‌ها و پاسخ‌های م�
 
 #: src/pages/Settings.tsx:581
 msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
-msgstr ""
+msgstr "به‌طور پیش‌فرض خاموش است. با خاموش بودن آن، هر خلاصه‌ای که مدورا منتشر می‌کند از جمله‌های خودتان ساخته می‌شود و چیزی به شخص ثالث ارسال نمی‌شود."
 
 #: src/pages/Settings.tsx:587
 msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
-msgstr ""
+msgstr "وقتی روشن باشد، هر فیلد تولیدشده در برابر صفحهٔ مبدأ بررسی می‌شود و اگر واژه یا عددی وارد کند که در صفحه نیست، دور انداخته می‌شود. ردها در گزارش رویدادها ثبت می‌شوند."
 
 #: src/pages/Settings.tsx:594
 msgid "Model"

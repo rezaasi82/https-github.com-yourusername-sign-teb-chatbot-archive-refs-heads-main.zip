@@ -30,11 +30,16 @@ declare(strict_types=1);
 
 const DOMAIN = 'medora-authority';
 
-/** Plural rules by language. Persian and Arabic are not the English default. */
+/**
+ * Plural rules by language. Persian is not the English default.
+ *
+ * Arabic is deliberately absent: it is out of scope for this product, and a
+ * rule sitting here would suggest a locale someone is expected to fill in.
+ * Adding it later is one line — and its six forms are why it needs the entry
+ * rather than the fallback.
+ */
 const PLURALS = [
     'fa' => 'nplurals=2; plural=(n > 1);',
-    'ar' => 'nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);',
-    'tr' => 'nplurals=2; plural=(n > 1);',
 ];
 
 $root   = dirname(__DIR__);

@@ -264,8 +264,18 @@ php bin/make-l10n.php         # compile languages/*.po   (composer i18n:build)
 php bin/make-l10n.php fa_IR   # …one locale
 ```
 
+Persian (`fa_IR`) is complete and shipped, though unreviewed — see the note at
+the top of its map file. Arabic is out of scope.
+
 To add a locale, copy the template to `languages/medora-authority-{locale}.po`,
-fill in the `msgstr` lines, and run `make-l10n.php`. It writes both artefacts
+fill in the `msgstr` lines, and run `make-l10n.php`. `merge-po.php` re-merges a
+locale after the template changes, and edits made directly in the `.po` win over
+the map, so a reviewer's corrections survive.
+
+`make-l10n.php` refuses to compile a translation that dropped, added or
+renumbered a printf placeholder, and exits non-zero. That is the one translation
+error which is a runtime error rather than cosmetic: `sprintf()` throws on a
+missing argument, so a lost `%s` takes that screen down in that locale alone. It writes both artefacts
 WordPress loads:
 
 | Artefact | Loaded by | Notes |

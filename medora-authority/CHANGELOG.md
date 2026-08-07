@@ -4,6 +4,34 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] — 2026-08-03
+
+### Persian is complete — 740 of 740
+
+Every string in the plugin and the dashboard. Three entries stay in Latin script
+on purpose: `ORCID` and `sameAs` are identifiers rather than words, and
+`−%1$s %2$s` is pure formatting.
+
+**Complete is not the same as correct.** This was written by an assistant, not
+by a Persian-speaking editor. The terminology is consistent and the grammar is
+sound, but register and idiom on a medical product are exactly what a non-native
+draft gets subtly wrong, and clinicians read this text. The map file says so at
+the top, so nobody inherits it as reviewed work.
+
+Verified mechanically against the compiled `.mo`, read back with an independent
+reader: 741 entries including the header, zero empty translations, zero
+placeholder mismatches across every string and every plural form.
+
+### Changed — Arabic is out of scope
+
+Removed from the declared launch targets and from the plural-rule table.
+Priority is Persian, then English. Arabic's six plural forms are why it would
+need an explicit entry rather than the fallback if it is ever added — that is one
+line, and the note explaining it stays in `merge-po.php`.
+
+Leaving a rule in place for a locale nobody is filling in only suggests work
+that is expected.
+
 ## [0.13.0] — 2026-08-03
 
 ### Added — Persian (fa_IR), first pass
