@@ -45,6 +45,7 @@ if ($files === []) {
 }
 
 $compiled = 0;
+$problems = 0;
 
 foreach ($files as $file) {
     $locale = locale($file);
@@ -61,6 +62,11 @@ foreach ($files as $file) {
         $entries,
         static fn (array $entry): bool => implode('', $entry['msgstr']) !== ''
     );
+
+    foreach (placeholderMismatches($translated) as $problem) {
+        fwrite(STDERR, "  {$locale}: {$problem}\n");
+        $problems++;
+    }
 
     $mo = $languages . '/' . DOMAIN . '-' . $locale . '.mo';
     file_put_contents($mo, buildMo($translated, $header));
@@ -88,9 +94,58 @@ if ($compiled === 0) {
     exit(1);
 }
 
-exit(0);
+exit($problems === 0 ? 0 : 1);
 
 // ---------------------------------------------------------------------------
+
+/**
+ * Translations that dropped, added or renumbered a printf placeholder.
+ *
+ * This is the one translation error that becomes a runtime error rather than
+ * cosmetic damage: `sprintf()` throws on a missing argument, so a translator
+ * losing a `%s` takes the screen down in that locale only — which is exactly
+ * the kind of breakage nobody notices until a customer reports it.
+ *
+ * @param array<string, array<string, mixed>> $entries
+ * @return list<string>
+ */
+function placeholderMismatches(array $entries): array
+{
+    $pattern  = '/%(?:\d+\\$)?[sdf]|%%/';
+    $problems = [];
+
+    foreach ($entries as $key => $entry) {
+        // Context and plural forms are packed into the key; only the singular
+        // source carries the placeholders worth comparing.
+        $source = explode("\x00", str_contains($key, "\x04") ? explode("\x04", $key)[1] : $key)[0];
+
+        preg_match_all($pattern, $source, $inSource);
+
+        foreach ($entry['msgstr'] as $translation) {
+            if (trim($translation) === '') {
+                continue;
+            }
+
+            preg_match_all($pattern, $translation, $inTranslation);
+
+            $expected = $inSource[0];
+            $actual   = $inTranslation[0];
+            sort($expected);
+            sort($actual);
+
+            if ($expected !== $actual) {
+                $problems[] = sprintf(
+                    'placeholder mismatch — "%s" expects %s, translation has %s',
+                    mb_strimwidth($source, 0, 60, '…'),
+                    $expected === [] ? 'none' : implode(' ', $expected),
+                    $actual === [] ? 'none' : implode(' ', $actual)
+                );
+            }
+        }
+    }
+
+    return $problems;
+}
 
 function locale(string $file): string
 {

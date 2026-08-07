@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.12.0
+Stable tag: 0.13.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,14 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 5. Per-page authority in the editor, with prioritised fixes.
 
 == Changelog ==
+
+= 0.13.0 =
+* Persian translation, first pass — 410 of 740 strings, covering the whole
+  interface: menus, buttons, score dimensions, graph relationships and the
+  explanatory text on each screen. Needs review by a Persian speaker before
+  release; untranslated strings stay in English.
+* Added tooling to merge and update translations, and a check that refuses to
+  compile a translation which broke a placeholder like %s.
 
 = 0.12.0 =
 * Security review of the whole codebase — database queries, request handling,
@@ -254,6 +262,9 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.13.0 =
+Persian is available but marked as a draft. Review it before relying on it.
 
 = 0.12.0 =
 No database changes. Developer tooling and a security review; no behaviour

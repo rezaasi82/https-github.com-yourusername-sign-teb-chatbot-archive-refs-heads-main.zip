@@ -4,6 +4,51 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] — 2026-08-03
+
+### Added — Persian (fa_IR), first pass
+
+**410 of 740 strings, and it needs a native review before release.** Written by
+an assistant rather than a Persian-speaking editor: the terminology is
+consistent and the grammar is sound, but register and idiom on a medical
+product are exactly what a non-native draft gets subtly wrong, and clinicians
+read this text. The header of the map file says so, so nobody inherits it as
+finished work.
+
+The 410 are the ones that make the interface Persian rather than English with
+Persian labels: navigation, every module and score dimension, all actions and
+states, the relationship predicates in the graph, the question-shaped headings
+the brief suggests, and the explanatory line on each main screen. What is left
+is longer prose. Untranslated strings stay English — gettext falls back per
+string, so a partial catalogue is a working catalogue rather than a broken one.
+
+Terminology is fixed at the top of the map so the interface reads as one voice:
+اعتبار for authority, امتیاز for score, موجودیت for entity, گراف دانش for
+knowledge graph, خزنده for crawler, بند for passage, استناد for citation.
+
+### Added — `bin/merge-po.php`
+
+`msgmerge` without gettext. The template stays the source of truth for which
+strings exist and their references; translations carry across by msgid; strings
+the code no longer contains are dropped, since keeping them only makes the file
+look more finished than it is.
+
+**Edits made directly in the `.po` win over the map on the next merge**, so a
+reviewer correcting the draft does not have their work overwritten by it.
+
+### Added — placeholder verification at compile time
+
+`make-l10n.php` now refuses to compile a translation that dropped, added or
+renumbered a printf placeholder, and exits non-zero so CI catches it.
+
+This is the one translation error that is a *runtime* error rather than
+cosmetic: `sprintf()` throws on a missing argument, so a translator losing a
+`%s` takes that screen down in that locale only — the kind of breakage nobody
+notices until a customer reports it. Verified by deliberately breaking
+`"Step %1$d of %2$d"` and confirming the compile failed.
+
+The Persian catalogue passes with zero mismatches across all 410 strings.
+
 ## [0.12.0] — 2026-08-03
 
 A security sweep, and the audits that have been finding these bugs move out of
