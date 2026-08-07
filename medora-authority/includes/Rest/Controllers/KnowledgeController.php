@@ -50,7 +50,12 @@ final class KnowledgeController extends AbstractController
                 'args'                => $this->paginationArgs() + [
                     'type'      => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'search'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'min_score' => ['type' => 'number', 'minimum' => 0, 'maximum' => 100],
+                    'min_score' => [
+                        'type'              => 'number',
+                        'minimum'           => 0,
+                        'maximum'           => 100,
+                        'sanitize_callback' => static fn (mixed $value): float => (float) $value,
+                    ],
                     'orderby'   => [
                         'type'    => 'string',
                         'default' => 'authority',

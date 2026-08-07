@@ -4,6 +4,65 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] — 2026-08-03
+
+A security sweep, and the audits that have been finding these bugs move out of
+`/tmp` and into CI.
+
+### Security
+
+Swept mechanically for the patterns the brief names — SQL interpolation,
+superglobal reads, output escaping, REST argument sanitising, uninstall
+completeness. **No vulnerabilities.** Reported as a result rather than dressed
+up as a fix:
+
+* Every raw-string SQL call interpolates only a table name from `Tables::name()`
+  — a class constant plus `$wpdb->prefix`, never input — and each carries the
+  `phpcs:ignore` explaining it.
+* `EntityRepository::query()`, the one query taking several user-supplied
+  filters, builds placeholders and passes them through `prepare()`, whitelists
+  the `ORDER BY` segment, and casts `min_score`.
+* No superglobal is read without unslashing and sanitising; no variable is
+  echoed without escaping; uninstall removes every option, post meta and table
+  the plugin creates.
+
+One inconsistency fixed: `min_score` was the only REST argument without a
+`sanitize_callback`. It was safe — range-validated by core and cast at the
+repository — but every sibling argument declares one, and a security convention
+with a hole in it stops being a convention.
+
+### Added — `bin/audit.php`
+
+PHPCS catches style, PHPStan catches types. Neither catches the failure mode
+that has produced most of this codebase's real bugs: something declared and
+never consumed. Eight checks, no WP-CLI, no Composer, no database:
+
+| Check | Catches |
+|---|---|
+| every setting has a consumer | a stored option nothing reads |
+| every experience flag gates something | a mode promising a feature that does not exist |
+| every hook is documented | an extension point nobody can find |
+| superglobals are sanitised | unslashed request input |
+| output is escaped | an unescaped echo |
+| REST arguments declare sanitising | an endpoint trusting its input |
+| uninstall removes what the plugin creates | rows left behind on delete |
+| every dashboard API method has a caller | an endpoint with no way to reach it |
+
+Runs in CI as its own job and joins `composer check`.
+
+**The audit was tested by breaking things.** Six deliberate defects were
+introduced into a copy of the tree — a dead option, a dead flag, an
+undocumented hook, an unsanitised `$_GET`, an unescaped `echo`, a leaked post
+meta — and the run compared against the clean tree. Five tripped; the
+experience-flag check did not, because it was matching the flag's own
+declaration and so could never fail. That is the exact bug class the audit
+exists to catch, sitting in the audit. Fixed by excluding the declaring file,
+the same way the settings check already excluded `Options.php`, and re-verified
+against both trees.
+
+A check that has never failed is not evidence of a clean codebase. It is an
+untested check.
+
 ## [0.11.0] — 2026-08-03
 
 The audit, pointed at the dashboard: unstyled classes, uncalled client methods,

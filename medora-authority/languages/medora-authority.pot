@@ -8,7 +8,7 @@
 # by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.11.0\n"
+"Project-Id-Version: Medora Authority 0.12.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1283,31 +1283,31 @@ msgstr ""
 msgid "This site does not cover that condition."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:171
-#: includes/Rest/Controllers/KnowledgeController.php:191
-#: includes/Rest/Controllers/KnowledgeController.php:254
-#: includes/Rest/Controllers/KnowledgeController.php:272
+#: includes/Rest/Controllers/KnowledgeController.php:176
+#: includes/Rest/Controllers/KnowledgeController.php:196
+#: includes/Rest/Controllers/KnowledgeController.php:259
+#: includes/Rest/Controllers/KnowledgeController.php:277
 msgid "Entity not found."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:197
+#: includes/Rest/Controllers/KnowledgeController.php:202
 msgid "Unknown entity type."
 msgstr ""
 
 #. translators: %d: maximum number of suppressed entities.
-#: includes/Rest/Controllers/KnowledgeController.php:265
+#: includes/Rest/Controllers/KnowledgeController.php:270
 msgid "The removed-entity list is full at %d. Clear some of it before removing more — a site needing this many is better served by narrowing extraction."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:309
+#: includes/Rest/Controllers/KnowledgeController.php:314
 msgid "The Knowledge Graph module is not active."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:330
+#: includes/Rest/Controllers/KnowledgeController.php:335
 msgid "The AI Prompt Engine module is not active."
 msgstr ""
 
-#: includes/Rest/Controllers/KnowledgeController.php:346
+#: includes/Rest/Controllers/KnowledgeController.php:351
 msgid "The Vector Engine module is not active."
 msgstr ""
 

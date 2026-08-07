@@ -79,6 +79,13 @@ jobs:
       - name: Compile any translations present
         run: php bin/make-l10n.php
 
+      # Catches what PHPCS and PHPStan cannot: a setting nobody reads, a flag
+      # gating nothing, a hook in no document, an uninstall that leaves rows
+      # behind. Every one of those passes a linter and is usually a feature
+      # that does not exist.
+      - name: Static audit
+        run: php bin/audit.php
+
   integration:
     name: Integration (WP ${{ matrix.wp }})
     runs-on: ubuntu-latest

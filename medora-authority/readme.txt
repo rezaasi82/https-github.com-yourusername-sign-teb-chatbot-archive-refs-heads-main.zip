@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.11.0
+Stable tag: 0.12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,13 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 5. Per-page authority in the editor, with prioritised fixes.
 
 == Changelog ==
+
+= 0.12.0 =
+* Security review of the whole codebase — database queries, request handling,
+  output escaping and uninstall cleanup. No vulnerabilities found; one
+  inconsistency tightened.
+* Added an automated audit that runs on every change, catching settings nothing
+  reads, features advertised but not built, and data left behind on uninstall.
 
 = 0.11.0 =
 * You can now remove an entity the extractor got wrong — a menu label or stray
@@ -247,6 +254,10 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.12.0 =
+No database changes. Developer tooling and a security review; no behaviour
+changes.
 
 = 0.11.0 =
 No database changes.

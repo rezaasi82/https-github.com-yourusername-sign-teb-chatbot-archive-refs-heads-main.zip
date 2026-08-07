@@ -37,14 +37,16 @@
         "i18n": "php bin/make-pot.php",
         "i18n:check": "php bin/make-pot.php --check",
         "i18n:build": "php bin/make-l10n.php",
-        "check": ["@lint", "@analyse", "@test", "@i18n:check"]
+        "audit": "php bin/audit.php",
+        "check": ["@lint", "@analyse", "@test", "@i18n:check", "@audit"]
     },
     "scripts-descriptions": {
         "test": "Unit suite. Fast, needs no WordPress install.",
         "test:integration": "Integration suite. Run bin/install-wp-tests.sh first.",
         "i18n": "Regenerate languages/medora-authority.pot from the sources.",
         "i18n:check": "Fail if the template is stale or a string cannot be extracted.",
-        "i18n:build": "Compile languages/*.po into the .mo and .json WordPress loads."
+        "i18n:build": "Compile languages/*.po into the .mo and .json WordPress loads.",
+        "audit": "Static audit for declared-but-unconsumed code, unsanitised input and uninstall leaks."
     },
     "config": {
         "optimize-autoloader": true,

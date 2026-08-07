@@ -198,3 +198,30 @@ Extend it with `medora_security_checks`.
 
 Report suspected vulnerabilities privately to `security@medora.ai`. Please do
 not open a public issue.
+
+
+## Automated audit
+
+`bin/audit.php` runs in CI and joins `composer check`. It covers the static
+checks that a linter cannot express:
+
+| Check | Catches |
+|---|---|
+| every setting has a consumer | a stored option nothing reads |
+| every experience flag gates something | a mode promising a feature that does not exist |
+| every hook is documented | an extension point nobody can find |
+| superglobals are sanitised | unslashed request input |
+| output is escaped | an unescaped echo |
+| REST arguments declare sanitising | an endpoint trusting its input |
+| uninstall removes what the plugin creates | rows left behind on delete |
+| every dashboard API method has a caller | an endpoint with no way to reach it |
+
+Findings can be silenced through the `ALLOWED` map at the top of the file, and
+every entry there carries its reason. An allowlist without reasons becomes a
+place to hide findings, which is worse than not checking.
+
+The checks are validated by deliberately breaking a copy of the tree and
+confirming each one trips — which is how the experience-flag check was found to
+be matching a flag's own declaration, and therefore incapable of failing. A
+check that has never failed is not evidence of a clean codebase; it is an
+untested check.
