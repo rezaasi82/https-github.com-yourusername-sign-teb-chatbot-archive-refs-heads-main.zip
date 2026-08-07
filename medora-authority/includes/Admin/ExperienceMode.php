@@ -79,9 +79,10 @@ final class ExperienceMode
         'white_label'     => self::AGENCY,
         'raw_metrics'     => self::AGENCY,
 
-        // Compliance and integration surfaces.
+        // Compliance and operations surfaces.
+        // No `api_keys`: the public API is nonce- and rate-limited rather than
+        // key-based, so a flag for it advertised a system that does not exist.
         'audit_log'       => self::ENTERPRISE,
-        'api_keys'        => self::ENTERPRISE,
         'queue_health'    => self::ENTERPRISE,
     ];
 
@@ -166,7 +167,7 @@ final class ExperienceMode
             [
                 'id'          => self::ENTERPRISE,
                 'label'       => __('Enterprise', 'medora-authority'),
-                'description' => __('Adds the audit log, API credentials and queue health.', 'medora-authority'),
+                'description' => __('Adds the audit log and background queue health.', 'medora-authority'),
             ],
         ];
     }

@@ -988,3 +988,76 @@
 .medora-table--audit p {
 	margin-block: 4px 0;
 }
+
+/* --- Score breakdown ----------------------------------------------------- */
+
+.medora-dimensions {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.medora-dimension {
+	border-block-start: 1px solid var(--medora-border);
+	padding-block-start: 12px;
+}
+
+.medora-dimension__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 8px;
+}
+
+.medora-dimension__head .medora-muted {
+	margin-inline-start: auto;
+}
+
+.medora-meter {
+	block-size: 6px;
+	border-radius: 3px;
+	background: var(--medora-track);
+	margin-block: 8px;
+	overflow: hidden;
+}
+
+.medora-meter__fill {
+	display: block;
+	block-size: 100%;
+	background: var(--medora-grade-c);
+}
+
+.medora-meter__fill--a { background: var(--medora-grade-a); }
+.medora-meter__fill--b { background: var(--medora-grade-b); }
+.medora-meter__fill--c { background: var(--medora-grade-c); }
+.medora-meter__fill--d { background: var(--medora-grade-d); }
+.medora-meter__fill--f { background: var(--medora-grade-f); }
+
+.medora-metrics {
+	margin-block-start: 8px;
+	font-size: 12px;
+}
+
+.medora-metrics summary {
+	cursor: pointer;
+	color: var(--medora-muted);
+}
+
+.medora-metrics dl {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 4px 16px;
+	margin-block: 8px 0;
+}
+
+.medora-metrics dt {
+	color: var(--medora-muted);
+}
+
+.medora-metrics dd {
+	margin: 0 0 4px;
+	font-variant-numeric: tabular-nums;
+}

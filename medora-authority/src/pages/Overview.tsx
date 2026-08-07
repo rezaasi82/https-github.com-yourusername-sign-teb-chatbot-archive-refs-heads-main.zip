@@ -1,6 +1,6 @@
 import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { api } from '../api/client';
+import { api, shows } from '../api/client';
 import { useAsync } from '../hooks/useAsync';
 import { ScoreRing } from '../components/ScoreRing';
 import { StatCard } from '../components/StatCard';
@@ -121,6 +121,8 @@ export function Overview(): JSX.Element {
 				</div>
 			) }
 
+			{ shows( 'queue_health' ) && <QueueHealth queue={ data.queue } /> }
+
 			<div className="medora-grid medora-grid--2">
 				{ referrals && (
 					<section className="medora-card">
@@ -229,5 +231,59 @@ export function Overview(): JSX.Element {
 				</div>
 			) }
 		</div>
+	);
+}
+
+
+/**
+ * Background work, broken down by queue.
+ *
+ * The totals alone are ambiguous: 400 pending jobs is a backlog, 400 pending
+ * jobs all sitting in the `llm` queue is a model provider that stopped
+ * answering. The server has reported the split since 0.4.0 and nothing showed
+ * it, so the two diagnoses looked identical.
+ */
+function QueueHealth( {
+	queue,
+}: {
+	queue: import('../types').Overview[ 'queue' ];
+} ): JSX.Element {
+	const rows = Object.entries( queue.by_queue ?? {} );
+
+	if ( rows.length === 0 ) {
+		return <></>;
+	}
+
+	return (
+		<section className="medora-card">
+			<h2>{ __( 'Background work', 'medora-authority' ) }</h2>
+
+			<table className="medora-table">
+				<thead>
+					<tr>
+						<th>{ __( 'Queue', 'medora-authority' ) }</th>
+						<th>{ __( 'Waiting', 'medora-authority' ) }</th>
+						<th>{ __( 'Running', 'medora-authority' ) }</th>
+						<th>{ __( 'Failed', 'medora-authority' ) }</th>
+					</tr>
+				</thead>
+				<tbody>
+					{ rows.map( ( [ name, counts ] ) => (
+						<tr key={ name }>
+							<td>{ name }</td>
+							<td>{ counts.pending }</td>
+							<td>{ counts.running }</td>
+							<td
+								className={
+									counts.failed > 0 ? 'medora-error' : undefined
+								}
+							>
+								{ counts.failed }
+							</td>
+						</tr>
+					) ) }
+				</tbody>
+			</table>
+		</section>
 	);
 }

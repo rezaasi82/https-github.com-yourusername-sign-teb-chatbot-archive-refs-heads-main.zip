@@ -7,9 +7,10 @@ import { DeductionList } from '../components/DeductionList';
 import { BriefPanel } from '../components/BriefPanel';
 import { LinkPanel } from '../components/LinkPanel';
 import { PassagePanel } from '../components/PassagePanel';
+import { ScoreBreakdown } from '../components/ScoreBreakdown';
 import type { Deduction, SiteReport } from '../types';
 
-type PanelTab = 'fixes' | 'brief' | 'links' | 'passages';
+type PanelTab = 'fixes' | 'brief' | 'links' | 'passages' | 'score_breakdown';
 
 /**
  * Tab ids double as experience-mode feature names, so a mode that hides
@@ -21,6 +22,7 @@ const TABS: ReadonlyArray< readonly [ PanelTab, string ] > = [
 	[ 'brief', __( 'Brief', 'medora-authority' ) ],
 	[ 'links', __( 'Links', 'medora-authority' ) ],
 	[ 'passages', __( 'Passages', 'medora-authority' ) ],
+	[ 'score_breakdown', __( 'Score', 'medora-authority' ) ],
 ];
 
 interface Recommendations {
@@ -194,6 +196,9 @@ export function Content(): JSX.Element {
 					{ tab === 'brief' && <BriefPanel postId={ postId } /> }
 					{ tab === 'links' && <LinkPanel postId={ postId } /> }
 					{ tab === 'passages' && <PassagePanel postId={ postId } /> }
+					{ tab === 'score_breakdown' && (
+						<ScoreBreakdown postId={ postId } />
+					) }
 
 					{ tab === 'fixes' && detail.loading && ! detail.data && (
 						<p className="medora-loading">

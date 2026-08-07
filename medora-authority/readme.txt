@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.9.0
+Stable tag: 0.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,17 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 
 == Changelog ==
 
+= 0.10.0 =
+* Added a Score tab showing where a page's score actually comes from: every
+  dimension, what share of the total it is, how many points it is costing, and
+  the deductions belonging to it. The data was always there; nothing displayed
+  it, so "why is this page 62?" had no answer on screen.
+* Agency mode adds the underlying measurements behind each dimension.
+* Enterprise mode adds a background-work breakdown per queue, so a stalled
+  model provider looks different from an ordinary backlog.
+* Enterprise no longer claims API credentials — there is no API key system, and
+  the description was wrong to say otherwise.
+
 = 0.9.0 =
 * Added the Audit log screen (Enterprise mode). The log was being written from
   day one and had no way to read it.
@@ -227,6 +238,9 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 * First release. See CHANGELOG.md for the full list, including known limitations.
 
 == Upgrade Notice ==
+
+= 0.10.0 =
+No database changes. Nothing to reconfigure.
 
 = 0.9.0 =
 No database changes. Enterprise-mode installs gain an Audit log menu item.

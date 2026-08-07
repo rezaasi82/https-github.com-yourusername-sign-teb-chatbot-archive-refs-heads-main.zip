@@ -211,7 +211,15 @@ export interface Overview {
 	site: { name: string; url: string };
 	license: LicenseState;
 	modules: ModuleInfo[];
-	queue: { pending: number; running: number; failed: number };
+	queue: {
+		pending: number;
+		running: number;
+		failed: number;
+		by_queue: Record<
+			string,
+			{ pending: number; running: number; failed: number }
+		>;
+	};
 	authority?: SiteReport;
 	entities?: {
 		total: number;

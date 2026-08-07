@@ -8,7 +8,7 @@
 # by construction, so an RTL locale needs no separate stylesheet build.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.9.0\n"
+"Project-Id-Version: Medora Authority 0.10.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -58,7 +58,7 @@ msgstr ""
 
 #: includes/Admin/AdminMenu.php:65
 #: src/app/App.tsx:88
-#: src/pages/Content.tsx:59
+#: src/pages/Content.tsx:61
 msgid "Content"
 msgstr ""
 
@@ -96,38 +96,38 @@ msgstr ""
 msgid "The Medora admin experience: authority dashboard, entity explorer and setup wizard."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:153
+#: includes/Admin/ExperienceMode.php:154
 msgid "Beginner"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:154
+#: includes/Admin/ExperienceMode.php:155
 msgid "The score, what is wrong with each page, and how to fix it. Nothing else."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:158
+#: includes/Admin/ExperienceMode.php:159
 msgid "Professional"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:159
+#: includes/Admin/ExperienceMode.php:160
 msgid "Adds the entity explorer, referral analytics, passage-level detail and the full score breakdown."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:163
+#: includes/Admin/ExperienceMode.php:164
 #: includes/License/LicenseTier.php:53
 msgid "Agency"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:164
+#: includes/Admin/ExperienceMode.php:165
 msgid "Adds the knowledge graph, module control, white-labelling and raw metrics."
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:168
+#: includes/Admin/ExperienceMode.php:169
 #: includes/License/LicenseTier.php:54
 msgid "Enterprise"
 msgstr ""
 
-#: includes/Admin/ExperienceMode.php:169
-msgid "Adds the audit log, API credentials and queue health."
+#: includes/Admin/ExperienceMode.php:170
+msgid "Adds the audit log and background queue health."
 msgstr ""
 
 #: includes/Admin/MetaBox.php:105
@@ -2223,13 +2223,70 @@ msgid "Nothing here to retrieve. This page has no body copy a model could be han
 msgstr ""
 
 #: src/components/PassagePanel.tsx:63
-#: src/pages/Content.tsx:23
+#: src/pages/Content.tsx:24
 msgid "Passages"
 msgstr ""
 
 #. translators: 1: self-contained passages, 2: total, 3: percentage.
 #: src/components/PassagePanel.tsx:67
 msgid "%1$d of %2$d passages (%3$d%%) stand on their own when retrieved without the rest of the page."
+msgstr ""
+
+#. translators: 1: share of the overall score, 2: points this dimension is costing.
+#: src/components/ScoreBreakdown.tsx:111
+msgid "%1$d%% of the score · costing %2$s points"
+msgstr ""
+
+#. translators: 1: dimension name, 2: score out of 100.
+#: src/components/ScoreBreakdown.tsx:123
+msgid "%1$s scored %2$s out of 100"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:136
+msgid "Nothing deducted here."
+msgstr ""
+
+#. translators: 1: points lost, 2: what was deducted.
+#: src/components/ScoreBreakdown.tsx:145
+msgid "−%1$s %2$s"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:183
+msgid "Measurements"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:199
+msgid "yes"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:200
+msgid "no"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:206
+#: src/pages/Entities.tsx:281
+msgid "none"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:33
+#: src/pages/Analytics.tsx:18
+#: src/pages/Audit.tsx:47
+#: src/pages/Content.tsx:205
+#: src/pages/Crawlers.tsx:51
+#: src/pages/Entities.tsx:28
+#: src/pages/Entities.tsx:290
+#: src/pages/Overview.tsx:19
+#: src/pages/Settings.tsx:33
+#: src/pages/Wizard.tsx:31
+msgid "Loading…"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:63
+msgid "Where the score comes from"
+msgstr ""
+
+#: src/components/ScoreBreakdown.tsx:65
+msgid "Each dimension starts at 100 and loses points. Dimensions that do not apply to this site are left out, and the rest are re-weighted to fill the gap."
 msgstr ""
 
 #: src/editor.ts:31
@@ -2243,18 +2300,6 @@ msgstr ""
 #. translators: %d: number of days.
 #: src/pages/Analytics.tsx:112
 msgid "No assistant referrals in the last %d days."
-msgstr ""
-
-#: src/pages/Analytics.tsx:18
-#: src/pages/Audit.tsx:47
-#: src/pages/Content.tsx:200
-#: src/pages/Crawlers.tsx:51
-#: src/pages/Entities.tsx:28
-#: src/pages/Entities.tsx:290
-#: src/pages/Overview.tsx:19
-#: src/pages/Settings.tsx:33
-#: src/pages/Wizard.tsx:31
-msgid "Loading…"
 msgstr ""
 
 #: src/pages/Analytics.tsx:30
@@ -2299,7 +2344,7 @@ msgid "Trend"
 msgstr ""
 
 #: src/pages/Analytics.tsx:66
-#: src/pages/Overview.tsx:130
+#: src/pages/Overview.tsx:132
 msgid "AI referrals"
 msgstr ""
 
@@ -2527,54 +2572,55 @@ msgstr ""
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: src/pages/Content.tsx:122
+#: src/pages/Content.tsx:124
 #: src/pages/Entities.tsx:69
 msgid "Close"
 msgstr ""
 
-#: src/pages/Content.tsx:128
+#: src/pages/Content.tsx:130
 msgid "Page tools"
 msgstr ""
 
 #. translators: %s: potential score.
-#: src/pages/Content.tsx:150
+#: src/pages/Content.tsx:152
 msgid "Completing every action below would take this page to roughly %s / 100."
 msgstr ""
 
-#: src/pages/Content.tsx:161
+#: src/pages/Content.tsx:163
 msgid "Answer-first rewrite"
 msgstr ""
 
-#: src/pages/Content.tsx:171
+#: src/pages/Content.tsx:173
 msgid "Do these, in this order"
 msgstr ""
 
-#: src/pages/Content.tsx:177
+#: src/pages/Content.tsx:179
 msgid "Ordered by points recovered per unit of effort, not by severity alone."
 msgstr ""
 
-#: src/pages/Content.tsx:20
+#: src/pages/Content.tsx:21
 msgid "Fixes"
 msgstr ""
 
-#: src/pages/Content.tsx:21
+#: src/pages/Content.tsx:22
 msgid "Brief"
 msgstr ""
 
-#: src/pages/Content.tsx:22
+#: src/pages/Content.tsx:23
 msgid "Links"
 msgstr ""
 
-#: src/pages/Content.tsx:61
+#: src/pages/Content.tsx:25
+#: src/pages/Content.tsx:78
+msgid "Score"
+msgstr ""
+
+#: src/pages/Content.tsx:63
 msgid "Lowest-scoring pages first. Pick one to see its ordered fix list."
 msgstr ""
 
-#: src/pages/Content.tsx:75
+#: src/pages/Content.tsx:77
 msgid "Page"
-msgstr ""
-
-#: src/pages/Content.tsx:76
-msgid "Score"
 msgstr ""
 
 #: src/pages/Crawlers.tsx:10
@@ -2723,10 +2769,6 @@ msgstr ""
 msgid "sameAs"
 msgstr ""
 
-#: src/pages/Entities.tsx:281
-msgid "none"
-msgstr ""
-
 #: src/pages/Entities.tsx:300
 msgid "Previous"
 msgstr ""
@@ -2807,42 +2849,62 @@ msgstr ""
 msgid "%d background job(s) failed. Check the site health log — analysis may be incomplete."
 msgstr ""
 
-#: src/pages/Overview.tsx:127
+#: src/pages/Overview.tsx:129
 msgid "AI referral traffic"
 msgstr ""
 
-#: src/pages/Overview.tsx:141
+#: src/pages/Overview.tsx:143
 msgid "No assistant referrals observed yet. Note that several assistants strip the referrer, so this is a floor, not a total."
 msgstr ""
 
-#: src/pages/Overview.tsx:153
+#: src/pages/Overview.tsx:155
 msgid "AI crawler activity"
 msgstr ""
 
-#: src/pages/Overview.tsx:156
+#: src/pages/Overview.tsx:158
 msgid "Crawler hits"
 msgstr ""
 
 #. translators: %s: comma-separated crawler names.
-#: src/pages/Overview.tsx:174
+#: src/pages/Overview.tsx:176
 msgid "Allowed but never seen: %s. Usually a robots, DNS or firewall issue rather than disinterest."
 msgstr ""
 
-#: src/pages/Overview.tsx:192
+#: src/pages/Overview.tsx:194
 msgid "Biggest wins available"
 msgstr ""
 
-#: src/pages/Overview.tsx:194
+#: src/pages/Overview.tsx:196
 msgid "The issues that recur most across your site — one fix each, applied broadly."
 msgstr ""
 
 #. translators: %d: number of pages.
-#: src/pages/Overview.tsx:207
+#: src/pages/Overview.tsx:209
 msgid "%d pages"
 msgstr ""
 
-#: src/pages/Overview.tsx:219
+#: src/pages/Overview.tsx:221
 msgid "Weakest pages"
+msgstr ""
+
+#: src/pages/Overview.tsx:259
+msgid "Background work"
+msgstr ""
+
+#: src/pages/Overview.tsx:264
+msgid "Queue"
+msgstr ""
+
+#: src/pages/Overview.tsx:265
+msgid "Waiting"
+msgstr ""
+
+#: src/pages/Overview.tsx:266
+msgid "Running"
+msgstr ""
+
+#: src/pages/Overview.tsx:267
+msgid "Failed"
 msgstr ""
 
 #: src/pages/Overview.tsx:27

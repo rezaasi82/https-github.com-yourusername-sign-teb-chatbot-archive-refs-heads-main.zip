@@ -4,6 +4,51 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] — 2026-08-03
+
+I turned the dead-code audit on the feature flags I introduced in 0.7.0. Four of
+the eighteen had no consumer, and three of those were advertised to users in the
+mode descriptions — a promise in UI copy for behaviour that did not exist.
+
+### Added — the score breakdown
+
+`components` has been in every analysis response from the first release: each
+dimension's score, its weight, its own deductions, and the measurements it was
+computed from. Nothing rendered it. `api.postScore()` existed in the client and
+was called by nothing.
+
+That left the product's central claim only half delivered. The brief asks for
+every deduction to be explained; the deductions were listed, but not what they
+were deductions *from*, so "why is this page 62?" had no answer on screen.
+
+A new **Score** tab on the Content panel answers it: every dimension with its
+share of the total, the points it is costing, a meter, and its deductions nested
+underneath it. Ordered by what each dimension is actually costing rather than by
+declared weight — the dimension losing the most points is the one worth reading
+about. Shares are recomputed against the dimensions that ran, because the server
+re-normalises weights when one does not apply.
+
+Shown from Professional mode. The Fixes tab still answers "what next", ordered
+by return on effort; this answers "why", ordered by cost. Different questions,
+different orderings, which is why they are separate tabs rather than one list.
+
+### Added — measurements and queue health
+
+* Each dimension's raw metrics, collapsed behind a disclosure, at Agency mode.
+  Useful when arguing with a score, meaningless as a to-do list — which is why
+  they are not in front of everyone.
+* Background work broken down by queue, at Enterprise mode. The server has
+  reported this split since 0.4.0 and nothing showed it, so "400 jobs pending"
+  and "400 jobs pending, all of them waiting on the model provider" looked
+  identical. The dashboard type did not even declare the field.
+
+### Removed
+
+* The `api_keys` feature flag. The public API is nonce- and rate-limited rather
+  than key-based, so the flag advertised a system that does not exist. The
+  Enterprise description no longer claims API credentials. Inventing the system
+  to justify the copy would have been the wrong way round.
+
 ## [0.9.0] — 2026-08-03
 
 The dead-option audit from 0.8.0, widened to hooks, capabilities, tables, jobs

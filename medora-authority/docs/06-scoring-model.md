@@ -199,6 +199,24 @@ A nightly cron additionally re-scores the 50 most recently modified pages, so
 scores track changes in *site-wide* signals — a newly blocked crawler, a new
 entity, an expired licence — and not only edits.
 
+## Reading a score
+
+The `components` array on every analysis response carries the full derivation:
+each dimension's score, its weight, its deductions and the measurements behind
+them. The dashboard renders it on the Content panel's **Score** tab.
+
+Two orderings exist on purpose, because they answer different questions:
+
+| View | Question | Ordered by |
+|---|---|---|
+| Fixes | what should I do next? | points recovered per unit of effort |
+| Score | why is this page 62? | points each dimension is costing |
+
+The share shown against a dimension is recomputed from the dimensions that
+actually ran, not from the declared weight in the table above — otherwise a
+non-medical site would see shares that do not add up, since Medical Trust is
+skipped and the rest are re-weighted to fill the gap.
+
 ## Extending
 
 Add a dimension with `medora_register_scorers`, or adjust the final figure with
