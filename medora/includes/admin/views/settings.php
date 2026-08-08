@@ -126,6 +126,7 @@ $mdr_model_field = static function (\Medora\Core\Settings $s, string $provider):
                         <option value="anthropic" <?php selected($s->active_provider(), 'anthropic'); ?>>Anthropic Claude</option>
                         <option value="openai" <?php selected($s->active_provider(), 'openai'); ?>>OpenAI</option>
                         <option value="gapgpt" <?php selected($s->active_provider(), 'gapgpt'); ?>>GapGPT (گیت‌وی ایران‌پسند)</option>
+                        <option value="gemini" <?php selected($s->active_provider(), 'gemini'); ?>>Google Gemini</option>
                     </select>
                     <p class="description"><?php esc_html_e('فیلدهای کلید و مدلِ همان سرویس در پایین نمایش داده می‌شوند.', 'medora'); ?></p>
                 </td>
@@ -180,6 +181,24 @@ $mdr_model_field = static function (\Medora\Core\Settings $s, string $provider):
                 <td>
                     <?php $mdr_model_field($s, 'gapgpt'); ?>
                     <p class="description"><?php esc_html_e('GapGPT هم مدل‌های GPT و هم Claude و Gemini را ارائه می‌دهد.', 'medora'); ?></p>
+                </td>
+            </tr>
+            </tbody>
+
+            <tbody class="mdr-provider-block" data-provider="gemini">
+            <tr>
+                <th><?php esc_html_e('کلید Google Gemini', 'medora'); ?></th>
+                <td>
+                    <input type="password" name="api_key_gemini" value="" class="regular-text" autocomplete="new-password"
+                           placeholder="<?php echo $s->has_api_key('gemini') ? esc_attr__('•••••••• (ذخیره‌شده)', 'medora') : 'AIza…'; ?>">
+                    <p class="description"><?php esc_html_e('کلید را از Google AI Studio بگیرید. رمزنگاری‌شده ذخیره می‌شود؛ برای تغییر، مقدار جدید وارد کنید.', 'medora'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><?php esc_html_e('مدل Gemini', 'medora'); ?></th>
+                <td>
+                    <?php $mdr_model_field($s, 'gemini'); ?>
+                    <p class="description"><?php esc_html_e('هرچه مدل سنگین‌تر باشد پاسخ دقیق‌تر و هزینهٔ هر گفتگو بیشتر است.', 'medora'); ?></p>
                 </td>
             </tr>
             </tbody>

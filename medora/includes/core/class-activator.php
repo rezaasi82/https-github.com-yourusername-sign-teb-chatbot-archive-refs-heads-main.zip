@@ -143,7 +143,7 @@ class Activator
         }
 
         $changed = false;
-        foreach (['model_anthropic', 'model_openai', 'model_gapgpt'] as $key) {
+        foreach (['model_anthropic', 'model_openai', 'model_gapgpt', 'model_gemini'] as $key) {
             $current = (string) ($settings[$key] ?? '');
             if (isset($replacements[$current])) {
                 $settings[$key] = $replacements[$current];
@@ -163,10 +163,11 @@ class Activator
             'shortcode_enabled'  => 1,
 
             // --- AI provider ---
-            'provider'           => 'anthropic', // anthropic | openai | gapgpt
+            'provider'           => 'anthropic', // anthropic | openai | gapgpt | gemini
             'model_anthropic'    => 'claude-haiku-4-5-20251001',
             'model_openai'       => 'gpt-4o-mini',
             'model_gapgpt'       => 'gpt-4o-mini',
+            'model_gemini'       => 'gemini-2.5-flash',
 
             // --- Personality / language ---
             'tone'               => 'friendly', // friendly | formal

@@ -22,10 +22,11 @@ class ProviderFactory
         'anthropic' => 'claude-haiku-4-5-20251001',
         'openai'    => 'gpt-4o-mini',
         'gapgpt'    => 'gpt-4o-mini',
+        'gemini'    => 'gemini-2.5-flash',
     ];
 
     /** Order in which a fallback provider is tried when the primary fails. */
-    private const FALLBACK_ORDER = ['gapgpt', 'anthropic', 'openai'];
+    private const FALLBACK_ORDER = ['gapgpt', 'anthropic', 'openai', 'gemini'];
 
     /**
      * Models offered in the settings dropdown for each provider.
@@ -58,6 +59,12 @@ class ProviderFactory
                 'claude-sonnet-5'           => __('Claude Sonnet 5', 'medora'),
                 'gemini-2.0-flash'          => __('Gemini 2.0 Flash', 'medora'),
             ],
+            'gemini' => [
+                'gemini-2.5-flash'      => __('Gemini 2.5 Flash — سریع و کم‌هزینه', 'medora'),
+                'gemini-2.5-pro'        => __('Gemini 2.5 Pro — دقیق‌ترین', 'medora'),
+                'gemini-2.0-flash'      => __('Gemini 2.0 Flash — نسل قبل، ارزان‌تر', 'medora'),
+                'gemini-2.0-flash-lite' => __('Gemini 2.0 Flash-Lite — سبک‌ترین', 'medora'),
+            ],
         ];
 
         return $catalogue[$id] ?? [];
@@ -86,6 +93,8 @@ class ProviderFactory
                 return new \Medora\Ai\ProviderGapgpt($key);
             case 'anthropic':
                 return new \Medora\Ai\ProviderAnthropic($key);
+            case 'gemini':
+                return new \Medora\Ai\ProviderGemini($key);
             default:
                 return null;
         }

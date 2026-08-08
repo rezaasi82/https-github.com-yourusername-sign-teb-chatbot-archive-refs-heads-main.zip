@@ -24,6 +24,7 @@ class Settings
         'anthropic' => 'mdr_api_key_anthropic_enc',
         'openai'    => 'mdr_api_key_openai_enc',
         'gapgpt'    => 'mdr_api_key_gapgpt_enc',
+        'gemini'    => 'mdr_api_key_gemini_enc',
     ];
 
     private array $data;

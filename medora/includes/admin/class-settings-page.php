@@ -50,10 +50,11 @@ class SettingsPage
         if ($tab === 'provider') {
             $update['float_enabled']      = isset($in['float_enabled']) ? 1 : 0;
             $update['shortcode_enabled']  = isset($in['shortcode_enabled']) ? 1 : 0;
-            $update['provider']           = in_array(($in['provider'] ?? 'anthropic'), ['anthropic', 'openai', 'gapgpt'], true) ? $in['provider'] : 'anthropic';
+            $update['provider']           = in_array(($in['provider'] ?? 'anthropic'), ['anthropic', 'openai', 'gapgpt', 'gemini'], true) ? $in['provider'] : 'anthropic';
             $update['model_anthropic']    = $this->chosen_model($in, 'anthropic');
             $update['model_openai']       = $this->chosen_model($in, 'openai');
             $update['model_gapgpt']       = $this->chosen_model($in, 'gapgpt');
+            $update['model_gemini']       = $this->chosen_model($in, 'gemini');
             $update['tone']               = ($in['tone'] ?? 'friendly') === 'formal' ? 'formal' : 'friendly';
             $update['language']           = in_array(($in['language'] ?? 'auto'), ['auto', 'fa', 'ar', 'en'], true) ? $in['language'] : 'auto';
             $update['rate_limit_per_min'] = max(1, (int) ($in['rate_limit_per_min'] ?? 8));
@@ -66,6 +67,9 @@ class SettingsPage
             }
             if (isset($in['api_key_gapgpt']) && trim((string) $in['api_key_gapgpt']) !== '') {
                 \Medora\Core\Settings::save_api_key('gapgpt', sanitize_text_field((string) $in['api_key_gapgpt']));
+            }
+            if (isset($in['api_key_gemini']) && trim((string) $in['api_key_gemini']) !== '') {
+                \Medora\Core\Settings::save_api_key('gemini', sanitize_text_field((string) $in['api_key_gemini']));
             }
         } elseif ($tab === 'clinic') {
             $update['clinic_name']      = sanitize_text_field($in['clinic_name'] ?? '');

@@ -26,6 +26,7 @@ $options = [
     'mdr_api_key_anthropic_enc',
     'mdr_api_key_openai_enc',
     'mdr_api_key_gapgpt_enc',
+    'mdr_api_key_gemini_enc',
     'mdr_webhook_secret_enc',
     'mdr_gsheet_secret_enc',
     'mdr_cloud_secret_enc',
