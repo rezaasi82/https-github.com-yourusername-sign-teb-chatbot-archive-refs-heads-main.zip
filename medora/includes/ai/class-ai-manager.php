@@ -204,6 +204,10 @@ class AiManager
      * The visitor gets a polite "try again shortly" line rather than an error,
      * but the underlying reason is recorded so the settings screen can say
      * exactly what went wrong instead of leaving the admin guessing.
+     *
+     * The reason stays server-side: the response carries only the same polite
+     * line the visitor has always seen, so nothing about the provider, the
+     * model or the failure leaks into the browser.
      */
     private function graceful_fallback(int $conversation_id, string $reason): array
     {
@@ -229,11 +233,10 @@ class AiManager
         $this->messages->add($conversation_id, 'assistant', $reply, false);
 
         return [
-            'ok'         => true,
-            'reply'      => $reply,
-            'cta'        => 'contact',
-            'cta_card'   => $this->cta_card('contact'),
-            'soft_error' => $reason,
+            'ok'       => true,
+            'reply'    => $reply,
+            'cta'      => 'contact',
+            'cta_card' => $this->cta_card('contact'),
         ];
     }
 
