@@ -51,9 +51,9 @@ class SettingsPage
             $update['float_enabled']      = isset($in['float_enabled']) ? 1 : 0;
             $update['shortcode_enabled']  = isset($in['shortcode_enabled']) ? 1 : 0;
             $update['provider']           = in_array(($in['provider'] ?? 'anthropic'), ['anthropic', 'openai', 'gapgpt'], true) ? $in['provider'] : 'anthropic';
-            $update['model_anthropic']    = sanitize_text_field($in['model_anthropic'] ?? 'claude-haiku-4-5-20251001');
-            $update['model_openai']       = sanitize_text_field($in['model_openai'] ?? 'gpt-4o-mini');
-            $update['model_gapgpt']       = sanitize_text_field($in['model_gapgpt'] ?? 'gpt-4o-mini');
+            $update['model_anthropic']    = $this->chosen_model($in, 'anthropic');
+            $update['model_openai']       = $this->chosen_model($in, 'openai');
+            $update['model_gapgpt']       = $this->chosen_model($in, 'gapgpt');
             $update['tone']               = ($in['tone'] ?? 'friendly') === 'formal' ? 'formal' : 'friendly';
             $update['language']           = in_array(($in['language'] ?? 'auto'), ['auto', 'fa', 'ar', 'en'], true) ? $in['language'] : 'auto';
             $update['rate_limit_per_min'] = max(1, (int) ($in['rate_limit_per_min'] ?? 8));
@@ -102,6 +102,27 @@ class SettingsPage
 
         update_option(\Medora\Core\Settings::OPTION, array_merge($existing, $update));
         $this->finish($tab);
+    }
+
+    /**
+     * Model id chosen for a provider. The dropdown posts a listed id, or the
+     * "__custom__" sentinel when the admin typed one of their own; an empty
+     * custom field falls back to the provider default rather than storing "".
+     *
+     * @param array<string, mixed> $in
+     */
+    private function chosen_model(array $in, string $provider): string
+    {
+        $default  = \Medora\Ai\ProviderFactory::default_model_for($provider);
+        $selected = sanitize_text_field((string) ($in['model_' . $provider] ?? ''));
+
+        if ($selected === '__custom__') {
+            $selected = sanitize_text_field((string) ($in['model_' . $provider . '_custom'] ?? ''));
+        }
+
+        $selected = trim($selected);
+
+        return $selected !== '' ? $selected : $default;
     }
 
     /**

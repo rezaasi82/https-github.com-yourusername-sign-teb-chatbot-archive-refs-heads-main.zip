@@ -27,6 +27,42 @@ class ProviderFactory
     /** Order in which a fallback provider is tried when the primary fails. */
     private const FALLBACK_ORDER = ['gapgpt', 'anthropic', 'openai'];
 
+    /**
+     * Models offered in the settings dropdown for each provider.
+     *
+     * The admin may still type a model id that is not listed here — providers
+     * release new ids faster than the plugin ships — so this is a convenience
+     * list, not a whitelist.
+     *
+     * @return array<string, string> model id => label shown in the dropdown
+     */
+    public static function models_for(string $id): array
+    {
+        $catalogue = [
+            'anthropic' => [
+                'claude-haiku-4-5-20251001' => __('Claude Haiku 4.5 — سریع و کم‌هزینه', 'medora'),
+                'claude-sonnet-5'           => __('Claude Sonnet 5 — متعادل', 'medora'),
+                'claude-opus-4-8'           => __('Claude Opus 4.8 — دقیق‌ترین و گران‌ترین', 'medora'),
+            ],
+            'openai' => [
+                'gpt-4o-mini'  => __('GPT-4o mini — سریع و کم‌هزینه', 'medora'),
+                'gpt-4o'       => __('GPT-4o — متعادل', 'medora'),
+                'gpt-4.1-mini' => __('GPT-4.1 mini — نسل جدید، کم‌هزینه', 'medora'),
+                'gpt-4.1'      => __('GPT-4.1 — دقیق‌ترین', 'medora'),
+            ],
+            'gapgpt' => [
+                'gpt-4o-mini'               => __('GPT-4o mini — سریع و کم‌هزینه', 'medora'),
+                'gpt-4o'                    => __('GPT-4o — متعادل', 'medora'),
+                'gpt-4.1-mini'              => __('GPT-4.1 mini', 'medora'),
+                'claude-haiku-4-5-20251001' => __('Claude Haiku 4.5', 'medora'),
+                'claude-sonnet-5'           => __('Claude Sonnet 5', 'medora'),
+                'gemini-2.0-flash'          => __('Gemini 2.0 Flash', 'medora'),
+            ],
+        ];
+
+        return $catalogue[$id] ?? [];
+    }
+
     private \Medora\Core\Settings $settings;
 
     public function __construct(\Medora\Core\Settings $settings)
@@ -78,6 +114,11 @@ class ProviderFactory
     }
 
     public function default_model(string $id): string
+    {
+        return self::default_model_for($id);
+    }
+
+    public static function default_model_for(string $id): string
     {
         return self::DEFAULT_MODELS[$id] ?? self::DEFAULT_MODELS['openai'];
     }

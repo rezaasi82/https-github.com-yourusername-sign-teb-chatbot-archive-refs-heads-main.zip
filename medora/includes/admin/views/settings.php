@@ -11,6 +11,48 @@
 if (! defined('ABSPATH')) {
     exit;
 }
+
+/**
+ * Renders the model picker for one provider: a dropdown of that provider's
+ * models plus a manual field for any id the dropdown does not list yet.
+ */
+$mdr_model_field = static function (\Medora\Core\Settings $s, string $provider): void {
+    $models  = \Medora\Ai\ProviderFactory::models_for($provider);
+    $default = \Medora\Ai\ProviderFactory::default_model_for($provider);
+    $current = trim((string) $s->get('model_' . $provider, $default));
+
+    if ($current === '') {
+        $current = $default;
+    }
+    $is_custom = ! isset($models[$current]);
+    ?>
+    <select name="model_<?php echo esc_attr($provider); ?>" class="mdr-model-select" data-provider="<?php echo esc_attr($provider); ?>">
+        <?php foreach ($models as $id => $label) : ?>
+            <option value="<?php echo esc_attr($id); ?>" <?php selected($current, $id); ?>>
+                <?php
+                echo esc_html($label);
+                if ($id === $default) {
+                    echo ' — ' . esc_html__('پیش‌فرض', 'medora');
+                }
+                ?>
+            </option>
+        <?php endforeach; ?>
+        <option value="__custom__" <?php selected($is_custom, true); ?>>
+            <?php esc_html_e('مدل دیگر (وارد کردن دستی)', 'medora'); ?>
+        </option>
+    </select>
+
+    <p class="mdr-model-custom" data-provider="<?php echo esc_attr($provider); ?>" <?php echo $is_custom ? '' : 'style="display:none"'; ?>>
+        <input type="text" dir="ltr" class="regular-text"
+               name="model_<?php echo esc_attr($provider); ?>_custom"
+               value="<?php echo $is_custom ? esc_attr($current) : ''; ?>"
+               placeholder="<?php echo esc_attr($default); ?>">
+        <span class="description">
+            <?php esc_html_e('شناسهٔ مدل را دقیقاً همان‌طور که سرویس‌دهنده اعلام کرده وارد کنید.', 'medora'); ?>
+        </span>
+    </p>
+    <?php
+};
 ?>
 <form method="post" action="<?php echo esc_url(admin_url('admin.php?page=mdr-chat&tab=' . $tab)); ?>">
     <?php wp_nonce_field('mdr_settings'); ?>
@@ -70,13 +112,8 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('مدل Anthropic', 'medora'); ?></th>
                 <td>
-                    <input type="text" list="mdr-models-anthropic" name="model_anthropic" value="<?php echo esc_attr($s->get('model_anthropic', 'claude-haiku-4-5-20251001')); ?>" class="regular-text">
-                    <datalist id="mdr-models-anthropic">
-                        <option value="claude-haiku-4-5-20251001"></option>
-                        <option value="claude-sonnet-5"></option>
-                        <option value="claude-opus-4-8"></option>
-                    </datalist>
-                    <p class="description"><?php esc_html_e('پیش‌فرض: مدل سبک و کم‌هزینه Haiku. قابل تغییر دستی.', 'medora'); ?></p>
+                    <?php $mdr_model_field($s, 'anthropic'); ?>
+                    <p class="description"><?php esc_html_e('هرچه مدل سنگین‌تر باشد پاسخ دقیق‌تر و هزینهٔ هر گفتگو بیشتر است.', 'medora'); ?></p>
                 </td>
             </tr>
             </tbody>
@@ -92,13 +129,8 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('مدل OpenAI', 'medora'); ?></th>
                 <td>
-                    <input type="text" list="mdr-models-openai" name="model_openai" value="<?php echo esc_attr($s->get('model_openai', 'gpt-4o-mini')); ?>" class="regular-text">
-                    <datalist id="mdr-models-openai">
-                        <option value="gpt-4o-mini"></option>
-                        <option value="gpt-4o"></option>
-                        <option value="gpt-4.1-mini"></option>
-                    </datalist>
-                    <p class="description"><?php esc_html_e('پیش‌فرض: gpt-4o-mini. قابل تغییر دستی.', 'medora'); ?></p>
+                    <?php $mdr_model_field($s, 'openai'); ?>
+                    <p class="description"><?php esc_html_e('هرچه مدل سنگین‌تر باشد پاسخ دقیق‌تر و هزینهٔ هر گفتگو بیشتر است.', 'medora'); ?></p>
                 </td>
             </tr>
             </tbody>
@@ -115,15 +147,8 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('مدل GapGPT', 'medora'); ?></th>
                 <td>
-                    <input type="text" list="mdr-models-gapgpt" name="model_gapgpt" value="<?php echo esc_attr($s->get('model_gapgpt', 'gpt-4o-mini')); ?>" class="regular-text">
-                    <datalist id="mdr-models-gapgpt">
-                        <option value="gpt-4o-mini"></option>
-                        <option value="gpt-4o"></option>
-                        <option value="claude-haiku-4-5-20251001"></option>
-                        <option value="claude-sonnet-5"></option>
-                        <option value="gemini-2.0-flash"></option>
-                    </datalist>
-                    <p class="description"><?php esc_html_e('GapGPT هم مدل‌های GPT و هم Claude را ارائه می‌دهد. پیش‌فرض: gpt-4o-mini.', 'medora'); ?></p>
+                    <?php $mdr_model_field($s, 'gapgpt'); ?>
+                    <p class="description"><?php esc_html_e('GapGPT هم مدل‌های GPT و هم Claude و Gemini را ارائه می‌دهد.', 'medora'); ?></p>
                 </td>
             </tr>
             </tbody>

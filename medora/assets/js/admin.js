@@ -24,6 +24,31 @@
 	sync();
 })();
 
+/* ---------- Model picker: reveal the manual field on "other" ---------- */
+(function () {
+	'use strict';
+
+	var pickers = document.querySelectorAll('.mdr-model-select');
+	if (!pickers.length) {
+		return;
+	}
+
+	pickers.forEach(function (picker) {
+		var provider = picker.getAttribute('data-provider');
+		var custom = document.querySelector('.mdr-model-custom[data-provider="' + provider + '"]');
+		if (!custom) {
+			return;
+		}
+
+		function sync() {
+			custom.style.display = picker.value === '__custom__' ? '' : 'none';
+		}
+
+		picker.addEventListener('change', sync);
+		sync();
+	});
+})();
+
 /* ---------- Export module (leads table + integration tests) ---------- */
 (function () {
 	'use strict';
