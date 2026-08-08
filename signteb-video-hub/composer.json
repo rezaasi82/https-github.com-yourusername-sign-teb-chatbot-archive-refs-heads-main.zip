@@ -1,0 +1,21 @@
+{
+    "name": "signteb/signteb-video-hub",
+    "description": "SignTeb Video Hub — مرکز مدیریت و نمایش ویدئوهای پزشکی با همگام‌سازی آپارات/یوتیوب، هوش مصنوعی و سئوی ویدئویی",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "SignTeb\\VideoHub\\": "includes/"
+        }
+    },
+    "scripts": {
+        "test": "php tests/smoke-test.php"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

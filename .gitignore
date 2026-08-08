@@ -5,3 +5,6 @@
 
 # build artifact (delivered separately)
 /signteb-web-chat.zip
+
+# signteb-video-hub build output (make zip)
+/signteb-video-hub/build/
