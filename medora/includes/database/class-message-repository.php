@@ -33,8 +33,14 @@ class MessageRepository
     }
 
     /**
-     * Recent turns oldest-first, capped for prompt budget. Excludes the latest
-     * pending user turn so the provider can append it as the final message.
+     * Recent turns oldest-first, capped for prompt budget.
+     *
+     * The window is taken from the newest end, so on a long conversation it can
+     * open on an assistant turn — which the Anthropic Messages API rejects
+     * ("first message must use the user role"), turning every further message
+     * into the generic fallback reply. Leading assistant turns are therefore
+     * dropped and consecutive same-role turns merged before the list is handed
+     * to a provider.
      *
      * @return array<int,array{role:string,content:string}>
      */
@@ -55,10 +61,38 @@ class MessageRepository
 
         $rows = array_reverse($rows);
 
-        return array_map(
+        $turns = array_map(
             static fn($r) => ['role' => $r->role, 'content' => $r->content],
             $rows
         );
+
+        return self::normalise($turns);
+    }
+
+    /**
+     * Drop leading assistant turns and merge consecutive same-role turns, so
+     * the list always starts with a user turn and strictly alternates.
+     *
+     * @param array<int,array{role:string,content:string}> $turns
+     * @return array<int,array{role:string,content:string}>
+     */
+    private static function normalise(array $turns): array
+    {
+        while ($turns !== [] && $turns[0]['role'] !== 'user') {
+            array_shift($turns);
+        }
+
+        $out = [];
+        foreach ($turns as $turn) {
+            $last = count($out) - 1;
+            if ($last >= 0 && $out[$last]['role'] === $turn['role']) {
+                $out[$last]['content'] .= "\n" . $turn['content'];
+                continue;
+            }
+            $out[] = $turn;
+        }
+
+        return $out;
     }
 
     /**

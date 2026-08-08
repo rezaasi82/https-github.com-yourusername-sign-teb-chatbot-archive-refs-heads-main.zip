@@ -34,6 +34,37 @@ class Activator
         if (! wp_next_scheduled(\Medora\Jobs\Rollup::CRON)) {
             wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', \Medora\Jobs\Rollup::CRON);
         }
+        self::retire_dead_models();
+    }
+
+    /**
+     * Model ids that a provider no longer serves. A site left on one of these
+     * gets an API error on every message and only ever sees the "can't answer
+     * right now" fallback, so they are rewritten to their live replacement.
+     */
+    private static function retire_dead_models(): void
+    {
+        $replacements = [
+            'claude-opus-4-8' => 'claude-opus-5',
+        ];
+
+        $settings = get_option(\Medora\Core\Settings::OPTION, []);
+        if (! is_array($settings)) {
+            return;
+        }
+
+        $changed = false;
+        foreach (['model_anthropic', 'model_openai', 'model_gapgpt'] as $key) {
+            $current = (string) ($settings[$key] ?? '');
+            if (isset($replacements[$current])) {
+                $settings[$key] = $replacements[$current];
+                $changed        = true;
+            }
+        }
+
+        if ($changed) {
+            update_option(\Medora\Core\Settings::OPTION, $settings);
+        }
     }
 
     public static function default_settings(): array

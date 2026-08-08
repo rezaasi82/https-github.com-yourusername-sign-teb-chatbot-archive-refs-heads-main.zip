@@ -42,7 +42,7 @@ class ProviderFactory
             'anthropic' => [
                 'claude-haiku-4-5-20251001' => __('Claude Haiku 4.5 — سریع و کم‌هزینه', 'medora'),
                 'claude-sonnet-5'           => __('Claude Sonnet 5 — متعادل', 'medora'),
-                'claude-opus-4-8'           => __('Claude Opus 4.8 — دقیق‌ترین و گران‌ترین', 'medora'),
+                'claude-opus-5'             => __('Claude Opus 5 — دقیق‌ترین و گران‌ترین', 'medora'),
             ],
             'openai' => [
                 'gpt-4o-mini'  => __('GPT-4o mini — سریع و کم‌هزینه', 'medora'),

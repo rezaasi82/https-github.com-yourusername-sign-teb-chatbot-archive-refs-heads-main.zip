@@ -19,6 +19,9 @@ if (! defined('ABSPATH')) {
 
 class AiManager
 {
+    /** Why the last provider call failed, so the admin screen can show it. */
+    public const LAST_ERROR_OPTION = 'mdr_last_ai_error';
+
     private \Medora\Core\Settings $settings;
     private \Medora\Safety\MedicalSafetyFilter $safety;
     private \Medora\Ai\SystemPromptBuilder $prompt;
@@ -132,6 +135,9 @@ class AiManager
             return $this->graceful_fallback($conversation_id, (string) ($result['error'] ?? 'api_error'));
         }
 
+        // A real answer came back, so any recorded provider failure is stale.
+        delete_option(self::LAST_ERROR_OPTION);
+
         // --- Safety: post-process the reply ---
         $reply = $this->safety->filter_output((string) $result['content'], $message);
 
@@ -194,8 +200,28 @@ class AiManager
         return $score;
     }
 
+    /**
+     * The visitor gets a polite "try again shortly" line rather than an error,
+     * but the underlying reason is recorded so the settings screen can say
+     * exactly what went wrong instead of leaving the admin guessing.
+     */
     private function graceful_fallback(int $conversation_id, string $reason): array
     {
+        update_option(
+            self::LAST_ERROR_OPTION,
+            [
+                'reason'   => mb_substr($reason, 0, 300),
+                'provider' => $this->settings->active_provider(),
+                'model'    => $this->settings->active_model(),
+                'at'       => time(),
+            ],
+            false
+        );
+
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Medora: AI provider call failed — ' . $reason);
+        }
+
         $phone = (string) $this->settings->get('phone', '');
         $tail  = $phone !== '' ? " یا با شماره {$phone} تماس بگیرید" : '';
         $reply = "پوزش می‌خواهم، در حال حاضر امکان پاسخ‌گویی هوشمند نیست. لطفاً چند لحظه دیگر دوباره تلاش کنید{$tail}.";

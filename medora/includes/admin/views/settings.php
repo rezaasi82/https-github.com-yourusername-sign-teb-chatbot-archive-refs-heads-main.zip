@@ -88,6 +88,37 @@ $mdr_model_field = static function (\Medora\Core\Settings $s, string $provider):
                     </p>
                 </td>
             </tr>
+            <?php
+            $mdr_last_error = get_option(\Medora\Ai\AiManager::LAST_ERROR_OPTION, []);
+            if (is_array($mdr_last_error) && ! empty($mdr_last_error['reason'])) :
+                ?>
+                <tr>
+                    <th></th>
+                    <td>
+                        <div class="notice notice-error inline" style="margin:0;padding:10px 12px">
+                            <p style="margin:0 0 6px">
+                                <strong><?php esc_html_e('آخرین درخواست به سرویس هوش مصنوعی ناموفق بود.', 'medora'); ?></strong>
+                                <?php esc_html_e('تا وقتی این خطا برطرف نشود، ویجت به جای پاسخ، پیام «فعلاً امکان پاسخ‌گویی نیست» را نشان می‌دهد.', 'medora'); ?>
+                            </p>
+                            <p style="margin:0" dir="ltr">
+                                <code><?php echo esc_html((string) $mdr_last_error['reason']); ?></code>
+                            </p>
+                            <p style="margin:6px 0 0">
+                                <?php
+                                printf(
+                                    /* translators: 1: provider id, 2: model id, 3: human-readable time difference. */
+                                    esc_html__('سرویس‌دهنده %1$s · مدل %2$s · %3$s پیش', 'medora'),
+                                    '<code>' . esc_html((string) ($mdr_last_error['provider'] ?? '')) . '</code>',
+                                    '<code>' . esc_html((string) ($mdr_last_error['model'] ?? '')) . '</code>',
+                                    esc_html(human_time_diff((int) ($mdr_last_error['at'] ?? time())))
+                                );
+                                ?>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
             <tr>
                 <th><?php esc_html_e('سرویس‌دهنده AI', 'medora'); ?></th>
                 <td>
@@ -152,6 +183,15 @@ $mdr_model_field = static function (\Medora\Core\Settings $s, string $provider):
                 </td>
             </tr>
             </tbody>
+
+            <tr>
+                <th><?php esc_html_e('بررسی اتصال', 'medora'); ?></th>
+                <td>
+                    <button type="button" class="button mdr-ai-diag-btn"><?php esc_html_e('تست ارتباط با سرویس هوش مصنوعی', 'medora'); ?></button>
+                    <pre class="mdr-ai-diag-out" style="display:none"></pre>
+                    <p class="description"><?php esc_html_e('ابتدا تنظیمات را ذخیره کنید. این دکمه یک درخواست کوچک واقعی می‌فرستد و عین پاسخ سرویس را نشان می‌دهد — اگر کلید، مدل یا دسترسی هاست مشکل داشته باشد، همین‌جا معلوم می‌شود.', 'medora'); ?></p>
+                </td>
+            </tr>
 
             <tr>
                 <th><?php esc_html_e('لحن', 'medora'); ?></th>

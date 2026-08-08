@@ -177,6 +177,22 @@
 		});
 	}
 
+	var aiDiagBtn = document.querySelector('.mdr-ai-diag-btn');
+	if (aiDiagBtn) {
+		aiDiagBtn.addEventListener('click', function () {
+			var out = document.querySelector('.mdr-ai-diag-out');
+			aiDiagBtn.disabled = true;
+			if (out) { out.style.display = ''; out.textContent = A.strings.working; }
+			post('mdr_ai_diag', {}).then(function (res) {
+				if (out) {
+					out.textContent = (res && res.report) ? res.report : A.strings.failed;
+					out.style.borderColor = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				aiDiagBtn.disabled = false;
+			}).catch(function () { if (out) { out.textContent = A.strings.failed; } aiDiagBtn.disabled = false; });
+		});
+	}
+
 	var smsTestBtn = document.querySelector('.mdr-sms-test-btn');
 	if (smsTestBtn) {
 		smsTestBtn.addEventListener('click', function () {

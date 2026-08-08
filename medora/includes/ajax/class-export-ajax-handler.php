@@ -29,6 +29,7 @@ class ExportAjaxHandler
         add_action('wp_ajax_mdr_test_gsheet', [$this, 'test_gsheet']);
         add_action('wp_ajax_mdr_test_sms', [$this, 'test_sms']);
         add_action('wp_ajax_mdr_sms_diag', [$this, 'sms_diag']);
+        add_action('wp_ajax_mdr_ai_diag', [$this, 'ai_diag']);
         add_action('wp_ajax_mdr_send_sms', [$this, 'send_sms']);
         add_action('wp_ajax_mdr_export_bulk', [$this, 'bulk']);
     }
@@ -42,6 +43,58 @@ class ExportAjaxHandler
         $this->guard();
         $diag = (new \Medora\Notifications\SmsManager())->diagnose();
         wp_send_json(['ok' => $diag['ok'], 'report' => implode("\n", $diag['lines'])]);
+    }
+
+    /**
+     * Ask the configured AI provider one throwaway question and report exactly
+     * what came back. This is the only way an admin can tell an unset key from
+     * a blocked host, a wrong model id, or an exhausted quota — all of which
+     * look identical from the widget, which just says it cannot answer.
+     */
+    public function ai_diag(): void
+    {
+        \Medora\Core\JsonGuard::arm();
+        $this->guard();
+
+        $settings = new \Medora\Core\Settings();
+        $factory  = new \Medora\Ai\ProviderFactory($settings);
+        $id       = $settings->active_provider();
+        $model    = $settings->active_model();
+
+        $lines = [
+            sprintf(__('سرویس‌دهنده: %s', 'medora'), $id),
+            sprintf(__('مدل: %s', 'medora'), $model),
+            sprintf(
+                __('کلید API: %s', 'medora'),
+                $settings->has_api_key($id) ? __('ذخیره شده', 'medora') : __('ذخیره نشده', 'medora')
+            ),
+        ];
+
+        $provider = $factory->create($id);
+        if ($provider === null) {
+            $lines[] = __('نتیجه: کلید API این سرویس ذخیره نشده، پس هیچ درخواستی ارسال نمی‌شود.', 'medora');
+            wp_send_json(['ok' => false, 'report' => implode("\n", $lines)]);
+        }
+
+        $started = microtime(true);
+        $result  = $provider->generate_reply('ping', [
+            'system'     => 'Reply with the single word: ok',
+            'history'    => [],
+            'model'      => $model,
+            'max_tokens' => 16,
+        ]);
+        $ms = (int) round((microtime(true) - $started) * 1000);
+
+        $lines[] = sprintf(__('زمان پاسخ: %d میلی‌ثانیه', 'medora'), $ms);
+
+        if (empty($result['ok'])) {
+            $lines[] = sprintf(__('نتیجه: ناموفق — %s', 'medora'), (string) ($result['error'] ?? 'unknown'));
+            wp_send_json(['ok' => false, 'report' => implode("\n", $lines)]);
+        }
+
+        delete_option(\Medora\Ai\AiManager::LAST_ERROR_OPTION);
+        $lines[] = __('نتیجه: موفق — سرویس پاسخ داد.', 'medora');
+        wp_send_json(['ok' => true, 'report' => implode("\n", $lines)]);
     }
 
     /**
