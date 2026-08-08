@@ -155,16 +155,66 @@ jobs:
       - name: Lint
         run: npm run lint:js
 
+      - name: Lint styles
+        run: npm run lint:css
+
       - name: Unit tests
         run: npm run test:unit
 
       - name: Build
         run: npm run build
 
-      # A build that silently produces nothing would otherwise pass.
+      # A build that silently produces nothing would otherwise pass. The RTL
+      # sheets are named here too: `wp_style_add_data( …, 'rtl', 'replace' )`
+      # swaps in `app-rtl.css`, so if the build puts it anywhere else the
+      # Persian dashboard loads with no styling at all and nothing says so.
       - name: Verify build output
         run: |
           test -f assets/js/app.js
           test -f assets/js/app.asset.php
           test -f assets/js/editor.js
           test -f assets/css/app.css
+          test -f assets/css/app-rtl.css
+          test -f assets/css/editor.css
+          test -f assets/css/editor-rtl.css
+
+  package:
+    name: Installable ZIP
+    runs-on: ubuntu-latest
+    needs: [ js, i18n ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: medora-authority/package.json
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: json, mbstring, zip
+          coverage: none
+
+      - name: Build the dashboard
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: Compile translations
+        run: php bin/make-l10n.php
+
+      # Refuses a stale bundle or a version that disagrees with itself across
+      # the plugin header, package.json, readme.txt and the changelog.
+      - name: Assemble
+        run: php bin/package.php
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: medora-authority
+          path: medora-authority/dist/*.zip
+          if-no-files-found: error
+          retention-days: 30

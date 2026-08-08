@@ -1,0 +1,67 @@
+name: Release
+
+# Tags carry the plugin name because this repository holds several projects —
+# an unprefixed `v0.14.0` would be ambiguous the moment a second one ships.
+on:
+  push:
+    tags:
+      - 'medora-authority-v*'
+
+defaults:
+  run:
+    working-directory: medora-authority
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: medora-authority/package.json
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: json, mbstring, zip
+          coverage: none
+
+      - name: Build the dashboard
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: Compile translations
+        run: php bin/make-l10n.php
+
+      # The tag and the plugin header have to agree. They will not, eventually,
+      # and a release whose header says 0.13.0 never offers an update to the
+      # sites already running it.
+      - name: Tag matches the plugin version
+        run: |
+          tag="${GITHUB_REF_NAME#medora-authority-v}"
+          header="$(sed -n 's/^ \* Version: *//p' medora-authority.php | tr -d '[:space:]')"
+
+          if [ "$tag" != "$header" ]; then
+            echo "Tag is $tag, plugin header says $header." >&2
+            exit 1
+          fi
+
+      - name: Assemble
+        run: php bin/package.php
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          files: medora-authority/dist/*.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true

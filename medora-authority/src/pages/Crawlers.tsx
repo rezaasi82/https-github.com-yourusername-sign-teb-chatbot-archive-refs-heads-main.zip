@@ -8,7 +8,10 @@ const PRESETS = [
 	{
 		value: 'allow',
 		label: __( 'Allow all', 'medora-authority' ),
-		hint: __( 'Maximum AI visibility, including model training.', 'medora-authority' ),
+		hint: __(
+			'Maximum AI visibility, including model training.',
+			'medora-authority'
+		),
 	},
 	{
 		value: 'selective',
@@ -21,7 +24,10 @@ const PRESETS = [
 	{
 		value: 'block',
 		label: __( 'Block AI crawlers', 'medora-authority' ),
-		hint: __( 'Classic search crawlers still allowed.', 'medora-authority' ),
+		hint: __(
+			'Classic search crawlers still allowed.',
+			'medora-authority'
+		),
 	},
 ];
 
@@ -29,14 +35,22 @@ export function Crawlers(): JSX.Element {
 	const [ busy, setBusy ] = useState( false );
 	const [ showRobots, setShowRobots ] = useState( false );
 
-	const { data, loading, error, reload } = useAsync( () => api.crawlers(), [] );
+	const { data, loading, error, reload } = useAsync(
+		() => api.crawlers(),
+		[]
+	);
 	const activity = useAsync( () => api.crawlerActivity( 30 ), [] );
 
 	const hits = new Map(
-		( activity.data?.crawlers ?? [] ).map( ( row ) => [ row.slug, row.hits ] )
+		( activity.data?.crawlers ?? [] ).map( ( row ) => [
+			row.slug,
+			row.hits,
+		] )
 	);
 
-	const update = async ( payload: Parameters< typeof api.updateCrawler >[ 0 ] ) => {
+	const update = async (
+		payload: Parameters< typeof api.updateCrawler >[ 0 ]
+	) => {
 		setBusy( true );
 
 		try {
@@ -48,20 +62,23 @@ export function Crawlers(): JSX.Element {
 	};
 
 	if ( loading && ! data ) {
-		return <p className="medora-loading">{ __( 'Loading…', 'medora-authority' ) }</p>;
+		return (
+			<p className="medora-loading">
+				{ __( 'Loading…', 'medora-authority' ) }
+			</p>
+		);
 	}
 
 	if ( error ) {
 		return <p className="medora-error">{ error.message }</p>;
 	}
 
-	const grouped = ( data?.crawlers ?? [] ).reduce< Record< string, CrawlerRow[] > >(
-		( accumulator, crawler ) => {
-			( accumulator[ crawler.vendor ] ??= [] ).push( crawler );
-			return accumulator;
-		},
-		{}
-	);
+	const grouped = ( data?.crawlers ?? [] ).reduce<
+		Record< string, CrawlerRow[] >
+	>( ( accumulator, crawler ) => {
+		( accumulator[ crawler.vendor ] ??= [] ).push( crawler );
+		return accumulator;
+	}, {} );
 
 	return (
 		<div className="medora-page">
@@ -84,6 +101,7 @@ export function Crawlers(): JSX.Element {
 					{ PRESETS.map( ( preset ) => (
 						<label
 							key={ preset.value }
+							htmlFor={ `medora-preset-${ preset.value }` }
 							className={
 								data?.preset === preset.value
 									? 'medora-preset is-active'
@@ -91,15 +109,20 @@ export function Crawlers(): JSX.Element {
 							}
 						>
 							<input
+								id={ `medora-preset-${ preset.value }` }
 								type="radio"
 								name="medora-preset"
 								value={ preset.value }
 								checked={ data?.preset === preset.value }
 								disabled={ busy || ! boot.capabilities.manage }
-								onChange={ () => update( { preset: preset.value } ) }
+								onChange={ () =>
+									update( { preset: preset.value } )
+								}
 							/>
 							<strong>{ preset.label }</strong>
-							<span className="medora-muted">{ preset.hint }</span>
+							<span className="medora-muted">
+								{ preset.hint }
+							</span>
 						</label>
 					) ) }
 				</div>
@@ -112,8 +135,12 @@ export function Crawlers(): JSX.Element {
 						<thead>
 							<tr>
 								<th>{ __( 'Crawler', 'medora-authority' ) }</th>
-								<th>{ __( 'Used for', 'medora-authority' ) }</th>
-								<th>{ __( 'Visits (30d)', 'medora-authority' ) }</th>
+								<th>
+									{ __( 'Used for', 'medora-authority' ) }
+								</th>
+								<th>
+									{ __( 'Visits (30d)', 'medora-authority' ) }
+								</th>
 								<th>{ __( 'Access', 'medora-authority' ) }</th>
 							</tr>
 						</thead>
@@ -124,7 +151,10 @@ export function Crawlers(): JSX.Element {
 										<strong>{ crawler.name }</strong>
 										{ crawler.is_override && (
 											<span className="medora-pill">
-												{ __( 'override', 'medora-authority' ) }
+												{ __(
+													'override',
+													'medora-authority'
+												) }
 											</span>
 										) }
 									</td>
@@ -133,22 +163,35 @@ export function Crawlers(): JSX.Element {
 									<td>
 										<select
 											value={ crawler.decision }
-											disabled={ busy || ! boot.capabilities.manage }
+											disabled={
+												busy ||
+												! boot.capabilities.manage
+											}
 											onChange={ ( event ) =>
 												update( {
 													slug: crawler.slug,
-													decision: event.target.value,
+													decision:
+														event.target.value,
 												} )
 											}
 										>
 											<option value="allow">
-												{ __( 'Allow', 'medora-authority' ) }
+												{ __(
+													'Allow',
+													'medora-authority'
+												) }
 											</option>
 											<option value="delay">
-												{ __( 'Allow, throttled', 'medora-authority' ) }
+												{ __(
+													'Allow, throttled',
+													'medora-authority'
+												) }
 											</option>
 											<option value="block">
-												{ __( 'Block', 'medora-authority' ) }
+												{ __(
+													'Block',
+													'medora-authority'
+												) }
 											</option>
 											{ crawler.is_override && (
 												<option value="reset">
@@ -199,12 +242,14 @@ export function Crawlers(): JSX.Element {
 						) }
 					</p>
 					<ul className="medora-list">
-						{ activity.data.top_paths.slice( 0, 12 ).map( ( path ) => (
-							<li key={ path.request_uri }>
-								<span>{ path.request_uri }</span>
-								<strong>{ path.hits }</strong>
-							</li>
-						) ) }
+						{ activity.data.top_paths
+							.slice( 0, 12 )
+							.map( ( path ) => (
+								<li key={ path.request_uri }>
+									<span>{ path.request_uri }</span>
+									<strong>{ path.hits }</strong>
+								</li>
+							) ) }
 					</ul>
 				</section>
 			) }

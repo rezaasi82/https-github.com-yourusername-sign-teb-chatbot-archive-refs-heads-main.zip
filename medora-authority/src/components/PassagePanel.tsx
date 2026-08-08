@@ -1,5 +1,6 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { api } from '../api/client';
+import { gradeFor } from '../utils/format';
 import { useAsync } from '../hooks/useAsync';
 import type { GeoReport, Passage } from '../types';
 
@@ -76,9 +77,9 @@ export function PassagePanel( { postId }: PassagePanelProps ): JSX.Element {
 				</div>
 
 				<span
-					className={ `medora-grade medora-grade--${
-						percent >= 80 ? 'a' : percent >= 55 ? 'c' : 'f'
-					}` }
+					className={ `medora-grade medora-grade--${ gradeFor(
+						percent
+					).toLowerCase() }` }
 				>
 					{ percent }%
 				</span>
@@ -128,7 +129,9 @@ function PassageRow( { passage }: { passage: Passage } ): JSX.Element {
 				</span>
 			</div>
 
-			<blockquote className="medora-quote">{ passage.excerpt }</blockquote>
+			<blockquote className="medora-quote">
+				{ passage.excerpt }
+			</blockquote>
 
 			{ passage.issues.length === 0 ? (
 				<p className="medora-muted">

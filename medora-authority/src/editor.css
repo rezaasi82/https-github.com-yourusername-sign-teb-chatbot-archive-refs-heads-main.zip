@@ -16,11 +16,25 @@
 	font-variant-numeric: tabular-nums;
 }
 
-.medora-metabox .medora-grade-a strong { color: #16a34a; }
-.medora-metabox .medora-grade-b strong { color: #65a30d; }
-.medora-metabox .medora-grade-c strong { color: #d97706; }
-.medora-metabox .medora-grade-d strong { color: #ea580c; }
-.medora-metabox .medora-grade-f strong { color: #dc2626; }
+.medora-metabox .medora-grade-a strong {
+	color: #16a34a;
+}
+
+.medora-metabox .medora-grade-b strong {
+	color: #65a30d;
+}
+
+.medora-metabox .medora-grade-c strong {
+	color: #d97706;
+}
+
+.medora-metabox .medora-grade-d strong {
+	color: #ea580c;
+}
+
+.medora-metabox .medora-grade-f strong {
+	color: #dc2626;
+}
 
 .medora-metabox .medora-deductions {
 	list-style: none;
@@ -36,14 +50,29 @@
 	font-size: 12px;
 }
 
-.medora-metabox .medora-severity-critical { border-inline-start-color: #dc2626; }
-.medora-metabox .medora-severity-high { border-inline-start-color: #ea580c; }
-.medora-metabox .medora-severity-medium { border-inline-start-color: #d97706; }
-.medora-metabox .medora-severity-low { border-inline-start-color: #8c8f94; }
+.medora-metabox .medora-severity-critical {
+	border-inline-start-color: #dc2626;
+}
 
-.medora-metabox .medora-deductions span { color: #646970; }
+.medora-metabox .medora-severity-high {
+	border-inline-start-color: #ea580c;
+}
 
-.medora-metabox textarea { inline-size: 100%; }
+.medora-metabox .medora-severity-medium {
+	border-inline-start-color: #d97706;
+}
+
+.medora-metabox .medora-severity-low {
+	border-inline-start-color: #8c8f94;
+}
+
+.medora-metabox .medora-deductions span {
+	color: #646970;
+}
+
+.medora-metabox textarea {
+	inline-size: 100%;
+}
 
 .medora-metabox .medora-error {
 	color: #dc2626;

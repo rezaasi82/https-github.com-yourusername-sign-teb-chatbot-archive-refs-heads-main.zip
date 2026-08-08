@@ -152,7 +152,10 @@ export function BriefPanel( { postId }: BriefPanelProps ): JSX.Element {
 				<h4>
 					{ sprintf(
 						/* translators: 1: current word count, 2: target. */
-						__( 'Outline — %1$d words now, ~%2$d target', 'medora-authority' ),
+						__(
+							'Outline — %1$d words now, ~%2$d target',
+							'medora-authority'
+						),
 						data.word_count.current,
 						data.word_count.target
 					) }
@@ -190,7 +193,12 @@ export function BriefPanel( { postId }: BriefPanelProps ): JSX.Element {
 
 			{ unanswered.length > 0 && (
 				<section>
-					<h4>{ __( 'Questions not yet answered', 'medora-authority' ) }</h4>
+					<h4>
+						{ __(
+							'Questions not yet answered',
+							'medora-authority'
+						) }
+					</h4>
 					<ul className="medora-list">
 						{ unanswered.map( ( question ) => (
 							<li key={ question.question }>
@@ -203,7 +211,9 @@ export function BriefPanel( { postId }: BriefPanelProps ): JSX.Element {
 
 			{ data.entities.add.length > 0 && (
 				<section>
-					<h4>{ __( 'Entities to introduce', 'medora-authority' ) }</h4>
+					<h4>
+						{ __( 'Entities to introduce', 'medora-authority' ) }
+					</h4>
 					<p className="medora-muted">
 						{ __(
 							'Drawn from your own knowledge graph — concepts this subject connects to elsewhere on the site.',
@@ -237,7 +247,10 @@ export function BriefPanel( { postId }: BriefPanelProps ): JSX.Element {
 				>
 					{ sprintf(
 						/* translators: 1: citations attached, 2: target. */
-						__( '%1$d of %2$d sources attached. ', 'medora-authority' ),
+						__(
+							'%1$d of %2$d sources attached. ',
+							'medora-authority'
+						),
 						data.evidence.current,
 						data.evidence.target
 					) }

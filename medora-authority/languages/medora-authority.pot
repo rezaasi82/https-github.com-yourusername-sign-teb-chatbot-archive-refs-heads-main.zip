@@ -9,7 +9,7 @@
 # separate stylesheet build if one is added later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Medora Authority 0.13.0\n"
+"Project-Id-Version: Medora Authority 0.14.0\n"
 "Report-Msgid-Bugs-To: https://medora.ai/support\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -40,39 +40,39 @@ msgid "Medora Authority"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:62
-#: src/app/App.tsx:85
+#: src/app/App.tsx:88
 msgid "Overview"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:63
-#: src/app/App.tsx:86
-#: src/pages/Entities.tsx:271
-#: src/pages/Overview.tsx:76
+#: src/app/App.tsx:89
+#: src/pages/Entities.tsx:296
+#: src/pages/Overview.tsx:89
 msgid "Entities"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:64
-#: src/app/App.tsx:87
-#: src/pages/Graph.tsx:22
+#: src/app/App.tsx:92
+#: src/pages/Graph.tsx:28
 msgid "Knowledge Graph"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:65
-#: src/app/App.tsx:88
-#: src/pages/Content.tsx:61
+#: src/app/App.tsx:94
+#: src/pages/Content.tsx:46
 msgid "Content"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:66
-#: src/app/App.tsx:89
-#: src/pages/Crawlers.tsx:69
+#: src/app/App.tsx:95
+#: src/pages/Crawlers.tsx:86
 msgid "AI Crawlers"
 msgstr ""
 
 #: includes/Admin/AdminMenu.php:67
 #: includes/Analytics/AnalyticsModule.php:36
-#: src/app/App.tsx:90
-#: src/pages/Analytics.tsx:26
+#: src/app/App.tsx:98
+#: src/pages/Analytics.tsx:33
 msgid "AI Analytics"
 msgstr ""
 
@@ -83,13 +83,13 @@ msgstr ""
 
 #: includes/Admin/AdminMenu.php:69
 #: includes/Admin/AdminMenu.php:127
-#: src/app/App.tsx:91
-#: src/pages/Settings.tsx:394
+#: src/app/App.tsx:100
+#: src/pages/Settings.tsx:441
 msgid "Settings"
 msgstr ""
 
 #: includes/Admin/AdminModule.php:27
-#: src/pages/Settings.tsx:521
+#: src/pages/Settings.tsx:592
 msgid "Dashboard"
 msgstr ""
 
@@ -220,12 +220,12 @@ msgid "Medical mode adds clinical vocabulary, reviewer metadata and YMYL trust s
 msgstr ""
 
 #: includes/Admin/SetupWizard.php:93
-#: src/pages/Settings.tsx:421
+#: src/pages/Settings.tsx:470
 msgid "General"
 msgstr ""
 
 #: includes/Admin/SetupWizard.php:94
-#: src/pages/Settings.tsx:424
+#: src/pages/Settings.tsx:473
 msgid "Health / medical (YMYL)"
 msgstr ""
 
@@ -880,7 +880,7 @@ msgid "Passage %1$d (%2$s): %3$s"
 msgstr ""
 
 #: includes/Geo/LlmCompatibilityScorer.php:179
-#: src/components/PassagePanel.tsx:119
+#: src/components/PassagePanel.tsx:120
 msgid "no heading"
 msgstr ""
 
@@ -1150,7 +1150,7 @@ msgid "Suggest context-aware internal links from semantic similarity and shared 
 msgstr ""
 
 #: includes/Llm/LlmModule.php:45
-#: src/pages/Settings.tsx:565
+#: src/pages/Settings.tsx:636
 msgid "AI Writer"
 msgstr ""
 
@@ -1975,12 +1975,12 @@ msgid "Follow the WordPress site language"
 msgstr ""
 
 #: includes/Vector/Providers/HashingEmbeddingProvider.php:42
-#: src/pages/Settings.tsx:475
+#: src/pages/Settings.tsx:543
 msgid "Built-in (offline, no API key)"
 msgstr ""
 
 #: includes/Vector/Providers/OpenAiEmbeddingProvider.php:38
-#: src/pages/Settings.tsx:478
+#: src/pages/Settings.tsx:549
 msgid "OpenAI-compatible API"
 msgstr ""
 
@@ -2004,7 +2004,7 @@ msgstr ""
 msgid "Something went wrong."
 msgstr ""
 
-#: src/app/App.tsx:82
+#: src/app/App.tsx:84
 msgid "Medora sections"
 msgstr ""
 
@@ -2026,28 +2026,28 @@ msgstr ""
 msgid "Outline — %1$d words now, ~%2$d target"
 msgstr ""
 
-#: src/components/BriefPanel.tsx:171
+#: src/components/BriefPanel.tsx:174
 msgid "add"
 msgstr ""
 
-#: src/components/BriefPanel.tsx:193
+#: src/components/BriefPanel.tsx:197
 msgid "Questions not yet answered"
 msgstr ""
 
-#: src/components/BriefPanel.tsx:206
+#: src/components/BriefPanel.tsx:215
 msgid "Entities to introduce"
 msgstr ""
 
-#: src/components/BriefPanel.tsx:208
+#: src/components/BriefPanel.tsx:218
 msgid "Drawn from your own knowledge graph — concepts this subject connects to elsewhere on the site."
 msgstr ""
 
-#: src/components/BriefPanel.tsx:230
+#: src/components/BriefPanel.tsx:240
 msgid "Evidence"
 msgstr ""
 
 #. translators: 1: citations attached, 2: target.
-#: src/components/BriefPanel.tsx:240
+#: src/components/BriefPanel.tsx:250
 msgid "%1$d of %2$d sources attached. "
 msgstr ""
 
@@ -2106,64 +2106,64 @@ msgstr ""
 msgid "%d more issue(s)."
 msgstr ""
 
-#: src/components/GraphCanvas.tsx:164
+#: src/components/GraphCanvas.tsx:167
 msgid "No entities yet. Publish content and run an analysis to build the graph."
 msgstr ""
 
-#: src/components/GraphCanvas.tsx:180
+#: src/components/GraphCanvas.tsx:183
 msgid "Knowledge graph"
 msgstr ""
 
-#: src/components/GraphCanvas.tsx:263
+#: src/components/GraphCanvas.tsx:267
 msgid "Circle size = number of relationships. Fill = authority score. Click a node to open it."
 msgstr ""
 
-#: src/components/LinkPanel.tsx:111
+#: src/components/LinkPanel.tsx:114
 msgid "Internal links"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:113
+#: src/components/LinkPanel.tsx:116
 msgid "Suggested from semantic similarity and shared entities. Anchors are phrases already in your text — nothing is inserted."
 msgstr ""
 
 #. translators: %d: number of links.
-#: src/components/LinkPanel.tsx:129
+#: src/components/LinkPanel.tsx:132
 msgid "Undo %d Medora link(s)"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:139
+#: src/components/LinkPanel.tsx:143
 msgid "Pages this one should link to"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:143
+#: src/components/LinkPanel.tsx:148
 msgid "No related pages found yet. Publish more on this subject, or check the Vector Engine is running."
 msgstr ""
 
-#: src/components/LinkPanel.tsx:173
+#: src/components/LinkPanel.tsx:178
 msgid "already linked"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:186
+#: src/components/LinkPanel.tsx:196
 msgid "Anchor text"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:231
+#: src/components/LinkPanel.tsx:242
 msgid "Linking…"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:232
+#: src/components/LinkPanel.tsx:246
 msgid "Add link"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:237
+#: src/components/LinkPanel.tsx:254
 msgid "No shared phrase in this page to use as an anchor."
 msgstr ""
 
-#: src/components/LinkPanel.tsx:253
+#: src/components/LinkPanel.tsx:270
 msgid "Pages that should link here"
 msgstr ""
 
-#: src/components/LinkPanel.tsx:256
+#: src/components/LinkPanel.tsx:276
 msgid "Inbound links are what actually move authority toward a page. Open each and add the link there."
 msgstr ""
 
@@ -2177,12 +2177,12 @@ msgstr ""
 msgid "Removed %d link(s) added by Medora."
 msgstr ""
 
-#: src/components/LinkPanel.tsx:94
+#: src/components/LinkPanel.tsx:97
 msgid "Finding related pages…"
 msgstr ""
 
 #. translators: %d: passage number.
-#: src/components/PassagePanel.tsx:111
+#: src/components/PassagePanel.tsx:112
 msgid "Passage %d"
 msgstr ""
 
@@ -2201,46 +2201,46 @@ msgstr ""
 #. <span className="medora-pill">
 #. { sprintf(
 #. /* translators: %d: word count.
-#: src/components/PassagePanel.tsx:125
+#: src/components/PassagePanel.tsx:126
 msgid "%d words"
 msgstr ""
 
-#: src/components/PassagePanel.tsx:135
+#: src/components/PassagePanel.tsx:138
 msgid "Reads on its own."
 msgstr ""
 
-#: src/components/PassagePanel.tsx:159
+#: src/components/PassagePanel.tsx:162
 msgid "Long page with no table, procedure or list. Structure gets quoted intact; prose gets paraphrased."
 msgstr ""
 
-#: src/components/PassagePanel.tsx:168
+#: src/components/PassagePanel.tsx:171
 msgid "No H2 or H3 headings, so passage boundaries fall mid-argument."
 msgstr ""
 
-#: src/components/PassagePanel.tsx:175
+#: src/components/PassagePanel.tsx:178
 msgid "No heading is phrased as a question. A question heading makes the passage under it a direct answer."
 msgstr ""
 
-#: src/components/PassagePanel.tsx:27
+#: src/components/PassagePanel.tsx:28
 msgid "Reading passages…"
 msgstr ""
 
-#: src/components/PassagePanel.tsx:43
+#: src/components/PassagePanel.tsx:44
 msgid "Nothing here to retrieve. This page has no body copy a model could be handed."
 msgstr ""
 
-#: src/components/PassagePanel.tsx:63
-#: src/pages/Content.tsx:24
+#: src/components/PassagePanel.tsx:64
+#: src/pages/Content.tsx:25
 msgid "Passages"
 msgstr ""
 
 #. translators: 1: self-contained passages, 2: total, 3: percentage.
-#: src/components/PassagePanel.tsx:67
+#: src/components/PassagePanel.tsx:68
 msgid "%1$d of %2$d passages (%3$d%%) stand on their own when retrieved without the rest of the page."
 msgstr ""
 
 #. translators: 1: share of the overall score, 2: points this dimension is costing.
-#: src/components/ScoreBreakdown.tsx:111
+#: src/components/ScoreBreakdown.tsx:108
 msgid "%1$d%% of the score · costing %2$s points"
 msgstr ""
 
@@ -2249,142 +2249,142 @@ msgstr ""
 msgid "%1$s scored %2$s out of 100"
 msgstr ""
 
-#: src/components/ScoreBreakdown.tsx:136
+#: src/components/ScoreBreakdown.tsx:138
 msgid "Nothing deducted here."
 msgstr ""
 
 #. translators: 1: points lost, 2: what was deducted.
-#: src/components/ScoreBreakdown.tsx:145
+#: src/components/ScoreBreakdown.tsx:147
 msgid "−%1$s %2$s"
 msgstr ""
 
-#: src/components/ScoreBreakdown.tsx:183
+#: src/components/ScoreBreakdown.tsx:187
 msgid "Measurements"
 msgstr ""
 
-#: src/components/ScoreBreakdown.tsx:199
+#: src/components/ScoreBreakdown.tsx:203
 msgid "yes"
 msgstr ""
 
-#: src/components/ScoreBreakdown.tsx:200
+#: src/components/ScoreBreakdown.tsx:204
 msgid "no"
 msgstr ""
 
-#: src/components/ScoreBreakdown.tsx:206
-#: src/pages/Entities.tsx:351
+#: src/components/ScoreBreakdown.tsx:210
+#: src/pages/Entities.tsx:399
 msgid "none"
 msgstr ""
 
 #: src/components/ScoreBreakdown.tsx:33
-#: src/pages/Analytics.tsx:18
+#: src/pages/Analytics.tsx:23
 #: src/pages/Audit.tsx:47
-#: src/pages/Content.tsx:205
-#: src/pages/Crawlers.tsx:51
-#: src/pages/Entities.tsx:31
-#: src/pages/Entities.tsx:360
-#: src/pages/Overview.tsx:19
-#: src/pages/Settings.tsx:33
-#: src/pages/Wizard.tsx:31
+#: src/pages/Content.tsx:194
+#: src/pages/Crawlers.tsx:67
+#: src/pages/Entities.tsx:33
+#: src/pages/Entities.tsx:414
+#: src/pages/Overview.tsx:21
+#: src/pages/Settings.tsx:35
+#: src/pages/Wizard.tsx:33
 msgid "Loading…"
 msgstr ""
 
-#: src/components/ScoreBreakdown.tsx:63
+#: src/components/ScoreBreakdown.tsx:62
 msgid "Where the score comes from"
 msgstr ""
 
-#: src/components/ScoreBreakdown.tsx:65
+#: src/components/ScoreBreakdown.tsx:64
 msgid "Each dimension starts at 100 and loses points. Dimensions that do not apply to this site are left out, and the rest are re-weighted to fill the gap."
 msgstr ""
 
-#: src/editor.ts:31
+#: src/editor.ts:32
 msgid "Analysing…"
 msgstr ""
 
-#: src/editor.ts:38
+#: src/editor.ts:39
 msgid "Done — reloading"
 msgstr ""
 
-#. translators: %d: number of days.
 #: src/pages/Analytics.tsx:112
-msgid "No assistant referrals in the last %d days."
-msgstr ""
-
-#: src/pages/Analytics.tsx:30
-#: src/pages/Overview.tsx:54
-msgid "Reporting window"
-msgstr ""
-
-#: src/pages/Analytics.tsx:32
-#: src/pages/Overview.tsx:56
-msgid "Last 7 days"
-msgstr ""
-
-#: src/pages/Analytics.tsx:33
-#: src/pages/Overview.tsx:57
-msgid "Last 30 days"
-msgstr ""
-
-#: src/pages/Analytics.tsx:34
-#: src/pages/Overview.tsx:58
-msgid "Last 90 days"
-msgstr ""
-
-#: src/pages/Analytics.tsx:39
-msgid "These are observed referrals. Several assistants strip the referrer header, so treat this as a lower bound on your real AI traffic, not a total."
-msgstr ""
-
-#: src/pages/Analytics.tsx:47
-#: src/pages/Overview.tsx:99
-msgid "Visits from assistants"
-msgstr ""
-
-#: src/pages/Analytics.tsx:52
-msgid "Previous period"
-msgstr ""
-
-#: src/pages/Analytics.tsx:56
-msgid "Distinct sources"
-msgstr ""
-
-#: src/pages/Analytics.tsx:62
-msgid "Trend"
-msgstr ""
-
-#: src/pages/Analytics.tsx:66
-#: src/pages/Overview.tsx:132
-msgid "AI referrals"
-msgstr ""
-
-#: src/pages/Analytics.tsx:72
-msgid "By assistant"
-msgstr ""
-
-#: src/pages/Analytics.tsx:76
-msgid "Source"
-msgstr ""
-
-#: src/pages/Analytics.tsx:77
-msgid "Visits"
-msgstr ""
-
-#: src/pages/Analytics.tsx:78
-msgid "Visitors"
-msgstr ""
-
-#: src/pages/Analytics.tsx:94
 msgid "Pages assistants send people to"
 msgstr ""
 
-#: src/pages/Analytics.tsx:96
+#: src/pages/Analytics.tsx:118
 msgid "The closest available proxy for which of your pages are being cited."
 msgstr ""
 
-#: src/pages/Audit.tsx:100
+#. translators: %d: number of days.
+#: src/pages/Analytics.tsx:134
+msgid "No assistant referrals in the last %d days."
+msgstr ""
+
+#: src/pages/Analytics.tsx:39
+#: src/pages/Overview.tsx:58
+msgid "Reporting window"
+msgstr ""
+
+#: src/pages/Analytics.tsx:42
+#: src/pages/Overview.tsx:61
+msgid "Last 7 days"
+msgstr ""
+
+#: src/pages/Analytics.tsx:45
+#: src/pages/Overview.tsx:64
+msgid "Last 30 days"
+msgstr ""
+
+#: src/pages/Analytics.tsx:48
+#: src/pages/Overview.tsx:67
+msgid "Last 90 days"
+msgstr ""
+
+#: src/pages/Analytics.tsx:54
+msgid "These are observed referrals. Several assistants strip the referrer header, so treat this as a lower bound on your real AI traffic, not a total."
+msgstr ""
+
+#: src/pages/Analytics.tsx:62
+#: src/pages/Overview.tsx:115
+msgid "Visits from assistants"
+msgstr ""
+
+#: src/pages/Analytics.tsx:67
+msgid "Previous period"
+msgstr ""
+
+#: src/pages/Analytics.tsx:71
+msgid "Distinct sources"
+msgstr ""
+
+#: src/pages/Analytics.tsx:77
+msgid "Trend"
+msgstr ""
+
+#: src/pages/Analytics.tsx:81
+#: src/pages/Overview.tsx:153
+msgid "AI referrals"
+msgstr ""
+
+#: src/pages/Analytics.tsx:87
+msgid "By assistant"
+msgstr ""
+
+#: src/pages/Analytics.tsx:91
+msgid "Source"
+msgstr ""
+
+#: src/pages/Analytics.tsx:92
+msgid "Visits"
+msgstr ""
+
+#: src/pages/Analytics.tsx:94
+msgid "Visitors"
+msgstr ""
+
+#: src/pages/Audit.tsx:111
 msgid "Older"
 msgstr ""
 
 #. translators: 1: object type, 2: object id.
-#: src/pages/Audit.tsx:151
+#: src/pages/Audit.tsx:162
 msgid "%1$s #%2$d"
 msgstr ""
 
@@ -2401,18 +2401,19 @@ msgstr ""
 #. tone: 'ok',
 #. label: sprintf(
 #. /* translators: 1: field list, 2: object.
-#: src/pages/Audit.tsx:163
+#: src/pages/Audit.tsx:174
 msgid "A model rewrote %1$s on %2$s."
 msgstr ""
 
-#: src/pages/Audit.tsx:165
+#: src/pages/Audit.tsx:177
 msgid "nothing"
 msgstr ""
 
 #. translators: 1: field list, 2: object. */
 #. __( 'A model rewrote %1$s on %2$s.', 'medora-authority' ),
-#. ( ( entry.context.fields as string[] ) ?? [] ).join( ', ' ) ||
-#. __( 'nothing', 'medora-authority' ),
+#. ( ( entry.context.fields as string[] ) ?? [] ).join(
+#. ', '
+#. ) || __( 'nothing', 'medora-authority' ),
 #. target
 #. ),
 #. };
@@ -2422,7 +2423,7 @@ msgstr ""
 #. tone: 'warn',
 #. label: sprintf(
 #. /* translators: 1: field name, 2: object.
-#: src/pages/Audit.tsx:175
+#: src/pages/Audit.tsx:187
 msgid "Generated %1$s for %2$s was discarded — the page did not support it."
 msgstr ""
 
@@ -2441,12 +2442,15 @@ msgstr ""
 #. tone: 'warn',
 #. label: sprintf(
 #. /* translators: %s: object.
-#: src/pages/Audit.tsx:189
+#: src/pages/Audit.tsx:201
 msgid "The model declined to write for %s."
 msgstr ""
 
 #. translators: %s: object. */
-#. __( 'The model declined to write for %s.', 'medora-authority' ),
+#. __(
+#. 'The model declined to write for %s.',
+#. 'medora-authority'
+#. ),
 #. target
 #. ),
 #. };
@@ -2456,12 +2460,15 @@ msgstr ""
 #. tone: 'error',
 #. label: sprintf(
 #. /* translators: %s: object.
-#: src/pages/Audit.tsx:199
+#: src/pages/Audit.tsx:214
 msgid "The model request failed for %s."
 msgstr ""
 
 #. translators: %s: object. */
-#. __( 'The model request failed for %s.', 'medora-authority' ),
+#. __(
+#. 'The model request failed for %s.',
+#. 'medora-authority'
+#. ),
 #. target
 #. ),
 #. };
@@ -2471,7 +2478,7 @@ msgstr ""
 #. tone: 'warn',
 #. label: sprintf(
 #. /* translators: %s: object.
-#: src/pages/Audit.tsx:209
+#: src/pages/Audit.tsx:227
 msgid "The model reply could not be used for %s."
 msgstr ""
 
@@ -2489,12 +2496,15 @@ msgstr ""
 #. tone: 'ok',
 #. label: sprintf(
 #. /* translators: %s: object.
-#: src/pages/Audit.tsx:222
+#: src/pages/Audit.tsx:240
 msgid "An internal link was added to %s."
 msgstr ""
 
 #. translators: %s: object. */
-#. __( 'An internal link was added to %s.', 'medora-authority' ),
+#. __(
+#. 'An internal link was added to %s.',
+#. 'medora-authority'
+#. ),
 #. target
 #. ),
 #. };
@@ -2504,33 +2514,33 @@ msgstr ""
 #. tone: 'ok',
 #. label: sprintf(
 #. /* translators: %s: object.
-#: src/pages/Audit.tsx:232
+#: src/pages/Audit.tsx:253
 msgid "Medora links were removed from %s."
 msgstr ""
 
-#: src/pages/Audit.tsx:238
+#: src/pages/Audit.tsx:264
 msgid "Settings were saved."
 msgstr ""
 
-#: src/pages/Audit.tsx:241
+#: src/pages/Audit.tsx:270
 msgid "A module was turned on or off."
 msgstr ""
 
-#: src/pages/Audit.tsx:244
+#: src/pages/Audit.tsx:279
 msgid "The AI crawler policy changed."
 msgstr ""
 
-#: src/pages/Audit.tsx:247
+#: src/pages/Audit.tsx:288
 msgid "The licence status changed."
 msgstr ""
 
 #. translators: %s: percentage of the text supported by the page.
-#: src/pages/Audit.tsx:272
-msgid "%s%% supported"
+#: src/pages/Audit.tsx:314
+msgid "%1$s%% supported"
 msgstr ""
 
 #. translators: %s: percentage of the text supported by the page. */
-#. __( '%s%% supported', 'medora-authority' ),
+#. __( '%1$s%% supported', 'medora-authority' ),
 #. Math.round( entry.context.support_ratio * 100 ).toString()
 #. )
 #. );
@@ -2542,7 +2552,7 @@ msgstr ""
 #. bits.push(
 #. sprintf(
 #. /* translators: %s: comma-separated list of figures.
-#: src/pages/Audit.tsx:284
+#: src/pages/Audit.tsx:326
 msgid "figures not in the page: %s"
 msgstr ""
 
@@ -2562,71 +2572,71 @@ msgstr ""
 msgid "Who"
 msgstr ""
 
-#: src/pages/Audit.tsx:64
+#: src/pages/Audit.tsx:65
 msgid "What happened"
 msgstr ""
 
-#: src/pages/Audit.tsx:75
+#: src/pages/Audit.tsx:82
 msgid "Pages"
 msgstr ""
 
-#: src/pages/Audit.tsx:82
+#: src/pages/Audit.tsx:90
 msgid "Newer"
 msgstr ""
 
 #. translators: 1: current page, 2: total pages.
-#: src/pages/Audit.tsx:88
+#: src/pages/Audit.tsx:96
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: src/pages/Content.tsx:124
-#: src/pages/Entities.tsx:87
+#: src/pages/Content.tsx:111
+#: src/pages/Entities.tsx:95
 msgid "Close"
 msgstr ""
 
-#: src/pages/Content.tsx:130
+#: src/pages/Content.tsx:117
 msgid "Page tools"
 msgstr ""
 
 #. translators: %s: potential score.
-#: src/pages/Content.tsx:152
+#: src/pages/Content.tsx:141
 msgid "Completing every action below would take this page to roughly %s / 100."
 msgstr ""
 
-#: src/pages/Content.tsx:163
+#: src/pages/Content.tsx:152
 msgid "Answer-first rewrite"
 msgstr ""
 
-#: src/pages/Content.tsx:173
+#: src/pages/Content.tsx:162
 msgid "Do these, in this order"
 msgstr ""
 
-#: src/pages/Content.tsx:179
+#: src/pages/Content.tsx:168
 msgid "Ordered by points recovered per unit of effort, not by severity alone."
 msgstr ""
 
-#: src/pages/Content.tsx:21
+#: src/pages/Content.tsx:22
 msgid "Fixes"
 msgstr ""
 
-#: src/pages/Content.tsx:22
+#: src/pages/Content.tsx:23
 msgid "Brief"
 msgstr ""
 
-#: src/pages/Content.tsx:23
+#: src/pages/Content.tsx:24
 msgid "Links"
 msgstr ""
 
-#: src/pages/Content.tsx:25
-#: src/pages/Content.tsx:78
+#: src/pages/Content.tsx:26
+#: src/pages/Content.tsx:63
 msgid "Score"
 msgstr ""
 
-#: src/pages/Content.tsx:63
+#: src/pages/Content.tsx:48
 msgid "Lowest-scoring pages first. Pick one to see its ordered fix list."
 msgstr ""
 
-#: src/pages/Content.tsx:77
+#: src/pages/Content.tsx:62
 msgid "Page"
 msgstr ""
 
@@ -2638,342 +2648,254 @@ msgstr ""
 msgid "Maximum AI visibility, including model training."
 msgstr ""
 
-#: src/pages/Crawlers.tsx:114
+#: src/pages/Crawlers.tsx:137
 msgid "Crawler"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:115
+#: src/pages/Crawlers.tsx:139
 msgid "Used for"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:116
+#: src/pages/Crawlers.tsx:142
 msgid "Visits (30d)"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:117
+#: src/pages/Crawlers.tsx:144
 msgid "Access"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:127
+#: src/pages/Crawlers.tsx:154
 msgid "override"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:145
+#: src/pages/Crawlers.tsx:179
 msgid "Allow"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:148
-msgid "Allow, throttled"
-msgstr ""
-
-#: src/pages/Crawlers.tsx:15
+#: src/pages/Crawlers.tsx:18
 msgid "Selective"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:151
-msgid "Block"
+#: src/pages/Crawlers.tsx:185
+msgid "Allow, throttled"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:155
-msgid "Use site policy"
-msgstr ""
-
-#: src/pages/Crawlers.tsx:16
+#: src/pages/Crawlers.tsx:19
 msgid "Stay citable in AI answers, opt out of corpus collection. This is what most publishers want."
 msgstr ""
 
-#: src/pages/Crawlers.tsx:171
+#: src/pages/Crawlers.tsx:191
+msgid "Block"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:198
+msgid "Use site policy"
+msgstr ""
+
+#: src/pages/Crawlers.tsx:214
 msgid "robots.txt preview"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:179
+#: src/pages/Crawlers.tsx:222
 msgid "Hide"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:180
+#: src/pages/Crawlers.tsx:223
 msgid "Show what is served"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:190
+#: src/pages/Crawlers.tsx:233
 msgid "Most-crawled URLs"
 msgstr ""
 
 #. translators: %d: number of days.
-#: src/pages/Crawlers.tsx:194
+#: src/pages/Crawlers.tsx:237
 msgid "What AI crawlers fetched most over the last %d days — the pages most likely to end up cited."
 msgstr ""
 
-#: src/pages/Crawlers.tsx:23
+#: src/pages/Crawlers.tsx:26
 msgid "Block AI crawlers"
 msgstr ""
 
-#: src/pages/Crawlers.tsx:24
+#: src/pages/Crawlers.tsx:27
 msgid "Classic search crawlers still allowed."
 msgstr ""
 
-#: src/pages/Crawlers.tsx:74
+#: src/pages/Crawlers.tsx:91
 msgid "A physical robots.txt file exists in your site root. It overrides the virtual one, so none of the policy below is actually being served. Delete or merge that file."
 msgstr ""
 
-#: src/pages/Crawlers.tsx:82
+#: src/pages/Crawlers.tsx:99
 msgid "Site policy"
 msgstr ""
 
-#: src/pages/Entities.tsx:131
-msgid "Edit"
-msgstr ""
-
-#: src/pages/Entities.tsx:134
-msgid "Description"
+#. translators: %s: score out of 100.
+#: src/pages/Entities.tsx:104
+msgid "Entity authority: %s / 100"
 msgstr ""
 
 #: src/pages/Entities.tsx:144
+msgid "Edit"
+msgstr ""
+
+#: src/pages/Entities.tsx:147
+msgid "Description"
+msgstr ""
+
+#: src/pages/Entities.tsx:159
 msgid "sameAs identifiers (one per line)"
 msgstr ""
 
-#: src/pages/Entities.tsx:154
+#: src/pages/Entities.tsx:174
 msgid "These are what let an AI system match this entity to the one in its own knowledge base. It is the single highest-value field here."
 msgstr ""
 
-#: src/pages/Entities.tsx:167
-#: src/pages/Settings.tsx:380
+#: src/pages/Entities.tsx:187
+#: src/pages/Settings.tsx:427
 msgid "Saving…"
 msgstr ""
 
-#: src/pages/Entities.tsx:168
+#: src/pages/Entities.tsx:188
 msgid "Save entity"
 msgstr ""
 
-#: src/pages/Entities.tsx:177
+#: src/pages/Entities.tsx:197
 msgid "Remove this entity"
 msgstr ""
 
-#: src/pages/Entities.tsx:179
+#: src/pages/Entities.tsx:199
 msgid "Use this for something the extractor got wrong — a navigation label or a stray phrase read as a subject. It is deleted from the graph and from the structured data you publish, and it will not be extracted again."
 msgstr ""
 
-#: src/pages/Entities.tsx:193
+#: src/pages/Entities.tsx:213
 msgid "Yes, remove it"
 msgstr ""
 
-#: src/pages/Entities.tsx:201
+#: src/pages/Entities.tsx:221
 msgid "Cancel"
 msgstr ""
 
-#: src/pages/Entities.tsx:210
+#: src/pages/Entities.tsx:230
 msgid "Remove entity"
 msgstr ""
 
-#: src/pages/Entities.tsx:218
+#: src/pages/Entities.tsx:238
 msgid "Relationships"
 msgstr ""
 
-#: src/pages/Entities.tsx:275
+#: src/pages/Entities.tsx:300
 msgid "Search entities…"
 msgstr ""
 
-#: src/pages/Entities.tsx:288
+#: src/pages/Entities.tsx:316
 msgid "Entity type"
 msgstr ""
 
-#: src/pages/Entities.tsx:291
+#: src/pages/Entities.tsx:322
 msgid "All types"
 msgstr ""
 
-#: src/pages/Entities.tsx:310
+#: src/pages/Entities.tsx:345
 msgid "Entity"
 msgstr ""
 
-#: src/pages/Entities.tsx:311
+#: src/pages/Entities.tsx:346
 msgid "Type"
 msgstr ""
 
-#: src/pages/Entities.tsx:312
+#: src/pages/Entities.tsx:347
 msgid "Authority"
 msgstr ""
 
-#: src/pages/Entities.tsx:313
+#: src/pages/Entities.tsx:348
 msgid "sameAs"
 msgstr ""
 
-#: src/pages/Entities.tsx:370
+#: src/pages/Entities.tsx:426
 msgid "Previous"
 msgstr ""
 
 #. translators: 1: current page, 2: total entities.
-#: src/pages/Entities.tsx:375
+#: src/pages/Entities.tsx:431
 msgid "Page %1$d — %2$d entities"
 msgstr ""
 
-#: src/pages/Entities.tsx:386
+#: src/pages/Entities.tsx:445
 msgid "Next"
 msgstr ""
 
 #. translators: 1: number removed, 2: maximum.
-#: src/pages/Entities.tsx:453
+#: src/pages/Entities.tsx:511
 msgid "Removed entities — %1$d of %2$d"
 msgstr ""
 
-#: src/pages/Entities.tsx:459
+#: src/pages/Entities.tsx:517
 msgid "These are skipped during extraction. Restoring one brings it back the next time the page it came from is analysed."
 msgstr ""
 
-#: src/pages/Entities.tsx:478
+#: src/pages/Entities.tsx:536
 msgid "Restore"
 msgstr ""
 
-#: src/pages/Entities.tsx:491
+#: src/pages/Entities.tsx:549
 msgid "Restore all"
 msgstr ""
 
-#: src/pages/Entities.tsx:55
+#: src/pages/Entities.tsx:59
 msgid "Saved."
 msgstr ""
 
-#. translators: %s: score out of 100.
-#: src/pages/Entities.tsx:96
-msgid "Entity authority: %s / 100"
+#: src/pages/Graph.tsx:118
+msgid "Machine-readable endpoints"
 msgstr ""
 
-#: src/pages/Graph.tsx:107
+#: src/pages/Graph.tsx:121
+msgid "These are what AI systems consume. They are public and require no key."
+msgstr ""
+
+#: src/pages/Graph.tsx:130
 msgid "Curated site map for LLMs"
 msgstr ""
 
-#: src/pages/Graph.tsx:111
+#: src/pages/Graph.tsx:139
 msgid "Full content bundle"
 msgstr ""
 
-#: src/pages/Graph.tsx:115
+#: src/pages/Graph.tsx:145
 msgid "Annotated AI sitemap index"
 msgstr ""
 
-#: src/pages/Graph.tsx:119
+#: src/pages/Graph.tsx:156
 msgid "Knowledge graph as JSON-LD"
 msgstr ""
 
 #. translators: 1: entity count, 2: relationship count.
-#: src/pages/Graph.tsx:27
+#: src/pages/Graph.tsx:33
 msgid "%1$d entities, %2$d relationships across the site."
 msgstr ""
 
-#: src/pages/Graph.tsx:41
+#: src/pages/Graph.tsx:49
 msgid "Nodes to display"
 msgstr ""
 
-#: src/pages/Graph.tsx:43
+#: src/pages/Graph.tsx:52
 msgid "Top 60 entities"
 msgstr ""
 
-#: src/pages/Graph.tsx:44
+#: src/pages/Graph.tsx:55
 msgid "Top 150 entities"
 msgstr ""
 
-#: src/pages/Graph.tsx:45
+#: src/pages/Graph.tsx:58
 msgid "Top 300 entities"
 msgstr ""
 
-#: src/pages/Graph.tsx:51
+#: src/pages/Graph.tsx:66
 msgid "Building layout…"
 msgstr ""
 
-#: src/pages/Graph.tsx:73
+#: src/pages/Graph.tsx:89
 msgid "Open entity page"
-msgstr ""
-
-#: src/pages/Graph.tsx:97
-msgid "Machine-readable endpoints"
-msgstr ""
-
-#: src/pages/Graph.tsx:99
-msgid "These are what AI systems consume. They are public and require no key."
-msgstr ""
-
-#. translators: %d: number of failed jobs.
-#: src/pages/Overview.tsx:115
-msgid "%d background job(s) failed. Check the site health log — analysis may be incomplete."
-msgstr ""
-
-#: src/pages/Overview.tsx:129
-msgid "AI referral traffic"
-msgstr ""
-
-#: src/pages/Overview.tsx:143
-msgid "No assistant referrals observed yet. Note that several assistants strip the referrer, so this is a floor, not a total."
-msgstr ""
-
-#: src/pages/Overview.tsx:155
-msgid "AI crawler activity"
-msgstr ""
-
-#: src/pages/Overview.tsx:158
-msgid "Crawler hits"
-msgstr ""
-
-#. translators: %s: comma-separated crawler names.
-#: src/pages/Overview.tsx:176
-msgid "Allowed but never seen: %s. Usually a robots, DNS or firewall issue rather than disinterest."
-msgstr ""
-
-#: src/pages/Overview.tsx:194
-msgid "Biggest wins available"
-msgstr ""
-
-#: src/pages/Overview.tsx:196
-msgid "The issues that recur most across your site — one fix each, applied broadly."
-msgstr ""
-
-#. translators: %d: number of pages.
-#: src/pages/Overview.tsx:209
-msgid "%d pages"
-msgstr ""
-
-#: src/pages/Overview.tsx:221
-msgid "Weakest pages"
-msgstr ""
-
-#: src/pages/Overview.tsx:259
-msgid "Background work"
-msgstr ""
-
-#: src/pages/Overview.tsx:264
-msgid "Queue"
-msgstr ""
-
-#: src/pages/Overview.tsx:265
-msgid "Waiting"
-msgstr ""
-
-#: src/pages/Overview.tsx:266
-msgid "Running"
-msgstr ""
-
-#: src/pages/Overview.tsx:267
-msgid "Failed"
-msgstr ""
-
-#: src/pages/Overview.tsx:27
-msgid "Retry"
-msgstr ""
-
-#: src/pages/Overview.tsx:45
-msgid "AI Authority"
-msgstr ""
-
-#: src/pages/Overview.tsx:66
-msgid "Site AI Authority Score"
-msgstr ""
-
-#: src/pages/Overview.tsx:72
-msgid "Pages analysed"
-msgstr ""
-
-#. translators: %d: number of relationships.
-#: src/pages/Overview.tsx:80
-msgid "%d relationships"
-msgstr ""
-
-#: src/pages/Overview.tsx:85
-msgid "AI crawler visits"
 msgstr ""
 
 #. translators: %d: number of relationships. */
@@ -2988,266 +2910,359 @@ msgstr ""
 #. crawlers
 #. ? sprintf(
 #. /* translators: 1: crawlers seen, 2: crawlers known.
-#: src/pages/Overview.tsx:91
+#: src/pages/Overview.tsx:104
 msgid "%1$d of %2$d known crawlers"
 msgstr ""
 
-#: src/pages/Settings.tsx:109
+#. translators: %d: number of failed jobs.
+#: src/pages/Overview.tsx:134
+msgid "%d background job(s) failed. Check the site health log — analysis may be incomplete."
+msgstr ""
+
+#: src/pages/Overview.tsx:149
+msgid "AI referral traffic"
+msgstr ""
+
+#: src/pages/Overview.tsx:166
+msgid "No assistant referrals observed yet. Note that several assistants strip the referrer, so this is a floor, not a total."
+msgstr ""
+
+#: src/pages/Overview.tsx:179
+msgid "AI crawler activity"
+msgstr ""
+
+#: src/pages/Overview.tsx:183
+msgid "Crawler hits"
+msgstr ""
+
+#. translators: %s: comma-separated crawler names.
+#: src/pages/Overview.tsx:206
+msgid "Allowed but never seen: %s. Usually a robots, DNS or firewall issue rather than disinterest."
+msgstr ""
+
+#: src/pages/Overview.tsx:225
+msgid "Biggest wins available"
+msgstr ""
+
+#: src/pages/Overview.tsx:231
+msgid "The issues that recur most across your site — one fix each, applied broadly."
+msgstr ""
+
+#. translators: %d: number of pages.
+#: src/pages/Overview.tsx:244
+msgid "%d pages"
+msgstr ""
+
+#: src/pages/Overview.tsx:259
+msgid "Weakest pages"
+msgstr ""
+
+#: src/pages/Overview.tsx:296
+msgid "Background work"
+msgstr ""
+
+#: src/pages/Overview.tsx:301
+msgid "Queue"
+msgstr ""
+
+#: src/pages/Overview.tsx:302
+msgid "Waiting"
+msgstr ""
+
+#: src/pages/Overview.tsx:303
+msgid "Running"
+msgstr ""
+
+#: src/pages/Overview.tsx:304
+msgid "Failed"
+msgstr ""
+
+#: src/pages/Overview.tsx:31
+msgid "Retry"
+msgstr ""
+
+#: src/pages/Overview.tsx:49
+msgid "AI Authority"
+msgstr ""
+
+#: src/pages/Overview.tsx:76
+msgid "Site AI Authority Score"
+msgstr ""
+
+#: src/pages/Overview.tsx:85
+msgid "Pages analysed"
+msgstr ""
+
+#. translators: %d: number of relationships.
+#: src/pages/Overview.tsx:93
+msgid "%d relationships"
+msgstr ""
+
+#: src/pages/Overview.tsx:98
+msgid "AI crawler visits"
+msgstr ""
+
+#: src/pages/Settings.tsx:135
 msgid "Licence"
 msgstr ""
 
 #. translators: %d: days remaining.
-#: src/pages/Settings.tsx:124
+#: src/pages/Settings.tsx:153
 msgid "Licence expired. Everything keeps working for %d more day(s)."
 msgstr ""
 
-#: src/pages/Settings.tsx:143
+#: src/pages/Settings.tsx:172
 msgid "Refresh status"
 msgstr ""
 
-#: src/pages/Settings.tsx:153
+#: src/pages/Settings.tsx:182
 msgid "Move licence to this domain"
-msgstr ""
-
-#: src/pages/Settings.tsx:163
-msgid "Deactivate"
-msgstr ""
-
-#: src/pages/Settings.tsx:169
-msgid "This licence is bound to a different domain. You can move it yourself — no support ticket needed. Once a month."
-msgstr ""
-
-#: src/pages/Settings.tsx:181
-msgid "Licence key"
 msgstr ""
 
 #: src/pages/Settings.tsx:19
 msgid "Saved. Reload the page for the change to take full effect."
 msgstr ""
 
-#: src/pages/Settings.tsx:190
+#: src/pages/Settings.tsx:195
+msgid "Deactivate"
+msgstr ""
+
+#: src/pages/Settings.tsx:201
+msgid "This licence is bound to a different domain. You can move it yourself — no support ticket needed. Once a month."
+msgstr ""
+
+#: src/pages/Settings.tsx:213
+msgid "Licence key"
+msgstr ""
+
+#: src/pages/Settings.tsx:222
 msgid "Activate"
 msgstr ""
 
 #. translators: 1: checks passed, 2: total checks.
-#: src/pages/Settings.tsx:212
+#: src/pages/Settings.tsx:244
 msgid "Configuration check — %1$d of %2$d passing"
 msgstr ""
 
-#: src/pages/Settings.tsx:261
+#: src/pages/Settings.tsx:296
 msgid "Product name"
 msgstr ""
 
-#: src/pages/Settings.tsx:262
+#: src/pages/Settings.tsx:297
 msgid "Shown as the plugin name and the dashboard title."
 msgstr ""
 
-#: src/pages/Settings.tsx:266
+#: src/pages/Settings.tsx:304
 msgid "Menu label"
 msgstr ""
 
-#: src/pages/Settings.tsx:267
+#: src/pages/Settings.tsx:305
 msgid "The admin menu entry. Keep it short."
 msgstr ""
 
-#: src/pages/Settings.tsx:271
+#: src/pages/Settings.tsx:309
 msgid "Your company"
 msgstr ""
 
-#: src/pages/Settings.tsx:272
+#: src/pages/Settings.tsx:310
 msgid "Replaces the author on the Plugins screen."
 msgstr ""
 
-#: src/pages/Settings.tsx:276
+#: src/pages/Settings.tsx:315
 msgid "Your website"
 msgstr ""
 
-#: src/pages/Settings.tsx:281
+#: src/pages/Settings.tsx:318
 msgid "Support URL"
 msgstr ""
 
-#: src/pages/Settings.tsx:282
+#: src/pages/Settings.tsx:319
 msgid "Where your clients go for help."
 msgstr ""
 
-#: src/pages/Settings.tsx:288
+#: src/pages/Settings.tsx:325
 msgid "White label"
 msgstr ""
 
-#: src/pages/Settings.tsx:290
+#: src/pages/Settings.tsx:327
 msgid "Present the plugin under your own name. Nothing here changes what it does."
 msgstr ""
 
-#: src/pages/Settings.tsx:304
+#: src/pages/Settings.tsx:345
 msgid "Use my branding"
 msgstr ""
 
-#: src/pages/Settings.tsx:325
+#: src/pages/Settings.tsx:368
 msgid "Accent colour"
 msgstr ""
 
-#: src/pages/Settings.tsx:347
+#: src/pages/Settings.tsx:394
 msgid "Replace the author and links on the Plugins screen too"
 msgstr ""
 
-#: src/pages/Settings.tsx:354
+#: src/pages/Settings.tsx:401
 msgid "Branding forced from code by a host takes precedence over anything saved here."
 msgstr ""
 
-#: src/pages/Settings.tsx:38
+#: src/pages/Settings.tsx:42
 msgid "Modules"
 msgstr ""
 
-#: src/pages/Settings.tsx:384
+#: src/pages/Settings.tsx:431
 msgid "Settings saved."
 msgstr ""
 
-#: src/pages/Settings.tsx:398
-msgid "Publisher"
-msgstr ""
-
-#: src/pages/Settings.tsx:40
+#: src/pages/Settings.tsx:44
 msgid "Every module is independent. Turn off what you do not need — disabled modules add no queries and no page weight."
 msgstr ""
 
-#: src/pages/Settings.tsx:401
-msgid "Organisation name"
-msgstr ""
-
-#: src/pages/Settings.tsx:413
-msgid "Site mode"
-msgstr ""
-
-#: src/pages/Settings.tsx:429
-msgid "Log retention (days)"
-msgstr ""
-
-#: src/pages/Settings.tsx:442
-msgid "Published artefacts"
-msgstr ""
-
-#: src/pages/Settings.tsx:446
-msgid "Publish llms.txt"
-msgstr ""
-
-#: src/pages/Settings.tsx:447
-msgid "Publish AI sitemaps"
+#: src/pages/Settings.tsx:445
+msgid "Publisher"
 msgstr ""
 
 #: src/pages/Settings.tsx:448
+msgid "Organisation name"
+msgstr ""
+
+#: src/pages/Settings.tsx:460
+msgid "Site mode"
+msgstr ""
+
+#: src/pages/Settings.tsx:478
+msgid "Log retention (days)"
+msgstr ""
+
+#: src/pages/Settings.tsx:491
+msgid "Published artefacts"
+msgstr ""
+
+#: src/pages/Settings.tsx:497
+msgid "Publish llms.txt"
+msgstr ""
+
+#: src/pages/Settings.tsx:501
+msgid "Publish AI sitemaps"
+msgstr ""
+
+#: src/pages/Settings.tsx:505
 msgid "Output JSON-LD schema"
 msgstr ""
 
-#: src/pages/Settings.tsx:449
+#: src/pages/Settings.tsx:509
 msgid "Track AI referrals"
 msgstr ""
 
-#: src/pages/Settings.tsx:462
+#: src/pages/Settings.tsx:530
 msgid "Embeddings"
 msgstr ""
 
-#: src/pages/Settings.tsx:465
+#: src/pages/Settings.tsx:533
 msgid "Provider"
 msgstr ""
 
-#: src/pages/Settings.tsx:483
-#: src/pages/Settings.tsx:604
+#: src/pages/Settings.tsx:554
+#: src/pages/Settings.tsx:681
 msgid "An API key is configured."
 msgstr ""
 
-#: src/pages/Settings.tsx:484
+#: src/pages/Settings.tsx:555
 msgid "No API key configured. Set MEDORA_EMBEDDING_API_KEY in wp-config.php rather than storing it in the database."
 msgstr ""
 
-#: src/pages/Settings.tsx:490
+#: src/pages/Settings.tsx:561
 msgid "Switching provider clears the existing index — the two vector spaces are not comparable — and content is re-embedded in the background."
 msgstr ""
 
-#: src/pages/Settings.tsx:496
+#: src/pages/Settings.tsx:567
 msgid "Content language"
 msgstr ""
 
-#: src/pages/Settings.tsx:499
+#: src/pages/Settings.tsx:570
 msgid "Your pages are written in"
 msgstr ""
 
-#: src/pages/Settings.tsx:515
+#: src/pages/Settings.tsx:586
 msgid "Set this when your content is in a different language from the WordPress admin — a Persian site running an English admin is a common case. It is what gets declared to AI crawlers in your structured data and llms.txt, and what the AI Writer writes in."
 msgstr ""
 
-#: src/pages/Settings.tsx:524
+#: src/pages/Settings.tsx:595
 msgid "How much to show"
 msgstr ""
 
-#: src/pages/Settings.tsx:534
+#: src/pages/Settings.tsx:605
 msgid "Beginner — score, problems, fixes"
 msgstr ""
 
-#: src/pages/Settings.tsx:540
+#: src/pages/Settings.tsx:611
 msgid "Professional — adds entities, analytics, passages"
 msgstr ""
 
-#: src/pages/Settings.tsx:546
+#: src/pages/Settings.tsx:617
 msgid "Agency — adds the graph, modules, white-label"
 msgstr ""
 
-#: src/pages/Settings.tsx:552
+#: src/pages/Settings.tsx:623
 msgid "Enterprise — adds the audit log and queue health"
 msgstr ""
 
-#: src/pages/Settings.tsx:559
+#: src/pages/Settings.tsx:630
 msgid "Changes what is on screen, nothing else. It grants no extra access and takes none away — permissions come from WordPress roles, and the API still serves everything your role allows. Reload after saving."
 msgstr ""
 
-#: src/pages/Settings.tsx:575
-msgid "Let a model rewrite page summaries and canonical answers"
-msgstr ""
-
-#: src/pages/Settings.tsx:581
-msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
-msgstr ""
-
-#: src/pages/Settings.tsx:587
-msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
-msgstr ""
-
-#: src/pages/Settings.tsx:594
-msgid "Model"
-msgstr ""
-
-#: src/pages/Settings.tsx:605
-msgid "No API key configured. Set MEDORA_LLM_API_KEY in wp-config.php rather than storing it in the database."
-msgstr ""
-
-#: src/pages/Settings.tsx:61
+#: src/pages/Settings.tsx:65
 msgid "not running"
 msgstr ""
 
-#: src/pages/Settings.tsx:618
+#: src/pages/Settings.tsx:650
+msgid "Let a model rewrite page summaries and canonical answers"
+msgstr ""
+
+#: src/pages/Settings.tsx:656
+msgid "Off by default. With this off, every summary Medora publishes is built from your own sentences and nothing is sent to a third party."
+msgstr ""
+
+#: src/pages/Settings.tsx:662
+msgid "When on, each generated field is checked against the page it came from and discarded if it introduces wording or figures the page does not contain. Rejections are recorded in the audit log."
+msgstr ""
+
+#: src/pages/Settings.tsx:669
+msgid "Model"
+msgstr ""
+
+#: src/pages/Settings.tsx:682
+msgid "No API key configured. Set MEDORA_LLM_API_KEY in wp-config.php rather than storing it in the database."
+msgstr ""
+
+#: src/pages/Settings.tsx:695
 msgid "Save settings"
 msgstr ""
 
-#: src/pages/Wizard.tsx:137
+#. translators: %s: module name.
+#: src/pages/Settings.tsx:95
+msgid "Enable %s"
+msgstr ""
+
+#: src/pages/Wizard.tsx:148
 msgid "Analyse my existing content now (runs in the background)"
 msgstr ""
 
-#: src/pages/Wizard.tsx:154
+#: src/pages/Wizard.tsx:165
 msgid "Back"
 msgstr ""
 
 #. translators: 1: current step, 2: total steps.
-#: src/pages/Wizard.tsx:160
+#: src/pages/Wizard.tsx:171
 msgid "Step %1$d of %2$d"
 msgstr ""
 
-#: src/pages/Wizard.tsx:174
+#: src/pages/Wizard.tsx:185
 msgid "Setting up…"
 msgstr ""
 
-#: src/pages/Wizard.tsx:175
+#: src/pages/Wizard.tsx:186
 msgid "Finish setup"
 msgstr ""
 
-#: src/pages/Wizard.tsx:183
+#: src/pages/Wizard.tsx:194
 msgid "Continue"
 msgstr ""

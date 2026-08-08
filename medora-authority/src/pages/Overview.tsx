@@ -16,7 +16,11 @@ export function Overview(): JSX.Element {
 	);
 
 	if ( loading && ! data ) {
-		return <p className="medora-loading">{ __( 'Loading…', 'medora-authority' ) }</p>;
+		return (
+			<p className="medora-loading">
+				{ __( 'Loading…', 'medora-authority' ) }
+			</p>
+		);
 	}
 
 	if ( error ) {
@@ -53,9 +57,15 @@ export function Overview(): JSX.Element {
 					}
 					aria-label={ __( 'Reporting window', 'medora-authority' ) }
 				>
-					<option value={ 7 }>{ __( 'Last 7 days', 'medora-authority' ) }</option>
-					<option value={ 30 }>{ __( 'Last 30 days', 'medora-authority' ) }</option>
-					<option value={ 90 }>{ __( 'Last 90 days', 'medora-authority' ) }</option>
+					<option value={ 7 }>
+						{ __( 'Last 7 days', 'medora-authority' ) }
+					</option>
+					<option value={ 30 }>
+						{ __( 'Last 30 days', 'medora-authority' ) }
+					</option>
+					<option value={ 90 }>
+						{ __( 'Last 90 days', 'medora-authority' ) }
+					</option>
 				</select>
 			</header>
 
@@ -63,7 +73,10 @@ export function Overview(): JSX.Element {
 				<ScoreRing
 					score={ authority?.average ?? 0 }
 					grade={ authority?.grade }
-					label={ __( 'Site AI Authority Score', 'medora-authority' ) }
+					label={ __(
+						'Site AI Authority Score',
+						'medora-authority'
+					) }
 					size={ 152 }
 				/>
 
@@ -88,7 +101,10 @@ export function Overview(): JSX.Element {
 							crawlers
 								? sprintf(
 										/* translators: 1: crawlers seen, 2: crawlers known. */
-										__( '%1$d of %2$d known crawlers', 'medora-authority' ),
+										__(
+											'%1$d of %2$d known crawlers',
+											'medora-authority'
+										),
 										crawlers.coverage.seen,
 										crawlers.coverage.known
 								  )
@@ -96,7 +112,10 @@ export function Overview(): JSX.Element {
 						}
 					/>
 					<StatCard
-						label={ __( 'Visits from assistants', 'medora-authority' ) }
+						label={ __(
+							'Visits from assistants',
+							'medora-authority'
+						) }
 						value={ referrals?.total_visits ?? 0 }
 						trend={ referrals?.change_percent ?? null }
 						tone={
@@ -126,18 +145,22 @@ export function Overview(): JSX.Element {
 			<div className="medora-grid medora-grid--2">
 				{ referrals && (
 					<section className="medora-card">
-						<h2>{ __( 'AI referral traffic', 'medora-authority' ) }</h2>
+						<h2>
+							{ __( 'AI referral traffic', 'medora-authority' ) }
+						</h2>
 						<Sparkline
 							series={ collapseSeries( referrals.series ) }
 							label={ __( 'AI referrals', 'medora-authority' ) }
 						/>
 						<ul className="medora-list">
-							{ referrals.sources.slice( 0, 6 ).map( ( source ) => (
-								<li key={ source.source_slug }>
-									<span>{ source.label }</span>
-									<strong>{ source.visits }</strong>
-								</li>
-							) ) }
+							{ referrals.sources
+								.slice( 0, 6 )
+								.map( ( source ) => (
+									<li key={ source.source_slug }>
+										<span>{ source.label }</span>
+										<strong>{ source.visits }</strong>
+									</li>
+								) ) }
 							{ referrals.sources.length === 0 && (
 								<li className="medora-empty">
 									{ __(
@@ -152,21 +175,28 @@ export function Overview(): JSX.Element {
 
 				{ crawlers && (
 					<section className="medora-card">
-						<h2>{ __( 'AI crawler activity', 'medora-authority' ) }</h2>
+						<h2>
+							{ __( 'AI crawler activity', 'medora-authority' ) }
+						</h2>
 						<Sparkline
 							series={ collapseSeries( crawlers.series ) }
 							label={ __( 'Crawler hits', 'medora-authority' ) }
 						/>
 						<ul className="medora-list">
-							{ crawlers.crawlers.slice( 0, 6 ).map( ( crawler ) => (
-								<li key={ crawler.slug }>
-									<span>
-										{ crawler.name }
-										<em className="medora-muted"> · { crawler.vendor }</em>
-									</span>
-									<strong>{ crawler.hits }</strong>
-								</li>
-							) ) }
+							{ crawlers.crawlers
+								.slice( 0, 6 )
+								.map( ( crawler ) => (
+									<li key={ crawler.slug }>
+										<span>
+											{ crawler.name }
+											<em className="medora-muted">
+												{ ' ' }
+												· { crawler.vendor }
+											</em>
+										</span>
+										<strong>{ crawler.hits }</strong>
+									</li>
+								) ) }
 						</ul>
 
 						{ crawlers.missing.length > 0 && (
@@ -191,7 +221,12 @@ export function Overview(): JSX.Element {
 			{ authority && (
 				<div className="medora-grid medora-grid--2">
 					<section className="medora-card">
-						<h2>{ __( 'Biggest wins available', 'medora-authority' ) }</h2>
+						<h2>
+							{ __(
+								'Biggest wins available',
+								'medora-authority'
+							) }
+						</h2>
 						<p className="medora-muted">
 							{ __(
 								'The issues that recur most across your site — one fix each, applied broadly.',
@@ -206,7 +241,10 @@ export function Overview(): JSX.Element {
 										<span className="medora-pill">
 											{ sprintf(
 												/* translators: %d: number of pages. */
-												__( '%d pages', 'medora-authority' ),
+												__(
+													'%d pages',
+													'medora-authority'
+												),
 												issue.count
 											) }
 										</span>
@@ -233,7 +271,6 @@ export function Overview(): JSX.Element {
 		</div>
 	);
 }
-
 
 /**
  * Background work, broken down by queue.
@@ -275,7 +312,9 @@ function QueueHealth( {
 							<td>{ counts.running }</td>
 							<td
 								className={
-									counts.failed > 0 ? 'medora-error' : undefined
+									counts.failed > 0
+										? 'medora-error'
+										: undefined
 								}
 							>
 								{ counts.failed }

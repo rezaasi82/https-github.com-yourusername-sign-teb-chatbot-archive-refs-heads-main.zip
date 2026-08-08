@@ -79,15 +79,24 @@ export function App(): JSX.Element {
 
 	return (
 		<div className="medora-app" dir={ boot.isRtl ? 'rtl' : 'ltr' }>
-			<nav className="medora-tabs" aria-label={ __( 'Medora sections', 'medora-authority' ) }>
+			<nav
+				className="medora-tabs"
+				aria-label={ __( 'Medora sections', 'medora-authority' ) }
+			>
 				{ (
 					[
 						[ 'overview', __( 'Overview', 'medora-authority' ) ],
 						[ 'entities', __( 'Entities', 'medora-authority' ) ],
-						[ 'graph', __( 'Knowledge Graph', 'medora-authority' ) ],
+						[
+							'graph',
+							__( 'Knowledge Graph', 'medora-authority' ),
+						],
 						[ 'content', __( 'Content', 'medora-authority' ) ],
 						[ 'crawlers', __( 'AI Crawlers', 'medora-authority' ) ],
-						[ 'analytics', __( 'AI Analytics', 'medora-authority' ) ],
+						[
+							'analytics',
+							__( 'AI Analytics', 'medora-authority' ),
+						],
 						[ 'settings', __( 'Settings', 'medora-authority' ) ],
 					] as const
 				 ).map( ( [ id, label ] ) => (

@@ -1,0 +1,9 @@
+{
+	"extends": "@wordpress/stylelint-config/scss",
+	"rules": {
+		"selector-class-pattern": null,
+		"no-descending-specificity": null
+	},
+	"_selector-class-pattern": "Matches the wp-scripts default: BEM `__element` and `--modifier` names are the convention here and the stock pattern rejects them.",
+	"_no-descending-specificity": "The stylesheet is grouped by component, not by specificity, so a component's own `li` rule lands after an unrelated component's `li:last-child`. Every pair the rule flags is on classes that never meet — `.medora-list`, `.medora-modules`, `.medora-issues`, `.medora-breakdown`, `.medora-checklist` and `.medora-wizard__progress` are applied to separate elements and never nest — so none of them can shadow another. Satisfying the rule would mean interleaving unrelated components by specificity, which trades a real property (a reader can find a component's rules in one place) for a theoretical one."
+}

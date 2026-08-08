@@ -12,7 +12,8 @@ import './editor.css';
  */
 function init(): void {
 	const box = document.querySelector< HTMLElement >( '.medora-metabox' );
-	const button = box?.querySelector< HTMLButtonElement >( '.medora-reanalyze' );
+	const button =
+		box?.querySelector< HTMLButtonElement >( '.medora-reanalyze' );
 
 	if ( ! box || ! button ) {
 		return;

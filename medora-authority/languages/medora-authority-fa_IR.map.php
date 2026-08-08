@@ -893,7 +893,8 @@ return [
     'Pages assistants send people to' => 'صفحه‌هایی که دستیارها مردم را به آن‌ها می‌فرستند',
     '%1$s #%2$d' => '%1$s شمارهٔ %2$d',
     'The model reply could not be used for %s.' => 'پاسخ مدل برای %s قابل استفاده نبود.',
-    '%s%% supported' => '%s%% پشتیبانی‌شده',
+    '%1$s%% supported' => '%1$s%% پشتیبانی‌شده',
+    'Enable %s' => 'فعال‌سازی %s',
     'figures not in the page: %s' => 'اعدادی که در صفحه نیستند: %s',
     'Every change Medora made, and every generated sentence it accepted or threw away. Kept for the retention period set in Settings.' => 'هر تغییری که مدورا اعمال کرده، و هر جملهٔ تولیدشده‌ای که پذیرفته یا دور انداخته است. تا پایان دورهٔ نگهداری تعیین‌شده در تنظیمات نگه داشته می‌شود.',
 

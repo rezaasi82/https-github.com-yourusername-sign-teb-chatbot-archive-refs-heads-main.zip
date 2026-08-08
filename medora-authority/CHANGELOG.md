@@ -4,6 +4,90 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] — 2026-08-08
+
+### There is now something to install
+
+Until this release the plugin existed only as source. The dashboard bundle, the
+compiled stylesheets and the binary translation catalogues are all build
+outputs, all correctly gitignored, and all required at runtime — so a checkout
+zipped up would activate, show an empty dashboard and speak English on a Persian
+site. `bin/package.php` builds the archive that actually installs.
+
+The file list is an allowlist, so `src/`, `tests/`, `bin/`, `docs/`,
+`node_modules/`, `vendor/`, the translation map and every dotfile are absent
+because they are not named rather than because a rule excluded them. It refuses
+to package a bundle older than `src/`, a catalogue older than its `.po`, or a
+version that disagrees across the plugin header, `package.json`, `readme.txt`
+and this file. Both refusals were checked by breaking a copy of the tree.
+
+CI now builds the archive on every push and uploads it as a run artifact;
+pushing a `medora-authority-v<version>` tag publishes it as a release, after
+checking the tag against the plugin header.
+
+### Fixed — the first real build found four defects
+
+The toolchain had never been run. It disagreed with the PHP in four places:
+
+- **The dashboard stylesheet never loaded.** `src/style.css` is pulled into its
+  own chunk and named `./style-app` by the wp-scripts default, so the build
+  emitted `assets/css/style-app.css` while `AssetManager::enqueueApp()` asked
+  for `assets/css/app.css`. The dashboard would have rendered unstyled.
+- **Both RTL stylesheets landed in `assets/js/`.** `wp_style_add_data( …, 'rtl',
+  'replace' )` swaps `app.css` for `app-rtl.css` in the same directory, so an
+  RTL site — the common case for this product, not the edge one — would have
+  loaded no stylesheet at all.
+- **`api.recommendations()` returned `Record<string, unknown>`** and the caller
+  cast it. `Recommendations` is now declared in `src/types.ts` alongside the
+  other response shapes, so the controller and the screen are checked against
+  each other rather than papered over at one call site.
+- **`src/api/client.test.ts` had never executed.** Jest refuses a `jest.mock()`
+  factory that closes over a variable not prefixed `mock`, so the whole suite
+  failed to load. It passes now, and one of its assertions was wrong: form
+  encoding writes a space as `+`, so `decodeURIComponent` never round-tripped
+  the Persian query it was checking.
+
+### Fixed — two components had their own grade thresholds
+
+`format.ts` says the grade bands exist in one place because two copies would
+eventually disagree. Two components had already made their own: the passage
+panel coloured at 80/55 and the content table at 65, so a page scoring 95 was
+drawn in the same colour as one scoring 70. Both now call `gradeFor()`.
+
+### Fixed — a duplicate `.medora-meter` reshaped every meter
+
+A later block redefined the shared class for one screen's needs, silently
+changing the border radius and margin of the two meters in Entities that had
+nothing to do with it. The box is defined once; the spacing is scoped to the
+screen that wanted it.
+
+### Fixed — eight controls were not labelled
+
+WordPress requires explicit `htmlFor`/`id` association rather than nesting.
+Eight labels wrapped their input instead, and the module switches had no
+accessible text at all — a screen reader announced a list of unnamed
+checkboxes. Each switch now names the module it toggles.
+
+### Changed
+
+- `%s%% supported` became `%1$s%% supported`: mixing ordered and unordered
+  placeholders in one string is a translation hazard. Persian follows, so the
+  catalogue is 741 of 741.
+- `jsdoc/require-param` is off for the TypeScript sources. Its autofix wrote 45
+  empty `@param root0.value` stubs onto the destructured components in a single
+  run; the types already declare what those comments repeated.
+- `no-descending-specificity` is off, with the reasoning recorded in
+  `.stylelintrc.json`: every pair it flags is on classes that are never applied
+  to the same element, and satisfying it would mean interleaving unrelated
+  components by specificity.
+
+### Still true
+
+PHPUnit has never run in this environment — `composer install` cannot
+authenticate to github.com from here, so the PHP suite remains unexecuted and
+CI is the first place it will run. The JS suite does now run: 38 tests, all
+passing.
+
 ## [0.14.0] — 2026-08-03
 
 ### Persian is complete — 740 of 740

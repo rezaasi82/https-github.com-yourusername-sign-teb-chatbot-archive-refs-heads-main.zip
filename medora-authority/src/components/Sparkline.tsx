@@ -39,7 +39,9 @@ export function Sparkline( {
 
 		return {
 			path: `M ${ points.join( ' L ' ) }`,
-			area: `M 0,${ height } L ${ points.join( ' L ' ) } L ${ width },${ height } Z`,
+			area: `M 0,${ height } L ${ points.join(
+				' L '
+			) } L ${ width },${ height } Z`,
 			max: maximum,
 		};
 	}, [ series, height ] );

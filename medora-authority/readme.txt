@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.14.0
+Stable tag: 0.15.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,17 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 5. Per-page authority in the editor, with prioritised fixes.
 
 == Changelog ==
+
+= 0.15.0 =
+* The plugin can now be built into an installable ZIP — `composer package`, or
+  download the archive attached to a tagged release.
+* Fixed: the dashboard stylesheet and both RTL stylesheets were built under
+  names WordPress does not look for, so the dashboard loaded unstyled and an
+  RTL site loaded no styles at all.
+* Fixed: two screens used their own grade colour thresholds instead of the
+  shared ones, so a page scoring 95 was coloured the same as one scoring 70.
+* Fixed: eight form controls were not properly labelled, and the module
+  switches had no accessible text for a screen reader.
 
 = 0.14.0 =
 * Persian is now complete — all 740 strings across the plugin and dashboard.

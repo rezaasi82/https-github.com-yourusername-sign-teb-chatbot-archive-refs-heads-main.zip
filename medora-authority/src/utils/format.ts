@@ -9,12 +9,22 @@ import type { Grade } from '../types';
  * copies would eventually disagree.
  */
 
-/** Must mirror `AuthorityScoreCalculator::gradeFor()`. */
+/**
+ * Must mirror `AuthorityScoreCalculator::gradeFor()`.
+ */
 export function gradeFor( score: number ): Grade {
-	if ( score >= 90 ) return 'A';
-	if ( score >= 80 ) return 'B';
-	if ( score >= 65 ) return 'C';
-	if ( score >= 50 ) return 'D';
+	if ( score >= 90 ) {
+		return 'A';
+	}
+	if ( score >= 80 ) {
+		return 'B';
+	}
+	if ( score >= 65 ) {
+		return 'C';
+	}
+	if ( score >= 50 ) {
+		return 'D';
+	}
 	return 'F';
 }
 

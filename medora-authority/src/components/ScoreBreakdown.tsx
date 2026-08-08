@@ -54,8 +54,7 @@ export function ScoreBreakdown( { postId }: ScoreBreakdownProps ): JSX.Element {
 	// Worst contribution first: the dimension costing the most points is the
 	// one worth reading about.
 	const ordered = [ ...data.components ].sort(
-		( a, b ) =>
-			( 100 - a.score ) * a.weight - ( 100 - b.score ) * b.weight
+		( a, b ) => ( 100 - a.score ) * a.weight - ( 100 - b.score ) * b.weight
 	);
 
 	return (
@@ -74,9 +73,7 @@ export function ScoreBreakdown( { postId }: ScoreBreakdownProps ): JSX.Element {
 						key={ component.id }
 						component={ component }
 						share={
-							totalWeight > 0
-								? component.weight / totalWeight
-								: 0
+							totalWeight > 0 ? component.weight / totalWeight : 0
 						}
 					/>
 				) ) }
@@ -108,7 +105,10 @@ function Dimension( {
 				<span className="medora-muted">
 					{ sprintf(
 						/* translators: 1: share of the overall score, 2: points this dimension is costing. */
-						__( '%1$d%% of the score · costing %2$s points', 'medora-authority' ),
+						__(
+							'%1$d%% of the score · costing %2$s points',
+							'medora-authority'
+						),
 						Math.round( share * 100 ),
 						cost.toFixed( 1 )
 					) }
@@ -127,7 +127,9 @@ function Dimension( {
 			>
 				<span
 					className={ `medora-meter__fill medora-meter__fill--${ component.grade.toLowerCase() }` }
-					style={ { inlineSize: `${ percentOf( component.score, 100 ) }%` } }
+					style={ {
+						inlineSize: `${ percentOf( component.score, 100 ) }%`,
+					} }
 				/>
 			</div>
 
@@ -155,7 +157,9 @@ function Dimension( {
 				</ul>
 			) }
 
-			{ shows( 'raw_metrics' ) && <Metrics metrics={ component.metrics } /> }
+			{ shows( 'raw_metrics' ) && (
+				<Metrics metrics={ component.metrics } />
+			) }
 		</li>
 	);
 }

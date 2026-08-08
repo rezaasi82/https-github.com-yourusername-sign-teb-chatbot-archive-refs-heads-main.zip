@@ -2,13 +2,14 @@ import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { api, shows } from '../api/client';
 import { useAsync } from '../hooks/useAsync';
+import { gradeFor } from '../utils/format';
 import { ScoreRing } from '../components/ScoreRing';
 import { DeductionList } from '../components/DeductionList';
 import { BriefPanel } from '../components/BriefPanel';
 import { LinkPanel } from '../components/LinkPanel';
 import { PassagePanel } from '../components/PassagePanel';
 import { ScoreBreakdown } from '../components/ScoreBreakdown';
-import type { Deduction, SiteReport } from '../types';
+import type { Recommendations, SiteReport } from '../types';
 
 type PanelTab = 'fixes' | 'brief' | 'links' | 'passages' | 'score_breakdown';
 
@@ -25,22 +26,6 @@ const TABS: ReadonlyArray< readonly [ PanelTab, string ] > = [
 	[ 'score_breakdown', __( 'Score', 'medora-authority' ) ],
 ];
 
-interface Recommendations {
-	post_id: number;
-	score: number;
-	grade: 'A' | 'B' | 'C' | 'D' | 'F';
-	potential_score: number;
-	actions: Array<
-		Deduction & { title: string; effort: number; impact_ratio: number }
-	>;
-	missing_concepts: string[];
-	answer_first: {
-		needs_rewrite: boolean;
-		current_opening: string;
-		guidance: string;
-	};
-}
-
 export function Content(): JSX.Element {
 	const [ postId, setPostId ] = useState< number | null >( null );
 	const [ tab, setTab ] = useState< PanelTab >( 'fixes' );
@@ -50,7 +35,7 @@ export function Content(): JSX.Element {
 		() =>
 			postId === null
 				? Promise.resolve( null )
-				: ( api.recommendations( postId ) as Promise< Recommendations > ),
+				: api.recommendations( postId ),
 		[ postId ]
 	);
 
@@ -84,7 +69,9 @@ export function Content(): JSX.Element {
 								key={ page.object_id }
 								onClick={ () => setPostId( page.object_id ) }
 								className={
-									postId === page.object_id ? 'is-selected' : ''
+									postId === page.object_id
+										? 'is-selected'
+										: ''
 								}
 							>
 								<td>
@@ -93,9 +80,9 @@ export function Content(): JSX.Element {
 								</td>
 								<td>
 									<span
-										className={ `medora-grade medora-grade--${
-											page.score >= 65 ? 'c' : 'f'
-										}` }
+										className={ `medora-grade medora-grade--${ gradeFor(
+											page.score
+										).toLowerCase() }` }
 									>
 										{ page.score.toFixed( 0 ) }
 									</span>
@@ -135,7 +122,9 @@ export function Content(): JSX.Element {
 									key={ id }
 									type="button"
 									className={ tab === id ? 'is-active' : '' }
-									aria-current={ tab === id ? 'true' : undefined }
+									aria-current={
+										tab === id ? 'true' : undefined
+									}
 									onClick={ () => setTab( id ) }
 								>
 									{ label }

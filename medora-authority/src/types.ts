@@ -59,6 +59,29 @@ export interface PostScore {
 	cached?: boolean;
 }
 
+/**
+ * `GET score/{id}/recommendations` — the ordered fix list for one page.
+ *
+ * `actions` is a deduction with the cost of fixing it attached, so the list can
+ * be sorted by what the page gets back per unit of work rather than by severity
+ * alone.
+ */
+export interface Recommendations {
+	post_id: number;
+	score: number;
+	grade: Grade;
+	potential_score: number;
+	actions: Array<
+		Deduction & { title: string; effort: number; impact_ratio: number }
+	>;
+	missing_concepts: string[];
+	answer_first: {
+		needs_rewrite: boolean;
+		current_opening: string;
+		guidance: string;
+	};
+}
+
 export interface SiteReport {
 	average: number;
 	grade: Grade;
@@ -163,7 +186,11 @@ export interface CrawlerReport {
 		last_seen: string;
 	} >;
 	series: Array< { day: string; crawler_slug: string; hits: number } >;
-	top_paths: Array< { request_uri: string; object_id: number; hits: number } >;
+	top_paths: Array< {
+		request_uri: string;
+		object_id: number;
+		hits: number;
+	} >;
 	missing: Array< { slug: string; name: string; vendor: string } >;
 }
 
@@ -260,7 +287,12 @@ export interface Brief {
 		covered: string[];
 		add: Array< { name: string; type: string; why: string } >;
 	};
-	evidence: { required: boolean; current: number; target: number; note: string };
+	evidence: {
+		required: boolean;
+		current: number;
+		target: number;
+		note: string;
+	};
 	internal_links: LinkSuggestion[];
 	checklist: Array< { done: boolean; task: string } >;
 }

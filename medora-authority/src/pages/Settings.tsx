@@ -30,7 +30,11 @@ function Modules(): JSX.Element {
 	};
 
 	if ( loading && ! data ) {
-		return <p className="medora-loading">{ __( 'Loading…', 'medora-authority' ) }</p>;
+		return (
+			<p className="medora-loading">
+				{ __( 'Loading…', 'medora-authority' ) }
+			</p>
+		);
 	}
 
 	return (
@@ -58,20 +62,39 @@ function Modules(): JSX.Element {
 							{ module.enabled && ! module.booted && (
 								<span className="medora-pill medora-pill--warn">
 									{ module.skip_reason ||
-										__( 'not running', 'medora-authority' ) }
+										__(
+											'not running',
+											'medora-authority'
+										) }
 								</span>
 							) }
-							<p className="medora-muted">{ module.description }</p>
+							<p className="medora-muted">
+								{ module.description }
+							</p>
 						</div>
 
-						<label className="medora-switch">
+						<label
+							className="medora-switch"
+							htmlFor={ `medora-module-${ module.id }` }
+						>
 							<input
+								id={ `medora-module-${ module.id }` }
 								type="checkbox"
 								checked={ module.enabled }
 								disabled={
-									busy === module.id || ! boot.capabilities.manage
+									busy === module.id ||
+									! boot.capabilities.manage
 								}
 								onChange={ () => toggle( module ) }
+								// The switch is drawn by the span below, so
+								// there is no visible text for a screen reader
+								// to read out — without this it announces an
+								// unnamed checkbox in a list of them.
+								aria-label={ sprintf(
+									/* translators: %s: module name. */
+									__( 'Enable %s', 'medora-authority' ),
+									module.title
+								) }
 							/>
 							<span />
 						</label>
@@ -83,7 +106,10 @@ function Modules(): JSX.Element {
 }
 
 function License(): JSX.Element {
-	const { data, reload } = useAsync< LicenseState >( () => api.license(), [] );
+	const { data, reload } = useAsync< LicenseState >(
+		() => api.license(),
+		[]
+	);
 	const [ key, setKey ] = useState( '' );
 	const [ message, setMessage ] = useState( '' );
 	const [ busy, setBusy ] = useState( false );
@@ -111,24 +137,27 @@ function License(): JSX.Element {
 			<p>
 				<strong>{ data?.tier_label ?? '—' }</strong>
 				{ data?.status && (
-					<span className={ `medora-pill medora-pill--${ data.status }` }>
+					<span
+						className={ `medora-pill medora-pill--${ data.status }` }
+					>
 						{ data.status }
 					</span>
 				) }
 			</p>
 
-			{ data?.grace_days_left !== null && data?.grace_days_left !== undefined && (
-				<div className="medora-notice medora-notice--warning">
-					{ sprintf(
-						/* translators: %d: days remaining. */
-						__(
-							'Licence expired. Everything keeps working for %d more day(s).',
-							'medora-authority'
-						),
-						data.grace_days_left
-					) }
-				</div>
-			) }
+			{ data?.grace_days_left !== null &&
+				data?.grace_days_left !== undefined && (
+					<div className="medora-notice medora-notice--warning">
+						{ sprintf(
+							/* translators: %d: days remaining. */
+							__(
+								'Licence expired. Everything keeps working for %d more day(s).',
+								'medora-authority'
+							),
+							data.grace_days_left
+						) }
+					</div>
+				) }
 
 			{ data?.masked_key ? (
 				<>
@@ -150,7 +179,10 @@ function License(): JSX.Element {
 								disabled={ busy }
 								onClick={ () => run( 'transfer' ) }
 							>
-								{ __( 'Move licence to this domain', 'medora-authority' ) }
+								{ __(
+									'Move licence to this domain',
+									'medora-authority'
+								) }
 							</button>
 						) }
 
@@ -209,7 +241,10 @@ function Security(): JSX.Element {
 			<h2>
 				{ sprintf(
 					/* translators: 1: checks passed, 2: total checks. */
-					__( 'Configuration check — %1$d of %2$d passing', 'medora-authority' ),
+					__(
+						'Configuration check — %1$d of %2$d passing',
+						'medora-authority'
+					),
 					data.passed,
 					data.passed + data.failed
 				) }
@@ -259,7 +294,10 @@ function WhiteLabel( {
 		[
 			'product_name',
 			__( 'Product name', 'medora-authority' ),
-			__( 'Shown as the plugin name and the dashboard title.', 'medora-authority' ),
+			__(
+				'Shown as the plugin name and the dashboard title.',
+				'medora-authority'
+			),
 		],
 		[
 			'short_name',
@@ -269,13 +307,12 @@ function WhiteLabel( {
 		[
 			'vendor_name',
 			__( 'Your company', 'medora-authority' ),
-			__( 'Replaces the author on the Plugins screen.', 'medora-authority' ),
+			__(
+				'Replaces the author on the Plugins screen.',
+				'medora-authority'
+			),
 		],
-		[
-			'vendor_url',
-			__( 'Your website', 'medora-authority' ),
-			'',
-		],
+		[ 'vendor_url', __( 'Your website', 'medora-authority' ), '' ],
 		[
 			'support_url',
 			__( 'Support URL', 'medora-authority' ),
@@ -293,8 +330,12 @@ function WhiteLabel( {
 				) }
 			</p>
 
-			<label className="medora-checkbox">
+			<label
+				className="medora-checkbox"
+				htmlFor="medora-branding-enabled"
+			>
 				<input
+					id="medora-branding-enabled"
 					type="checkbox"
 					checked={ enabled }
 					onChange={ ( event ) =>
@@ -308,7 +349,9 @@ function WhiteLabel( {
 				<>
 					{ fields.map( ( [ key, label, help ] ) => (
 						<div key={ key }>
-							<label htmlFor={ `medora-wl-${ key }` }>{ label }</label>
+							<label htmlFor={ `medora-wl-${ key }` }>
+								{ label }
+							</label>
 							<input
 								id={ `medora-wl-${ key }` }
 								type={ key.endsWith( '_url' ) ? 'url' : 'text' }
@@ -333,8 +376,12 @@ function WhiteLabel( {
 						}
 					/>
 
-					<label className="medora-checkbox">
+					<label
+						className="medora-checkbox"
+						htmlFor="medora-branding-hide-vendor"
+					>
 						<input
+							id="medora-branding-hide-vendor"
 							type="checkbox"
 							checked={ Boolean( value.hide_vendor ) }
 							onChange={ ( event ) =>
@@ -415,7 +462,9 @@ export function Settings(): JSX.Element {
 				<select
 					id="medora-site-mode"
 					value={ String( draft.site_mode ?? 'general' ) }
-					onChange={ ( event ) => set( 'site_mode', event.target.value ) }
+					onChange={ ( event ) =>
+						set( 'site_mode', event.target.value )
+					}
 				>
 					<option value="general">
 						{ __( 'General', 'medora-authority' ) }
@@ -443,17 +492,36 @@ export function Settings(): JSX.Element {
 
 				{ (
 					[
-						[ 'llms_txt_enabled', __( 'Publish llms.txt', 'medora-authority' ) ],
-						[ 'sitemap_enabled', __( 'Publish AI sitemaps', 'medora-authority' ) ],
-						[ 'schema_enabled', __( 'Output JSON-LD schema', 'medora-authority' ) ],
-						[ 'analytics_enabled', __( 'Track AI referrals', 'medora-authority' ) ],
+						[
+							'llms_txt_enabled',
+							__( 'Publish llms.txt', 'medora-authority' ),
+						],
+						[
+							'sitemap_enabled',
+							__( 'Publish AI sitemaps', 'medora-authority' ),
+						],
+						[
+							'schema_enabled',
+							__( 'Output JSON-LD schema', 'medora-authority' ),
+						],
+						[
+							'analytics_enabled',
+							__( 'Track AI referrals', 'medora-authority' ),
+						],
 					] as const
 				 ).map( ( [ key, label ] ) => (
-					<label key={ key } className="medora-checkbox">
+					<label
+						key={ key }
+						className="medora-checkbox"
+						htmlFor={ `medora-setting-${ key }` }
+					>
 						<input
+							id={ `medora-setting-${ key }` }
 							type="checkbox"
 							checked={ Boolean( draft[ key ] ) }
-							onChange={ ( event ) => set( key, event.target.checked ) }
+							onChange={ ( event ) =>
+								set( key, event.target.checked )
+							}
 						/>
 						{ label }
 					</label>
@@ -472,7 +540,10 @@ export function Settings(): JSX.Element {
 					}
 				>
 					<option value="hashing">
-						{ __( 'Built-in (offline, no API key)', 'medora-authority' ) }
+						{ __(
+							'Built-in (offline, no API key)',
+							'medora-authority'
+						) }
 					</option>
 					<option value="openai">
 						{ __( 'OpenAI-compatible API', 'medora-authority' ) }
@@ -564,8 +635,12 @@ export function Settings(): JSX.Element {
 
 				<h3>{ __( 'AI Writer', 'medora-authority' ) }</h3>
 
-				<label className="medora-checkbox">
+				<label
+					className="medora-checkbox"
+					htmlFor="medora-setting-llm-enabled"
+				>
 					<input
+						id="medora-setting-llm-enabled"
 						type="checkbox"
 						checked={ Boolean( draft.llm_enabled ) }
 						onChange={ ( event ) =>
@@ -597,7 +672,9 @@ export function Settings(): JSX.Element {
 					id="medora-llm-model"
 					type="text"
 					value={ String( draft.llm_model ?? '' ) }
-					onChange={ ( event ) => set( 'llm_model', event.target.value ) }
+					onChange={ ( event ) =>
+						set( 'llm_model', event.target.value )
+					}
 				/>
 				<p className="medora-muted">
 					{ data?.has_llm_key
@@ -617,7 +694,9 @@ export function Settings(): JSX.Element {
 					>
 						{ __( 'Save settings', 'medora-authority' ) }
 					</button>
-					{ status && <span className="medora-muted">{ status }</span> }
+					{ status && (
+						<span className="medora-muted">{ status }</span>
+					) }
 				</div>
 			</section>
 

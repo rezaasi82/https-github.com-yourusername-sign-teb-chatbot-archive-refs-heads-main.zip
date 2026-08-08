@@ -164,7 +164,9 @@ export const api = {
 		} ),
 
 	recommendations: ( id: number ) =>
-		request< Record< string, unknown > >( `score/${ id }/recommendations` ),
+		request< import('../types').Recommendations >(
+			`score/${ id }/recommendations`
+		),
 
 	brief: ( id: number ) =>
 		request< import('../types').Brief >( `score/${ id }/brief` ),

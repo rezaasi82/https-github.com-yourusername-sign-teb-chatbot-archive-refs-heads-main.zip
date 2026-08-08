@@ -75,7 +75,9 @@ export function ScoreRing( {
 
 			<div className="medora-score-ring__center" aria-hidden="true">
 				<strong>{ formatScore( clamped ) }</strong>
-				<span className={ `medora-grade medora-grade--${ resolved.toLowerCase() }` }>
+				<span
+					className={ `medora-grade medora-grade--${ resolved.toLowerCase() }` }
+				>
 					{ resolved }
 				</span>
 			</div>

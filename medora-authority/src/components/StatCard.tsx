@@ -33,7 +33,8 @@ export function StatCard( {
 						trend >= 0 ? 'up' : 'down'
 					}` }
 				>
-					{ trend >= 0 ? '▲' : '▼' } { Math.abs( trend ).toFixed( 1 ) }%
+					{ trend >= 0 ? '▲' : '▼' }{ ' ' }
+					{ Math.abs( trend ).toFixed( 1 ) }%
 				</span>
 			) }
 

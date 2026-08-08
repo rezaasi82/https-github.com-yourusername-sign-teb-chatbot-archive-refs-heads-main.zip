@@ -13,6 +13,7 @@
  */
 
 .medora-app {
+
 	/* Reads a brand override first. `BrandingManager` publishes
 	   `--medora-brand-accent` on :root; it cannot set `--medora-accent`
 	   directly, because this block would redeclare it on a nearer ancestor and
@@ -41,6 +42,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
+
 	.medora-app {
 		--medora-surface: #1e2126;
 		--medora-surface-2: #262a31;
@@ -67,6 +69,7 @@
 }
 
 @media (min-width: 1100px) {
+
 	.medora-page--split {
 		grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
 		align-items: start;
@@ -93,6 +96,7 @@
 }
 
 @media (min-width: 900px) {
+
 	.medora-grid--2 {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
@@ -195,6 +199,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
 	.medora-score-ring__value {
 		transition: none;
 	}
@@ -230,11 +235,25 @@
 	letter-spacing: 0.06em;
 }
 
-.medora-grade--a { color: var(--medora-grade-a); }
-.medora-grade--b { color: var(--medora-grade-b); }
-.medora-grade--c { color: var(--medora-grade-c); }
-.medora-grade--d { color: var(--medora-grade-d); }
-.medora-grade--f { color: var(--medora-grade-f); }
+.medora-grade--a {
+	color: var(--medora-grade-a);
+}
+
+.medora-grade--b {
+	color: var(--medora-grade-b);
+}
+
+.medora-grade--c {
+	color: var(--medora-grade-c);
+}
+
+.medora-grade--d {
+	color: var(--medora-grade-d);
+}
+
+.medora-grade--f {
+	color: var(--medora-grade-f);
+}
 
 /* --- Stats ------------------------------------------------------------- */
 
@@ -262,8 +281,13 @@
 	font-weight: 600;
 }
 
-.medora-stat__trend--up { color: var(--medora-grade-a); }
-.medora-stat__trend--down { color: var(--medora-grade-f); }
+.medora-stat__trend--up {
+	color: var(--medora-grade-a);
+}
+
+.medora-stat__trend--down {
+	color: var(--medora-grade-f);
+}
 
 .medora-stat__hint {
 	font-size: 11px;
@@ -354,9 +378,17 @@
 	color: var(--medora-muted);
 }
 
-.medora-pill--ok { color: var(--medora-grade-a); }
-.medora-pill--warn { color: var(--medora-grade-c); }
-.medora-pill--error { color: var(--medora-grade-f); }
+.medora-pill--ok {
+	color: var(--medora-grade-a);
+}
+
+.medora-pill--warn {
+	color: var(--medora-grade-c);
+}
+
+.medora-pill--error {
+	color: var(--medora-grade-f);
+}
 
 .medora-badge {
 	display: inline-block;
@@ -369,10 +401,21 @@
 	color: #fff;
 }
 
-.medora-badge--critical { background: var(--medora-grade-f); }
-.medora-badge--high { background: var(--medora-grade-d); }
-.medora-badge--medium { background: var(--medora-grade-c); }
-.medora-badge--low { background: var(--medora-muted); }
+.medora-badge--critical {
+	background: var(--medora-grade-f);
+}
+
+.medora-badge--high {
+	background: var(--medora-grade-d);
+}
+
+.medora-badge--medium {
+	background: var(--medora-grade-c);
+}
+
+.medora-badge--low {
+	background: var(--medora-muted);
+}
 
 /* --- Deductions --------------------------------------------------------- */
 
@@ -389,14 +432,26 @@
 	background: var(--medora-surface-2);
 	border-radius: 8px;
 	padding: 12px 14px;
+
 	/* Border on the inline start so the severity stripe flips under RTL. */
 	border-inline-start: 3px solid var(--medora-border);
 }
 
-.medora-deduction--critical { border-inline-start-color: var(--medora-grade-f); }
-.medora-deduction--high { border-inline-start-color: var(--medora-grade-d); }
-.medora-deduction--medium { border-inline-start-color: var(--medora-grade-c); }
-.medora-deduction--low { border-inline-start-color: var(--medora-muted); }
+.medora-deduction--critical {
+	border-inline-start-color: var(--medora-grade-f);
+}
+
+.medora-deduction--high {
+	border-inline-start-color: var(--medora-grade-d);
+}
+
+.medora-deduction--medium {
+	border-inline-start-color: var(--medora-grade-c);
+}
+
+.medora-deduction--low {
+	border-inline-start-color: var(--medora-muted);
+}
 
 .medora-deduction__head {
 	display: flex;
@@ -437,9 +492,19 @@
 	opacity: 1;
 }
 
-.medora-graph__node { cursor: pointer; }
-.medora-graph__node circle { stroke: var(--medora-surface); stroke-width: 1.5; }
-.medora-graph__node:focus-visible circle { stroke: var(--medora-accent); stroke-width: 3; }
+.medora-graph__node {
+	cursor: pointer;
+}
+
+.medora-graph__node circle {
+	stroke: var(--medora-surface);
+	stroke-width: 1.5;
+}
+
+.medora-graph__node:focus-visible circle {
+	stroke: var(--medora-accent);
+	stroke-width: 3;
+}
 
 .medora-graph__label {
 	font-size: 10px;
@@ -480,11 +545,11 @@
 	font-size: 13px;
 }
 
-.medora-card input[type='text'],
-.medora-card input[type='number'],
+.medora-card input[type="text"],
+.medora-card input[type="number"],
 .medora-card select,
 .medora-card textarea,
-.medora-panel input[type='text'],
+.medora-panel input[type="text"],
 .medora-panel textarea {
 	inline-size: 100%;
 	max-inline-size: 480px;
@@ -515,7 +580,7 @@
 	gap: 8px;
 }
 
-/* --- Presets and switches -------------------------------------------------- */
+/* --- Presets and switches ------------------------------------------------ */
 
 .medora-presets,
 .medora-wizard__options {
@@ -568,7 +633,7 @@
 }
 
 .medora-switch span::after {
-	content: '';
+	content: "";
 	position: absolute;
 	inset-block-start: 3px;
 	inset-inline-start: 3px;
@@ -584,11 +649,12 @@
 }
 
 .medora-switch input:checked + span::after {
+
 	/* Logical translate keeps the knob moving toward the end edge in RTL. */
 	translate: 18px 0;
 }
 
-[dir='rtl'] .medora-switch input:checked + span::after {
+[dir="rtl"] .medora-switch input:checked + span::after {
 	translate: -18px 0;
 }
 
@@ -612,7 +678,7 @@
 	font-size: 12px;
 }
 
-/* --- Checks and notices ------------------------------------------------------ */
+/* --- Checks and notices -------------------------------------------------- */
 
 .medora-checks {
 	list-style: none;
@@ -632,8 +698,13 @@
 	line-height: 1.5;
 }
 
-.medora-check--pass span[aria-hidden] { color: var(--medora-grade-a); }
-.medora-check--fail span[aria-hidden] { color: var(--medora-grade-f); }
+.medora-check--pass span[aria-hidden] {
+	color: var(--medora-grade-a);
+}
+
+.medora-check--fail span[aria-hidden] {
+	color: var(--medora-grade-f);
+}
 
 .medora-check p {
 	margin: 2px 0 0;
@@ -649,12 +720,19 @@
 	font-size: 13px;
 }
 
-.medora-notice--warning { border-inline-start-color: var(--medora-grade-c); }
-.medora-notice--critical { border-inline-start-color: var(--medora-grade-f); }
+.medora-notice--warning {
+	border-inline-start-color: var(--medora-grade-c);
+}
 
-.medora-notice p { margin: 4px 0 0; }
+.medora-notice--critical {
+	border-inline-start-color: var(--medora-grade-f);
+}
 
-/* --- Issues, breakdown, misc -------------------------------------------------- */
+.medora-notice p {
+	margin: 4px 0 0;
+}
+
+/* --- Issues, breakdown, misc --------------------------------------------- */
 
 .medora-issues {
 	list-style: none;
@@ -679,7 +757,9 @@
 	padding: 0;
 }
 
-.medora-breakdown li { padding-block: 10px; }
+.medora-breakdown li {
+	padding-block: 10px;
+}
 
 .medora-breakdown__head {
 	display: flex;
@@ -703,15 +783,30 @@
 	font-size: 12px;
 	white-space: pre;
 	margin-block-start: 12px;
+
 	/* robots.txt is always LTR, even on an RTL admin. */
 	direction: ltr;
 	text-align: start;
 }
 
-.medora-muted { color: var(--medora-muted); font-size: 13px; }
-.medora-empty { color: var(--medora-muted); font-style: italic; }
-.medora-error { color: var(--medora-grade-f); }
-.medora-loading { color: var(--medora-muted); padding-block: 24px; }
+.medora-muted {
+	color: var(--medora-muted);
+	font-size: 13px;
+}
+
+.medora-empty {
+	color: var(--medora-muted);
+	font-style: italic;
+}
+
+.medora-error {
+	color: var(--medora-grade-f);
+}
+
+.medora-loading {
+	color: var(--medora-muted);
+	padding-block: 24px;
+}
 
 .medora-pagination {
 	display: flex;
@@ -721,7 +816,7 @@
 	margin-block-start: 16px;
 }
 
-/* --- Brief and link panels -------------------------------------------------------- */
+/* --- Brief and link panels ----------------------------------------------- */
 
 .medora-subtabs {
 	display: flex;
@@ -884,7 +979,7 @@
 	color: var(--medora-text);
 }
 
-/* --- Wizard --------------------------------------------------------------------- */
+/* --- Wizard -------------------------------------------------------------- */
 
 .medora-wizard {
 	max-inline-size: 720px;
@@ -911,12 +1006,33 @@
 	border-radius: 999px;
 }
 
-.medora-wizard__progress li.is-done { background: var(--medora-accent); }
-.medora-wizard__progress li span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+.medora-wizard__progress li.is-done {
+	background: var(--medora-accent);
+}
 
-.medora-wizard__body { padding: 24px; }
-.medora-wizard__body h1 { margin-block: 8px; font-size: 22px; }
-.medora-wizard__input { inline-size: 100%; padding: 10px 12px; border: 1px solid var(--medora-border); border-radius: 8px; }
+.medora-wizard__progress li span {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+}
+
+.medora-wizard__body {
+	padding: 24px;
+}
+
+.medora-wizard__body h1 {
+	margin-block: 8px;
+	font-size: 22px;
+}
+
+.medora-wizard__input {
+	inline-size: 100%;
+	padding: 10px 12px;
+	border: 1px solid var(--medora-border);
+	border-radius: 8px;
+}
 
 .medora-wizard__foot {
 	display: flex;
@@ -941,6 +1057,7 @@
 
 .medora-passage {
 	border: 1px solid var(--medora-border);
+
 	/* The status stripe runs down the reading edge, so it flips with the
 	   document direction rather than sitting on the wrong side in Persian. */
 	border-inline-start: 3px solid var(--medora-grade-d);
@@ -980,6 +1097,7 @@
 }
 
 .medora-table--audit .medora-pill {
+
 	/* The action slug stays visible next to the sentence: the prose is for the
 	   reviewer, the slug is what they quote when asking a question about it. */
 	margin-inline-end: 6px;
@@ -1016,12 +1134,14 @@
 	margin-inline-start: auto;
 }
 
-.medora-meter {
-	block-size: 6px;
-	border-radius: 3px;
-	background: var(--medora-track);
+/*
+ * The meter box itself is defined once, further up. Redefining it here — as
+ * this block used to — reshaped every meter on the site, including the two in
+ * Entities that had nothing to do with the score breakdown. Only the spacing
+ * this screen needs is set, and it is scoped to this screen.
+ */
+.medora-dimension .medora-meter {
 	margin-block: 8px;
-	overflow: hidden;
 }
 
 .medora-meter__fill {
@@ -1030,11 +1150,25 @@
 	background: var(--medora-grade-c);
 }
 
-.medora-meter__fill--a { background: var(--medora-grade-a); }
-.medora-meter__fill--b { background: var(--medora-grade-b); }
-.medora-meter__fill--c { background: var(--medora-grade-c); }
-.medora-meter__fill--d { background: var(--medora-grade-d); }
-.medora-meter__fill--f { background: var(--medora-grade-f); }
+.medora-meter__fill--a {
+	background: var(--medora-grade-a);
+}
+
+.medora-meter__fill--b {
+	background: var(--medora-grade-b);
+}
+
+.medora-meter__fill--c {
+	background: var(--medora-grade-c);
+}
+
+.medora-meter__fill--d {
+	background: var(--medora-grade-d);
+}
+
+.medora-meter__fill--f {
+	background: var(--medora-grade-f);
+}
 
 .medora-metrics {
 	margin-block-start: 8px;
@@ -1065,6 +1199,7 @@
 /* --- Destructive actions ------------------------------------------------- */
 
 .medora-danger {
+
 	/* Marked on the reading edge so it reads as a warning in both directions,
 	   and separated so it cannot be clicked while aiming for Save. */
 	border-inline-start: 3px solid var(--medora-grade-f);

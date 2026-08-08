@@ -9,9 +9,15 @@ export function Graph(): JSX.Element {
 	const [ limit, setLimit ] = useState( 150 );
 	const [ selected, setSelected ] = useState< number | null >( null );
 
-	const { data, loading, error } = useAsync( () => api.graph( limit ), [ limit ] );
+	const { data, loading, error } = useAsync(
+		() => api.graph( limit ),
+		[ limit ]
+	);
 	const detail = useAsync< EntityDetail | null >(
-		() => ( selected === null ? Promise.resolve( null ) : api.entity( selected ) ),
+		() =>
+			selected === null
+				? Promise.resolve( null )
+				: api.entity( selected ),
 		[ selected ]
 	);
 
@@ -37,18 +43,28 @@ export function Graph(): JSX.Element {
 
 				<select
 					value={ limit }
-					onChange={ ( event ) => setLimit( Number( event.target.value ) ) }
+					onChange={ ( event ) =>
+						setLimit( Number( event.target.value ) )
+					}
 					aria-label={ __( 'Nodes to display', 'medora-authority' ) }
 				>
-					<option value={ 60 }>{ __( 'Top 60 entities', 'medora-authority' ) }</option>
-					<option value={ 150 }>{ __( 'Top 150 entities', 'medora-authority' ) }</option>
-					<option value={ 300 }>{ __( 'Top 300 entities', 'medora-authority' ) }</option>
+					<option value={ 60 }>
+						{ __( 'Top 60 entities', 'medora-authority' ) }
+					</option>
+					<option value={ 150 }>
+						{ __( 'Top 150 entities', 'medora-authority' ) }
+					</option>
+					<option value={ 300 }>
+						{ __( 'Top 300 entities', 'medora-authority' ) }
+					</option>
 				</select>
 			</header>
 
 			{ error && <p className="medora-error">{ error.message }</p> }
 			{ loading && ! data && (
-				<p className="medora-loading">{ __( 'Building layout…', 'medora-authority' ) }</p>
+				<p className="medora-loading">
+					{ __( 'Building layout…', 'medora-authority' ) }
+				</p>
 			) }
 
 			{ data && (
@@ -79,14 +95,18 @@ export function Graph(): JSX.Element {
 						{ ( detail.data.relations ?? [] )
 							.slice( 0, 15 )
 							.map( ( relation, index ) => (
-								<li key={ `${ relation.entity.id }-${ index }` }>
+								<li
+									key={ `${ relation.entity.id }-${ index }` }
+								>
 									<span>
 										<em className="medora-muted">
 											{ relation.predicate_label }
 										</em>{ ' ' }
 										{ relation.entity.name }
 									</span>
-									<strong>{ relation.weight.toFixed( 2 ) }</strong>
+									<strong>
+										{ relation.weight.toFixed( 2 ) }
+									</strong>
 								</li>
 							) ) }
 					</ul>
@@ -94,7 +114,9 @@ export function Graph(): JSX.Element {
 			) }
 
 			<section className="medora-card">
-				<h2>{ __( 'Machine-readable endpoints', 'medora-authority' ) }</h2>
+				<h2>
+					{ __( 'Machine-readable endpoints', 'medora-authority' ) }
+				</h2>
 				<p className="medora-muted">
 					{ __(
 						'These are what AI systems consume. They are public and require no key.',
@@ -104,19 +126,38 @@ export function Graph(): JSX.Element {
 				<ul className="medora-list medora-list--linked">
 					<li>
 						<a href="/llms.txt">/llms.txt</a>
-						<span>{ __( 'Curated site map for LLMs', 'medora-authority' ) }</span>
+						<span>
+							{ __(
+								'Curated site map for LLMs',
+								'medora-authority'
+							) }
+						</span>
 					</li>
 					<li>
 						<a href="/llms-full.txt">/llms-full.txt</a>
-						<span>{ __( 'Full content bundle', 'medora-authority' ) }</span>
+						<span>
+							{ __( 'Full content bundle', 'medora-authority' ) }
+						</span>
 					</li>
 					<li>
 						<a href="/medora-sitemap.xml">/medora-sitemap.xml</a>
-						<span>{ __( 'Annotated AI sitemap index', 'medora-authority' ) }</span>
+						<span>
+							{ __(
+								'Annotated AI sitemap index',
+								'medora-authority'
+							) }
+						</span>
 					</li>
 					<li>
-						<a href="/wp-json/medora/v1/graph">/wp-json/medora/v1/graph</a>
-						<span>{ __( 'Knowledge graph as JSON-LD', 'medora-authority' ) }</span>
+						<a href="/wp-json/medora/v1/graph">
+							/wp-json/medora/v1/graph
+						</a>
+						<span>
+							{ __(
+								'Knowledge graph as JSON-LD',
+								'medora-authority'
+							) }
+						</span>
 					</li>
 				</ul>
 			</section>

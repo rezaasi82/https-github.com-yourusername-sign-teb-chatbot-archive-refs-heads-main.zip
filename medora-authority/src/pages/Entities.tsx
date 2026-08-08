@@ -28,7 +28,11 @@ function EntityPanel( {
 	const [ confirming, setConfirming ] = useState( false );
 
 	if ( loading && ! data ) {
-		return <aside className="medora-panel">{ __( 'Loading…', 'medora-authority' ) }</aside>;
+		return (
+			<aside className="medora-panel">
+				{ __( 'Loading…', 'medora-authority' ) }
+			</aside>
+		);
 	}
 
 	if ( error || ! data ) {
@@ -83,7 +87,11 @@ function EntityPanel( {
 					<h2>{ data.name }</h2>
 					<span className="medora-pill">{ data.type_label }</span>
 				</div>
-				<button type="button" className="button-link" onClick={ onClose }>
+				<button
+					type="button"
+					className="button-link"
+					onClick={ onClose }
+				>
 					{ __( 'Close', 'medora-authority' ) }
 				</button>
 			</header>
@@ -93,7 +101,10 @@ function EntityPanel( {
 					<h3>
 						{ sprintf(
 							/* translators: %s: score out of 100. */
-							__( 'Entity authority: %s / 100', 'medora-authority' ),
+							__(
+								'Entity authority: %s / 100',
+								'medora-authority'
+							),
 							data.authority.score.toFixed( 1 )
 						) }
 					</h3>
@@ -119,7 +130,9 @@ function EntityPanel( {
 										} }
 									/>
 								</div>
-								<p className="medora-muted">{ component.note }</p>
+								<p className="medora-muted">
+									{ component.note }
+								</p>
 							</li>
 						) ) }
 					</ul>
@@ -137,18 +150,25 @@ function EntityPanel( {
 						id="medora-entity-description"
 						rows={ 3 }
 						value={ description ?? data.description }
-						onChange={ ( event ) => setDescription( event.target.value ) }
+						onChange={ ( event ) =>
+							setDescription( event.target.value )
+						}
 					/>
 
 					<label htmlFor="medora-entity-sameas">
-						{ __( 'sameAs identifiers (one per line)', 'medora-authority' ) }
+						{ __(
+							'sameAs identifiers (one per line)',
+							'medora-authority'
+						) }
 					</label>
 					<textarea
 						id="medora-entity-sameas"
 						rows={ 3 }
 						placeholder="https://www.wikidata.org/wiki/Q…"
 						value={ sameAs ?? data.same_as.join( '\n' ) }
-						onChange={ ( event ) => setSameAs( event.target.value ) }
+						onChange={ ( event ) =>
+							setSameAs( event.target.value )
+						}
 					/>
 					<p className="medora-muted">
 						{ __(
@@ -217,17 +237,23 @@ function EntityPanel( {
 				<section>
 					<h3>{ __( 'Relationships', 'medora-authority' ) }</h3>
 					<ul className="medora-list">
-						{ data.relations.slice( 0, 20 ).map( ( relation, index ) => (
-							<li key={ `${ relation.entity.id }-${ index }` }>
-								<span>
-									<em className="medora-muted">
-										{ relation.predicate_label }
-									</em>{ ' ' }
-									{ relation.entity.name }
-								</span>
-								<strong>{ relation.weight.toFixed( 2 ) }</strong>
-							</li>
-						) ) }
+						{ data.relations
+							.slice( 0, 20 )
+							.map( ( relation, index ) => (
+								<li
+									key={ `${ relation.entity.id }-${ index }` }
+								>
+									<span>
+										<em className="medora-muted">
+											{ relation.predicate_label }
+										</em>{ ' ' }
+										{ relation.entity.name }
+									</span>
+									<strong>
+										{ relation.weight.toFixed( 2 ) }
+									</strong>
+								</li>
+							) ) }
 					</ul>
 				</section>
 			) }
@@ -241,10 +267,9 @@ export function Entities(): JSX.Element {
 	const [ page, setPage ] = useState( 1 );
 	const [ selected, setSelected ] = useState< number | null >( null );
 
-	const {
-		data: suppressed,
-		reload: reloadSuppressed,
-	} = useAsync< import('../types').SuppressionReport >(
+	const { data: suppressed, reload: reloadSuppressed } = useAsync<
+		import('../types').SuppressionReport
+	>(
 		() =>
 			boot.capabilities.entities
 				? api.suppressedEntities()
@@ -272,7 +297,10 @@ export function Entities(): JSX.Element {
 					<div className="medora-filters">
 						<input
 							type="search"
-							placeholder={ __( 'Search entities…', 'medora-authority' ) }
+							placeholder={ __(
+								'Search entities…',
+								'medora-authority'
+							) }
 							value={ search }
 							onChange={ ( event ) => {
 								setSearch( event.target.value );
@@ -285,7 +313,10 @@ export function Entities(): JSX.Element {
 								setType( event.target.value );
 								setPage( 1 );
 							} }
-							aria-label={ __( 'Entity type', 'medora-authority' ) }
+							aria-label={ __(
+								'Entity type',
+								'medora-authority'
+							) }
 						>
 							<option value="">
 								{ __( 'All types', 'medora-authority' ) }
@@ -293,8 +324,12 @@ export function Entities(): JSX.Element {
 							<option value="Person">Person</option>
 							<option value="Organization">Organization</option>
 							<option value="Physician">Physician</option>
-							<option value="MedicalCondition">MedicalCondition</option>
-							<option value="MedicalProcedure">MedicalProcedure</option>
+							<option value="MedicalCondition">
+								MedicalCondition
+							</option>
+							<option value="MedicalProcedure">
+								MedicalProcedure
+							</option>
 							<option value="DefinedTerm">Topic</option>
 							<option value="Place">Place</option>
 							<option value="Product">Product</option>
@@ -314,50 +349,71 @@ export function Entities(): JSX.Element {
 						</tr>
 					</thead>
 					<tbody>
-						{ ( data?.items ?? [] ).map( ( entity: EntitySummary ) => (
-							<tr
-								key={ entity.id }
-								onClick={ () => setSelected( entity.id ) }
-								className={
-									selected === entity.id ? 'is-selected' : ''
-								}
-							>
-								<td>
-									<strong>{ entity.name }</strong>
-									{ entity.description && (
-										<p className="medora-muted">
-											{ entity.description.slice( 0, 90 ) }
-										</p>
-									) }
-								</td>
-								<td>{ entity.type_label }</td>
-								<td>
-									<div className="medora-meter" role="presentation">
-										<span
-											style={ {
-												inlineSize: `${ entity.authority_score }%`,
-											} }
-										/>
-									</div>
-									<small>{ entity.authority_score.toFixed( 0 ) }</small>
-								</td>
-								<td>
-									{ entity.same_as.length > 0 ? (
-										<span className="medora-pill medora-pill--ok">
-											{ entity.same_as.length }
-										</span>
-									) : (
-										<span className="medora-pill medora-pill--warn">
-											{ __( 'none', 'medora-authority' ) }
-										</span>
-									) }
-								</td>
-							</tr>
-						) ) }
+						{ ( data?.items ?? [] ).map(
+							( entity: EntitySummary ) => (
+								<tr
+									key={ entity.id }
+									onClick={ () => setSelected( entity.id ) }
+									className={
+										selected === entity.id
+											? 'is-selected'
+											: ''
+									}
+								>
+									<td>
+										<strong>{ entity.name }</strong>
+										{ entity.description && (
+											<p className="medora-muted">
+												{ entity.description.slice(
+													0,
+													90
+												) }
+											</p>
+										) }
+									</td>
+									<td>{ entity.type_label }</td>
+									<td>
+										<div
+											className="medora-meter"
+											role="presentation"
+										>
+											<span
+												style={ {
+													inlineSize: `${ entity.authority_score }%`,
+												} }
+											/>
+										</div>
+										<small>
+											{ entity.authority_score.toFixed(
+												0
+											) }
+										</small>
+									</td>
+									<td>
+										{ entity.same_as.length > 0 ? (
+											<span className="medora-pill medora-pill--ok">
+												{ entity.same_as.length }
+											</span>
+										) : (
+											<span className="medora-pill medora-pill--warn">
+												{ __(
+													'none',
+													'medora-authority'
+												) }
+											</span>
+										) }
+									</td>
+								</tr>
+							)
+						) }
 					</tbody>
 				</table>
 
-				{ loading && <p className="medora-loading">{ __( 'Loading…', 'medora-authority' ) }</p> }
+				{ loading && (
+					<p className="medora-loading">
+						{ __( 'Loading…', 'medora-authority' ) }
+					</p>
+				) }
 
 				{ data && data.total > 40 && (
 					<nav className="medora-pagination">
@@ -372,7 +428,10 @@ export function Entities(): JSX.Element {
 						<span>
 							{ sprintf(
 								/* translators: 1: current page, 2: total entities. */
-								__( 'Page %1$d — %2$d entities', 'medora-authority' ),
+								__(
+									'Page %1$d — %2$d entities',
+									'medora-authority'
+								),
 								page,
 								data.total
 							) }
@@ -414,7 +473,6 @@ export function Entities(): JSX.Element {
 		</div>
 	);
 }
-
 
 /**
  * Entities the publisher removed, and the way back.

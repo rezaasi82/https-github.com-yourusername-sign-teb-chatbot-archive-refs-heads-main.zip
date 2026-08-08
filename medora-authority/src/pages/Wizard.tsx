@@ -28,7 +28,11 @@ export function Wizard( { onComplete }: WizardProps ): JSX.Element {
 	}, [ data ] );
 
 	if ( loading || ! data ) {
-		return <p className="medora-loading">{ __( 'Loading…', 'medora-authority' ) }</p>;
+		return (
+			<p className="medora-loading">
+				{ __( 'Loading…', 'medora-authority' ) }
+			</p>
+		);
 	}
 
 	const steps = data.steps;
@@ -85,6 +89,7 @@ export function Wizard( { onComplete }: WizardProps ): JSX.Element {
 						{ current.options.map( ( option ) => (
 							<label
 								key={ option.value }
+								htmlFor={ `medora-wizard-${ current.field }-${ option.value }` }
 								className={
 									answers[ current.field! ] === option.value
 										? 'medora-preset is-active'
@@ -92,11 +97,13 @@ export function Wizard( { onComplete }: WizardProps ): JSX.Element {
 								}
 							>
 								<input
+									id={ `medora-wizard-${ current.field }-${ option.value }` }
 									type="radio"
 									name={ current.field }
 									value={ option.value }
 									checked={
-										answers[ current.field! ] === option.value
+										answers[ current.field! ] ===
+										option.value
 									}
 									onChange={ () =>
 										setAnswers( ( previous ) => ( {
@@ -126,8 +133,12 @@ export function Wizard( { onComplete }: WizardProps ): JSX.Element {
 				) }
 
 				{ isLast && (
-					<label className="medora-checkbox">
+					<label
+						className="medora-checkbox"
+						htmlFor="medora-wizard-analyze-existing"
+					>
 						<input
+							id="medora-wizard-analyze-existing"
 							type="checkbox"
 							checked={ analyzeExisting }
 							onChange={ ( event ) =>

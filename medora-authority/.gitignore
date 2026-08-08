@@ -8,6 +8,8 @@
 # artifact. `composer i18n:build` regenerates both.
 /languages/*.mo
 /languages/*.json
+# Release artifacts. `composer package` rebuilds them; CI publishes them.
+/dist/
 composer.lock
 package-lock.json
 .phpunit.cache/

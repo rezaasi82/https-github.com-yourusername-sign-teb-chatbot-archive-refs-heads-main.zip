@@ -43,10 +43,7 @@ export function GraphCanvas( {
 	const frameRef = useRef< number | null >( null );
 
 	const links = useMemo(
-		() =>
-			data.links.filter(
-				( link ) => link.source !== link.target
-			),
+		() => data.links.filter( ( link ) => link.source !== link.target ),
 		[ data.links ]
 	);
 
@@ -136,8 +133,14 @@ export function GraphCanvas( {
 			for ( const node of seeded ) {
 				node.vx *= 0.82;
 				node.vy *= 0.82;
-				node.x = Math.max( 30, Math.min( width - 30, node.x + node.vx ) );
-				node.y = Math.max( 30, Math.min( height - 30, node.y + node.vy ) );
+				node.x = Math.max(
+					30,
+					Math.min( width - 30, node.x + node.vx )
+				);
+				node.y = Math.max(
+					30,
+					Math.min( height - 30, node.y + node.vy )
+				);
 			}
 
 			setNodes( seeded.map( ( node ) => ( { ...node } ) ) );
@@ -228,9 +231,9 @@ export function GraphCanvas( {
 								} }
 								tabIndex={ 0 }
 								role="button"
-								aria-label={ `${ node.label } — ${ node.score.toFixed(
-									0
-								) }/100` }
+								aria-label={ `${
+									node.label
+								} — ${ node.score.toFixed( 0 ) }/100` }
 								className="medora-graph__node"
 							>
 								<circle
@@ -242,7 +245,8 @@ export function GraphCanvas( {
 										) }%, var(--medora-surface-2))`,
 									} }
 								/>
-								{ ( hovered === node.id || node.degree > 4 ) && (
+								{ ( hovered === node.id ||
+									node.degree > 4 ) && (
 									<text
 										y={ radius + 13 }
 										textAnchor="middle"

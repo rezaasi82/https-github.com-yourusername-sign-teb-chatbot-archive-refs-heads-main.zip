@@ -16,7 +16,35 @@ and an explainable score instead of a traffic light.
 | [06 — Scoring model](06-scoring-model.md) | What the AI Authority Score measures and how it is derived |
 | [07 — White label & SaaS](07-white-label-saas.md) | Agency branding, multi-tenant deployment |
 
-## Quick start
+## Installing it
+
+The plugin is not usable straight from a checkout. Three things it needs at
+runtime are build outputs and are deliberately not committed: the dashboard
+bundle (`assets/js/app.js`), the compiled stylesheets (`assets/css/*.css`) and
+the binary translation catalogues (`languages/*.mo`, `languages/*.json`). Zip
+the repository and you get a plugin that activates, shows an empty dashboard
+and speaks English regardless of the site's locale.
+
+Build the installable archive instead:
+
+```bash
+npm install && npm run build   # dashboard bundle + stylesheets
+composer i18n:build            # .mo and .json catalogues
+composer package               # → dist/medora-authority-<version>.zip
+```
+
+Then install that ZIP through **Plugins → Add New → Upload Plugin**.
+
+`composer package` refuses to build an archive whose bundle is older than
+`src/`, or whose version disagrees across the plugin header, `package.json`,
+`readme.txt` and the changelog. `composer package:check` reports the same
+without writing anything.
+
+CI builds the archive on every push and attaches it to the run as the
+`medora-authority` artifact; pushing a `medora-authority-v<version>` tag
+publishes it as a GitHub release.
+
+## Working on it
 
 ```bash
 composer install    # dev tooling only; the plugin has no runtime dependencies

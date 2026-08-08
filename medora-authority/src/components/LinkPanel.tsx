@@ -75,7 +75,10 @@ export function LinkPanel( { postId }: LinkPanelProps ): JSX.Element {
 			setMessage(
 				sprintf(
 					/* translators: %d: number of links removed. */
-					__( 'Removed %d link(s) added by Medora.', 'medora-authority' ),
+					__(
+						'Removed %d link(s) added by Medora.',
+						'medora-authority'
+					),
 					result.reverted
 				)
 			);
@@ -136,7 +139,9 @@ export function LinkPanel( { postId }: LinkPanelProps ): JSX.Element {
 			{ message && <div className="medora-notice">{ message }</div> }
 			{ failure && <p className="medora-error">{ failure }</p> }
 
-			<h4>{ __( 'Pages this one should link to', 'medora-authority' ) }</h4>
+			<h4>
+				{ __( 'Pages this one should link to', 'medora-authority' ) }
+			</h4>
 
 			{ data.outbound.length === 0 && (
 				<p className="medora-empty">
@@ -170,11 +175,16 @@ export function LinkPanel( { postId }: LinkPanelProps ): JSX.Element {
 
 								{ suggestion.already_linked && (
 									<span className="medora-pill medora-pill--ok">
-										{ __( 'already linked', 'medora-authority' ) }
+										{ __(
+											'already linked',
+											'medora-authority'
+										) }
 									</span>
 								) }
 
-								<p className="medora-muted">{ suggestion.reason }</p>
+								<p className="medora-muted">
+									{ suggestion.reason }
+								</p>
 							</div>
 
 							{ ! suggestion.already_linked && canEdit && (
@@ -221,15 +231,22 @@ export function LinkPanel( { postId }: LinkPanelProps ): JSX.Element {
 												type="button"
 												className="button button-primary"
 												disabled={
-													busy === suggestion.target_id
+													busy ===
+													suggestion.target_id
 												}
 												onClick={ () =>
 													applyLink( suggestion )
 												}
 											>
 												{ busy === suggestion.target_id
-													? __( 'Linking…', 'medora-authority' )
-													: __( 'Add link', 'medora-authority' ) }
+													? __(
+															'Linking…',
+															'medora-authority'
+													  )
+													: __(
+															'Add link',
+															'medora-authority'
+													  ) }
 											</button>
 										</>
 									) : (
@@ -250,7 +267,10 @@ export function LinkPanel( { postId }: LinkPanelProps ): JSX.Element {
 			{ data.inbound.length > 0 && (
 				<>
 					<h4>
-						{ __( 'Pages that should link here', 'medora-authority' ) }
+						{ __(
+							'Pages that should link here',
+							'medora-authority'
+						) }
 					</h4>
 					<p className="medora-muted">
 						{ __(

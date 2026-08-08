@@ -8,14 +8,21 @@ import { collapseSeries } from '../utils/format';
 
 export function Analytics(): JSX.Element {
 	const [ days, setDays ] = useState( 30 );
-	const { data, loading, error } = useAsync( () => api.analytics( days ), [ days ] );
+	const { data, loading, error } = useAsync(
+		() => api.analytics( days ),
+		[ days ]
+	);
 
 	if ( error ) {
 		return <p className="medora-error">{ error.message }</p>;
 	}
 
 	if ( loading && ! data ) {
-		return <p className="medora-loading">{ __( 'Loading…', 'medora-authority' ) }</p>;
+		return (
+			<p className="medora-loading">
+				{ __( 'Loading…', 'medora-authority' ) }
+			</p>
+		);
 	}
 
 	const series = collapseSeries( data?.series ?? [] );
@@ -26,12 +33,20 @@ export function Analytics(): JSX.Element {
 				<h1>{ __( 'AI Analytics', 'medora-authority' ) }</h1>
 				<select
 					value={ days }
-					onChange={ ( event ) => setDays( Number( event.target.value ) ) }
+					onChange={ ( event ) =>
+						setDays( Number( event.target.value ) )
+					}
 					aria-label={ __( 'Reporting window', 'medora-authority' ) }
 				>
-					<option value={ 7 }>{ __( 'Last 7 days', 'medora-authority' ) }</option>
-					<option value={ 30 }>{ __( 'Last 30 days', 'medora-authority' ) }</option>
-					<option value={ 90 }>{ __( 'Last 90 days', 'medora-authority' ) }</option>
+					<option value={ 7 }>
+						{ __( 'Last 7 days', 'medora-authority' ) }
+					</option>
+					<option value={ 30 }>
+						{ __( 'Last 30 days', 'medora-authority' ) }
+					</option>
+					<option value={ 90 }>
+						{ __( 'Last 90 days', 'medora-authority' ) }
+					</option>
 				</select>
 			</header>
 
@@ -75,7 +90,9 @@ export function Analytics(): JSX.Element {
 							<tr>
 								<th>{ __( 'Source', 'medora-authority' ) }</th>
 								<th>{ __( 'Visits', 'medora-authority' ) }</th>
-								<th>{ __( 'Visitors', 'medora-authority' ) }</th>
+								<th>
+									{ __( 'Visitors', 'medora-authority' ) }
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -91,7 +108,12 @@ export function Analytics(): JSX.Element {
 				</section>
 
 				<section className="medora-card">
-					<h2>{ __( 'Pages assistants send people to', 'medora-authority' ) }</h2>
+					<h2>
+						{ __(
+							'Pages assistants send people to',
+							'medora-authority'
+						) }
+					</h2>
 					<p className="medora-muted">
 						{ __(
 							'The closest available proxy for which of your pages are being cited.',

@@ -61,7 +61,12 @@ export function Audit(): JSX.Element {
 							<tr>
 								<th>{ __( 'When', 'medora-authority' ) }</th>
 								<th>{ __( 'Who', 'medora-authority' ) }</th>
-								<th>{ __( 'What happened', 'medora-authority' ) }</th>
+								<th>
+									{ __(
+										'What happened',
+										'medora-authority'
+									) }
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -72,7 +77,10 @@ export function Audit(): JSX.Element {
 					</table>
 
 					{ pages > 1 && (
-						<nav className="medora-actions" aria-label={ __( 'Pages', 'medora-authority' ) }>
+						<nav
+							className="medora-actions"
+							aria-label={ __( 'Pages', 'medora-authority' ) }
+						>
 							<button
 								type="button"
 								className="button"
@@ -85,7 +93,10 @@ export function Audit(): JSX.Element {
 							<span className="medora-muted">
 								{ sprintf(
 									/* translators: 1: current page, 2: total pages. */
-									__( 'Page %1$d of %2$d', 'medora-authority' ),
+									__(
+										'Page %1$d of %2$d',
+										'medora-authority'
+									),
 									page,
 									pages
 								) }
@@ -161,8 +172,9 @@ function describe( entry: AuditEntry ): { label: string; tone: string } {
 				label: sprintf(
 					/* translators: 1: field list, 2: object. */
 					__( 'A model rewrote %1$s on %2$s.', 'medora-authority' ),
-					( ( entry.context.fields as string[] ) ?? [] ).join( ', ' ) ||
-						__( 'nothing', 'medora-authority' ),
+					( ( entry.context.fields as string[] ) ?? [] ).join(
+						', '
+					) || __( 'nothing', 'medora-authority' ),
 					target
 				),
 			};
@@ -186,7 +198,10 @@ function describe( entry: AuditEntry ): { label: string; tone: string } {
 				tone: 'warn',
 				label: sprintf(
 					/* translators: %s: object. */
-					__( 'The model declined to write for %s.', 'medora-authority' ),
+					__(
+						'The model declined to write for %s.',
+						'medora-authority'
+					),
 					target
 				),
 			};
@@ -196,7 +211,10 @@ function describe( entry: AuditEntry ): { label: string; tone: string } {
 				tone: 'error',
 				label: sprintf(
 					/* translators: %s: object. */
-					__( 'The model request failed for %s.', 'medora-authority' ),
+					__(
+						'The model request failed for %s.',
+						'medora-authority'
+					),
 					target
 				),
 			};
@@ -219,7 +237,10 @@ function describe( entry: AuditEntry ): { label: string; tone: string } {
 				tone: 'ok',
 				label: sprintf(
 					/* translators: %s: object. */
-					__( 'An internal link was added to %s.', 'medora-authority' ),
+					__(
+						'An internal link was added to %s.',
+						'medora-authority'
+					),
 					target
 				),
 			};
@@ -229,22 +250,43 @@ function describe( entry: AuditEntry ): { label: string; tone: string } {
 				tone: 'ok',
 				label: sprintf(
 					/* translators: %s: object. */
-					__( 'Medora links were removed from %s.', 'medora-authority' ),
+					__(
+						'Medora links were removed from %s.',
+						'medora-authority'
+					),
 					target
 				),
 			};
 
 		case 'settings.updated':
-			return { tone: '', label: __( 'Settings were saved.', 'medora-authority' ) };
+			return {
+				tone: '',
+				label: __( 'Settings were saved.', 'medora-authority' ),
+			};
 
 		case 'module.toggled':
-			return { tone: '', label: __( 'A module was turned on or off.', 'medora-authority' ) };
+			return {
+				tone: '',
+				label: __(
+					'A module was turned on or off.',
+					'medora-authority'
+				),
+			};
 
 		case 'crawler.policy_changed':
-			return { tone: '', label: __( 'The AI crawler policy changed.', 'medora-authority' ) };
+			return {
+				tone: '',
+				label: __(
+					'The AI crawler policy changed.',
+					'medora-authority'
+				),
+			};
 
 		case 'license.status_changed':
-			return { tone: '', label: __( 'The licence status changed.', 'medora-authority' ) };
+			return {
+				tone: '',
+				label: __( 'The licence status changed.', 'medora-authority' ),
+			};
 
 		default:
 			return { tone: '', label: target };
@@ -269,7 +311,7 @@ function Detail( { entry }: { entry: AuditEntry } ): JSX.Element {
 		bits.push(
 			sprintf(
 				/* translators: %s: percentage of the text supported by the page. */
-				__( '%s%% supported', 'medora-authority' ),
+				__( '%1$s%% supported', 'medora-authority' ),
 				Math.round( entry.context.support_ratio * 100 ).toString()
 			)
 		);
