@@ -4,7 +4,7 @@ Tags: seo, search console, analytics, ai, core web vitals
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 0.14.1
+Stable tag: 0.15.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ No data is sent anywhere until you connect a service. Disconnecting stops all tr
 2. Open "SEO Director" in the admin menu and follow the setup wizard.
 
 == Changelog ==
+
+= 0.15.0 =
+* New Penalty Radar (Content → Penalty radar): finds pages whose Search traffic suddenly collapsed — the fingerprint of a Google penalty or a core-update hit. Because Google never exposes penalties through the API (manual actions live only inside Search Console), it reads each page's DAILY Search Console history, uses changepoint detection to find the strongest sustained drop, and classifies the fingerprint: Deindexed/suppressed (lost all impressions), Ranking collapse (page 1 → page 3+), CTR collapse (impressions held, clicks gone), Traffic cliff (sharp sustained loss), or Soft decline. Each flagged page shows the drop %, the date, whether it was page-specific or sitewide, whether it lines up with a known Google update window, a confidence level, a plain-language reason, and a recommended next step. A one-click deep link opens the Search Console Manual Actions report for a confirmed verdict. Results are leads to investigate, not verdicts. Deterministic, cached 1h. New endpoint GET /content/penalties (Starter+). Update windows are filterable via sda_google_update_windows.
 
 = 0.14.1 =
 * Fix (business vertical): the Entities & schema and E-E-A-T tools now show the business framing immediately — the heading and description follow the chosen site type up-front instead of only after you run an analysis.

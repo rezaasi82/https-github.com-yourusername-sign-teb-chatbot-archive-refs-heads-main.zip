@@ -366,6 +366,40 @@ const FA: Record<string, string> = {
   'Rewrite title & meta': 'بازنویسی عنوان و متا',
   'Add internal links': 'افزودن لینک داخلی',
   'Prune (merge/301 or delete)': 'هرس (ادغام/۳۰۱ یا حذف)',
+
+  // Penalty radar
+  'Penalty radar': 'رادار پنالتی',
+  'Finds pages whose Search traffic suddenly collapsed — the fingerprint of a penalty or a core-update hit. Google never exposes penalties via API, so these are leads to investigate, not verdicts.':
+    'صفحاتی را پیدا می‌کند که ترافیک جستجویشان ناگهان فرو ریخته — ردپای پنالتی یا آسیب از آپدیت هستهٔ گوگل. گوگل پنالتی را از طریق API نشان نمی‌دهد، پس این‌ها «سرنخ برای بررسی» هستند، نه حکم قطعی.',
+  'Penalty radar needs Search Console history to detect traffic drops. Connect Google Search Console first.':
+    'رادار پنالتی برای تشخیص افت ترافیک به تاریخچهٔ سرچ‌کنسول نیاز دارد. ابتدا Google Search Console را متصل کنید.',
+  'A confirmed manual penalty can only be seen in Search Console.': 'پنالتی دستی تأییدشده فقط در سرچ‌کنسول قابل مشاهده است.',
+  'Open Manual Actions report ↗': 'باز کردن گزارش اقدامات دستی ↗',
+  'Heads up: your whole site dropped around': 'توجه: کل سایت شما در حدود',
+  'a sitewide drop points to a core update or a sitewide action rather than a single page.':
+    'افت سطح کل سایت بیشتر به آپدیت هسته یا اقدام سراسری اشاره دارد تا یک صفحهٔ خاص.',
+  'page(s) flagged': 'صفحهٔ علامت‌گذاری‌شده',
+  'No penalty-like drops found': 'هیچ افت پنالتی‌مانندی پیدا نشد',
+  'No page shows a sudden, sustained collapse in Search traffic — good sign.':
+    'هیچ صفحه‌ای افت ناگهانی و پایدار در ترافیک جستجو ندارد — نشانهٔ خوبی است.',
+  'Signal': 'سیگنال',
+  'Drop': 'افت',
+  'When': 'زمان',
+  'Confidence': 'اطمینان',
+  'sitewide': 'سطح کل سایت',
+  'page-specific': 'مختص همین صفحه',
+  'clicks/day': 'کلیک در روز',
+  'high': 'بالا',
+  'medium': 'متوسط',
+  'low': 'پایین',
+  'Deindexed / suppressed': 'ایندکس‌زدایی / سرکوب‌شده',
+  'Ranking collapse': 'سقوط رتبه',
+  'CTR collapse': 'سقوط نرخ کلیک',
+  'Traffic cliff': 'ریزش ناگهانی ترافیک',
+  'Soft decline': 'افت ملایم',
+  'Check indexing & manual actions': 'بررسی ایندکس و اقدامات دستی',
+  'Audit content quality': 'ممیزی کیفیت محتوا',
+  'Refresh content': 'به‌روزرسانی محتوا',
 };
 
 /** True when the wp-admin locale is Persian (fa_IR, fa_AF, …). */

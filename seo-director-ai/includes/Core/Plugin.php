@@ -59,6 +59,7 @@ use SEODirector\Content\OptimizationScorer;
 use SEODirector\Content\SchemaGenerator;
 use SEODirector\Content\SchemaInjector;
 use SEODirector\Content\ZombiePageDetector;
+use SEODirector\Content\PenaltyRadarDetector;
 use SEODirector\Medical\EeatAnalyzer;
 use SEODirector\Medical\KnowledgeGraph;
 use SEODirector\Medical\MedicalEntityEngine;
@@ -392,6 +393,7 @@ final class Plugin {
 		$c->set( OnPageAuditor::class, static fn() => new OnPageAuditor() );
 		$c->set( OptimizationScorer::class, static fn( Container $c ) => new OptimizationScorer( $c->get( InsightService::class ) ) );
 		$c->set( ZombiePageDetector::class, static fn( Container $c ) => new ZombiePageDetector( $c->get( UrlCanonicalizer::class ), $c->get( PropertiesRepository::class ) ) );
+		$c->set( PenaltyRadarDetector::class, static fn( Container $c ) => new PenaltyRadarDetector( $c->get( UrlCanonicalizer::class ), $c->get( PropertiesRepository::class ), $c->get( ChangepointDetector::class ) ) );
 
 		// Research module (Wave 2): keyword discovery, clusters, competitors.
 		$c->set( AutocompleteClient::class, static fn( Container $c ) => new AutocompleteClient( $c->get( RetryingHttpClient::class ) ) );

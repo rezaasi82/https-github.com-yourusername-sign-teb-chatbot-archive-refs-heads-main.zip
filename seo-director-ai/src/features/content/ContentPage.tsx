@@ -11,6 +11,7 @@ import {
   type SchemaBuildResult,
   type ScoreResult,
   type ZombieResult,
+  type PenaltyResult,
 } from '../../api/client';
 import { useLicense } from '../../app/license';
 import { t } from '../../i18n';
@@ -388,6 +389,11 @@ const ACTION_LABEL: Record<string, string> = {
   improve_meta: 'Rewrite title & meta',
   internal_link: 'Add internal links',
   prune: 'Prune (merge/301 or delete)',
+  // Penalty Radar actions
+  check_index: 'Check indexing & manual actions',
+  investigate_quality: 'Audit content quality',
+  rewrite_meta: 'Rewrite title & meta',
+  refresh_content: 'Refresh content',
 };
 
 const ACTION_COLOR: Record<string, string> = {
@@ -396,6 +402,24 @@ const ACTION_COLOR: Record<string, string> = {
   improve_meta: 'var(--sda-warning)',
   internal_link: 'var(--sda-primary)',
   wait: 'var(--sda-text-muted)',
+  check_index: 'var(--sda-negative)',
+  investigate_quality: 'var(--sda-negative)',
+  rewrite_meta: 'var(--sda-warning)',
+  refresh_content: 'var(--sda-primary)',
+};
+
+const PENALTY_TYPE_LABEL: Record<string, string> = {
+  deindexed: 'Deindexed / suppressed',
+  ranking_collapse: 'Ranking collapse',
+  ctr_collapse: 'CTR collapse',
+  traffic_cliff: 'Traffic cliff',
+  soft_decline: 'Soft decline',
+};
+
+const SEVERITY_BADGE: Record<string, string> = {
+  high: 'var(--sda-negative)',
+  medium: 'var(--sda-warning)',
+  low: 'var(--sda-text-muted)',
 };
 
 function ZombiesTool() {
@@ -474,6 +498,142 @@ function ZombiesTool() {
                       <td>{p.impressions}</td>
                       <td>{p.words}</td>
                       <td style={{ color: p.inbound === 0 ? 'var(--sda-negative)' : 'inherit' }}>{p.inbound}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <span style={{ fontWeight: 600, color: ACTION_COLOR[p.action] ?? 'var(--sda-text)' }}>
+                          {t(ACTION_LABEL[p.action] ?? p.action)}
+                        </span>
+                        {p.edit_url && (
+                          <>
+                            {' · '}
+                            <a href={p.edit_url} target="_blank" rel="noreferrer" style={{ fontSize: 12 }}>
+                              {t('Edit')}
+                            </a>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function PenaltyTool() {
+  const [days, setDays] = useState(180);
+  const [force, setForce] = useState(false);
+  const penalties = useQuery<PenaltyResult, Error>({
+    queryKey: ['content-penalties', days, force],
+    queryFn: () => api.contentPenalties(days, force),
+  });
+
+  return (
+    <div className="sda-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div>
+          <h2 style={{ margin: 0 }}>{t('Penalty radar')}</h2>
+          <p style={{ fontSize: 13, color: 'var(--sda-text-muted)', margin: '4px 0 0', maxWidth: 640 }}>
+            {t('Finds pages whose Search traffic suddenly collapsed — the fingerprint of a penalty or a core-update hit. Google never exposes penalties via API, so these are leads to investigate, not verdicts.')}
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <select className="sda-input" style={{ width: 'auto' }} value={days} onChange={(e) => setDays(Number(e.target.value))}>
+            <option value={90}>{t('last 90 days')}</option>
+            <option value={180}>{t('last 180 days')}</option>
+            <option value={365}>{t('last 365 days')}</option>
+          </select>
+          <button type="button" className="sda-btn" onClick={() => setForce(true)} disabled={penalties.isFetching}>
+            {penalties.isFetching ? t('Scanning…') : t('Re-scan')}
+          </button>
+        </div>
+      </div>
+
+      {penalties.error != null && <ErrorBox title={t('Failed to load')} error={penalties.error} />}
+      {penalties.isLoading && <div className="sda-skeleton" style={{ height: 160, marginBlockStart: 12 }} />}
+
+      {penalties.data && !penalties.data.has_gsc && (
+        <div className="sda-card" style={{ marginBlockStart: 12, borderInlineStart: '3px solid var(--sda-warning)', background: 'var(--sda-surface-2)' }}>
+          <p style={{ margin: 0, fontSize: 12, color: 'var(--sda-text-muted)' }}>
+            {t('Penalty radar needs Search Console history to detect traffic drops. Connect Google Search Console first.')}
+          </p>
+        </div>
+      )}
+
+      {penalties.data?.has_gsc && (
+        <>
+          {/* Manual actions are only visible inside Search Console — always surface the deep link. */}
+          <div className="sda-card" style={{ marginBlockStart: 12, borderInlineStart: '3px solid var(--sda-primary)', background: 'var(--sda-surface-2)' }}>
+            <p style={{ margin: 0, fontSize: 12, color: 'var(--sda-text-muted)' }}>
+              {t('A confirmed manual penalty can only be seen in Search Console.')}{' '}
+              <a href={penalties.data.manual_actions_url} target="_blank" rel="noreferrer">
+                {t('Open Manual Actions report ↗')}
+              </a>
+            </p>
+          </div>
+
+          {penalties.data.sitewide && (
+            <div className="sda-card" style={{ marginBlockStart: 8, borderInlineStart: '3px solid var(--sda-negative)', background: 'var(--sda-surface-2)' }}>
+              <p style={{ margin: 0, fontSize: 12 }}>
+                {t('Heads up: your whole site dropped around')} <strong>{penalties.data.sitewide.date}</strong> ({penalties.data.sitewide.drop_pct}%) —{' '}
+                {t('a sitewide drop points to a core update or a sitewide action rather than a single page.')}
+              </p>
+            </div>
+          )}
+
+          <p style={{ fontSize: 12, color: 'var(--sda-text-muted)', marginBlockStart: 10 }}>
+            {penalties.data.scanned} {t('pages scanned')} · {penalties.data.flagged_count} {t('page(s) flagged')}
+          </p>
+
+          {penalties.data.pages.length === 0 ? (
+            <div className="sda-empty">
+              <strong>{t('No penalty-like drops found')}</strong>
+              {t('No page shows a sudden, sustained collapse in Search traffic — good sign.')}
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table className="sda-table" style={{ marginBlockStart: 8 }}>
+                <thead>
+                  <tr>
+                    <th>{t('Page')}</th>
+                    <th>{t('Signal')}</th>
+                    <th>{t('Drop')}</th>
+                    <th>{t('When')}</th>
+                    <th>{t('Confidence')}</th>
+                    <th>{t('Recommended fix')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {penalties.data.pages.map((p) => (
+                    <tr key={p.url}>
+                      <td style={{ whiteSpace: 'normal', maxWidth: 260 }}>
+                        <a href={p.url} target="_blank" rel="noreferrer">
+                          {p.title || p.url}
+                        </a>
+                        <div style={{ fontSize: 11, color: 'var(--sda-text-muted)' }}>{p.reason}</div>
+                      </td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <span style={{ fontWeight: 600, color: SEVERITY_BADGE[p.severity] }}>
+                          {t(PENALTY_TYPE_LABEL[p.type] ?? p.type)}
+                        </span>
+                        <div style={{ fontSize: 11, color: 'var(--sda-text-muted)' }}>
+                          {p.scope === 'sitewide' ? t('sitewide') : t('page-specific')}
+                          {p.aligned && ` · ${p.aligned.label}`}
+                        </div>
+                      </td>
+                      <td style={{ whiteSpace: 'nowrap', color: 'var(--sda-negative)' }}>
+                        {p.drop_pct}%
+                        <div style={{ fontSize: 11, color: 'var(--sda-text-muted)' }}>
+                          {p.before}→{p.after} {t('clicks/day')}
+                        </div>
+                      </td>
+                      <td style={{ whiteSpace: 'nowrap', fontSize: 12 }}>{p.drop_date}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <span style={{ color: SEVERITY_BADGE[p.confidence] }}>{t(p.confidence)}</span>
+                      </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <span style={{ fontWeight: 600, color: ACTION_COLOR[p.action] ?? 'var(--sda-text)' }}>
                           {t(ACTION_LABEL[p.action] ?? p.action)}
@@ -644,6 +804,7 @@ const TABS = [
   { key: 'links', label: 'Internal links', pro: false },
   { key: 'audit', label: 'Audit', pro: false },
   { key: 'zombies', label: 'Zombies', pro: false },
+  { key: 'penalty', label: 'Penalty radar', pro: false },
   { key: 'schema', label: 'Schema', pro: false },
   { key: 'meta', label: 'Meta & Gap', pro: true },
 ] as const;
@@ -691,6 +852,7 @@ export function ContentPage() {
           {tab === 'links' && <LinksTool />}
           {tab === 'audit' && <AuditTool />}
           {tab === 'zombies' && <ZombiesTool />}
+          {tab === 'penalty' && <PenaltyTool />}
           {tab === 'schema' && <SchemaTool />}
           {tab === 'meta' && (
             <>

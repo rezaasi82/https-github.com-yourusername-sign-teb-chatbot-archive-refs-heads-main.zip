@@ -343,6 +343,35 @@ export interface ZombieResult {
   pages: ZombiePage[];
 }
 
+export interface PenaltyPage {
+  url: string;
+  title: string;
+  edit_url: string;
+  type: string;
+  severity: 'high' | 'medium' | 'low';
+  action: string;
+  reason: string;
+  drop_date: string;
+  drop_pct: number;
+  before: number;
+  after: number;
+  pos_before: number;
+  pos_after: number;
+  scope: 'page' | 'sitewide';
+  aligned: { label: string } | null;
+  confidence: 'high' | 'medium' | 'low';
+}
+
+export interface PenaltyResult {
+  window_days: number;
+  has_gsc: boolean;
+  scanned: number;
+  flagged_count: number;
+  manual_actions_url: string;
+  sitewide: { date: string; drop_pct: number } | null;
+  pages: PenaltyPage[];
+}
+
 export interface ReportRow {
   id: number;
   type: string;
@@ -486,6 +515,8 @@ export const api = {
   contentAudit: (force = false) => request<AuditResult>(`/content/audit${force ? '?force=true' : ''}`),
   contentZombies: (days = 90, force = false) =>
     request<ZombieResult>(`/content/zombies?days=${days}${force ? '&force=true' : ''}`),
+  contentPenalties: (days = 180, force = false) =>
+    request<PenaltyResult>(`/content/penalties?days=${days}${force ? '&force=true' : ''}`),
   contentSchemaPreview: (postId: number) => request<SchemaBuildResult>(`/content/schema?post_id=${postId}`),
   contentSchemaSave: (postId: number, types: string[]) =>
     request<SchemaBuildResult>('/content/schema', { method: 'POST', body: JSON.stringify({ post_id: postId, types }) }),
