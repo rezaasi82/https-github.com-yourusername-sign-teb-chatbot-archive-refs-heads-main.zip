@@ -1,15 +1,9 @@
-/nobatyar-booking/vendor/
-/nobatyar-booking/node_modules/
 .DS_Store
 *.log
 
-# build artifact (delivered separately)
-/signteb-web-chat.zip
-/medora-cloud.zip
-
 # build artifacts (delivered separately)
 /medora-ai.zip
-/clinovix-ai.zip
+/medora-cloud.zip
 
 # build output
 dist/
