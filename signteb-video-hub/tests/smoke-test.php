@@ -506,6 +506,47 @@ $stvh_budget = new SignTeb\VideoHub\Core\Budget(20);
 $check('a budget exposes the instant it expires', $stvh_budget->deadline() > microtime(true), true);
 $check('and that instant is inside the budget window', $stvh_budget->deadline() - microtime(true) <= 20.0, true);
 
+echo "\nGemini — its request shape differs from OpenAI's in three ways, and each\n";
+echo "  one is a 400 or a silent truncation if it is got wrong.\n";
+
+$stvh_payload = SignTeb\VideoHub\Ai\Providers\GeminiProvider::build_payload(
+    'قوانین سیستم',
+    [
+        ['role' => 'user', 'content' => 'سلام'],
+        ['role' => 'assistant', 'content' => 'بله'],
+        ['role' => 'user', 'content' => 'ادامه'],
+    ],
+    ['max_tokens' => 512, 'temperature' => 0.4]
+);
+
+$check('the system prompt is not a message', $stvh_payload['systemInstruction'], ['parts' => [['text' => 'قوانین سیستم']]]);
+$check('and messages carry only the turns', count($stvh_payload['contents']), 3);
+$check('the assistant role is renamed to model', $stvh_payload['contents'][1]['role'], 'model');
+$check('user stays user', $stvh_payload['contents'][0]['role'], 'user');
+$check('text is wrapped in parts', $stvh_payload['contents'][0]['parts'], [['text' => 'سلام']]);
+$check('the token limit uses Gemini spelling', $stvh_payload['generationConfig']['maxOutputTokens'], 512);
+$check('temperature is passed through', $stvh_payload['generationConfig']['temperature'], 0.4);
+
+$stvh_bare = SignTeb\VideoHub\Ai\Providers\GeminiProvider::build_payload('', [['role' => 'user', 'content' => 'x']]);
+$check('an empty system prompt is omitted, not sent blank', isset($stvh_bare['systemInstruction']), false);
+$check('temperature is omitted when unset', isset($stvh_bare['generationConfig']['temperature']), false);
+
+$stvh_empty = SignTeb\VideoHub\Ai\Providers\GeminiProvider::build_payload('s', [['role' => 'user', 'content' => '  ']]);
+$check('blank turns are dropped', $stvh_empty['contents'], []);
+
+$check(
+    'a reply split across parts is joined, not truncated',
+    SignTeb\VideoHub\Ai\Providers\GeminiProvider::extract_text(
+        ['candidates' => [['content' => ['parts' => [['text' => 'بخش ۱ '], ['text' => 'بخش ۲']]]]]]
+    ),
+    'بخش ۱ بخش ۲'
+);
+$check(
+    'a response with no candidate yields empty, not a warning',
+    SignTeb\VideoHub\Ai\Providers\GeminiProvider::extract_text(['promptFeedback' => ['blockReason' => 'SAFETY']]),
+    ''
+);
+
 echo "\nVideoDto\n";
 $dto = VideoDto::from_array('aparat', [
     'source_id'    => 'abc',

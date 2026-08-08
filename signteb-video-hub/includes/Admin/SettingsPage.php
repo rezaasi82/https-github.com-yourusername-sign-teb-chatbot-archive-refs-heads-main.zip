@@ -133,7 +133,7 @@ class SettingsPage
             ? (string) $post['sync_interval']
             : 'stvh_12h';
 
-        $values['ai_provider'] = in_array((string) ($post['ai_provider'] ?? ''), ['anthropic', 'openai', 'gapgpt'], true)
+        $values['ai_provider'] = in_array((string) ($post['ai_provider'] ?? ''), ['anthropic', 'openai', 'gapgpt', 'gemini'], true)
             ? (string) $post['ai_provider']
             : 'anthropic';
 

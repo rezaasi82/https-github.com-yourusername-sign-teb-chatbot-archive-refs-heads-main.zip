@@ -211,10 +211,13 @@ $checkbox = static function (string $key, string $label, array $values, string $
                     <select id="ai_provider" name="ai_provider">
                         <option value="gapgpt" <?php selected($values['ai_provider'], 'gapgpt'); ?>><?php esc_html_e('GapGPT — پیشنهادی برای هاست ایران', 'signteb-video-hub'); ?></option>
                         <option value="anthropic" <?php selected($values['ai_provider'], 'anthropic'); ?>>Anthropic</option>
+                        <option value="gemini" <?php selected($values['ai_provider'], 'gemini'); ?>><?php esc_html_e('Google Gemini', 'signteb-video-hub'); ?></option>
                         <option value="openai" <?php selected($values['ai_provider'], 'openai'); ?>><?php esc_html_e('سازگار با OpenAI', 'signteb-video-hub'); ?></option>
                     </select>
                     <p class="description">
                         <?php esc_html_e('روی بیشتر هاست‌های ایران، api.openai.com و api.anthropic.com در دسترس نیستند و اتصال مستقیم شکست می‌خورد. GapGPT درگاه سازگاری است که از ایران کار می‌کند و هم مدل‌های GPT و هم Claude را سرو می‌کند.', 'signteb-video-hub'); ?>
+                        <br>
+                        <?php esc_html_e('Gemini: کلید را از Google AI Studio بگیرید. مدل پیش‌فرض gemini-2.5-flash است و در فیلد «نام مدل» قابل تغییر. گوگل معمولاً درخواست‌های IP ایران را رد می‌کند؛ اگر سرورتان در ایران است یا از GapGPT با نام مدل Gemini استفاده کنید، یا آدرس یک درگاه واسط را در «آدرس پایه سرویس» بگذارید.', 'signteb-video-hub'); ?>
                     </p>
                 </td>
             </tr>

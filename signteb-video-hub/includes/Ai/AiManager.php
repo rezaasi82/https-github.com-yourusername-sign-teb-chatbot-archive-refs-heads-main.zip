@@ -4,6 +4,7 @@ namespace SignTeb\VideoHub\Ai;
 
 use SignTeb\VideoHub\Ai\Providers\AnthropicProvider;
 use SignTeb\VideoHub\Ai\Providers\GapGptProvider;
+use SignTeb\VideoHub\Ai\Providers\GeminiProvider;
 use SignTeb\VideoHub\Ai\Providers\OpenAiProvider;
 use SignTeb\VideoHub\Core\Settings;
 
@@ -40,6 +41,7 @@ class AiManager
 
         $provider = match ($this->settings->str('ai_provider')) {
             'gapgpt' => new GapGptProvider($key, $base),
+            'gemini' => new GeminiProvider($key, $base),
             'openai' => new OpenAiProvider($key, $base),
             default  => new AnthropicProvider($key, $base),
         };
