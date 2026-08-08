@@ -38,6 +38,8 @@
         "i18n:check": "php bin/make-pot.php --check",
         "i18n:build": "php bin/make-l10n.php",
         "i18n:merge": "php bin/merge-po.php",
+        "i18n:review": "php bin/review-sheet.php",
+        "i18n:apply-review": "php bin/apply-review.php",
         "audit": "php bin/audit.php",
         "package": "php bin/package.php",
         "package:check": "php bin/package.php --check",
@@ -50,6 +52,8 @@
         "i18n:check": "Fail if the template is stale or a string cannot be extracted.",
         "i18n:build": "Compile languages/*.po into the .mo and .json WordPress loads.",
         "i18n:merge": "Merge a translation map into a locale's .po, keeping reviewer edits.",
+        "i18n:review": "Build dist/review-<locale>.html — the sheet a native speaker reviews in.",
+        "i18n:apply-review": "Apply a reviewer's exported corrections to a locale's .po.",
         "audit": "Static audit for declared-but-unconsumed code, unsanitised input and uninstall leaks.",
         "package": "Build the installable ZIP into dist/. Run `npm run build` and `i18n:build` first.",
         "package:check": "Report whether the tree is ready to package, without writing anything."

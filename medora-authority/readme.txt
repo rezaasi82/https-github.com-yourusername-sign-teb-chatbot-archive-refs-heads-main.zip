@@ -4,7 +4,7 @@ Tags: ai, seo, geo, schema, knowledge-graph
 Requires at least: 6.4
 Tested up to: 6.7
 Requires PHP: 8.2
-Stable tag: 0.15.0
+Stable tag: 0.16.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,11 @@ Yes, yourself, from the settings screen, once a month. No support ticket.
 5. Per-page authority in the editor, with prioritised fixes.
 
 == Changelog ==
+
+= 0.16.0 =
+* Added a translation review sheet — `composer i18n:review` builds a single
+  browser page for reviewing the Persian catalogue, grouped by screen, with
+  progress saved locally and corrections exported back to the catalogue.
 
 = 0.15.0 =
 * The plugin can now be built into an installable ZIP — `composer package`, or

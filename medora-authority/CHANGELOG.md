@@ -4,6 +4,57 @@ All notable changes to Medora Authority are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] — 2026-08-08
+
+### The Persian review has tooling now
+
+The catalogue has been marked "complete but unreviewed" since 0.14.0, which is
+only useful if reviewing it is possible. Reading 741 strings in a `.po` is not.
+
+`composer i18n:review` builds `dist/review-fa_IR.html`: one self-contained page,
+no server, nothing uploaded. Strings are grouped by the screen they appear on,
+because register is a property of a screen rather than of a string — "Close" on
+a dialog and "Close" in a report want different words, and that is only visible
+when a string sits beside its neighbours. Progress and edits are kept in the
+browser so 741 strings can be done across several sittings, and placeholders are
+checked as they are typed, since a dropped `%s` is the one translation error
+that takes a screen down rather than just reading badly.
+
+`bin/apply-review.php` writes the exported corrections back. Everything is
+validated first and one bad entry stops the run; the reviewer fixes it in the
+sheet and re-exports, so the `.po` only ever moves between complete states.
+Corrections go to the `.po` alone — `merge-po.php` already prefers it over the
+map, which makes the `.po` the authority and leaves `*.map.php` as the
+unreviewed draft its header says it is.
+
+Verified in a real browser end to end: 741 rows in 28 areas, edits surviving a
+reload, the placeholder warning firing on a dropped argument, every filter, and
+an export fed back through the CLI — where the deliberately broken edit was
+refused and the good one applied.
+
+### Changed — the glossary check stopped crying wolf
+
+It matched the glossary term as a literal substring, so all nine hits were
+false: "Medora Authority" is a proper noun that does not owe the reader
+"اعتبار", and "پیوندهای داخلی" and "پیوندسازی داخلی" are both correct inflections
+of "پیوند داخلی". Matching each word of the term as a prefix, and exempting the
+product name, takes it to zero — the state a check has to reach before anyone
+reads it. `has-placeholder` also stopped counting as a defect; it marks 73
+strings, and left in the same bucket it buried the three that are actually
+worth a look.
+
+### Fixed — plural corrections were rejected
+
+A plural entry carries its placeholder once per form, and both the sheet and
+the CLI compared the joined whole, so a correct two-form Persian plural was
+reported as having `%d %d`. Each form is now compared against the source
+separately. Found by running the round trip rather than by reading it.
+
+### Added
+
+- `docs/08-translation.md` — what is checked mechanically (and is clean), what
+  only a person can judge, the review loop, and where corrected text lives.
+
 ## [0.15.0] — 2026-08-08
 
 ### There is now something to install

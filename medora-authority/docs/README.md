@@ -15,6 +15,7 @@ and an explainable score instead of a traffic light.
 | [05 — Developer SDK](05-developer-sdk.md) | Facade, recipes for extractors, scorers, schema nodes, modules |
 | [06 — Scoring model](06-scoring-model.md) | What the AI Authority Score measures and how it is derived |
 | [07 — White label & SaaS](07-white-label-saas.md) | Agency branding, multi-tenant deployment |
+| [08 — Translation](08-translation.md) | Locales, the review sheet, applying corrections |
 
 ## Installing it
 

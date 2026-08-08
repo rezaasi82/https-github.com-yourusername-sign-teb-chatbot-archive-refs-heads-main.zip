@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بازبینی ترجمهٔ {{LOCALE}} — Medora Authority</title>
+<style>
+	:root {
+		--bg: #f6f7f9;
+		--card: #fff;
+		--ink: #16191d;
+		--muted: #5c6570;
+		--line: #dfe3e8;
+		--accent: #2f6df6;
+		--flag: #b45309;
+		--flag-bg: #fef6e7;
+		--done: #15803d;
+		--done-bg: #eaf7ee;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--bg: #14171a;
+			--card: #1c2024;
+			--ink: #e8ebee;
+			--muted: #9aa4b0;
+			--line: #2c3238;
+			--accent: #6f9bff;
+			--flag: #f0b45f;
+			--flag-bg: #2c2416;
+			--done: #6ee7a0;
+			--done-bg: #16281d;
+		}
+	}
+
+	* { box-sizing: border-box; }
+
+	body {
+		margin: 0;
+		background: var(--bg);
+		color: var(--ink);
+		font: 15px/1.7 Vazirmatn, "Segoe UI", Tahoma, sans-serif;
+	}
+
+	header {
+		position: sticky;
+		inset-block-start: 0;
+		z-index: 10;
+		background: var(--card);
+		border-block-end: 1px solid var(--line);
+		padding: 12px 20px;
+	}
+
+	.bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+	h1 { font-size: 17px; margin: 0; margin-inline-end: auto; }
+
+	.count { color: var(--muted); font-size: 13px; }
+
+	.progress {
+		inline-size: 100%;
+		block-size: 4px;
+		background: var(--line);
+		border-radius: 999px;
+		overflow: hidden;
+		margin-block-start: 10px;
+	}
+	.progress span { display: block; block-size: 100%; background: var(--done); inline-size: 0; }
+
+	button, select, input[type="search"] {
+		font: inherit;
+		color: inherit;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 7px;
+		padding: 6px 12px;
+		cursor: pointer;
+	}
+	button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+	button:disabled { opacity: .5; cursor: default; }
+	input[type="search"] { cursor: text; min-inline-size: 200px; }
+
+	main { padding: 20px; max-inline-size: 1100px; margin-inline: auto; }
+
+	h2 {
+		font-size: 15px;
+		margin: 28px 0 10px;
+		padding-block-end: 6px;
+		border-block-end: 1px solid var(--line);
+		color: var(--muted);
+	}
+
+	.row {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 14px 16px;
+		margin-block-end: 10px;
+	}
+	.row.done { border-inline-start: 3px solid var(--done); }
+	.row.edited { border-inline-start: 3px solid var(--accent); }
+
+	.src {
+		direction: ltr;
+		text-align: left;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 13px;
+		color: var(--muted);
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	textarea {
+		inline-size: 100%;
+		margin-block-start: 8px;
+		font: inherit;
+		color: inherit;
+		background: transparent;
+		border: 1px solid var(--line);
+		border-radius: 7px;
+		padding: 8px 10px;
+		resize: vertical;
+		min-block-size: 44px;
+	}
+	textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		align-items: center;
+		margin-block-start: 8px;
+		font-size: 12px;
+		color: var(--muted);
+	}
+
+	.tag {
+		background: var(--flag-bg);
+		color: var(--flag);
+		border-radius: 999px;
+		padding: 2px 9px;
+		font-size: 11px;
+	}
+	.note { font-style: italic; }
+	.refs { direction: ltr; font-family: ui-monospace, monospace; font-size: 11px; }
+
+	label.check { display: flex; gap: 6px; align-items: center; cursor: pointer; color: var(--done); }
+
+	.empty { color: var(--muted); padding: 40px 0; text-align: center; }
+
+	aside {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 14px 16px;
+		margin-block-end: 20px;
+	}
+	aside table { border-collapse: collapse; font-size: 13px; }
+	aside td { padding: 2px 14px 2px 0; }
+	aside td:first-child { direction: ltr; text-align: left; color: var(--muted); font-family: ui-monospace, monospace; }
+</style>
+</head>
+<body>
+
+<header>
+	<div class="bar">
+		<h1>بازبینی ترجمهٔ {{LOCALE}}</h1>
+		<span class="count" id="count"></span>
+		<input type="search" id="search" placeholder="جستجو…">
+		<select id="filter">
+			<option value="all">همه</option>
+			<option value="todo">بازبینی‌نشده</option>
+			<option value="flagged">نشان‌دار</option>
+			<option value="placeholder">دارای جانگهدار</option>
+			<option value="edited">ویرایش‌شده</option>
+			<option value="done">تأییدشده</option>
+		</select>
+		<button id="export" class="primary" disabled>دریافت اصلاحات</button>
+		<button id="reset">پاک‌کردن پیشرفت</button>
+	</div>
+	<div class="progress"><span id="bar"></span></div>
+</header>
+
+<main>
+	<aside>
+		<strong>واژگان ثابت</strong>
+		<p class="count">
+			این معادل‌ها در کل محصول یکسان‌اند. اگر یکی را عوض می‌کنید، برای همهٔ
+			رشته‌ها عوض می‌شود — در یادداشت بنویسید تا یک‌جا اعمال شود.
+		</p>
+		<table id="glossary"></table>
+	</aside>
+
+	<div id="list"></div>
+</main>
+
+<script id="data" type="application/json">{{DATA}}</script>
+
+<script>
+( function () {
+	'use strict';
+
+	var payload = JSON.parse( document.getElementById( 'data' ).textContent );
+	var entries = payload.entries;
+	var KEY = 'medora-review-' + payload.locale;
+
+	// Edits and ticks live in the browser so the work survives a closed tab.
+	// The exported file is the only thing that leaves; nothing is uploaded.
+	var state = {};
+
+	try {
+		state = JSON.parse( localStorage.getItem( KEY ) || '{}' );
+	} catch ( e ) {
+		state = {};
+	}
+
+	function save() {
+		try {
+			localStorage.setItem( KEY, JSON.stringify( state ) );
+		} catch ( e ) {
+			/* Private browsing: the sheet still works, it just forgets. */
+		}
+	}
+
+	function current( entry ) {
+		var saved = state[ entry.id ];
+		return saved && typeof saved.text === 'string' ? saved.text : entry.translation;
+	}
+
+	// A plural entry keeps its forms NUL-joined, the way the .po stores them.
+	// No msgid in this catalogue contains a newline, so the two are
+	// interchangeable for display and the reviewer just sees one form per line.
+	function forDisplay( value ) {
+		return value.split( '\u0000' ).join( '\n' );
+	}
+
+	function fromDisplay( value ) {
+		return value.split( '\n' ).join( '\u0000' );
+	}
+
+	function isEdited( entry ) {
+		return current( entry ) !== entry.translation;
+	}
+
+	function isDone( entry ) {
+		return Boolean( state[ entry.id ] && state[ entry.id ].done );
+	}
+
+	// --- placeholders ------------------------------------------------------
+	// The one error that becomes a crash rather than a typo: sprintf() throws
+	// when an argument goes missing, so a dropped %s takes the screen down in
+	// Persian only. Checked as it is typed, not at build time.
+	var PLACEHOLDER = /%(?:\d+\$)?[sdf]|%%/g;
+
+	function placeholderProblem( entry, text ) {
+		var want = ( entry.source.match( PLACEHOLDER ) || [] ).slice().sort();
+		var bad = null;
+
+		// Each plural form translates the same source and carries the same
+		// placeholders, so they are compared one at a time. Checking the joined
+		// whole counts every placeholder once per form and reports a mismatch
+		// on a correction that is fine.
+		text.split( '\u0000' ).some( function ( form ) {
+			var got = ( form.match( PLACEHOLDER ) || [] ).slice().sort();
+
+			if ( got.join( '|' ) !== want.join( '|' ) ) {
+				bad = got;
+				return true;
+			}
+
+			return false;
+		} );
+
+		if ( bad === null ) {
+			return '';
+		}
+
+		return 'جانگهدارها هم‌خوان نیستند — انتظار: ' +
+			( want.length ? want.join( ' ' ) : 'هیچ' ) +
+			' / موجود: ' + ( bad.length ? bad.join( ' ' ) : 'هیچ' );
+	}
+
+	var FLAG_LABELS = {
+		'untranslated': 'ترجمه‌نشده',
+		'identical': 'با انگلیسی یکسان',
+		'arabic-letters': 'حروف عربی (ي/ك/ة)',
+		'arabic-digits': 'ارقام عربی',
+		'has-placeholder': 'دارای جانگهدار',
+		'suspiciously-short': 'کوتاه‌تر از انتظار'
+	};
+
+	function flagLabel( flag ) {
+		if ( flag.indexOf( 'glossary:' ) === 0 ) {
+			return 'واژگان: ' + flag.slice( 9 );
+		}
+		return FLAG_LABELS[ flag ] || flag;
+	}
+
+	// --- rendering ---------------------------------------------------------
+
+	var list = document.getElementById( 'list' );
+	var search = document.getElementById( 'search' );
+	var filter = document.getElementById( 'filter' );
+
+	function matches( entry ) {
+		var q = search.value.trim().toLowerCase();
+
+		if ( q && entry.source.toLowerCase().indexOf( q ) === -1 &&
+			current( entry ).toLowerCase().indexOf( q ) === -1 ) {
+			return false;
+		}
+
+		switch ( filter.value ) {
+			case 'todo': return ! isDone( entry );
+			// `has-placeholder` is context, not a defect — it marks the
+			// strings where word order around a substituted value most often
+			// reads badly. It gets its own filter so it does not drown the
+			// handful of strings that are actually suspect.
+			case 'flagged': return entry.flags.some( function ( f ) {
+				return f !== 'has-placeholder';
+			} );
+			case 'placeholder': return entry.flags.indexOf( 'has-placeholder' ) !== -1;
+			case 'edited': return isEdited( entry );
+			case 'done': return isDone( entry );
+			default: return true;
+		}
+	}
+
+	function render() {
+		var visible = entries.filter( matches );
+		var areas = [];
+		var byArea = {};
+
+		visible.forEach( function ( entry ) {
+			if ( ! byArea[ entry.area ] ) {
+				byArea[ entry.area ] = [];
+				areas.push( entry.area );
+			}
+			byArea[ entry.area ].push( entry );
+		} );
+
+		list.textContent = '';
+
+		if ( ! visible.length ) {
+			var empty = document.createElement( 'p' );
+			empty.className = 'empty';
+			empty.textContent = 'چیزی با این فیلتر پیدا نشد.';
+			list.appendChild( empty );
+			return;
+		}
+
+		areas.forEach( function ( area ) {
+			var heading = document.createElement( 'h2' );
+			heading.textContent = area + ' — ' + byArea[ area ].length;
+			list.appendChild( heading );
+
+			byArea[ area ].forEach( function ( entry ) {
+				list.appendChild( row( entry ) );
+			} );
+		} );
+
+		progress();
+	}
+
+	function row( entry ) {
+		var wrap = document.createElement( 'div' );
+		wrap.className = 'row' + ( isDone( entry ) ? ' done' : isEdited( entry ) ? ' edited' : '' );
+
+		var source = document.createElement( 'div' );
+		source.className = 'src';
+		source.textContent = entry.source;
+		wrap.appendChild( source );
+
+		var box = document.createElement( 'textarea' );
+		box.rows = Math.min( 6, Math.ceil( current( entry ).length / 70 ) + 1 );
+		box.value = forDisplay( current( entry ) );
+		box.setAttribute( 'aria-label', 'ترجمهٔ فارسی' );
+		wrap.appendChild( box );
+
+		var meta = document.createElement( 'div' );
+		meta.className = 'meta';
+
+		var tick = document.createElement( 'label' );
+		tick.className = 'check';
+		var input = document.createElement( 'input' );
+		input.type = 'checkbox';
+		input.checked = isDone( entry );
+		tick.appendChild( input );
+		tick.appendChild( document.createTextNode( 'تأیید شد' ) );
+		meta.appendChild( tick );
+
+		var warn = document.createElement( 'span' );
+		warn.className = 'tag';
+		warn.hidden = true;
+		meta.appendChild( warn );
+
+		entry.flags.forEach( function ( flag ) {
+			var tag = document.createElement( 'span' );
+			tag.className = 'tag';
+			tag.textContent = flagLabel( flag );
+			meta.appendChild( tag );
+		} );
+
+		if ( entry.note ) {
+			var note = document.createElement( 'span' );
+			note.className = 'note';
+			note.textContent = entry.note;
+			meta.appendChild( note );
+		}
+
+		if ( entry.refs.length ) {
+			var refs = document.createElement( 'span' );
+			refs.className = 'refs';
+			refs.textContent = entry.refs[ 0 ];
+			meta.appendChild( refs );
+		}
+
+		wrap.appendChild( meta );
+
+		function check() {
+			var text = fromDisplay( box.value );
+			var problem = placeholderProblem( entry, text );
+
+			warn.hidden = ! problem;
+			warn.textContent = problem;
+
+			return text;
+		}
+
+		box.addEventListener( 'input', function () {
+			var text = check();
+
+			state[ entry.id ] = state[ entry.id ] || {};
+			state[ entry.id ].text = text;
+			state[ entry.id ].source = entry.source;
+			save();
+
+			wrap.className = 'row' + ( input.checked ? ' done' : text !== entry.translation ? ' edited' : '' );
+			progress();
+		} );
+
+		input.addEventListener( 'change', function () {
+			state[ entry.id ] = state[ entry.id ] || {};
+			state[ entry.id ].done = input.checked;
+			state[ entry.id ].source = entry.source;
+			save();
+
+			wrap.className = 'row' + ( input.checked ? ' done' : isEdited( entry ) ? ' edited' : '' );
+			progress();
+		} );
+
+		check();
+
+		return wrap;
+	}
+
+	function progress() {
+		var done = entries.filter( isDone ).length;
+		var edited = entries.filter( isEdited ).length;
+
+		document.getElementById( 'count' ).textContent =
+			done + ' از ' + entries.length + ' تأیید شده · ' + edited + ' ویرایش';
+		document.getElementById( 'bar' ).style.inlineSize =
+			( done / entries.length * 100 ).toFixed( 1 ) + '%';
+		document.getElementById( 'export' ).disabled = edited === 0;
+	}
+
+	// --- export ------------------------------------------------------------
+
+	function phpString( value ) {
+		return "'" + value.replace( /\\/g, '\\\\' ).replace( /'/g, "\\'" ) + "'";
+	}
+
+	document.getElementById( 'export' ).addEventListener( 'click', function () {
+		var changed = entries.filter( isEdited );
+		var lines = [
+			'<' + '?php',
+			'',
+			'declare(strict_types=1);',
+			'',
+			'/**',
+			' * Review corrections for ' + payload.locale + '.',
+			' *',
+			' * Exported from the review sheet on ' + new Date().toISOString().slice( 0, 10 ) + '.',
+			' * ' + changed.length + ' of ' + entries.length + ' strings changed.',
+			' *',
+			' * Apply with:',
+			' *   php bin/apply-review.php ' + payload.locale + ' <this file>',
+			' */',
+			'',
+			'return ['
+		];
+
+		changed.forEach( function ( entry ) {
+			lines.push( '    ' + phpString( entry.source ) + ' => ' + phpString( current( entry ) ) + ',' );
+		} );
+
+		lines.push( '];', '' );
+
+		var blob = new Blob( [ lines.join( '\n' ) ], { type: 'text/plain;charset=utf-8' } );
+		var a = document.createElement( 'a' );
+
+		a.href = URL.createObjectURL( blob );
+		a.download = '{{DOMAIN}}-' + payload.locale + '.review.php';
+		a.click();
+		URL.revokeObjectURL( a.href );
+	} );
+
+	document.getElementById( 'reset' ).addEventListener( 'click', function () {
+		if ( window.confirm( 'همهٔ ویرایش‌ها و تأییدهای ذخیره‌شده در این مرورگر پاک شوند؟' ) ) {
+			state = {};
+			save();
+			render();
+		}
+	} );
+
+	search.addEventListener( 'input', render );
+	filter.addEventListener( 'change', render );
+
+	var glossary = document.getElementById( 'glossary' );
+
+	Object.keys( payload.glossary ).forEach( function ( english ) {
+		var tr = document.createElement( 'tr' );
+		var a = document.createElement( 'td' );
+		var b = document.createElement( 'td' );
+
+		a.textContent = english;
+		b.textContent = payload.glossary[ english ];
+		tr.appendChild( a );
+		tr.appendChild( b );
+		glossary.appendChild( tr );
+	} );
+
+	render();
+}() );
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
  * Plugin Name:       Medora Authority
  * Plugin URI:        https://medora.ai/authority
  * Description:       AI Authority Platform — turns a WordPress site into a trusted, machine-readable knowledge source for AI search engines and large language models.
- * Version:           0.15.0
+ * Version:           0.16.0
  * Requires at least: 6.4
  * Requires PHP:      8.2
  * Author:            Medora
@@ -22,7 +22,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-const MEDORA_VERSION    = '0.15.0';
+const MEDORA_VERSION    = '0.16.0';
 const MEDORA_DB_VERSION = '1.1.0';
 
 define('MEDORA_PLUGIN_FILE', __FILE__);
