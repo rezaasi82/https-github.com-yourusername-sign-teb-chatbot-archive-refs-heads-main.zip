@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Medora AI
  * Description:       Medora AI — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی.
- * Version:           4.0.0
+ * Version:           4.2.0
  * Requires at least: 5.8
  * Requires PHP:      8.0
  * Author:            Medora AI
@@ -18,7 +18,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('MDR_VERSION', '4.0.0');
+define('MDR_VERSION', '4.2.0');
 define('MDR_FILE', __FILE__);
 define('MDR_DIR', plugin_dir_path(__FILE__));
 define('MDR_URL', plugin_dir_url(__FILE__));
