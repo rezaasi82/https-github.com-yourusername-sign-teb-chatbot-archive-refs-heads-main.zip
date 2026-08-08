@@ -3,7 +3,7 @@
  * Plugin Name:       SignTeb Video Hub
  * Plugin URI:        https://signteb.com
  * Description:       مرکز مدیریت و نمایش ویدئوهای پزشکی — همگام‌سازی خودکار آپارات/یوتیوب، خلاصه و لینک‌سازی داخلی با هوش مصنوعی، اسکیمای ویدئویی، سایت‌مپ ویدئو و ویجت المنتور.
- * Version:           1.3.0
+ * Version:           1.4.0
  * Requires at least: 5.8
  * Requires PHP:      8.1
  * Author:            SignTeb
@@ -20,7 +20,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('STVH_VERSION', '1.3.0');
+define('STVH_VERSION', '1.4.0');
 define('STVH_FILE', __FILE__);
 define('STVH_DIR', plugin_dir_path(__FILE__));
 define('STVH_URL', plugin_dir_url(__FILE__));
