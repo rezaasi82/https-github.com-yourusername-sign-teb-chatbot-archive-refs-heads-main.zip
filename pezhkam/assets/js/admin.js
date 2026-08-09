@@ -1,0 +1,304 @@
+/**
+ * Pezhkam Web Chat — admin settings (Vanilla JS).
+ * Shows only the API-key + model fields for the currently selected provider,
+ * updated live without a page refresh.
+ */
+(function () {
+	'use strict';
+
+	var select = document.getElementById('pzk-provider');
+	if (!select) {
+		return;
+	}
+
+	var blocks = document.querySelectorAll('.pzk-provider-block');
+
+	function sync() {
+		var active = select.value;
+		blocks.forEach(function (block) {
+			block.style.display = block.getAttribute('data-provider') === active ? '' : 'none';
+		});
+	}
+
+	select.addEventListener('change', sync);
+	sync();
+})();
+
+/* ---------- shared status rendering ----------
+ * Result strings can carry server-supplied text (res.error), so the message is
+ * always written as a text node and never as innerHTML. Only the icon markup —
+ * a constant literal defined here — is injected as SVG.
+ */
+var PZK_ICON = {
+	ok: '<svg class="pzk-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>',
+	fail: '<svg class="pzk-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>'
+};
+
+function pzkStatus(el, ok, message) {
+	if (!el) { return; }
+	el.textContent = '';
+	el.classList.remove('pzk-result-ok', 'pzk-result-fail');
+	el.classList.add('pzk-result', ok ? 'pzk-result-ok' : 'pzk-result-fail');
+
+	var ico = document.createElement('span');
+	ico.innerHTML = ok ? PZK_ICON.ok : PZK_ICON.fail;
+	el.appendChild(ico.firstChild);
+
+	if (message) {
+		el.appendChild(document.createTextNode(' ' + message));
+	}
+}
+
+/* ---------- Export module (leads table + integration tests) ---------- */
+(function () {
+	'use strict';
+	if (typeof window.PZK_ADMIN === 'undefined') { return; }
+	var A = window.PZK_ADMIN;
+
+	function post(action, data) {
+		var body = new URLSearchParams();
+		body.append('action', action);
+		body.append('nonce', A.nonce);
+		Object.keys(data || {}).forEach(function (k) {
+			if (Array.isArray(data[k])) {
+				data[k].forEach(function (v) { body.append(k + '[]', v); });
+			} else {
+				body.append(k, data[k]);
+			}
+		});
+		return fetch(A.ajaxUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: body.toString()
+		}).then(function (r) { return r.json(); });
+	}
+
+	// Per-row export actions.
+	document.querySelectorAll('.pzk-act').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			var op = btn.getAttribute('data-op');
+			var lead = btn.getAttribute('data-lead');
+			var original = btn.textContent;
+			btn.disabled = true; btn.textContent = A.strings.working;
+			var action = op === 'webhook' ? 'pzk_export_webhook' : 'pzk_export_gsheet';
+			post(action, { lead_id: lead }).then(function (res) {
+				pzkStatus(btn, !!(res && res.ok), (res && res.ok) ? A.strings.ok : A.strings.failed);
+				setTimeout(function () {
+					btn.disabled = false;
+					// Drop the status classes too, or the button keeps the
+					// success/failure colour after its label is restored.
+					btn.classList.remove('pzk-result', 'pzk-result-ok', 'pzk-result-fail');
+					btn.textContent = original;
+				}, 2500);
+			}).catch(function () {
+				pzkStatus(btn, false, A.strings.failed); btn.disabled = false;
+			});
+		});
+	});
+
+	// Select-all + bulk actions.
+	var checkAll = document.getElementById('pzk-check-all');
+	if (checkAll) {
+		checkAll.addEventListener('change', function () {
+			document.querySelectorAll('.pzk-check').forEach(function (c) { c.checked = checkAll.checked; });
+		});
+	}
+	var bulkApply = document.getElementById('pzk-bulk-apply');
+	if (bulkApply) {
+		bulkApply.addEventListener('click', function () {
+			var op = document.getElementById('pzk-bulk-op').value;
+			var ids = [];
+			document.querySelectorAll('.pzk-check:checked').forEach(function (c) { ids.push(c.value); });
+			var out = document.getElementById('pzk-bulk-result');
+			if (!op || ids.length === 0) { out.textContent = A.strings.noSel; return; }
+			bulkApply.disabled = true; out.textContent = A.strings.working;
+			post('pzk_export_bulk', { op: op, ids: ids }).then(function (res) {
+				if (res && res.ok) {
+					out.textContent = (typeof res.queued !== 'undefined')
+						? (res.queued + ' ' + (A.strings.queued || 'در صف پردازش'))
+						: (res.processed + ' / ' + res.total);
+				} else {
+					out.textContent = A.strings.failed;
+				}
+				bulkApply.disabled = false;
+			}).catch(function () { out.textContent = A.strings.failed; bulkApply.disabled = false; });
+		});
+	}
+
+	// CRM lead save (single-lead view).
+	var crm = document.querySelector('.pzk-crm-panel');
+	if (crm) {
+		var saveBtn = crm.querySelector('.pzk-crm-save');
+		var result = crm.querySelector('.pzk-crm-result');
+		saveBtn.addEventListener('click', function () {
+			saveBtn.disabled = true; result.textContent = A.strings.working;
+			var branchSel = crm.querySelector('.pzk-crm-branch');
+			var data = {
+				lead_id: crm.getAttribute('data-lead'),
+				nonce: crm.getAttribute('data-nonce'),
+				lead_status: crm.querySelector('.pzk-crm-status').value,
+				email: crm.querySelector('.pzk-crm-email').value,
+				tags: crm.querySelector('.pzk-crm-tags').value,
+				notes: crm.querySelector('.pzk-crm-notes').value
+			};
+			if (branchSel) { data.branch_id = branchSel.value; }
+			post('pzk_lead_update', data).then(function (res) {
+				pzkStatus(result, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) ? res.error : A.strings.failed));
+				result.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+				saveBtn.disabled = false;
+			}).catch(function () { pzkStatus(result, false, A.strings.failed); saveBtn.disabled = false; });
+		});
+	}
+
+	// SMS panel settings — provider-specific field toggling + test send.
+	var smsProvider = document.querySelector('.pzk-sms-provider');
+	if (smsProvider) {
+		var customBox = document.querySelector('.pzk-sms-custom');
+		var secretRow = document.querySelector('.pzk-sms-secret-row');
+		var meliHint = document.querySelector('.pzk-sms-hint[data-for="melipayamak"]');
+		var syncProvider = function () {
+			var v = smsProvider.value;
+			if (customBox) { customBox.style.display = v === 'custom' ? '' : 'none'; }
+			// MeliPayamak accepts the classic username/password pair too.
+			if (secretRow) { secretRow.style.display = v === 'melipayamak' ? '' : 'none'; }
+			if (meliHint) { meliHint.style.display = v === 'melipayamak' ? '' : 'none'; }
+		};
+		smsProvider.addEventListener('change', syncProvider);
+		syncProvider();
+	}
+	// SMS connection diagnosis — shows stored config + the panel's raw verdict.
+	var smsDiagBtn = document.querySelector('.pzk-sms-diag-btn');
+	if (smsDiagBtn) {
+		smsDiagBtn.addEventListener('click', function () {
+			var out = document.querySelector('.pzk-sms-diag-out');
+			smsDiagBtn.disabled = true;
+			if (out) { out.style.display = ''; out.textContent = A.strings.working; }
+			post('pzk_sms_diag', {}).then(function (res) {
+				if (out) {
+					out.textContent = (res && res.report) ? res.report : A.strings.failed;
+					out.style.borderColor = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				smsDiagBtn.disabled = false;
+			}).catch(function () { if (out) { out.textContent = A.strings.failed; } smsDiagBtn.disabled = false; });
+		});
+	}
+
+	var smsTestBtn = document.querySelector('.pzk-sms-test-btn');
+	if (smsTestBtn) {
+		smsTestBtn.addEventListener('click', function () {
+			var toEl = document.querySelector('.pzk-sms-test-to');
+			var out = document.querySelector('.pzk-test-result[data-for="sms"]');
+			var to = toEl ? toEl.value : '';
+			if (!to) { if (out) { out.textContent = A.strings.noSel; } return; }
+			smsTestBtn.disabled = true; if (out) { out.textContent = A.strings.working; }
+			post('pzk_test_sms', { to: to }).then(function (res) {
+				if (out) {
+					pzkStatus(out, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
+					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				smsTestBtn.disabled = false;
+			}).catch(function () { pzkStatus(out, false, A.strings.failed); smsTestBtn.disabled = false; });
+		});
+	}
+
+	// Messenger lead-alert test buttons (Bale / Telegram bot).
+	document.querySelectorAll('.pzk-msgr-test-btn').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			var ch = btn.getAttribute('data-channel');
+			var out = document.querySelector('.pzk-test-result[data-for="msgr-' + ch + '"]');
+			btn.disabled = true; if (out) { out.textContent = A.strings.working; }
+			post('pzk_test_messenger', { channel: ch }).then(function (res) {
+				if (out) {
+					pzkStatus(out, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
+					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				btn.disabled = false;
+			}).catch(function () { pzkStatus(out, false, A.strings.failed); btn.disabled = false; });
+		});
+	});
+
+	// Lead referral — email (server wp_mail) + SMS deep-link.
+	var refer = document.querySelector('.pzk-refer');
+	if (refer) {
+		var refText = refer.getAttribute('data-text') || '';
+		var refResult = refer.querySelector('.pzk-refer-result');
+		var origResult = refResult ? refResult.textContent : '';
+
+		var mailBtn = refer.querySelector('.pzk-refer-mail');
+		if (mailBtn) {
+			mailBtn.addEventListener('click', function () {
+				var to = (refer.querySelector('.pzk-refer-email') || {}).value || '';
+				if (!to) { refResult.textContent = A.strings.noSel; return; }
+				mailBtn.disabled = true; refResult.textContent = A.strings.working;
+				post('pzk_lead_refer', { lead_id: refer.getAttribute('data-lead'), to: to }).then(function (res) {
+					pzkStatus(refResult, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
+					refResult.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+					mailBtn.disabled = false;
+				}).catch(function () { pzkStatus(refResult, false, A.strings.failed); mailBtn.disabled = false; });
+			});
+		}
+
+		// Picking a saved colleague fills both destinations (phone + email).
+		var staffSel = refer.querySelector('.pzk-refer-staff');
+		var phoneField = refer.querySelector('.pzk-refer-phone');
+		var emailField = refer.querySelector('.pzk-refer-email');
+		if (staffSel) {
+			staffSel.addEventListener('change', function () {
+				var opt = staffSel.options[staffSel.selectedIndex];
+				if (!opt || !staffSel.value) { return; }
+				if (phoneField) { phoneField.value = staffSel.value; }
+				var mail = opt.getAttribute('data-email') || '';
+				if (emailField && mail) { emailField.value = mail; }
+			});
+		}
+
+		// Server-side panel send (only present when the SMS panel is configured).
+		var panelBtn = refer.querySelector('.pzk-refer-panel');
+		if (panelBtn) {
+			panelBtn.addEventListener('click', function () {
+				var phone = (refer.querySelector('.pzk-refer-phone') || {}).value || '';
+				if (!phone) { refResult.textContent = A.strings.noSel; return; }
+				var tpl = (refer.querySelector('.pzk-refer-template') || {}).value || 'referral';
+				panelBtn.disabled = true; refResult.textContent = A.strings.working;
+				post('pzk_send_sms', { lead_id: refer.getAttribute('data-lead'), to: phone, template: tpl }).then(function (res) {
+					pzkStatus(refResult, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
+					refResult.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+					panelBtn.disabled = false;
+				}).catch(function () { pzkStatus(refResult, false, A.strings.failed); panelBtn.disabled = false; });
+			});
+		}
+	}
+
+	// SEO Intelligence — AI idea generation.
+	var seoGen = document.getElementById('pzk-seo-gen');
+	if (seoGen) {
+		seoGen.addEventListener('click', function () {
+			var wrap = document.querySelector('.pzk-seo-ai');
+			var out = document.getElementById('pzk-seo-ideas');
+			seoGen.disabled = true;
+			var original = seoGen.textContent;
+			seoGen.textContent = A.strings.working;
+			out.textContent = '…';
+			post('pzk_seo_generate', { nonce: wrap.getAttribute('data-nonce') }).then(function (res) {
+				out.textContent = (res && res.ok) ? res.ideas : ((res && res.error) || A.strings.failed);
+				seoGen.disabled = false; seoGen.textContent = original;
+			}).catch(function () { out.textContent = A.strings.failed; seoGen.disabled = false; seoGen.textContent = original; });
+		});
+	}
+
+	// Connection tests (Integrations tab).
+	document.querySelectorAll('.pzk-test-btn').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			var target = btn.getAttribute('data-target');
+			var out = document.querySelector('.pzk-test-result[data-for="' + target + '"]');
+			btn.disabled = true; if (out) { out.textContent = A.strings.working; }
+			post(target === 'webhook' ? 'pzk_test_webhook' : 'pzk_test_gsheet', {}).then(function (res) {
+				if (out) {
+					pzkStatus(out, !!(res && res.ok), (res && res.ok) ? (A.strings.ok + (res.code ? ' (HTTP ' + res.code + ')' : '')) : ((res && res.error) ? res.error : A.strings.failed));
+					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
+				}
+				btn.disabled = false;
+			}).catch(function () { pzkStatus(out, false, A.strings.failed); btn.disabled = false; });
+		});
+	});
+})();

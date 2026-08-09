@@ -1,0 +1,797 @@
+/* Pezhkam — admin design system.
+ *
+ * One typeface, one set of tokens, one component vocabulary across every
+ * plugin screen. The font is declared with a full fallback stack inside var()
+ * so the panel still renders correctly if fonts/font.css is not loaded.
+ */
+
+.pzk-admin {
+	--pzk-font: "Vazirmatn", "IRANYekan", "IRANSans", Tahoma, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--nav: #0f1f3d;
+	--nav-2: #1c3a6e;
+	--gold: #c8a04e;
+	--ink: #16233f;
+	--muted: #5b667a;
+	--line: #e3e8f0;
+	--bg: #f2f4f8;
+	--ok: #1a7f37;
+	--warn: #8a6d1b;
+	--bad: #c9302c;
+	--radius: 14px;
+	--shadow: 0 2px 10px rgba(15, 31, 61, 0.06);
+	--shadow-lg: 0 12px 32px rgba(15, 31, 61, 0.10);
+
+	max-width: 1180px;
+	margin-inline-end: 20px;
+	color: var(--ink);
+	font-size: 14px;
+	font-family: var(--pzk-font);
+}
+
+/* ------------------------------------------------- typography, no exceptions
+ * WordPress sets its own family on core admin elements (inputs, buttons,
+ * tables, notices, the media modal). Left alone, those islands render in the
+ * default sans stack and Persian text in them looks unrelated to the rest of
+ * the panel. This sweep is deliberately broad: every element inside a plugin
+ * screen inherits the bundled face, including form controls, which do NOT
+ * inherit font by default in any browser.
+ */
+.pzk-admin,
+.pzk-admin *,
+.pzk-admin *::before,
+.pzk-admin *::after {
+	font-family: var(--pzk-font);
+}
+.pzk-admin input,
+.pzk-admin select,
+.pzk-admin textarea,
+.pzk-admin button,
+.pzk-admin optgroup,
+.pzk-admin .button,
+.pzk-admin .button-primary,
+.pzk-admin .button-secondary {
+	font-family: var(--pzk-font);
+	font-size: 13.5px;
+	line-height: 1.9;
+}
+/* Latin-only fields read better in a mono/system face than a Persian one. */
+.pzk-admin input[type="url"],
+.pzk-admin input[type="email"],
+.pzk-admin input[dir="ltr"],
+.pzk-admin textarea[dir="ltr"],
+.pzk-admin code,
+.pzk-admin kbd,
+.pzk-admin pre {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ------------------------------------------------ neutralise WP core chrome
+ * The plugin draws its own header, cards and tables; these are the core
+ * styles that would otherwise show through and break the visual system.
+ */
+.pzk-admin > h1,
+.pzk-admin .wp-header-end,
+.pzk-admin > .wrap > h1 { display: none; }
+
+.pzk-admin .notice,
+.pzk-admin .updated,
+.pzk-admin .error {
+	margin: 14px 0;
+	border: 1px solid var(--line);
+	border-inline-start-width: 4px;
+	border-radius: var(--radius);
+	box-shadow: none;
+	background: #fff;
+	padding: 12px 16px;
+}
+.pzk-admin .notice p { margin: 0; font-size: 13.5px; }
+
+.pzk-admin .form-table > tbody > tr > th {
+	width: 240px;
+	padding: 18px 0 18px 16px;
+	font-weight: 700;
+	font-size: 13.5px;
+	color: var(--ink);
+}
+.pzk-admin .form-table > tbody > tr > td { padding: 14px 0; }
+.pzk-admin .form-table th,
+.pzk-admin .form-table td { vertical-align: top; }
+
+.pzk-admin p.description {
+	margin: 6px 0 0;
+	color: var(--muted);
+	font-size: 12.5px;
+	line-height: 2;
+	font-style: normal;
+}
+
+.pzk-admin input[type="text"],
+.pzk-admin input[type="url"],
+.pzk-admin input[type="email"],
+.pzk-admin input[type="number"],
+.pzk-admin input[type="password"],
+.pzk-admin select,
+.pzk-admin textarea {
+	min-height: 38px;
+	padding: 7px 12px;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	box-shadow: none;
+	background: #fff;
+	color: var(--ink);
+	transition: border-color .15s, box-shadow .15s;
+}
+.pzk-admin input[type="text"]:focus,
+.pzk-admin input[type="url"]:focus,
+.pzk-admin input[type="email"]:focus,
+.pzk-admin input[type="number"]:focus,
+.pzk-admin input[type="password"]:focus,
+.pzk-admin select:focus,
+.pzk-admin textarea:focus {
+	border-color: var(--nav-2);
+	box-shadow: 0 0 0 3px rgba(28, 58, 110, .12);
+	outline: none;
+}
+.pzk-admin textarea { min-height: 96px; line-height: 2; }
+
+/* ---------------------------------------------------------------- header */
+.pzk-head {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin: 16px 0 0;
+	padding: 22px 26px;
+	border-radius: var(--radius) var(--radius) 0 0;
+	background:
+		radial-gradient(620px 220px at 92% -40%, rgba(200, 160, 78, .30), transparent 62%),
+		linear-gradient(135deg, var(--nav), var(--nav-2));
+	color: #fff;
+	overflow: hidden;
+}
+.pzk-head-mark {
+	flex: 0 0 auto;
+	width: 46px;
+	height: 46px;
+	border-radius: 13px;
+	display: grid;
+	place-items: center;
+	color: #fff;
+	background: linear-gradient(135deg, var(--gold), #a97f2f);
+	box-shadow: 0 8px 20px rgba(200, 160, 78, .35);
+}
+.pzk-head-mark .pzk-ico { width: 24px; height: 24px; }
+.pzk-head-text { flex: 1 1 260px; min-width: 200px; }
+.pzk-head-text h1 {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	font-weight: 800;
+	line-height: 1.5;
+	color: #fff;
+}
+.pzk-head-text p {
+	margin: 3px 0 0;
+	font-size: 13px;
+	color: rgba(255, 255, 255, .78);
+}
+.pzk-head-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pzk-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 14px;
+	border-radius: 100px;
+	font-size: 12px;
+	font-weight: 700;
+	background: rgba(255, 255, 255, .12);
+	border: 1px solid rgba(255, 255, 255, .22);
+	color: #fff;
+}
+.pzk-chip-on { background: rgba(46, 158, 107, .28); border-color: rgba(46, 158, 107, .55); }
+.pzk-chip-off { background: rgba(214, 54, 56, .26); border-color: rgba(214, 54, 56, .5); }
+
+/* ------------------------------------------------------------------- nav */
+.pzk-admin .nav-tab-wrapper,
+.pzk-admin .pzk-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin: 0 0 22px;
+	padding: 8px 12px;
+	border: 1px solid var(--line);
+	border-top: 0;
+	border-radius: 0 0 var(--radius) var(--radius);
+	background: #fff;
+	box-shadow: var(--shadow);
+}
+.pzk-admin .nav-tab {
+	float: none;
+	margin: 0;
+	padding: 9px 18px;
+	border: 0;
+	border-radius: 9px;
+	background: transparent;
+	color: var(--muted);
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1.7;
+	transition: background .15s ease, color .15s ease;
+}
+.pzk-admin .nav-tab:hover { background: #eef1f7; color: var(--nav); }
+.pzk-admin .nav-tab-active,
+.pzk-admin .nav-tab-active:hover {
+	background: var(--nav);
+	color: #fff;
+	box-shadow: 0 4px 12px rgba(15, 31, 61, .22);
+}
+
+/* ----------------------------------------------------------- section head */
+.pzk-admin h2.title,
+.pzk-admin .pzk-section {
+	margin: 26px 0 10px;
+	padding: 0 2px;
+	font-size: 15px;
+	font-weight: 800;
+	color: var(--nav);
+	border: 0;
+}
+.pzk-admin h2.title::before,
+.pzk-admin .pzk-section::before {
+	content: "";
+	display: inline-block;
+	width: 4px;
+	height: 15px;
+	margin-inline-end: 9px;
+	border-radius: 3px;
+	background: var(--gold);
+	vertical-align: -2px;
+}
+.pzk-admin h3 { font-size: 13.5px; font-weight: 800; color: var(--nav); margin: 18px 0 8px; }
+
+/* --------------------------------------------------------------- form card */
+.pzk-admin .form-table {
+	width: 100%;
+	margin: 0 0 18px;
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	border-collapse: separate;
+	border-spacing: 0;
+	overflow: hidden;
+}
+.pzk-admin .form-table tr + tr th,
+.pzk-admin .form-table tr + tr td { border-top: 1px solid #eef1f6; }
+.pzk-admin .form-table th {
+	width: 240px;
+	padding: 16px 22px;
+	vertical-align: top;
+	font-size: 13.5px;
+	font-weight: 700;
+	color: var(--ink);
+	line-height: 1.8;
+}
+.pzk-admin .form-table td {
+	padding: 14px 0 16px;
+	padding-inline-end: 22px;
+	vertical-align: top;
+}
+.pzk-admin .form-table td > .description,
+.pzk-admin .description {
+	margin: 6px 0 0;
+	font-size: 12.5px;
+	line-height: 1.9;
+	color: var(--muted);
+	font-style: normal;
+}
+
+/* ------------------------------------------------------------------ inputs */
+.pzk-admin input[type="text"],
+.pzk-admin input[type="url"],
+.pzk-admin input[type="email"],
+.pzk-admin input[type="number"],
+.pzk-admin input[type="password"],
+.pzk-admin input[type="search"],
+.pzk-admin select,
+.pzk-admin textarea {
+	max-width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #cfd6e2;
+	border-radius: 9px;
+	background: #fff;
+	color: var(--ink);
+	font-size: 13.5px;
+	line-height: 1.8;
+	box-shadow: none;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+.pzk-admin input[type="text"]:focus,
+.pzk-admin input[type="url"]:focus,
+.pzk-admin input[type="email"]:focus,
+.pzk-admin input[type="number"]:focus,
+.pzk-admin input[type="password"]:focus,
+.pzk-admin select:focus,
+.pzk-admin textarea:focus {
+	border-color: var(--gold);
+	box-shadow: 0 0 0 3px rgba(200, 160, 78, .18);
+	outline: 0;
+}
+.pzk-admin .form-table td input[type="text"],
+.pzk-admin .form-table td input[type="url"],
+.pzk-admin .form-table td input[type="email"],
+.pzk-admin .form-table td input[type="password"],
+.pzk-admin .form-table td select { width: 100%; max-width: 420px; }
+.pzk-admin .form-table td input[type="number"] { width: 110px; }
+.pzk-admin .regular-text,
+.pzk-admin .large-text { width: 100%; max-width: 420px; }
+.pzk-admin .large-text { max-width: 560px; }
+.pzk-admin textarea { width: 100%; max-width: 620px; line-height: 2; }
+.pzk-admin input[type="color"] {
+	width: 52px; height: 34px; padding: 2px;
+	border: 1px solid #cfd6e2; border-radius: 9px; background: #fff; cursor: pointer;
+}
+.pzk-admin input[type="checkbox"] { margin-inline-end: 6px; }
+.pzk-admin label { font-size: 13.5px; }
+
+/* ----------------------------------------------------------------- buttons */
+.pzk-admin .button {
+	border-radius: 9px;
+	padding: 4px 16px;
+	height: auto;
+	line-height: 2.1;
+	font-size: 13px;
+	font-weight: 600;
+	border-color: #cfd6e2;
+}
+.pzk-admin .button-primary {
+	background: var(--nav);
+	border-color: var(--nav);
+	color: #fff;
+	box-shadow: 0 4px 14px rgba(15, 31, 61, .22);
+}
+.pzk-admin .button-primary:hover,
+.pzk-admin .button-primary:focus {
+	background: var(--nav-2);
+	border-color: var(--nav-2);
+	color: #fff;
+}
+.pzk-admin .submit,
+.pzk-admin p.submit {
+	position: sticky;
+	bottom: 0;
+	z-index: 5;
+	margin: 22px 0 0;
+	padding: 14px 20px;
+	background: rgba(255, 255, 255, .94);
+	backdrop-filter: blur(6px);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-lg);
+}
+.pzk-admin .submit .button-primary { padding: 6px 30px; font-size: 14px; }
+
+/* ------------------------------------------------------------------ tables */
+.pzk-admin .wp-list-table {
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	overflow: hidden;
+	box-shadow: var(--shadow);
+	background: #fff;
+}
+.pzk-admin .wp-list-table thead th {
+	background: #f7f9fc;
+	color: var(--nav);
+	font-weight: 700;
+	font-size: 13px;
+	border-bottom: 1px solid var(--line);
+}
+.pzk-admin .wp-list-table td,
+.pzk-admin .wp-list-table th { padding: 12px 14px; }
+.pzk-admin .wp-list-table tbody tr:hover { background: #f8fafd; }
+
+/* --------------------------------------------------------------- stat cards */
+.pzk-admin .pzk-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	gap: 14px;
+	margin: 0 0 24px;
+}
+.pzk-admin .pzk-card {
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 20px 18px;
+	text-align: center;
+	box-shadow: var(--shadow);
+	transition: transform .15s ease, box-shadow .15s ease;
+}
+.pzk-admin .pzk-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.pzk-admin .pzk-card-accent {
+	background: linear-gradient(135deg, var(--nav), var(--nav-2));
+	color: #fff;
+	border-color: var(--nav);
+}
+.pzk-admin .pzk-card-num {
+	display: block;
+	font-size: 30px;
+	font-weight: 800;
+	line-height: 1.2;
+	color: inherit;
+}
+.pzk-admin .pzk-card-label {
+	display: block;
+	margin-top: 6px;
+	font-size: 12.5px;
+	color: var(--muted);
+}
+.pzk-admin .pzk-card-accent .pzk-card-label { color: rgba(255, 255, 255, .8); }
+
+/* -------------------------------------------------------------- empty state */
+.pzk-empty {
+	background: #fff;
+	border: 1px dashed #cdd6e4;
+	border-radius: var(--radius);
+	padding: 46px 24px;
+	text-align: center;
+	color: var(--muted);
+}
+.pzk-empty-ico { display: block; margin-bottom: 10px; opacity: .55; color: var(--muted); }
+.pzk-empty-ico .pzk-ico { width: 34px; height: 34px; }
+.pzk-empty strong { display: block; color: var(--nav); font-size: 15px; margin-bottom: 6px; }
+
+/* --------------------------------------------------------------- transcript */
+.pzk-transcript { max-width: 760px; display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.pzk-bubble { padding: 12px 14px; border-radius: 12px; max-width: 80%; line-height: 1.9; }
+.pzk-bubble-user { align-self: flex-end; background: var(--nav); color: #fff; }
+.pzk-bubble-assistant { align-self: flex-start; background: #fff; border: 1px solid var(--line); }
+.pzk-bubble-system { align-self: center; background: #fff7e6; border: 1px dashed var(--gold); font-size: 12px; }
+.pzk-bubble.pzk-flagged { border: 2px solid var(--bad); }
+.pzk-bubble-role { display: block; font-size: 11px; opacity: 0.6; margin-bottom: 4px; }
+.pzk-flag-badge { display: inline-block; margin-top: 6px; font-size: 11px; color: var(--bad); font-weight: 700; }
+
+/* ------------------------------------------------------------------- chart */
+.pzk-chart {
+	display: flex; align-items: flex-end; gap: 6px;
+	height: 170px; padding: 16px;
+	background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+	margin: 8px 0 22px; overflow-x: auto; box-shadow: var(--shadow);
+}
+.pzk-bar-col { flex: 1 0 26px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; }
+.pzk-bar-val { font-size: 11px; color: var(--muted); }
+.pzk-bar { width: 68%; min-height: 2px; border-radius: 6px 6px 0 0; transition: height .3s ease; }
+.pzk-bar-x { font-size: 10px; color: #8090a8; direction: ltr; }
+
+/* -------------------------------------------------------------- list extras */
+.pzk-row-sub { font-size: 11px; color: #8090a8; margin-top: 2px; direction: ltr; text-align: start; }
+.pzk-pill { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.pzk-pill-book { background: #e6f4ea; color: var(--ok); }
+
+/* ---------------------------------------------------------- lead panel */
+.pzk-lead-panel { display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; margin: 0 0 20px; }
+.pzk-lead-info {
+	display: flex; flex-direction: column; gap: 8px;
+	background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+	padding: 16px 20px; min-width: 230px; font-size: 13px; box-shadow: var(--shadow);
+}
+.pzk-summary-box {
+	flex: 1; min-width: 260px;
+	background: linear-gradient(160deg, #fff, #f6f9ff);
+	border: 1px solid var(--gold); border-radius: var(--radius);
+	padding: 16px 20px; box-shadow: var(--shadow);
+}
+.pzk-summary-title { font-weight: 800; color: var(--nav); margin-bottom: 8px; }
+.pzk-summary-text { margin: 0; white-space: pre-wrap; font-family: inherit; font-size: 13px; line-height: 2; color: var(--ink); }
+
+/* ------------------------------------------------------------------ export */
+.pzk-bulkbar {
+	display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+	margin: 0 0 14px; padding: 12px 16px;
+	background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.pzk-bulkbar #pzk-bulk-result { font-size: 12px; color: var(--muted); }
+.pzk-leads-table .pzk-actions { white-space: nowrap; }
+.pzk-leads-table .pzk-actions .button-small { margin: 0 2px; }
+.pzk-leads-table .pzk-act[disabled] { opacity: 0.6; }
+.pzk-test-result { margin-inline-start: 8px; font-size: 12.5px; font-weight: 600; }
+
+/* --------------------------------------------------------------------- CRM */
+.pzk-status-pill {
+	display: inline-block; margin-inline-start: 6px; padding: 2px 10px;
+	border-radius: 20px; font-size: 10.5px; font-weight: 700; color: #fff; vertical-align: middle;
+}
+.pzk-crm-panel {
+	margin: 0 0 24px; padding: 20px 22px;
+	background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.pzk-crm-title { font-weight: 800; color: var(--nav); margin-bottom: 16px; font-size: 14px; }
+.pzk-crm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.pzk-crm-panel label { display: block; }
+.pzk-crm-panel label > span { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+.pzk-crm-panel select, .pzk-crm-panel input, .pzk-crm-panel textarea { width: 100%; box-sizing: border-box; }
+.pzk-crm-notes-wrap { margin-top: 14px; }
+.pzk-crm-foot { margin-top: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pzk-crm-result { font-size: 12.5px; font-weight: 700; }
+
+/* ---------------------------------------------------------------- kanban */
+.pzk-board { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 10px; }
+.pzk-board-col {
+	flex: 0 0 250px; background: #eef1f7; border-radius: var(--radius);
+	padding: 12px; min-height: 180px;
+}
+.pzk-board-col.pzk-over { outline: 2px dashed var(--gold); outline-offset: -4px; }
+.pzk-board-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-weight: 800; font-size: 13px; color: var(--nav); }
+.pzk-board-count { background: #fff; border-radius: 20px; padding: 1px 9px; font-size: 11px; color: var(--muted); }
+.pzk-board-card {
+	background: #fff; border: 1px solid var(--line); border-radius: 11px;
+	padding: 12px 14px; margin-bottom: 9px; cursor: grab; box-shadow: var(--shadow);
+	transition: transform .12s ease, box-shadow .12s ease;
+}
+.pzk-board-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+
+/* ------------------------------------------------------------------ branches */
+.pzk-branch-layout { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+.pzk-branch-list { flex: 1 1 540px; }
+.pzk-branch-form {
+	flex: 0 0 320px; background: #fff; border: 1px solid var(--line);
+	border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow);
+}
+.pzk-branch-form h2 { margin-top: 0; font-size: 15px; color: var(--nav); }
+.pzk-branch-form input, .pzk-branch-form select, .pzk-branch-form textarea { width: 100%; }
+
+/* ----------------------------------------------------------------- SEO */
+.pzk-seo-ai {
+	background:
+		radial-gradient(520px 200px at 90% -40%, rgba(200, 160, 78, .30), transparent 60%),
+		linear-gradient(135deg, var(--nav), var(--nav-2));
+	color: #fff; border-radius: var(--radius); padding: 20px 22px; margin: 0 0 22px;
+	box-shadow: var(--shadow-lg);
+}
+.pzk-seo-ai-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.pzk-seo-ai-head strong { font-size: 15px; }
+.pzk-seo-ai-head .description { color: rgba(255, 255, 255, .78); margin: 4px 0 0; }
+.pzk-seo-ai .button-primary { background: var(--gold); border-color: var(--gold); color: #23324d; }
+.pzk-seo-ai .button-primary:hover { background: #d8b463; border-color: #d8b463; color: #23324d; }
+.pzk-seo-ideas {
+	margin: 16px 0 0; white-space: pre-wrap; font-family: inherit; font-size: 13.5px; line-height: 2;
+	background: rgba(255, 255, 255, .10); border-radius: 11px; padding: 15px 17px; min-height: 8px;
+}
+.pzk-seo-ideas:empty { display: none; }
+.pzk-seo-grid { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+.pzk-seo-col { flex: 1 1 420px; }
+.pzk-kw-cloud {
+	background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px;
+	display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; line-height: 2.2; box-shadow: var(--shadow);
+}
+.pzk-kw { color: #16294f; font-weight: 700; }
+.pzk-kw:nth-child(3n) { color: #b8863b; }
+.pzk-kw:nth-child(3n+1) { color: var(--nav-2); }
+
+/* -------------------------------------------------------------- referral */
+.pzk-refer { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.pzk-refer-row { display: flex; gap: 8px; margin-bottom: 9px; flex-wrap: wrap; }
+.pzk-refer-row input { flex: 1 1 200px; min-width: 160px; }
+.pzk-refer-result { margin: 6px 0 0; }
+.pzk-refer-messengers { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 10px 0; }
+.pzk-refer-ml-label { color: var(--muted); font-size: 12px; }
+.pzk-refer-template { min-width: 150px; }
+.pzk-sms-custom {
+	margin: 10px 0 4px; padding: 6px 16px;
+	background: #f7f9fc; border: 1px solid var(--line); border-radius: 11px;
+}
+
+/* ------------------------------------------------------------------- toast */
+.pzk-saved-toast {
+	display: flex; align-items: center; gap: 10px;
+	margin: 14px 0 6px; padding: 13px 18px;
+	background: linear-gradient(135deg, #b6d99b, #93c572);
+	color: #1c3b12; font-weight: 600; font-size: 14px;
+	border: 1px solid #7fb85e; border-radius: 12px;
+	box-shadow: 0 8px 24px rgba(124, 179, 94, 0.35);
+	animation: pzk-toast-in .35s ease both, pzk-toast-out .5s ease 4s forwards;
+}
+.pzk-saved-ico {
+	display: inline-flex; align-items: center; justify-content: center;
+	width: 24px; height: 24px; padding: 5px; border-radius: 50%;
+	background: #4e8a2c; color: #fff;
+	flex: 0 0 auto;
+}
+@keyframes pzk-toast-in  { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes pzk-toast-out { to { opacity: 0; transform: translateY(-8px); visibility: hidden; } }
+.pzk-tpl-code { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.pzk-tpl-code span { color: var(--muted); font-size: 12px; white-space: nowrap; }
+
+/* -------------------------------------------------------------- diagnostics */
+.pzk-sms-diag-out {
+	margin: 10px 0 0; padding: 12px 16px; max-width: 620px;
+	background: #fff7f7; border: 1px solid #f0c3c3; border-radius: 11px;
+	white-space: pre-wrap; line-height: 1.9; font-family: inherit; font-size: 13px; color: #7a2b2b;
+}
+
+/* ------------------------------------------------------------------ mobile */
+@media (max-width: 960px) {
+	.pzk-admin { margin-inline-end: 10px; }
+	.pzk-crm-grid { grid-template-columns: 1fr; }
+	.pzk-branch-form { flex: 1 1 100%; }
+}
+@media (max-width: 782px) {
+	.pzk-admin .form-table th,
+	.pzk-admin .form-table td { display: block; width: auto; padding-inline: 18px; }
+	.pzk-admin .form-table th { padding-bottom: 0; }
+	.pzk-admin .form-table tr + tr td { border-top: 0; }
+	.pzk-admin .form-table tr + tr th { border-top: 1px solid #eef1f6; margin-top: 4px; }
+	.pzk-head { padding: 18px; }
+	.pzk-head-text h1 { font-size: 17px; }
+}
+
+/* ============================================================ icon system
+ * Inline SVG from \Pezhkam\Admin\Icon. Icons take their colour from the text
+ * they sit in and their size from --pzk-ico-size, so the same icon works in a
+ * stat tile, a table cell and a button without per-context variants.
+ */
+.pzk-ico {
+	--pzk-ico-size: 1.15em;
+	width: var(--pzk-ico-size);
+	height: var(--pzk-ico-size);
+	flex: 0 0 auto;
+	vertical-align: -0.18em;
+}
+.pzk-ico-wrap {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	line-height: 1.6;
+}
+
+/* Lead temperature. Replaces the coloured-circle emoji: same information,
+   but it scales with the type and stays legible in high-contrast mode. */
+.pzk-dot {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	white-space: nowrap;
+}
+.pzk-dot > i {
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	flex: 0 0 auto;
+	background: currentColor;
+	box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+}
+.pzk-dot-hot  { color: var(--ok); }
+.pzk-dot-warm { color: var(--warn); }
+.pzk-dot-cold { color: var(--muted); }
+
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+	.pzk-dot > i { box-shadow: none; }
+}
+
+/* Inline async result next to a test button (SMS test, webhook ping, …). */
+.pzk-result {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-inline-start: 10px;
+	font-size: 13px;
+	font-weight: 600;
+}
+.pzk-result-ok   { color: var(--ok); }
+.pzk-result-fail { color: var(--bad); }
+.pzk-result .pzk-ico { --pzk-ico-size: 1.05em; }
+
+/* ================================================ remaining WP core surfaces
+ * Seven tables in the views use .widefat/.striped rather than .wp-list-table,
+ * and the conversation list uses .subsubsub/.tablenav. Without these rules
+ * those screens keep the stock grey WordPress chrome while the rest of the
+ * plugin uses the card system — the inconsistency the review flagged.
+ */
+.pzk-admin table.widefat {
+	width: 100%;
+	margin: 0 0 18px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	border-collapse: separate;
+	border-spacing: 0;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: var(--shadow);
+}
+.pzk-admin table.widefat thead th,
+.pzk-admin table.widefat tfoot th {
+	padding: 13px 14px;
+	background: #f7f9fc;
+	border-bottom: 1px solid var(--line);
+	color: var(--nav);
+	font-size: 12.5px;
+	font-weight: 800;
+}
+.pzk-admin table.widefat tbody td { padding: 12px 14px; border-bottom: 1px solid #eef1f6; }
+.pzk-admin table.widefat tbody tr:last-child td { border-bottom: 0; }
+.pzk-admin table.widefat.striped > tbody > :nth-child(odd) { background: #fbfcfe; }
+.pzk-admin table.widefat tbody tr:hover { background: #f5f8fd; }
+
+/* Filter links above the conversation table. */
+.pzk-admin .subsubsub {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px;
+	margin: 0 0 12px;
+	padding: 0;
+	font-size: 13px;
+}
+/* The markup separates the filters with a literal "|" between the links. The
+   pills carry that separation visually, so the character is collapsed away
+   here rather than removed from the view (which core-style markup expects). */
+.pzk-admin .subsubsub li { margin: 0; font-size: 0; }
+.pzk-admin .subsubsub li a { font-size: 13px; }
+.pzk-admin .subsubsub a {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 13px;
+	border-radius: 100px;
+	color: var(--muted);
+	text-decoration: none;
+	transition: background .15s, color .15s;
+}
+.pzk-admin .subsubsub a:hover { background: #eef1f7; color: var(--nav); }
+.pzk-admin .subsubsub a.current {
+	background: var(--nav);
+	color: #fff;
+	font-weight: 700;
+}
+.pzk-admin .subsubsub .count { color: inherit; opacity: .75; }
+
+/* Pagination. */
+.pzk-admin .tablenav { height: auto; margin: 12px 0 0; padding: 0; }
+.pzk-admin .tablenav .tablenav-pages { float: none; display: flex; justify-content: flex-start; gap: 5px; margin: 0; }
+.pzk-admin .tablenav .tablenav-pages a,
+.pzk-admin .tablenav .tablenav-pages span.current {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 34px;
+	height: 34px;
+	padding: 0 10px;
+	border: 1px solid var(--line);
+	border-radius: 9px;
+	background: #fff;
+	color: var(--muted);
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: 600;
+}
+.pzk-admin .tablenav .tablenav-pages a:hover { border-color: var(--nav-2); color: var(--nav); }
+.pzk-admin .tablenav .tablenav-pages span.current {
+	background: var(--nav);
+	border-color: var(--nav);
+	color: #fff;
+}
+
+/* Checkbox / radio rows: consistent spacing and a real hit area. */
+.pzk-admin .form-table label > input[type="checkbox"],
+.pzk-admin .form-table label > input[type="radio"] {
+	margin-inline-end: 7px;
+	vertical-align: -2px;
+}
+.pzk-admin .form-table label {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	line-height: 2.1;
+	cursor: pointer;
+}
+.pzk-admin .form-table label .pzk-ico { color: var(--nav-2); }
+
+/* Width helpers WP ships but does not size consistently in RTL. */
+.pzk-admin .regular-text { width: 25rem; max-width: 100%; }
+.pzk-admin .large-text   { width: 100%; }
+
+@media (max-width: 782px) {
+	.pzk-admin .form-table > tbody > tr > th { width: auto; padding-bottom: 4px; }
+	.pzk-admin .regular-text { width: 100%; }
+}
