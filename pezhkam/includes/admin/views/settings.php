@@ -215,7 +215,10 @@ if (! defined('ABSPATH')) {
                     </select>
                 </td>
             </tr>
-            <tr><th><?php esc_html_e('فونت باندل‌شده Vazirmatn', 'pezhkam'); ?></th><td><label><input type="checkbox" name="use_bundled_font" value="1" <?php checked($s->get('use_bundled_font', 1), 1); ?>> <?php esc_html_e('استفاده از فونت باندل‌شده (در صورت وجود فایل فونت)', 'pezhkam'); ?></label></td></tr>
+            <tr><th><?php esc_html_e('فونت وزیرمتن', 'pezhkam'); ?></th><td>
+                <label><input type="checkbox" name="use_bundled_font" value="1" <?php checked($s->get('use_bundled_font', 1), 1); ?>> <?php esc_html_e('بارگذاری فونت وزیرمتن روی ویجت سایت', 'pezhkam'); ?></label>
+                <p class="description"><?php esc_html_e('فونت همراه افزونه ارائه می‌شود و از سرویس بیرونی خوانده نمی‌شود. اگر قالب سایت خودش فونت فارسی دارد، این گزینه را خاموش کنید تا فونت دوم بارگذاری نشود. پنل مدیریت در هر حالت با همین فونت نمایش داده می‌شود.', 'pezhkam'); ?></p>
+            </td></tr>
             <tr><th><?php esc_html_e('متن فوتر (برندینگ)', 'pezhkam'); ?></th><td><input type="text" name="brand_footer" value="<?php echo esc_attr($s->get('brand_footer')); ?>" class="regular-text"><p class="description"><?php esc_html_e('خالی = بدون فوتر.', 'pezhkam'); ?></p></td></tr>
             <tr><th><?php esc_html_e('پیام خوش‌آمد', 'pezhkam'); ?></th><td><textarea name="welcome_message" rows="2" class="large-text"><?php echo esc_textarea($s->get('welcome_message')); ?></textarea></td></tr>
             <tr>
