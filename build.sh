@@ -114,8 +114,10 @@ fi
 
 echo
 echo "── ساخت ──"
-rm -rf dist
+# فقط خروجی خودِ این اسکریپت پاک می‌شود، نه کل dist —
+# وگرنه بیلد آزمایشی build-dev.sh هم هر بار از بین می‌رفت.
 mkdir -p dist
+rm -f dist/pezhkam.zip dist/pezhkam-package.zip dist/pezhkam-guide.pdf
 
 # فایل بروزرسان: فقط پوشه افزونه، بدون هیچ پوشه والد اضافه.
 zip -rq dist/pezhkam.zip "$PLUGIN_DIR" -x '*.DS_Store' -x '__MACOSX/*' -x '*/.git/*'
