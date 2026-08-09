@@ -41,17 +41,17 @@ $render_bars = static function (array $series, string $color): void {
 <div class="pzk-cards">
     <div class="pzk-card"><span class="pzk-card-num"><?php echo esc_html(number_format_i18n($stats['conversations'])); ?></span><span class="pzk-card-label"><?php esc_html_e('گفتگو', 'pezhkam'); ?></span></div>
     <div class="pzk-card pzk-card-accent"><span class="pzk-card-num"><?php echo esc_html(number_format_i18n($stats['leads'])); ?></span><span class="pzk-card-label"><?php esc_html_e('لید', 'pezhkam'); ?></span></div>
-    <div class="pzk-card"><span class="pzk-card-num">🟢 <?php echo esc_html(number_format_i18n($stats['hot_leads'])); ?></span><span class="pzk-card-label"><?php esc_html_e('لید داغ', 'pezhkam'); ?></span></div>
+    <div class="pzk-card"><span class="pzk-card-num"><span class="pzk-dot pzk-dot-hot"><i aria-hidden="true"></i></span><?php echo esc_html(number_format_i18n($stats['hot_leads'])); ?></span><span class="pzk-card-label"><?php esc_html_e('لید داغ', 'pezhkam'); ?></span></div>
     <div class="pzk-card"><span class="pzk-card-num"><?php echo esc_html($stats['conversion_rate']); ?>٪</span><span class="pzk-card-label"><?php esc_html_e('نرخ تبدیل', 'pezhkam'); ?></span></div>
     <div class="pzk-card"><span class="pzk-card-num"><?php echo esc_html(number_format_i18n($stats['booked'])); ?></span><span class="pzk-card-label"><?php esc_html_e('کلیک رزرو', 'pezhkam'); ?></span></div>
 </div>
 
 <h2><?php esc_html_e('کلیک کانال‌های ارتباطی', 'pezhkam'); ?></h2>
 <div class="pzk-cards">
-    <div class="pzk-card"><span class="pzk-card-num">📅 <?php echo esc_html(number_format_i18n($clicks['booking'])); ?></span><span class="pzk-card-label"><?php esc_html_e('رزرو نوبت', 'pezhkam'); ?></span></div>
-    <div class="pzk-card"><span class="pzk-card-num">💬 <?php echo esc_html(number_format_i18n($clicks['whatsapp'])); ?></span><span class="pzk-card-label"><?php esc_html_e('واتساپ', 'pezhkam'); ?></span></div>
-    <div class="pzk-card"><span class="pzk-card-num">📞 <?php echo esc_html(number_format_i18n($clicks['call'])); ?></span><span class="pzk-card-label"><?php esc_html_e('تماس', 'pezhkam'); ?></span></div>
-    <div class="pzk-card"><span class="pzk-card-num">🟦 <?php echo esc_html(number_format_i18n($clicks['bale'])); ?></span><span class="pzk-card-label"><?php esc_html_e('بله', 'pezhkam'); ?></span></div>
+    <div class="pzk-card"><span class="pzk-card-num"><?php echo \Pezhkam\Admin\Icon::svg('calendar'); ?><?php echo esc_html(number_format_i18n($clicks['booking'])); ?></span><span class="pzk-card-label"><?php esc_html_e('رزرو نوبت', 'pezhkam'); ?></span></div>
+    <div class="pzk-card"><span class="pzk-card-num"><?php echo \Pezhkam\Admin\Icon::svg('chat'); ?><?php echo esc_html(number_format_i18n($clicks['whatsapp'])); ?></span><span class="pzk-card-label"><?php esc_html_e('واتساپ', 'pezhkam'); ?></span></div>
+    <div class="pzk-card"><span class="pzk-card-num"><?php echo \Pezhkam\Admin\Icon::svg('phone'); ?><?php echo esc_html(number_format_i18n($clicks['call'])); ?></span><span class="pzk-card-label"><?php esc_html_e('تماس', 'pezhkam'); ?></span></div>
+    <div class="pzk-card"><span class="pzk-card-num"><?php echo \Pezhkam\Admin\Icon::svg('send'); ?><?php echo esc_html(number_format_i18n($clicks['bale'])); ?></span><span class="pzk-card-label"><?php esc_html_e('بله', 'pezhkam'); ?></span></div>
 </div>
 
 <h2><?php esc_html_e('روند گفتگوها (۱۴ روز اخیر)', 'pezhkam'); ?></h2>

@@ -19,7 +19,7 @@ class PageHeader
     public static function render(string $title, string $subtitle = '', array $chips = []): void
     {
         echo '<div class="pzk-head">';
-        echo '<span class="pzk-head-mark" aria-hidden="true">&#128172;</span>';
+        echo '<span class="pzk-head-mark">' . Icon::svg('chat') . '</span>';
 
         echo '<div class="pzk-head-text">';
         echo '<h1>' . esc_html($title) . '</h1>';
@@ -46,11 +46,13 @@ class PageHeader
 
     /**
      * Empty-state block for lists with no rows yet.
+     *
+     * @param string $icon Name of an icon in \Pezhkam\Admin\Icon, not markup.
      */
-    public static function empty_state(string $title, string $hint = '', string $icon = '&#128203;'): void
+    public static function empty_state(string $title, string $hint = '', string $icon = 'search'): void
     {
         echo '<div class="pzk-empty">';
-        echo '<span class="pzk-empty-ico" aria-hidden="true">' . wp_kses_post($icon) . '</span>';
+        echo '<span class="pzk-empty-ico">' . Icon::svg($icon) . '</span>';
         echo '<strong>' . esc_html($title) . '</strong>';
         if ($hint !== '') {
             echo '<span>' . esc_html($hint) . '</span>';

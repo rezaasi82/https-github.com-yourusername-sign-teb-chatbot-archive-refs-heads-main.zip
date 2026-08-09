@@ -330,19 +330,19 @@
 			head.querySelector('.pzk-cta-title').textContent = cfg.strings.ctaTitle;
 			head.querySelector('.pzk-cta-text').textContent = cfg.strings.ctaText;
 			wrap.appendChild(head);
-			wrap.appendChild(channelBtn(cfg.strings.book, bookingUrl, 'booking', '📅', true));
+			wrap.appendChild(channelBtn(cfg.strings.book, bookingUrl, 'booking', true));
 		}
 
 		var row = document.createElement('div');
 		row.className = 'pzk-channel-row';
 		if (root.dataset.chWhatsapp === '1' && whatsapp) {
-			row.appendChild(channelBtn(cfg.strings.whatsapp, 'https://wa.me/' + whatsapp.replace(/[^0-9]/g, ''), 'whatsapp', '💬', false));
+			row.appendChild(channelBtn(cfg.strings.whatsapp, 'https://wa.me/' + whatsapp.replace(/[^0-9]/g, ''), 'whatsapp', false));
 		}
 		if (root.dataset.chCall === '1' && phone) {
-			row.appendChild(channelBtn(cfg.strings.call, 'tel:' + phone.replace(/[^0-9+]/g, ''), 'call', '📞', false));
+			row.appendChild(channelBtn(cfg.strings.call, 'tel:' + phone.replace(/[^0-9+]/g, ''), 'call', false));
 		}
 		if (root.dataset.chBale === '1' && baleUrl) {
-			row.appendChild(channelBtn(cfg.strings.bale, baleUrl, 'bale', '🟦', false));
+			row.appendChild(channelBtn(cfg.strings.bale, baleUrl, 'bale', false));
 		}
 		if (row.children.length) { wrap.appendChild(row); }
 
@@ -352,14 +352,30 @@
 		}
 	}
 
-	function channelBtn(label, href, type, emoji, primary) {
+	/* Channel icons. Constant literals, so injecting them as markup is safe;
+	   the button label beside them is still written as text. */
+	var PZK_CH_ICON = {
+		booking:  '<path d="M3 5h18v16H3z" fill="none"/><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+		whatsapp: '<path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-6.5A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8Z"/>',
+		call:     '<path d="M6 3h3l2 5-2.5 1.5a12 12 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/>',
+		bale:     '<path d="M21 3 3 10.5l7 2.5 2.5 7L21 3Z"/><path d="m10 13.5 4-4"/>'
+	};
+
+	function pzkChannelIcon(type) {
+		var body = PZK_CH_ICON[type];
+		if (!body) { return ''; }
+		return '<svg class="pzk-cta-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+			+ ' stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+			+ body + '</svg>';
+	}
+
+	function channelBtn(label, href, type, primary) {
 		var a = document.createElement('a');
 		a.className = 'pzk-cta-btn pzk-cta-' + type + (primary ? ' pzk-cta-primary' : '');
 		a.href = href;
 		a.target = '_blank';
 		a.rel = 'noopener';
-		a.innerHTML = '<span class="pzk-cta-emoji" aria-hidden="true"></span><span class="pzk-cta-label"></span>';
-		a.querySelector('.pzk-cta-emoji').textContent = emoji;
+		a.innerHTML = pzkChannelIcon(type) + '<span class="pzk-cta-label"></span>';
 		a.querySelector('.pzk-cta-label').textContent = label;
 		a.addEventListener('click', function () { trackEvent(type); });
 		return a;

@@ -109,7 +109,7 @@ class SmsMelipayamak extends \Pezhkam\Notifications\SmsProviderBase
                 return ['ok' => false, 'detail' => sprintf(__('سرور سایت به پنل دسترسی ندارد: %s', 'pezhkam'), $probe['neterr'])];
             }
             if ($probe['ok']) {
-                return ['ok' => true, 'detail' => sprintf(__('حالت نام‌کاربری/رمز ✓ — اعتبار پنل: %s', 'pezhkam'), $probe['credit'])];
+                return ['ok' => true, 'detail' => sprintf(__('حالت نام‌کاربری/رمز — اعتبار پنل: %s', 'pezhkam'), $probe['credit'])];
             }
 
             // Rejected — if the UUID sits in the username slot, try swapped and
@@ -119,7 +119,7 @@ class SmsMelipayamak extends \Pezhkam\Notifications\SmsProviderBase
                 if ($swapped['ok']) {
                     \Pezhkam\Notifications\SmsManager::save_key($secret);
                     \Pezhkam\Notifications\SmsManager::save_secret($key);
-                    return ['ok' => true, 'detail' => sprintf(__('جای دو فیلد برعکس بود؛ به‌طور خودکار اصلاح و ذخیره شد ✓ — اعتبار پنل: %s', 'pezhkam'), $swapped['credit'])];
+                    return ['ok' => true, 'detail' => sprintf(__('جای دو فیلد برعکس بود؛ به‌طور خودکار اصلاح و ذخیره شد — اعتبار پنل: %s', 'pezhkam'), $swapped['credit'])];
                 }
             }
 

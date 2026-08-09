@@ -1,12 +1,20 @@
-/* Self-hosted Vazirmatn. The widget only enqueues this file when
-   assets/fonts/vazirmatn.woff2 is actually bundled, so it never 404s on a
-   clean checkout. Drop the woff2 in this folder to enable the bundled font;
-   otherwise the widget falls back to the Vazirmatn/Tahoma system stack. */
+/**
+ * Bundled Vazirmatn (SIL Open Font License 1.1 — see OFL.txt in this folder).
+ *
+ * Shipped as a single variable file covering weights 100-900, so every screen
+ * of the plugin renders in the same Persian typeface with one HTTP request and
+ * no external CDN. Loaded by both the admin screens and the front-end widget.
+ */
 
 @font-face {
 	font-family: "Vazirmatn";
-	src: url("vazirmatn.woff2") format("woff2");
+	src: url("vazirmatn-variable.woff2") format("woff2-variations"),
+	     url("vazirmatn-variable.woff2") format("woff2");
 	font-weight: 100 900;
 	font-display: swap;
 	font-style: normal;
+}
+
+:root {
+	--pzk-font: "Vazirmatn", "IRANYekan", "IRANSans", Tahoma, system-ui, -apple-system, "Segoe UI", sans-serif;
 }

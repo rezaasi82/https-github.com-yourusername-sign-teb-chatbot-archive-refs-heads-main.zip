@@ -42,7 +42,7 @@ class CrmBoard
         if (substr($hook, -strlen(self::PAGE)) !== self::PAGE) {
             return;
         }
-        wp_enqueue_style('pzk-board', PZK_URL . 'assets/css/board.css', [], PZK_VERSION);
+        wp_enqueue_style('pzk-board', PZK_URL . 'assets/css/board.css', ['pzk-font', 'pzk-admin'], PZK_VERSION);
         wp_enqueue_script('pzk-board', PZK_URL . 'assets/js/board.js', [], PZK_VERSION, true);
         wp_localize_script('pzk-board', 'PZK_BOARD', [
             'ajaxUrl' => esc_url_raw(admin_url('admin-ajax.php')),

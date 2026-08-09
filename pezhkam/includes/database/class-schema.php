@@ -16,7 +16,7 @@ if (! defined('ABSPATH')) {
 
 class Schema
 {
-    public const DB_VERSION = '3.4.0';
+    public const DB_VERSION = '1.0.0';
 
     public static function conversations_table(): string
     {

@@ -2,6 +2,7 @@
    .pzk-dash so it never leaks into the rest of wp-admin. */
 
 .pzk-dash {
+	--pzk-font: "Vazirmatn", "IRANYekan", "IRANSans", Tahoma, system-ui, -apple-system, "Segoe UI", sans-serif;
 	--navy: #0f1f3d;
 	--navy-2: #16294f;
 	--gold: #c8a04e;
@@ -18,7 +19,7 @@
 		linear-gradient(160deg, var(--navy), var(--navy-2));
 	box-shadow: 0 30px 70px rgba(15,31,61,0.35);
 	color: var(--ink);
-	font-family: Vazirmatn, Tahoma, system-ui, sans-serif;
+	font-family: var(--pzk-font);
 }
 
 /* VIP welcome card */
@@ -118,7 +119,8 @@
 	transition: transform 0.2s ease, border-color 0.2s ease;
 }
 .pzk-tile:hover { transform: translateY(-3px); border-color: rgba(200,160,78,0.5); }
-.pzk-tile-ico { font-size: 24px; display: block; }
+.pzk-tile-ico { display: block; color: var(--gold-2); }
+.pzk-tile-ico .pzk-ico { width: 26px; height: 26px; }
 .pzk-tile-num { display: block; font-size: 40px; font-weight: 800; color: var(--gold-2); line-height: 1.2; margin-top: 6px; }
 .pzk-tile-label { display: block; font-size: 13px; color: rgba(234,240,251,0.72); margin-top: 6px; }
 
@@ -168,3 +170,7 @@
 	.pzk-grid { grid-template-columns: 1fr; }
 	.pzk-dash { margin-inline: 10px; }
 }
+
+/* One typeface across the dashboard, form controls included. */
+.pzk-dash,
+.pzk-dash * { font-family: var(--pzk-font); }

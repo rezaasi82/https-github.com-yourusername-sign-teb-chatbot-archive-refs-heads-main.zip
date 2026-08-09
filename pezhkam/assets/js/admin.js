@@ -24,6 +24,31 @@
 	sync();
 })();
 
+/* ---------- shared status rendering ----------
+ * Result strings can carry server-supplied text (res.error), so the message is
+ * always written as a text node and never as innerHTML. Only the icon markup —
+ * a constant literal defined here — is injected as SVG.
+ */
+var PZK_ICON = {
+	ok: '<svg class="pzk-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>',
+	fail: '<svg class="pzk-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>'
+};
+
+function pzkStatus(el, ok, message) {
+	if (!el) { return; }
+	el.textContent = '';
+	el.classList.remove('pzk-result-ok', 'pzk-result-fail');
+	el.classList.add('pzk-result', ok ? 'pzk-result-ok' : 'pzk-result-fail');
+
+	var ico = document.createElement('span');
+	ico.innerHTML = ok ? PZK_ICON.ok : PZK_ICON.fail;
+	el.appendChild(ico.firstChild);
+
+	if (message) {
+		el.appendChild(document.createTextNode(' ' + message));
+	}
+}
+
 /* ---------- Export module (leads table + integration tests) ---------- */
 (function () {
 	'use strict';
@@ -57,10 +82,16 @@
 			btn.disabled = true; btn.textContent = A.strings.working;
 			var action = op === 'webhook' ? 'pzk_export_webhook' : 'pzk_export_gsheet';
 			post(action, { lead_id: lead }).then(function (res) {
-				btn.textContent = res && res.ok ? '✓ ' + A.strings.ok : '✕ ' + A.strings.failed;
-				setTimeout(function () { btn.disabled = false; btn.textContent = original; }, 2500);
+				pzkStatus(btn, !!(res && res.ok), (res && res.ok) ? A.strings.ok : A.strings.failed);
+				setTimeout(function () {
+					btn.disabled = false;
+					// Drop the status classes too, or the button keeps the
+					// success/failure colour after its label is restored.
+					btn.classList.remove('pzk-result', 'pzk-result-ok', 'pzk-result-fail');
+					btn.textContent = original;
+				}, 2500);
 			}).catch(function () {
-				btn.textContent = '✕'; btn.disabled = false;
+				pzkStatus(btn, false, A.strings.failed); btn.disabled = false;
 			});
 		});
 	});
@@ -112,10 +143,10 @@
 			};
 			if (branchSel) { data.branch_id = branchSel.value; }
 			post('pzk_lead_update', data).then(function (res) {
-				result.textContent = (res && res.ok) ? '✓ ' + A.strings.ok : '✕ ' + (res && res.error ? res.error : A.strings.failed);
+				pzkStatus(result, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) ? res.error : A.strings.failed));
 				result.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 				saveBtn.disabled = false;
-			}).catch(function () { result.textContent = '✕'; saveBtn.disabled = false; });
+			}).catch(function () { pzkStatus(result, false, A.strings.failed); saveBtn.disabled = false; });
 		});
 	}
 
@@ -162,11 +193,11 @@
 			smsTestBtn.disabled = true; if (out) { out.textContent = A.strings.working; }
 			post('pzk_test_sms', { to: to }).then(function (res) {
 				if (out) {
-					out.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					pzkStatus(out, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
 					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 				}
 				smsTestBtn.disabled = false;
-			}).catch(function () { if (out) { out.textContent = '✕'; } smsTestBtn.disabled = false; });
+			}).catch(function () { pzkStatus(out, false, A.strings.failed); smsTestBtn.disabled = false; });
 		});
 	}
 
@@ -178,11 +209,11 @@
 			btn.disabled = true; if (out) { out.textContent = A.strings.working; }
 			post('pzk_test_messenger', { channel: ch }).then(function (res) {
 				if (out) {
-					out.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					pzkStatus(out, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
 					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 				}
 				btn.disabled = false;
-			}).catch(function () { if (out) { out.textContent = '✕'; } btn.disabled = false; });
+			}).catch(function () { pzkStatus(out, false, A.strings.failed); btn.disabled = false; });
 		});
 	});
 
@@ -200,10 +231,10 @@
 				if (!to) { refResult.textContent = A.strings.noSel; return; }
 				mailBtn.disabled = true; refResult.textContent = A.strings.working;
 				post('pzk_lead_refer', { lead_id: refer.getAttribute('data-lead'), to: to }).then(function (res) {
-					refResult.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					pzkStatus(refResult, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
 					refResult.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 					mailBtn.disabled = false;
-				}).catch(function () { refResult.textContent = '✕'; mailBtn.disabled = false; });
+				}).catch(function () { pzkStatus(refResult, false, A.strings.failed); mailBtn.disabled = false; });
 			});
 		}
 
@@ -230,10 +261,10 @@
 				var tpl = (refer.querySelector('.pzk-refer-template') || {}).value || 'referral';
 				panelBtn.disabled = true; refResult.textContent = A.strings.working;
 				post('pzk_send_sms', { lead_id: refer.getAttribute('data-lead'), to: phone, template: tpl }).then(function (res) {
-					refResult.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok) : ('✕ ' + ((res && res.error) || A.strings.failed));
+					pzkStatus(refResult, !!(res && res.ok), (res && res.ok) ? A.strings.ok : ((res && res.error) || A.strings.failed));
 					refResult.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 					panelBtn.disabled = false;
-				}).catch(function () { refResult.textContent = '✕'; panelBtn.disabled = false; });
+				}).catch(function () { pzkStatus(refResult, false, A.strings.failed); panelBtn.disabled = false; });
 			});
 		}
 	}
@@ -263,11 +294,11 @@
 			btn.disabled = true; if (out) { out.textContent = A.strings.working; }
 			post(target === 'webhook' ? 'pzk_test_webhook' : 'pzk_test_gsheet', {}).then(function (res) {
 				if (out) {
-					out.textContent = (res && res.ok) ? ('✓ ' + A.strings.ok + (res.code ? ' (HTTP ' + res.code + ')' : '')) : ('✕ ' + (res && res.error ? res.error : A.strings.failed));
+					pzkStatus(out, !!(res && res.ok), (res && res.ok) ? (A.strings.ok + (res.code ? ' (HTTP ' + res.code + ')' : '')) : ((res && res.error) ? res.error : A.strings.failed));
 					out.style.color = (res && res.ok) ? '#1a7f37' : '#d63638';
 				}
 				btn.disabled = false;
-			}).catch(function () { if (out) { out.textContent = '✕'; } btn.disabled = false; });
+			}).catch(function () { pzkStatus(out, false, A.strings.failed); btn.disabled = false; });
 		});
 	});
 })();

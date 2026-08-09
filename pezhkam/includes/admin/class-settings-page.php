@@ -243,7 +243,7 @@ class SettingsPage
         // Pistachio-green success toast after a save (auto-dismisses via CSS).
         if (\Pezhkam\Core\Input::get_key('updated') === '1') {
             echo '<div class="pzk-saved-toast" role="status">'
-                . '<span class="pzk-saved-ico" aria-hidden="true">✓</span>'
+                . \Pezhkam\Admin\Icon::svg('check', 'pzk-saved-ico')
                 . '<span>' . esc_html__('تغییرات با موفقیت ذخیره شد.', 'pezhkam') . '</span>'
                 . '</div>';
         } else {

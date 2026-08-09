@@ -84,7 +84,7 @@ $channels = $config['channels'];
                     <div class="pzk-lead-badge" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4 0-8 2-8 5v3h16v-3c0-3-4-5-8-5z"/></svg>
                     </div>
-                    <h3 class="pzk-lead-title"><?php esc_html_e('به گفتگو خوش آمدید 👋', 'pezhkam'); ?></h3>
+                    <h3 class="pzk-lead-title"><?php esc_html_e('به گفتگو خوش آمدید', 'pezhkam'); ?></h3>
                     <p class="pzk-lead-sub"><?php esc_html_e('برای شروع، لطفاً نام و شماره موبایل خود را وارد کنید تا بهتر راهنمایی‌تان کنیم.', 'pezhkam'); ?></p>
 
                     <label class="pzk-lead-label"><?php esc_html_e('نام و نام خانوادگی', 'pezhkam'); ?></label>

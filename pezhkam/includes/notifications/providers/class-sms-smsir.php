@@ -50,7 +50,7 @@ class SmsSmsir extends \Pezhkam\Notifications\SmsProviderBase
         }
         $data = json_decode($r['body'], true);
         if ((int) ($data['status'] ?? 0) === 1) {
-            return ['ok' => true, 'detail' => sprintf(__('اتصال برقرار ✓ — اعتبار: %s', 'pezhkam'), (string) ($data['data'] ?? '?'))];
+            return ['ok' => true, 'detail' => sprintf(__('اتصال برقرار — اعتبار: %s', 'pezhkam'), (string) ($data['data'] ?? '?'))];
         }
         return ['ok' => false, 'detail' => sprintf(__('پنل اتصال را رد کرد: %s', 'pezhkam'), (string) ($data['message'] ?? ('HTTP ' . $r['code'])))];
     }

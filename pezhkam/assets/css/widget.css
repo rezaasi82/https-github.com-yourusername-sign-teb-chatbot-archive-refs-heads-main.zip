@@ -12,7 +12,7 @@
 	inset-inline-end: max(18px, env(safe-area-inset-right));
 	inset-block-end: max(18px, env(safe-area-inset-bottom));
 	z-index: 999999;
-	font-family: Vazirmatn, "Vazir", Tahoma, system-ui, sans-serif;
+	font-family: var(--pzk-font, "Vazirmatn", "IRANYekan", "IRANSans", Tahoma, system-ui, -apple-system, "Segoe UI", sans-serif);
 	-webkit-tap-highlight-color: transparent;
 }
 
@@ -258,7 +258,7 @@
 .pzk-cta-whatsapp { background: #25d366; color: #fff; }
 .pzk-cta-call { background: var(--pzk-bg); color: #fff; }
 .pzk-cta-bale { background: #1e6ff0; color: #fff; }
-.pzk-cta-emoji { font-size: 15px; }
+.pzk-cta-ico { width: 18px; height: 18px; flex: 0 0 auto; }
 
 /* ---------- quick replies ---------- */
 .pzk-quick { display: flex; flex-wrap: wrap; gap: 7px; padding: 10px 14px 4px; flex: 0 0 auto; }
@@ -424,3 +424,13 @@ body.pzk-body-lock {
 	box-shadow: 0 10px 30px rgba(15, 31, 61, 0.16);
 	animation: none;
 }
+
+/* Form controls do not inherit font-family in any browser; without this the
+   input and the send button inside the chat panel fall back to the host
+   theme's face while the rest of the widget uses the bundled one. */
+.pzk-root,
+.pzk-root *,
+.pzk-root input,
+.pzk-root textarea,
+.pzk-root button,
+.pzk-root select { font-family: inherit; }

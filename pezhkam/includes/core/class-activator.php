@@ -71,7 +71,7 @@ class Activator
             'bale_url'           => '',
 
             // --- Messaging ---
-            'welcome_message'    => __('سلام! 👋 چطور می‌تونم کمکتون کنم؟', 'pezhkam'),
+            'welcome_message'    => __('سلام! چطور می‌تونم کمکتون کنم؟', 'pezhkam'),
             'quick_replies'      => "هزینه ویزیت\nآدرس کلینیک\nرزرو نوبت",
             'business_hours'     => '',
             'offhours_message'   => __('در حال حاضر خارج از ساعت کاری هستیم، اما می‌تونم به سوالاتتون پاسخ بدم.', 'pezhkam'),

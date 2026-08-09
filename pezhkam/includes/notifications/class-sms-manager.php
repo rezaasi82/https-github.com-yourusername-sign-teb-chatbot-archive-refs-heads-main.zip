@@ -195,9 +195,9 @@ class SmsManager
     {
         $lines   = [];
         $lines[] = sprintf(__('سرویس انتخاب‌شده: %s', 'pezhkam'), $this->providers()[$this->active_id()] ?? $this->active_id());
-        $lines[] = sprintf(__('فعال‌سازی: %s', 'pezhkam'), $this->is_enabled() ? '✓' : __('✗ (تیک «فعال‌سازی» را بزنید)', 'pezhkam'));
-        $lines[] = sprintf(__('APIKey ذخیره شده: %s', 'pezhkam'), self::key() !== '' ? '✓' : '✗');
-        $lines[] = sprintf(__('رمز عبور ذخیره شده: %s', 'pezhkam'), self::secret() !== '' ? __('✓ (حالت نام‌کاربری/رمز)', 'pezhkam') : __('— (حالت توکن)', 'pezhkam'));
+        $lines[] = sprintf(__('فعال‌سازی: %s', 'pezhkam'), $this->is_enabled() ? __('بله', 'pezhkam') : __('خیر — تیک «فعال‌سازی» را بزنید', 'pezhkam'));
+        $lines[] = sprintf(__('APIKey ذخیره شده: %s', 'pezhkam'), self::key() !== '' ? __('بله', 'pezhkam') : __('خیر', 'pezhkam'));
+        $lines[] = sprintf(__('رمز عبور ذخیره شده: %s', 'pezhkam'), self::secret() !== '' ? __('بله — حالت نام‌کاربری/رمز', 'pezhkam') : __('— حالت توکن', 'pezhkam'));
         $lines[] = sprintf(__('شماره فرستنده: %s', 'pezhkam'), trim((string) $this->settings->get('sms_sender', '')) !== '' ? $this->settings->get('sms_sender') : __('خالی (برای خط اشتراکی درست است)', 'pezhkam'));
 
         $codes = array_filter(array_map([$this, 'template_code'], array_keys(self::default_templates())));
@@ -206,7 +206,7 @@ class SmsManager
         $provider = $this->active();
         if ($provider !== null && method_exists($provider, 'check')) {
             $check   = $provider->check();
-            $lines[] = ($check['ok'] ? '✅ ' : '❌ ') . $check['detail'];
+            $lines[] = ($check['ok'] ? __('موفق:', 'pezhkam') : __('ناموفق:', 'pezhkam')) . ' ' . $check['detail'];
             return ['ok' => (bool) $check['ok'], 'lines' => $lines];
         }
 
@@ -264,7 +264,7 @@ class SmsManager
         return [
             'welcome'  => [
                 'label' => __('خوش‌آمد به لید', 'pezhkam'),
-                'text'  => __('{0} عزیز، از تماس شما با {1} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. 🌿 {optout}', 'pezhkam'),
+                'text'  => __('{0} عزیز، از تماس شما با {1} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. {optout}', 'pezhkam'),
                 'vars'  => ['name', 'clinic'],
             ],
             'referral' => [

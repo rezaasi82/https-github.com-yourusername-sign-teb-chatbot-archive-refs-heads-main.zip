@@ -158,7 +158,7 @@ class AiManager
             'reply'           => $reply,
             'cta'             => $cta,
             'cta_card'        => $show_card ? $this->cta_card($cta) : null,
-            'lead'            => ['level' => $score['level'], 'label' => $score['label'], 'emoji' => $score['emoji']],
+            'lead'            => ['level' => $score['level'], 'label' => $score['label']],
             'conversation_id' => $conversation_id,
         ];
     }
@@ -166,7 +166,7 @@ class AiManager
     /**
      * Re-score the conversation and refresh its stored summary.
      *
-     * @return array{level:string,label:string,emoji:string,probability:int}
+     * @return array{level:string,label:string,probability:int}
      */
     private function score_and_summarize(int $conversation_id, string $cta, string $name, string $phone): array
     {

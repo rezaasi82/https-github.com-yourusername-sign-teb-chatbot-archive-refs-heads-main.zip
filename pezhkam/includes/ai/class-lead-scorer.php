@@ -28,7 +28,7 @@ class LeadScorer
 
     /**
      * @param array{text:string,cta:string,has_phone:bool,has_name:bool,message_count:int} $signals
-     * @return array{level:string,label:string,emoji:string,probability:int}
+     * @return array{level:string,label:string,probability:int}
      */
     public function score(array $signals): array
     {
@@ -61,12 +61,12 @@ class LeadScorer
         }
 
         if ($points >= 5) {
-            return ['level' => 'hot', 'label' => __('لید داغ', 'pezhkam'), 'emoji' => '🟢', 'probability' => min(95, 78 + $points)];
+            return ['level' => 'hot', 'label' => __('لید داغ', 'pezhkam'), 'probability' => min(95, 78 + $points)];
         }
         if ($points >= 2) {
-            return ['level' => 'warm', 'label' => __('لید متوسط', 'pezhkam'), 'emoji' => '🟡', 'probability' => min(74, 45 + $points * 4)];
+            return ['level' => 'warm', 'label' => __('لید متوسط', 'pezhkam'), 'probability' => min(74, 45 + $points * 4)];
         }
-        return ['level' => 'cold', 'label' => __('لید سرد', 'pezhkam'), 'emoji' => '⚪', 'probability' => max(5, 12 + $points * 4)];
+        return ['level' => 'cold', 'label' => __('لید سرد', 'pezhkam'), 'probability' => max(5, 12 + $points * 4)];
     }
 
     private function hits(string $haystack, array $needles): int

@@ -94,7 +94,7 @@ class ChatNotifier
         );
         $bar->add_node([
             'id'    => 'pzk-chats',
-            'title' => '<span class="pzk-ab-ico" aria-hidden="true">💬</span> ' . $label,
+            'title' => Icon::svg('chat', 'pzk-ab-ico') . ' ' . $label,
             'href'  => self::list_url(),
             'meta'  => [
                 'class' => $count > 0 ? 'pzk-ab-has-new' : 'pzk-ab-zero',
@@ -151,7 +151,10 @@ class ChatNotifier
                 margin: 0 2px; padding: 0 5px; border-radius: 9px; text-align: center;
                 background: #d63638; color: #fff; font-size: 11px; font-weight: 700;
             }
-            #wp-admin-bar-pzk-chats .pzk-ab-ico { margin-inline-end: 2px; }
+            #wp-admin-bar-pzk-chats .pzk-ab-ico {
+                width: 16px; height: 16px; vertical-align: -3px;
+                margin-inline-end: 3px;
+            }
         ';
         wp_register_style('pzk-notifier', false, [], PZK_VERSION);
         wp_enqueue_style('pzk-notifier');

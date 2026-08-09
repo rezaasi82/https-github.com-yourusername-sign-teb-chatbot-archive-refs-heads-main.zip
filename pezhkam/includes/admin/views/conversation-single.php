@@ -33,13 +33,17 @@ $back = admin_url('admin.php?page=pzk-chat&tab=conversations');
     <?php
     $name  = trim((string) ($conversation->patient_name ?? ''));
     $phone = trim((string) ($conversation->patient_phone ?? ''));
-    $badge = ['hot' => '🟢 ' . __('لید داغ', 'pezhkam'), 'warm' => '🟡 ' . __('لید متوسط', 'pezhkam'), 'cold' => '⚪ ' . __('لید سرد', 'pezhkam')];
+    $badge = [
+        'hot'  => \Pezhkam\Admin\Icon::lead_dot('hot', __('لید داغ', 'pezhkam')),
+        'warm' => \Pezhkam\Admin\Icon::lead_dot('warm', __('لید متوسط', 'pezhkam')),
+        'cold' => \Pezhkam\Admin\Icon::lead_dot('cold', __('لید سرد', 'pezhkam')),
+    ];
     ?>
     <div class="pzk-lead-panel">
         <div class="pzk-lead-info">
             <span><strong><?php esc_html_e('بیمار:', 'pezhkam'); ?></strong> <?php echo esc_html($name !== '' ? $name : '—'); ?></span>
             <span><strong><?php esc_html_e('موبایل:', 'pezhkam'); ?></strong> <?php echo $phone !== '' ? '<a href="tel:' . esc_attr($phone) . '">' . esc_html($phone) . '</a>' : '—'; ?></span>
-            <span><strong><?php esc_html_e('امتیاز:', 'pezhkam'); ?></strong> <?php echo esc_html($badge[$conversation->lead_score] ?? '—'); ?></span>
+            <span><strong><?php esc_html_e('امتیاز:', 'pezhkam'); ?></strong> <?php echo wp_kses_post($badge[$conversation->lead_score] ?? '—'); ?></span>
         </div>
         <?php if (! empty($conversation->summary)) : ?>
             <div class="pzk-summary-box">

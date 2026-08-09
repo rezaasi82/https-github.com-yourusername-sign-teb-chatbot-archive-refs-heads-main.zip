@@ -7,7 +7,7 @@
 
 همان موتور چت هوشمند پزشکی، ولی بیلد **فروش در مارکت‌پلیس راست‌چین** با سیستم لایسنس.
 
-- پوشه: `pezhkam/` · نگارش: **۴٫۰٫۰**
+- پوشه: `pezhkam/` · نگارش: **۱٫۰٫۰**
 - Namespace: `Pezhkam\` · ثابت‌ها: `PZK_*` · پیشوند CSS: `pzr-`
 - گزینه: `pzk_settings` · جدول‌ها: `{wp_prefix}pzk_*` · شورت‌کد: `[pezhkam_chat]`
 - Text Domain: `pezhkam` · Author: `Pezhkam` · بدون `Plugin URI`

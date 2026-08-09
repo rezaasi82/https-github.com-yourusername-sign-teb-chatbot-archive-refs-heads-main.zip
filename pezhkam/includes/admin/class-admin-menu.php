@@ -58,7 +58,10 @@ class AdminMenu
         if (strpos($hook, '_page_pzk-') === false && strpos($hook, 'pzk-chat') === false) {
             return;
         }
-        wp_enqueue_style('pzk-admin', PZK_URL . 'assets/css/admin.css', [], PZK_VERSION);
+        // The bundled Persian face is a dependency of every plugin stylesheet,
+        // so no screen can end up rendering in the WordPress default font.
+        wp_enqueue_style('pzk-font', PZK_URL . 'assets/fonts/font.css', [], PZK_VERSION);
+        wp_enqueue_style('pzk-admin', PZK_URL . 'assets/css/admin.css', ['pzk-font'], PZK_VERSION);
         wp_enqueue_script('pzk-admin', PZK_URL . 'assets/js/admin.js', [], PZK_VERSION, true);
         wp_localize_script('pzk-admin', 'PZK_ADMIN', [
             'ajaxUrl' => esc_url_raw(admin_url('admin-ajax.php')),

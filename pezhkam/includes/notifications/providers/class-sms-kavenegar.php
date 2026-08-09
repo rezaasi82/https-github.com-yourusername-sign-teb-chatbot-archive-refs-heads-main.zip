@@ -46,7 +46,7 @@ class SmsKavenegar extends \Pezhkam\Notifications\SmsProviderBase
         }
         $data = json_decode($r['body'], true);
         if ((int) ($data['return']['status'] ?? 0) === 200) {
-            return ['ok' => true, 'detail' => sprintf(__('اتصال برقرار ✓ — اعتبار: %s', 'pezhkam'), (string) ($data['entries']['remaincredit'] ?? '?'))];
+            return ['ok' => true, 'detail' => sprintf(__('اتصال برقرار — اعتبار: %s', 'pezhkam'), (string) ($data['entries']['remaincredit'] ?? '?'))];
         }
         return ['ok' => false, 'detail' => sprintf(__('پنل اتصال را رد کرد: %s', 'pezhkam'), (string) ($data['return']['message'] ?? ('HTTP ' . $r['code'])))];
     }

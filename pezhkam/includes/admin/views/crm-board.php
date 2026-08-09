@@ -13,8 +13,11 @@ if (! defined('ABSPATH')) {
 
 $view_base  = admin_url('admin.php?page=pzk-chat&tab=conversations');
 $score_dot  = static function (?string $s): string {
-    $map = ['hot' => '🟢', 'warm' => '🟡', 'cold' => '⚪'];
-    return $map[$s] ?? '';
+    if (! in_array($s, ['hot', 'warm', 'cold'], true)) {
+        return '';
+    }
+    // Dot only: the card already shows the lead name next to it.
+    return '<span class="pzk-dot pzk-dot-' . esc_attr($s) . '"><i aria-hidden="true"></i></span>';
 };
 ?>
 <div class="wrap pzk-admin pzk-board-wrap" dir="rtl">
@@ -37,7 +40,7 @@ $score_dot  = static function (?string $s): string {
                         $title = $name !== '' ? $name : ($phone !== '' ? $phone : sprintf(__('مهمان #%d', 'pezhkam'), $lead->id));
                         ?>
                         <div class="pzk-card" draggable="true" data-lead="<?php echo esc_attr($lead->id); ?>">
-                            <div class="pzk-card-name"><?php echo esc_html($score_dot($lead->lead_score ?? null)); ?> <?php echo esc_html($title); ?></div>
+                            <div class="pzk-card-name"><?php echo wp_kses_post($score_dot($lead->lead_score ?? null)); ?> <?php echo esc_html($title); ?></div>
                             <?php if ($phone !== '') : ?><div class="pzk-card-phone"><?php echo esc_html($phone); ?></div><?php endif; ?>
                             <div class="pzk-card-foot">
                                 <span>#<?php echo esc_html($lead->id); ?></span>

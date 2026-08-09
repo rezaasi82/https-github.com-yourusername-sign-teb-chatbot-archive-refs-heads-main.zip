@@ -59,9 +59,13 @@ class Widget
             return;
         }
 
-        // Optional self-hosted Vazirmatn font (only if the file is bundled).
-        if ((int) $this->settings->get('use_bundled_font', 1) === 1
-            && file_exists(PZK_DIR . 'assets/fonts/vazirmatn.woff2')) {
+        // Self-hosted Vazirmatn, bundled with the plugin. Can be switched off so
+        // a theme that already ships a Persian face is not made to load a second.
+        // Deliberately NOT a dependency of the widget stylesheet: when the option
+        // is off the handle is never enqueued, and a style whose dependency is
+        // missing is dropped by WordPress entirely. widget.css therefore names
+        // the full family stack as the var() fallback and styles itself either way.
+        if ((int) $this->settings->get('use_bundled_font', 1) === 1) {
             wp_enqueue_style('pzk-font', PZK_URL . 'assets/fonts/font.css', [], PZK_VERSION);
         }
 

@@ -2,49 +2,54 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pezhkam 4.0.0\n"
+"Project-Id-Version: Pezhkam 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-29T03:23:36+00:00\n"
+"POT-Creation-Date: 2026-08-09T15:08:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"Language-Team: \n"
 "X-Domain: pezhkam\n"
 
 #. Plugin Name of the plugin
-#. Author of the plugin
 #: pezhkam.php
-#: includes/admin/class-admin-menu.php:36
-#: includes/admin/class-admin-menu.php:44
-#: includes/admin/class-settings-page.php:226
 msgid "Pezhkam"
 msgstr ""
 
 #. Description of the plugin
 #: pezhkam.php
-msgid "Pezhkam — دستیار هوشمند جذب و راهنمایی بیماران. ویجت چت هوش مصنوعی مستقل و سفیدبرچسب برای پزشکان و کلینیک‌ها: جذب لید، امتیازدهی هوشمند لید، خلاصه خودکار گفتگو و افزایش رزرو نوبت. کاملاً مستقل و قابل نصب روی هر سایت وردپرسی."
+msgid "پژکام — دستیار گفتگوی آنلاین مطب و کلینیک. به سؤال بازدیدکننده پاسخ می‌دهد، شماره تماس او را می‌گیرد، لید را امتیاز می‌دهد و پرونده‌اش را برای پیگیری منشی آماده می‌کند."
 msgstr ""
 
-#: includes/admin/class-admin-menu.php:67
-msgid "در حال انجام…"
+#. Author of the plugin
+#: pezhkam.php
+msgid "Pezhkam"
 msgstr ""
 
-#: includes/admin/class-admin-menu.php:68
-msgid "موفق"
-msgstr ""
-
-#: includes/admin/class-admin-menu.php:69
-msgid "ناموفق"
+#: includes/admin/class-admin-menu.php:36
+#: includes/admin/class-admin-menu.php:44
+#: includes/admin/class-settings-page.php:226
+msgid "پژکام"
 msgstr ""
 
 #: includes/admin/class-admin-menu.php:70
-msgid "ابتدا چند مورد را انتخاب کنید."
+msgid "در حال انجام…"
 msgstr ""
 
 #: includes/admin/class-admin-menu.php:71
+msgid "موفق"
+msgstr ""
+
+#: includes/admin/class-admin-menu.php:72
+msgid "ناموفق"
+msgstr ""
+
+#: includes/admin/class-admin-menu.php:73
+msgid "ابتدا چند مورد را انتخاب کنید."
+msgstr ""
+
+#: includes/admin/class-admin-menu.php:74
 msgid "در صف پردازش پس‌زمینه"
 msgstr ""
 
@@ -65,9 +70,7 @@ msgstr ""
 msgid "دسترسی غیرمجاز."
 msgstr ""
 
-#. translators: %s: number of new conversations
 #: includes/admin/class-chat-notifier.php:92
-#, php-format
 msgid "%s گفتگوی جدید"
 msgstr ""
 
@@ -79,9 +82,7 @@ msgstr ""
 msgid "Pezhkam:"
 msgstr ""
 
-#. translators: %s: number of new conversations
 #: includes/admin/class-chat-notifier.php:124
-#, php-format
 msgid "%s گفتگوی جدید از آخرین بازدید شما ثبت شده است."
 msgid_plural "%s گفتگوی جدید از آخرین بازدید شما ثبت شده است."
 msgstr[0] ""
@@ -93,7 +94,7 @@ msgstr ""
 
 #: includes/admin/class-crm-board.php:32
 #: includes/admin/class-crm-board.php:33
-#: includes/admin/views/crm-board.php:22
+#: includes/admin/views/crm-board.php:25
 #: includes/admin/views/premium-dashboard.php:93
 msgid "بورد CRM"
 msgstr ""
@@ -107,7 +108,7 @@ msgid "خطا در انتقال"
 msgstr ""
 
 #: includes/admin/class-premium-dashboard.php:35
-msgid "داشبورد Pezhkam"
+msgid "داشبورد پژکام"
 msgstr ""
 
 #: includes/admin/class-premium-dashboard.php:36
@@ -351,117 +352,117 @@ msgstr ""
 msgid "مکالمه یافت نشد."
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:36
+#: includes/admin/views/conversation-single.php:37
 #: includes/admin/views/conversations-list.php:41
 #: includes/admin/views/dashboard.php:44
 #: includes/ai/class-lead-scorer.php:64
 msgid "لید داغ"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:36
+#: includes/admin/views/conversation-single.php:38
 #: includes/ai/class-lead-scorer.php:67
 msgid "لید متوسط"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:36
+#: includes/admin/views/conversation-single.php:39
 #: includes/ai/class-lead-scorer.php:69
 msgid "لید سرد"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:40
+#: includes/admin/views/conversation-single.php:44
 msgid "بیمار:"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:41
+#: includes/admin/views/conversation-single.php:45
 msgid "موبایل:"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:42
+#: includes/admin/views/conversation-single.php:46
 msgid "امتیاز:"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:46
+#: includes/admin/views/conversation-single.php:50
 msgid "خلاصه هوشمند گفتگو"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:53
+#: includes/admin/views/conversation-single.php:57
 msgid "مدیریت لید (CRM)"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:56
+#: includes/admin/views/conversation-single.php:60
 msgid "وضعیت لید"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:64
+#: includes/admin/views/conversation-single.php:68
 msgid "ایمیل"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:68
+#: includes/admin/views/conversation-single.php:72
 msgid "برچسب‌ها"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:73
+#: includes/admin/views/conversation-single.php:77
 msgid "شعبه / کلینیک"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:75
+#: includes/admin/views/conversation-single.php:79
 msgid "بدون شعبه"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:84
+#: includes/admin/views/conversation-single.php:88
 msgid "یادداشت‌ها"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:85
+#: includes/admin/views/conversation-single.php:89
 msgid "یادداشت داخلی برای پیگیری…"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:88
+#: includes/admin/views/conversation-single.php:92
 msgid "ذخیره تغییرات"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:99
+#: includes/admin/views/conversation-single.php:103
 #: includes/notifications/class-sms-manager.php:271
 msgid "ارجاع لید به همکار"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:105
+#: includes/admin/views/conversation-single.php:109
 msgid "انتخاب همکار…"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:112
+#: includes/admin/views/conversation-single.php:116
 msgid "انتخاب همکار، شماره و ایمیل مقصد را به‌طور خودکار پر می‌کند."
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:117
+#: includes/admin/views/conversation-single.php:121
 msgid "ایمیل همکار"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:118
+#: includes/admin/views/conversation-single.php:122
 msgid "ارجاع با ایمیل"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:121
+#: includes/admin/views/conversation-single.php:125
 msgid "موبایل مقصد"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:128
+#: includes/admin/views/conversation-single.php:132
 msgid "ارسال پیامک از پنل"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:133
+#: includes/admin/views/conversation-single.php:137
 msgid "ارسال با پیام‌رسان:"
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:142
+#: includes/admin/views/conversation-single.php:146
 msgid "پیامک پنل مستقیماً از سرور ارسال می‌شود. ایمیل با میل‌سرور سایت. پیام‌رسان‌ها روی دستگاه شما باز می‌شوند."
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:143
+#: includes/admin/views/conversation-single.php:147
 msgid "برای ارسال مستقیم پیامک، پنل پیامک را در «اتصال‌ها و خروجی» فعال کنید. فعلاً می‌توانید از ایمیل یا پیام‌رسان‌ها استفاده کنید."
 msgstr ""
 
-#: includes/admin/views/conversation-single.php:154
+#: includes/admin/views/conversation-single.php:158
 msgid "علامت‌گذاری ایمنی"
 msgstr ""
 
@@ -556,8 +557,7 @@ msgid "مکالمه‌ای یافت نشد."
 msgstr ""
 
 #: includes/admin/views/conversations-list.php:91
-#: includes/admin/views/crm-board.php:37
-#, php-format
+#: includes/admin/views/crm-board.php:40
 msgid "مهمان #%d"
 msgstr ""
 
@@ -566,11 +566,11 @@ msgid "دانلود PDF"
 msgstr ""
 
 #: includes/admin/views/conversations-list.php:113
-#: includes/admin/views/crm-board.php:44
+#: includes/admin/views/crm-board.php:47
 msgid "مشاهده"
 msgstr ""
 
-#: includes/admin/views/crm-board.php:23
+#: includes/admin/views/crm-board.php:26
 msgid "برای تغییر وضعیت، کارت لید را بین ستون‌ها بکشید و رها کنید."
 msgstr ""
 
@@ -599,7 +599,7 @@ msgstr ""
 
 #: includes/admin/views/dashboard.php:52
 #: includes/admin/views/settings.php:189
-#: includes/frontend/class-widget.php:83
+#: includes/frontend/class-widget.php:87
 msgid "واتساپ"
 msgstr ""
 
@@ -608,6 +608,8 @@ msgid "تماس"
 msgstr ""
 
 #: includes/admin/views/dashboard.php:54
+#: includes/notifications/class-sms-manager.php:198
+#: includes/notifications/class-sms-manager.php:199
 msgid "بله"
 msgstr ""
 
@@ -672,9 +674,7 @@ msgstr ""
 msgid "به داشبورد هوشمند خوش آمدید"
 msgstr ""
 
-#. translators: 1: status, 2: provider
 #: includes/admin/views/premium-dashboard.php:35
-#, php-format
 msgid "وضعیت دستیار: %1$s · موتور هوش مصنوعی: %2$s"
 msgstr ""
 
@@ -804,9 +804,7 @@ msgstr ""
 msgid "شورت‌کد فعال باشد"
 msgstr ""
 
-#. translators: %s: the shortcode tag.
 #: includes/admin/views/settings.php:38
-#, php-format
 msgid "با %s گفتگو را داخل یک برگه، نوشته یا سایدبار قرار می‌دهید. مستقل از ویجت شناور کار می‌کند."
 msgstr ""
 
@@ -969,7 +967,7 @@ msgid "دکمه‌های ارتباطی"
 msgstr ""
 
 #: includes/admin/views/settings.php:190
-#: includes/frontend/class-widget.php:84
+#: includes/frontend/class-widget.php:88
 msgid "تماس با مطب"
 msgstr ""
 
@@ -1046,7 +1044,7 @@ msgid "پیام دعوت‌کننده (Teaser)"
 msgstr ""
 
 #: includes/admin/views/settings.php:229
-msgid "سلام! من اینجام تا اگه سوالی داری کمکت کنم 👋"
+msgid "سلام! من اینجام تا اگه سوالی داری کمکت کنم"
 msgstr ""
 
 #: includes/admin/views/settings.php:230
@@ -1383,7 +1381,6 @@ msgid "کاربر آزمایشی"
 msgstr ""
 
 #: includes/ajax/class-export-ajax-handler.php:74
-#, php-format
 msgid "پیام آزمایشی از %s (Pezhkam)."
 msgstr ""
 
@@ -1400,13 +1397,13 @@ msgid "فایل یافت نشد."
 msgstr ""
 
 #: includes/core/class-activator.php:57
-#: includes/frontend/class-widget.php:133
+#: includes/frontend/class-widget.php:137
 #: templates/widget.php:16
 msgid "دستیار هوشمند"
 msgstr ""
 
 #: includes/core/class-activator.php:74
-msgid "سلام! 👋 چطور می‌تونم کمکتون کنم؟"
+msgid "سلام! چطور می‌تونم کمکتون کنم؟"
 msgstr ""
 
 #: includes/core/class-activator.php:77
@@ -1419,24 +1416,20 @@ msgstr ""
 
 #: includes/crm/class-lead-crm.php:52
 #: includes/notifications/class-messenger-notifier.php:161
-#, php-format
 msgid "نام: %s"
 msgstr ""
 
 #: includes/crm/class-lead-crm.php:53
 #: includes/notifications/class-messenger-notifier.php:162
-#, php-format
 msgid "موبایل: %s"
 msgstr ""
 
 #: includes/crm/class-lead-crm.php:54
 #: includes/notifications/class-messenger-notifier.php:163
-#, php-format
 msgid "امتیاز: %s"
 msgstr ""
 
 #: includes/crm/class-lead-crm.php:55
-#, php-format
 msgid "وضعیت: %s"
 msgstr ""
 
@@ -1449,7 +1442,6 @@ msgid "ایمیل مقصد نامعتبر است."
 msgstr ""
 
 #: includes/crm/class-lead-crm.php:95
-#, php-format
 msgid "[%s] ارجاع لید — %s"
 msgstr ""
 
@@ -1457,36 +1449,36 @@ msgstr ""
 msgid "ارسال ایمیل ناموفق بود. تنظیمات ایمیل سایت را بررسی کنید."
 msgstr ""
 
-#: includes/frontend/class-widget.php:79
+#: includes/frontend/class-widget.php:83
 #: templates/widget.php:119
 msgid "پیام خود را بنویسید…"
 msgstr ""
 
-#: includes/frontend/class-widget.php:80
+#: includes/frontend/class-widget.php:84
 msgid "ارسال"
 msgstr ""
 
-#: includes/frontend/class-widget.php:81
+#: includes/frontend/class-widget.php:85
 msgid "در حال نوشتن…"
 msgstr ""
 
-#: includes/frontend/class-widget.php:82
+#: includes/frontend/class-widget.php:86
 msgid "رزرو نوبت آنلاین"
 msgstr ""
 
-#: includes/frontend/class-widget.php:85
+#: includes/frontend/class-widget.php:89
 msgid "ارتباط در بله"
 msgstr ""
 
-#: includes/frontend/class-widget.php:86
+#: includes/frontend/class-widget.php:90
 msgid "خطا در ارتباط. دوباره تلاش کنید."
 msgstr ""
 
-#: includes/frontend/class-widget.php:87
+#: includes/frontend/class-widget.php:91
 msgid "آماده دریافت نوبت هستید؟"
 msgstr ""
 
-#: includes/frontend/class-widget.php:88
+#: includes/frontend/class-widget.php:92
 msgid "برای رزرو آنلاین و انتخاب زمان مراجعه روی دکمه زیر کلیک کنید."
 msgstr ""
 
@@ -1496,23 +1488,19 @@ msgstr ""
 
 #: includes/notifications/class-messenger-notifier.php:131
 #: includes/notifications/providers/class-sms-custom.php:65
-#, php-format
 msgid "پاسخ سرویس: HTTP %d"
 msgstr ""
 
 #: includes/notifications/class-messenger-notifier.php:160
-#, php-format
 msgid "لید جدید در %s"
 msgstr ""
 
 #: includes/notifications/class-messenger-notifier.php:166
-#, php-format
 msgid "اقدام: %s"
 msgstr ""
 
 #: includes/notifications/class-messenger-notifier.php:191
-#, php-format
-msgid "پیام آزمایشی %s از Pezhkam ✅"
+msgid "پیام آزمایشی %s از پژکام"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:96
@@ -1529,39 +1517,38 @@ msgid "سرویس پیامک نامعتبر است."
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:197
-#, php-format
 msgid "سرویس انتخاب‌شده: %s"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:198
-#, php-format
 msgid "فعال‌سازی: %s"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:198
-msgid "✗ (تیک «فعال‌سازی» را بزنید)"
+msgid "خیر — تیک «فعال‌سازی» را بزنید"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:199
-#, php-format
 msgid "APIKey ذخیره شده: %s"
 msgstr ""
 
+#: includes/notifications/class-sms-manager.php:199
+msgid "خیر"
+msgstr ""
+
 #: includes/notifications/class-sms-manager.php:200
-#, php-format
 msgid "رمز عبور ذخیره شده: %s"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:200
-msgid "✓ (حالت نام‌کاربری/رمز)"
+msgid "بله — حالت نام‌کاربری/رمز"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:200
-msgid "— (حالت توکن)"
+msgid "— حالت توکن"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:201
-#, php-format
 msgid "شماره فرستنده: %s"
 msgstr ""
 
@@ -1570,8 +1557,15 @@ msgid "خالی (برای خط اشتراکی درست است)"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:204
-#, php-format
 msgid "کد الگو تنظیم‌شده: %d قالب"
+msgstr ""
+
+#: includes/notifications/class-sms-manager.php:209
+msgid "موفق:"
+msgstr ""
+
+#: includes/notifications/class-sms-manager.php:209
+msgid "ناموفق:"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:213
@@ -1583,7 +1577,7 @@ msgid "خوش‌آمد به لید"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:267
-msgid "{0} عزیز، از تماس شما با {1} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. 🌿 {optout}"
+msgid "{0} عزیز، از تماس شما با {1} سپاسگزاریم. کارشناسان ما به‌زودی برای هماهنگی با شما تماس می‌گیرند. {optout}"
 msgstr ""
 
 #: includes/notifications/class-sms-manager.php:272
@@ -1652,19 +1646,16 @@ msgstr ""
 #: includes/notifications/providers/class-sms-kavenegar.php:45
 #: includes/notifications/providers/class-sms-melipayamak.php:109
 #: includes/notifications/providers/class-sms-smsir.php:49
-#, php-format
 msgid "سرور سایت به پنل دسترسی ندارد: %s"
 msgstr ""
 
 #: includes/notifications/providers/class-sms-kavenegar.php:49
 #: includes/notifications/providers/class-sms-smsir.php:53
-#, php-format
-msgid "اتصال برقرار ✓ — اعتبار: %s"
+msgid "اتصال برقرار — اعتبار: %s"
 msgstr ""
 
 #: includes/notifications/providers/class-sms-kavenegar.php:51
 #: includes/notifications/providers/class-sms-smsir.php:55
-#, php-format
 msgid "پنل اتصال را رد کرد: %s"
 msgstr ""
 
@@ -1677,17 +1668,14 @@ msgid "این کد «APIKey وب‌سرویس» ملی‌پیامک است، ن�
 msgstr ""
 
 #: includes/notifications/providers/class-sms-melipayamak.php:112
-#, php-format
-msgid "حالت نام‌کاربری/رمز ✓ — اعتبار پنل: %s"
+msgid "حالت نام‌کاربری/رمز — اعتبار پنل: %s"
 msgstr ""
 
 #: includes/notifications/providers/class-sms-melipayamak.php:122
-#, php-format
-msgid "جای دو فیلد برعکس بود؛ به‌طور خودکار اصلاح و ذخیره شد ✓ — اعتبار پنل: %s"
+msgid "جای دو فیلد برعکس بود؛ به‌طور خودکار اصلاح و ذخیره شد — اعتبار پنل: %s"
 msgstr ""
 
 #: includes/notifications/providers/class-sms-melipayamak.php:126
-#, php-format
 msgid "پنل اتصال را رد کرد (GetCredit): %s — چیدمان درست: نام کاربری پنل در فیلد APIKey، و «APIKey وب‌سرویس» (کد UUID از تنظیمات وبسرویس پنل) در فیلد رمز عبور. اگر باز رد شد، وب‌سرویس را در پنل فعال و در صورت نیاز IP سرور سایت را مجاز کنید."
 msgstr ""
 
@@ -1753,7 +1741,7 @@ msgid "بستن"
 msgstr ""
 
 #: templates/widget.php:87
-msgid "به گفتگو خوش آمدید 👋"
+msgid "به گفتگو خوش آمدید"
 msgstr ""
 
 #: templates/widget.php:88

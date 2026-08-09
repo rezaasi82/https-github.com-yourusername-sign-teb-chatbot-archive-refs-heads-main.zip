@@ -157,7 +157,7 @@ class MessengerNotifier
         $vars   = $sms->vars_for_lead($c);
         $clinic = $vars['clinic'];
         $lines  = [
-            '🔔 ' . sprintf(__('لید جدید در %s', 'pezhkam'), $clinic),
+            sprintf(__('لید جدید در %s', 'pezhkam'), $clinic),
             sprintf(__('نام: %s', 'pezhkam'), $vars['name']),
             sprintf(__('موبایل: %s', 'pezhkam'), $vars['phone'] !== '' ? $vars['phone'] : '—'),
             sprintf(__('امتیاز: %s', 'pezhkam'), $vars['score']),
@@ -188,6 +188,6 @@ class MessengerNotifier
             wp_send_json(['ok' => false, 'error' => 'bad_channel'], 400);
         }
         $clinic = (string) $this->settings->get('clinic_name', get_bloginfo('name'));
-        wp_send_json($this->send($channel, sprintf(__('پیام آزمایشی %s از Pezhkam ✅', 'pezhkam'), $clinic)));
+        wp_send_json($this->send($channel, sprintf(__('پیام آزمایشی %s از پژکام', 'pezhkam'), $clinic)));
     }
 }

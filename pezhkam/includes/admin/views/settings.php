@@ -185,10 +185,10 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('دکمه‌های ارتباطی', 'pezhkam'); ?></th>
                 <td>
-                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_booking" value="1" <?php checked($s->get('ch_booking', 1), 1); ?>> 📅 <?php esc_html_e('رزرو نوبت', 'pezhkam'); ?></label>
-                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_whatsapp" value="1" <?php checked($s->get('ch_whatsapp', 1), 1); ?>> 💬 <?php esc_html_e('واتساپ', 'pezhkam'); ?></label>
-                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_call" value="1" <?php checked($s->get('ch_call', 1), 1); ?>> 📞 <?php esc_html_e('تماس با مطب', 'pezhkam'); ?></label>
-                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_bale" value="1" <?php checked($s->get('ch_bale', 0), 1); ?>> 🟦 <?php esc_html_e('پیام‌رسان بله', 'pezhkam'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_booking" value="1" <?php checked($s->get('ch_booking', 1), 1); ?>> <?php echo \Pezhkam\Admin\Icon::svg('calendar'); ?> <?php esc_html_e('رزرو نوبت', 'pezhkam'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_whatsapp" value="1" <?php checked($s->get('ch_whatsapp', 1), 1); ?>> <?php echo \Pezhkam\Admin\Icon::svg('chat'); ?> <?php esc_html_e('واتساپ', 'pezhkam'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_call" value="1" <?php checked($s->get('ch_call', 1), 1); ?>> <?php echo \Pezhkam\Admin\Icon::svg('phone'); ?> <?php esc_html_e('تماس با مطب', 'pezhkam'); ?></label>
+                    <label style="display:block;margin:4px 0"><input type="checkbox" name="ch_bale" value="1" <?php checked($s->get('ch_bale', 0), 1); ?>> <?php echo \Pezhkam\Admin\Icon::svg('send'); ?> <?php esc_html_e('پیام‌رسان بله', 'pezhkam'); ?></label>
                     <p class="description"><?php esc_html_e('هر دکمه فقط وقتی نمایش داده می‌شود که هم فعال باشد و هم مقدار مربوطه (لینک/شماره) وارد شده باشد.', 'pezhkam'); ?></p>
                 </td>
             </tr>
@@ -226,7 +226,7 @@ if (! defined('ABSPATH')) {
             <tr>
                 <th><?php esc_html_e('پیام دعوت‌کننده (Teaser)', 'pezhkam'); ?></th>
                 <td>
-                    <textarea name="teaser_message" rows="2" class="large-text" placeholder="<?php esc_attr_e('سلام! من اینجام تا اگه سوالی داری کمکت کنم 👋', 'pezhkam'); ?>"><?php echo esc_textarea($s->get('teaser_message')); ?></textarea>
+                    <textarea name="teaser_message" rows="2" class="large-text" placeholder="<?php esc_attr_e('سلام! من اینجام تا اگه سوالی داری کمکت کنم', 'pezhkam'); ?>"><?php echo esc_textarea($s->get('teaser_message')); ?></textarea>
                     <p class="description"><?php esc_html_e('حبابی که کنار آیکون چت ظاهر می‌شود تا بازدیدکننده متوجه دستیار شود. خالی = نمایش داده نشود.', 'pezhkam'); ?></p>
                 </td>
             </tr>

@@ -1,6 +1,13 @@
 /* Pezhkam — CRM Kanban board (scoped to .pzk-board-wrap). */
 
-.pzk-board-wrap { --navy: #0f1f3d; --gold: #c8a04e; margin-inline-end: 20px; }
+.pzk-board-wrap {
+	--pzk-font: "Vazirmatn", "IRANYekan", "IRANSans", Tahoma, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--navy: #0f1f3d;
+	--gold: #c8a04e;
+	margin-inline-end: 20px;
+	font-family: var(--pzk-font);
+}
+.pzk-board-wrap * { font-family: var(--pzk-font); }
 .pzk-board {
 	display: flex;
 	gap: 14px;

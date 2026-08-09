@@ -176,11 +176,17 @@
   .f-text h3 { font-size: 27px; font-weight: 900; line-height: 1.6; margin-bottom: 14px; }
   .f-text > p { color: var(--muted); font-size: 16.5px; margin-bottom: 18px; }
   .f-list { list-style: none; display: grid; gap: 12px; }
-  .f-list li { display: flex; gap: 11px; align-items: flex-start; font-size: 15.5px; }
+  .f-list li { position: relative; display: flex; gap: 11px; align-items: flex-start; font-size: 15.5px; }
   .f-list li::before {
-    content: "✓"; flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px;
-    background: rgba(200,160,78,.14); color: var(--gold); font-weight: 700;
-    display: grid; place-items: center; font-size: 13px; margin-top: 4px;
+    content: ""; flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px;
+    background: rgba(200,160,78,.14); margin-top: 4px;
+    display: grid; place-items: center;
+  }
+  .f-list li::after {
+    content: ""; position: absolute; width: 13px; height: 13px;
+    margin: 9px 5.5px 0; background: var(--gold);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2012.5%209.5%2018%2020%206.5%22/%3E%3C/svg%3E") no-repeat center / contain;
+    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2012.5%209.5%2018%2020%206.5%22/%3E%3C/svg%3E") no-repeat center / contain;
   }
   .f-list b { color: var(--navy); }
   @media (max-width: 920px) {
@@ -302,6 +308,29 @@
   footer { background: #0b1730; color: rgba(255,255,255,.65); padding: 34px 0; font-size: 14px; }
   .foot-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
   footer a { color: var(--gold-soft); }
+
+  /* ---------- icon system (replaces the emoji the review flagged) ---------- */
+  .ico-svg { width: 1em; height: 1em; display: block; }
+  .pain-card .ico, .aud-card .ico { color: var(--gold); }
+  .pain-card .ico .ico-svg { width: 32px; height: 32px; }
+  .aud-card .ico .ico-svg  { width: 30px; height: 30px; }
+  .mini-card .ico { color: var(--gold); }
+  .mini-card .ico .ico-svg { width: 25px; height: 25px; }
+  .ico-inline {
+    width: 1.05em; height: 1.05em; flex-shrink: 0;
+    vertical-align: -0.16em; display: inline-block;
+  }
+  .hero .eyebrow .ico-inline, .sec-head .kicker .ico-inline,
+  .f-text .kicker .ico-inline { vertical-align: -0.18em; }
+  .cmp td.yes .ico-inline { color: #2e9e6b; }
+  .cmp td.no  .ico-inline { color: #c2453f; }
+
+  /* Lead temperature inside prose. */
+  .lead-dot { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .lead-dot > i { width: 9px; height: 9px; border-radius: 50%; background: currentColor; flex: 0 0 auto; }
+  .lead-dot.dot-hot  { color: #c2453f; }
+  .lead-dot.dot-warm { color: #b8860b; }
+  .lead-dot.dot-cold { color: #7b8798; }
 </style>
 </head>
 <body>
@@ -310,7 +339,7 @@
 <div class="hero" id="top">
   <div class="container hero-grid">
     <div>
-      <span class="eyebrow">🩺 افزونه وردپرس · دستیار هوش مصنوعی جذب بیمار</span>
+      <span class="eyebrow"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 3-7H22"/></svg> افزونه وردپرس · دستیار هوش مصنوعی جذب بیمار</span>
       <h1>بیمارِ ساعت ۱۱ شب،<br><em>منتظر صبح نمی‌ماند.</em></h1>
       <p class="sub">
         بیشتر بازدیدکنندگان سایت شما خارج از ساعت کاری می‌آیند؛ سؤال دارند، پاسخی نمی‌گیرند و می‌روند.
@@ -322,8 +351,8 @@
       <div class="phone">
         <img src="images/widget-chat.png" alt="ویجت چت هوشمند پژکام در حال گفتگو با بیمار">
       </div>
-      <div class="float-chip chip-1">🔥 لید داغ<br><small>آماده رزرو نوبت</small></div>
-      <div class="float-chip chip-2">🤖 پاسخ ۲۴ ساعته<br><small>حتی نیمه‌شب</small></div>
+      <div class="float-chip chip-1"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 3.5 5.5 6 5.5 9.5A5.5 5.5 0 0 1 12 18a5.5 5.5 0 0 1-5.5-5.5C6.5 10 8 8.5 9 7c.8 1.4 1.6 2 2.4 2C12 8 11 5.5 12 3Z"/></svg> لید داغ<br><small>آماده رزرو نوبت</small></div>
+      <div class="float-chip chip-2"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="4"/><path d="M12 4v4M9 14h.01M15 14h.01M9.5 17.5h5"/><circle cx="12" cy="3" r="1.2"/></svg> پاسخ ۲۴ ساعته<br><small>حتی نیمه‌شب</small></div>
     </div>
   </div>
 </div>
@@ -331,11 +360,11 @@
 <!-- ======================= Trust bar ======================= -->
 <div class="trust">
   <div class="container trust-row">
-    <span>⚡ نصب <b>۵ دقیقه‌ای</b></span>
-    <span>🧩 <b>بدون کدنویسی</b></span>
-    <span>📲 پنل‌های پیامک <b>ایرانی</b></span>
-    <span>🇮🇷 با GapGPT، <b>بدون نیاز به تحریم‌شکن</b></span>
-    <span>🎫 همه امکانات در <b>یک لایسنس</b></span>
+    <span><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg> نصب <b>۵ دقیقه‌ای</b></span>
+    <span><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4h4v2.5a1.8 1.8 0 1 0 3.5 0V4H20v4h-2.5a1.8 1.8 0 1 0 0 3.5H20V20h-4.5v-2.5a1.8 1.8 0 1 0-3.5 0V20H4v-4.5h2.5a1.8 1.8 0 1 0 0-3.5H4V8h6V4Z"/></svg> <b>بدون کدنویسی</b></span>
+    <span><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg> پنل‌های پیامک <b>ایرانی</b></span>
+    <span><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15 0 18-2.5-3-2.5-15.3 0-18Z"/></svg> با GapGPT، <b>بدون نیاز به تحریم‌شکن</b></span>
+    <span><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z"/><path d="M14 6v12"/></svg> همه امکانات در <b>یک لایسنس</b></span>
   </div>
 </div>
 
@@ -343,23 +372,23 @@
 <section>
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">مسئله واقعی مطب‌ها</span>
+      <span class="kicker"> ه واقعی مطب‌ها</span>
       <h2>سایت دارید، بازدید دارید؛ اما بیمار کجاست؟</h2>
       <p>سه نشتی خاموش که هر روز برای کلینیک‌ها هزینه می‌سازد:</p>
     </div>
     <div class="pain-grid">
       <div class="pain-card">
-        <div class="ico">🌙</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg></div>
         <h3>بی‌پاسخی شبانه</h3>
         <p>بیمار شب یا آخر هفته سؤال می‌پرسد، کسی نیست جواب بدهد؛ او هم سراغ کلینیکی می‌رود که جواب می‌دهد.</p>
       </div>
       <div class="pain-card">
-        <div class="ico">🕳️</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></svg></div>
         <h3>لید گم‌شده</h3>
         <p>بازدیدکننده‌ای که مردد بود و رفت، هیچ ردی از خودش نمی‌گذارد — نه شماره‌ای، نه نامی، نه فرصتی برای پیگیری.</p>
       </div>
       <div class="pain-card">
-        <div class="ico">❓</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg></div>
         <h3>ندانستن سؤال بیماران</h3>
         <p>نمی‌دانید بیماران واقعاً چه می‌پرسند؛ پس محتوای سایت و استراتژی سئو بر پایه حدس نوشته می‌شود.</p>
       </div>
@@ -372,7 +401,7 @@
 <section class="alt" id="features">
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">امکانات پژکام</span>
+      <span class="kicker"> نات پژکام</span>
       <h2>یک منشی هوشمند که هیچ بیماری را از دست نمی‌دهد</h2>
       <p>از اولین «سلام» بازدیدکننده تا ثبت نوبت — همه‌چیز داخل همین افزونه.</p>
     </div>
@@ -383,7 +412,7 @@
         <img src="images/widget-chat.png" alt="گفتگوی فارسی طبیعی ویجت چت با بیمار درباره هزینه جراحی" style="max-height:520px;object-fit:cover;object-position:top;width:100%">
       </div>
       <div class="f-text">
-        <span class="kicker">🤖 چت هوش مصنوعی فارسی</span>
+        <span class="kicker"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="4"/><path d="M12 4v4M9 14h.01M15 14h.01M9.5 17.5h5"/><circle cx="12" cy="3" r="1.2"/></svg> چت هوش مصنوعی فارسی</span>
         <h3>پاسخ‌گویی طبیعی و ۲۴ ساعته، به زبان بیمار</h3>
         <p>موتور گفتگوی پژکام برای فضای درمانی ایران ساخته شده؛ نه یک چت‌بات عمومی ترجمه‌شده.</p>
         <ul class="f-list">
@@ -401,13 +430,13 @@
         <img src="images/widget-teaser.png" alt="حباب دعوت هوشمند کنار آیکون چت با پیام خوش‌آمد">
       </div>
       <div class="f-text">
-        <span class="kicker">🧲 ماشین جذب لید</span>
+        <span class="kicker"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v8a6 6 0 0 0 12 0V3h-4v8a2 2 0 0 1-4 0V3H6Z"/><path d="M6 7h4M14 7h4"/></svg> ماشین جذب لید</span>
         <h3>از بازدیدکننده ساکت، بیمار واقعی بسازید</h3>
         <p>جذب لید در پژکام بخشی از خودِ گفتگو است، نه یک فرم خشک و آزاردهنده.</p>
         <ul class="f-list">
           <li><b>حباب دعوت هوشمند:</b> پیام خوش‌آمد کنار آیکون با صدای چایم لطیف — فقط یک‌بار برای هر بازدیدکننده، نه در هر صفحه.</li>
           <li><b>فرم لید داخل چت:</b> دریافت نام و موبایل به‌صورت طبیعی در دل گفتگو، با امکان «فعلاً رد کن».</li>
-          <li><b>امتیازدهی خودکار:</b> هر گفتگو بلافاصله برچسب می‌خورد: 🔥 داغ، 🟡 متوسط، ⚪ سرد — تیم اول سراغ آماده‌ترین‌ها می‌رود.</li>
+          <li><b>امتیازدهی خودکار:</b> هر گفتگو بلافاصله برچسب می‌خورد: <span class="lead-dot dot-hot"><i></i>داغ</span>، <span class="lead-dot dot-warm"><i></i>متوسط</span>، <span class="lead-dot dot-cold"><i></i>سرد</span> — تیم اول سراغ آماده‌ترین‌ها می‌رود.</li>
           <li><b>خلاصه خودکار گفتگو:</b> بدون خواندن کل چت، در دو خط بدانید بیمار چه می‌خواست.</li>
           <li><b>کارت CTA هوشمند:</b> رزرو نوبت، واتساپ، تماس و بله — فقط وقتی بیمار واقعاً آماده است.</li>
         </ul>
@@ -420,7 +449,7 @@
         <img src="images/crm-board.png" alt="بورد کانبان CRM با ستون‌های لید جدید، تماس گرفته‌شد، پیگیری، رزرو شد و مراجعه کرد">
       </div>
       <div class="f-text">
-        <span class="kicker">📊 CRM داخلی مخصوص مطب</span>
+        <span class="kicker"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> CRM داخلی مخصوص مطب</span>
         <h3>پایپ‌لاین بیمار، از لید تا مراجعه</h3>
         <p>بدون نیاز به نرم‌افزار جداگانه؛ CRM سبک و تخصصی مطب، داخل همان پیشخوان وردپرس.</p>
         <ul class="f-list">
@@ -438,7 +467,7 @@
         <img src="images/lead-crm.png" alt="پرونده لید با خلاصه هوشمند گفتگو، وضعیت، برچسب و ارجاع به همکار">
       </div>
       <div class="f-text">
-        <span class="kicker">🤝 ارجاع لید به همکار</span>
+        <span class="kicker"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.2a3.5 3.5 0 0 1 0 6.6M17 14.4a6.5 6.5 0 0 1 4.5 5.6"/></svg> ارجاع لید به همکار</span>
         <h3>لید داغ را با یک کلیک به همکار درست برسانید</h3>
         <p>وقتی بیمار آماده است، هر ثانیه مهم است؛ ارجاع در پژکام چند ثانیه بیشتر طول نمی‌کشد.</p>
         <ul class="f-list">
@@ -455,7 +484,7 @@
 <section class="showcase" id="crm">
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">داشبورد مدیریتی</span>
+      <span class="kicker"> ورد مدیریتی</span>
       <h2>هر روز صبح، تصویر کامل کلینیک در یک نگاه</h2>
       <p>داشبورد لوکس پژکام فقط عدد نشان نمی‌دهد؛ ارزش ریالی کار افزونه را هم برآورد می‌کند.</p>
     </div>
@@ -464,15 +493,15 @@
     </div>
     <div class="showcase-points">
       <div class="showcase-point">
-        <b>💰 برآورد درآمد تولیدشده</b>
+        <b><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16.5 14.5h.01"/></svg> برآورد درآمد تولیدشده</b>
         بر اساس تعداد لید، نرخ تبدیل و قیمت متوسط خدمت شما محاسبه می‌شود.
       </div>
       <div class="showcase-point">
-        <b>📉 قیف تبدیل بیمار</b>
+        <b><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></svg> قیف تبدیل بیمار</b>
         از گفتگو تا لید، تا رزرو و مراجعه — ببینید بیماران کجا از دست می‌روند.
       </div>
       <div class="showcase-point">
-        <b>📅 بازه‌های زمانی</b>
+        <b><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg> بازه‌های زمانی</b>
         آمار روزانه، هفتگی، ماهانه و سالانه با کارت‌های آماری متحرک.
       </div>
     </div>
@@ -488,7 +517,7 @@
         <img src="images/sms-settings.png" alt="تنظیمات پنل پیامک با انتخاب سرویس ملی‌پیامک و فیلد APIKey">
       </div>
       <div class="f-text">
-        <span class="kicker">📲 پیامک حرفه‌ای با پنل‌های ایرانی</span>
+        <span class="kicker"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg> پیامک حرفه‌ای با پنل‌های ایرانی</span>
         <h3>پنل پیامک خودتان، بدون هزینه اضافه</h3>
         <p>فقط APIKey پنل‌تان را وارد کنید؛ بقیه کارها با پژکام است.</p>
         <ul class="f-list">
@@ -506,7 +535,7 @@
         <img src="images/seo-center.png" alt="مرکز هوش سئو با پرتکرارترین پرسش‌های بیماران و ابر کلمات کلیدی">
       </div>
       <div class="f-text">
-        <span class="kicker">🔍 مرکز هوش سئو — گنج پنهان محصول</span>
+        <span class="kicker"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg> مرکز هوش سئو — گنج پنهان محصول</span>
         <h3>استراتژی محتوا از دل سؤالات واقعی بیماران</h3>
         <p>هر گفتگو یک داده‌ی سئو است؛ پژکام این داده‌ها را برایتان به نقشه محتوا تبدیل می‌کند.</p>
         <ul class="f-list">
@@ -523,7 +552,7 @@
         <img src="images/admin-notify.png" alt="اعلان گفتگوی جدید در نوار بالای پیشخوان وردپرس">
       </div>
       <div class="f-text">
-        <span class="kicker">🔔 اعلان فوری، هرجا که باشید</span>
+        <span class="kicker"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 4 1.5 5.5 2 6H4c.5-.5 2-2 2-6Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg> اعلان فوری، هرجا که باشید</span>
         <h3>هیچ لیدی بی‌خبر نمی‌ماند</h3>
         <p>از پیشخوان وردپرس تا گروه تلگرام کلینیک — خبر لید جدید همان لحظه می‌رسد.</p>
         <ul class="f-list">
@@ -540,37 +569,37 @@
 <section class="alt">
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">اعتماد و مهندسی</span>
+      <span class="kicker"> اد و مهندسی</span>
       <h2>ساخته‌شده برای فضای درمان، نه فقط «یک چت‌بات دیگر»</h2>
     </div>
     <div class="mini-grid">
       <div class="mini-card">
-        <div class="ico">🛡️</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.4-3 8-7 9-4-1-7-4.6-7-9V6l7-3Z"/></svg></div>
         <h3>لایه ایمنی پزشکی غیرقابل‌حذف</h3>
         <p>هرگز تشخیص قطعی یا تجویز دارو نمی‌دهد و همیشه به ویزیت حضوری ارجاع می‌دهد. کنترل دولایه: هم در دستور سیستمی، هم در فیلتر خروجی — حتی اگر مدل خطا کند، فیلتر دوم می‌گیرد.</p>
       </div>
       <div class="mini-card">
-        <div class="ico">🚨</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 18a7 7 0 0 1 14 0v2H5v-2Z"/><path d="M12 4V2M4.5 7 3 5.6M19.5 7 21 5.6"/></svg></div>
         <h3>تشخیص اورژانس</h3>
         <p>در موارد اضطراری فوراً شماره اورژانس را نمایش می‌دهد و گفتگوی هوش مصنوعی را متوقف می‌کند؛ به پاسخ‌های مرتبط با علائم نیز دیسکلیمر پزشکی اضافه می‌شود.</p>
       </div>
       <div class="mini-card">
-        <div class="ico">🔐</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10" width="15" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
         <h3>امنیت بانکی</h3>
         <p>کلیدهای API با AES-256-GCM رمزنگاری می‌شوند؛ nonce و سطح دسترسی روی همه درخواست‌ها، محدودیت نرخ، قفل ضد brute-force و لاگ امنیتی کامل.</p>
       </div>
       <div class="mini-card">
-        <div class="ico">⚡</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div>
         <h3>سبک و سریع</h3>
         <p>بدون jQuery؛ فایل‌های JS و CSS فقط در صفحات لازم لود می‌شوند — سرعت سایت شما دست‌نخورده می‌ماند.</p>
       </div>
       <div class="mini-card">
-        <div class="ico">📱</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg></div>
         <h3>موبایل-فرست و RTL کامل</h3>
-        <p>هندل حرفه‌ای کیبورد موبایل بدون پرش صفحه؛ سازگار با iOS و Android. شورت‌کد <code dir="ltr">[medora_chat]</code> برای چت درون‌صفحه‌ای در سایدبار یا هر برگه.</p>
+        <p>هندل حرفه‌ای کیبورد موبایل بدون پرش صفحه؛ سازگار با iOS و Android. شورت‌کد <code dir="ltr">[pezhkam_chat]</code> برای چت درون‌صفحه‌ای در سایدبار یا هر برگه.</p>
       </div>
       <div class="mini-card">
-        <div class="ico">📤</div>
+        <div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3"/></svg></div>
         <h3>خروجی و اتصال‌ها</h3>
         <p>خروجی PDF از پرونده هر لید، Webhook امضاشده به n8n / Make / Zapier با تلاش مجدد خودکار، و ثبت خودکار لیدها در Google Sheets — همراه دکمه تست اتصال و لاگ کامل.</p>
       </div>
@@ -582,7 +611,7 @@
 <section id="how">
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">چرخه کار</span>
+      <span class="kicker"> کار</span>
       <h2>از بازدید تا نوبت، در شش قدم</h2>
     </div>
     <div class="steps">
@@ -591,7 +620,7 @@
       <div class="step"><div class="n">۳</div><h4>ثبت لید</h4><p>نام و موبایل به‌صورت طبیعی در دل چت دریافت و امتیازدهی می‌شود.</p></div>
       <div class="step"><div class="n">۴</div><h4>اعلان فوری</h4><p>کارت لید همان لحظه به پیشخوان، بله یا تلگرام تیم می‌رسد.</p></div>
       <div class="step"><div class="n">۵</div><h4>CRM</h4><p>لید در پایپ‌لاین پیگیری می‌شود؛ ارجاع به همکار با یک کلیک.</p></div>
-      <div class="step"><div class="n">۶</div><h4>نوبت 🎉</h4><p>بیمار رزرو می‌کند و داشبورد، ارزش ایجادشده را نشان می‌دهد.</p></div>
+      <div class="step"><div class="n">۶</div><h4>نوبت</h4><p>بیمار رزرو می‌کند و داشبورد، ارزش ایجادشده را نشان می‌دهد.</p></div>
     </div>
   </div>
 </section>
@@ -600,7 +629,7 @@
 <section class="alt" id="compare">
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">مقایسه</span>
+      <span class="kicker"> سه</span>
       <h2>تفاوت با چت‌آنلاین‌های معمولی</h2>
       <p>چت ساده فقط پیام جابه‌جا می‌کند؛ پژکام بیمار می‌سازد.</p>
     </div>
@@ -610,14 +639,14 @@
           <tr><th>قابلیت</th><th>چت آنلاین معمولی</th><th>پژکام</th></tr>
         </thead>
         <tbody>
-          <tr><td>پاسخ‌گویی نیمه‌شب و تعطیلات</td><td class="no">✗ نیازمند اپراتور</td><td class="yes">✓ هوش مصنوعی ۲۴ ساعته</td></tr>
-          <tr><td>ایمنی پزشکی (عدم تشخیص/تجویز)</td><td class="no">✗ ندارد</td><td class="yes">✓ لایه دوگانه غیرقابل‌حذف</td></tr>
-          <tr><td>ثبت و امتیازدهی خودکار لید</td><td class="no">✗ دستی</td><td class="yes">✓ خودکار: داغ / متوسط / سرد</td></tr>
-          <tr><td>CRM و پایپ‌لاین بیمار</td><td class="no">✗ نرم‌افزار جداگانه</td><td class="yes">✓ داخل وردپرس</td></tr>
-          <tr><td>پیامک با پنل‌های ایرانی</td><td class="no">✗ معمولاً افزونه پولی جدا</td><td class="yes">✓ ۴ پنل ایرانی در همان لایسنس</td></tr>
-          <tr><td>کار روی هاست ایران بدون تحریم‌شکن</td><td class="no">✗ اغلب مشکل‌دار</td><td class="yes">✓ با گیت‌وی GapGPT</td></tr>
-          <tr><td>تحلیل سئو از گفتگوهای واقعی</td><td class="no">✗ ندارد</td><td class="yes">✓ مرکز هوش سئو + تولید ایده</td></tr>
-          <tr><td>برآورد درآمد تولیدشده</td><td class="no">✗ ندارد</td><td class="yes">✓ در داشبورد مدیریتی</td></tr>
+          <tr><td>پاسخ‌گویی نیمه‌شب و تعطیلات</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> نیازمند اپراتور</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> هوش مصنوعی ۲۴ ساعته</td></tr>
+          <tr><td>ایمنی پزشکی (عدم تشخیص/تجویز)</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> ندارد</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> لایه دوگانه غیرقابل‌حذف</td></tr>
+          <tr><td>ثبت و امتیازدهی خودکار لید</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> دستی</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> خودکار: داغ / متوسط / سرد</td></tr>
+          <tr><td>CRM و پایپ‌لاین بیمار</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> نرم‌افزار جداگانه</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> داخل وردپرس</td></tr>
+          <tr><td>پیامک با پنل‌های ایرانی</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> معمولاً افزونه پولی جدا</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> ۴ پنل ایرانی در همان لایسنس</td></tr>
+          <tr><td>کار روی هاست ایران بدون تحریم‌شکن</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> اغلب مشکل‌دار</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> با گیت‌وی GapGPT</td></tr>
+          <tr><td>تحلیل سئو از گفتگوهای واقعی</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> ندارد</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> مرکز هوش سئو + تولید ایده</td></tr>
+          <tr><td>برآورد درآمد تولیدشده</td><td class="no"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg> ندارد</td><td class="yes"><svg class="ico-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg> در داشبورد مدیریتی</td></tr>
         </tbody>
       </table>
     </div>
@@ -628,16 +657,16 @@
 <section>
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">مخاطبان</span>
+      <span class="kicker"> بان</span>
       <h2>برای چه کسانی ساخته شده؟</h2>
     </div>
     <div class="aud-grid">
-      <div class="aud-card"><div class="ico">🦷</div><div><h3>دندان‌پزشکی</h3><p>پاسخ به سؤالات هزینه ایمپلنت و ارتودنسی، و تبدیل مراجعه‌کننده مردد به نوبت مشاوره.</p></div></div>
-      <div class="aud-card"><div class="ico">✨</div><div><h3>کلینیک زیبایی و لیزر</h3><p>حجم بالای سؤالات تکراری قیمت را هوش مصنوعی جواب می‌دهد؛ تیم فقط سراغ لیدهای داغ می‌رود.</p></div></div>
-      <div class="aud-card"><div class="ico">🔪</div><div><h3>جراحان</h3><p>راهنمایی آمادگی قبل از عمل و شرایط جراحی، با ارجاع همیشگی به ویزیت حضوری.</p></div></div>
-      <div class="aud-card"><div class="ico">🧠</div><div><h3>روان‌شناسان</h3><p>پاسخ محترمانه به سؤالات اولیه و دعوت به جلسه، بدون ورود به حیطه تشخیص.</p></div></div>
-      <div class="aud-card"><div class="ico">🏥</div><div><h3>کلینیک چندشعبه‌ای</h3><p>انتساب لید به شعبه، آمار جداگانه هر شعبه و ارجاع به همکار همان شعبه.</p></div></div>
-      <div class="aud-card"><div class="ico">🔬</div><div><h3>آزمایشگاه و تصویربرداری</h3><p>پاسخ به شرایط ناشتایی و آمادگی آزمایش‌ها، و راهنمایی ساعات پذیرش.</p></div></div>
+      <div class="aud-card"><div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.5c1.6 0 2.2.8 5 .8s3.4-.8 5-.8c2 0 3 1.7 3 4 0 3-1.2 4.2-1.8 7.3-.5 2.6-.7 5.7-2.4 5.7-1.5 0-1.6-2.6-2.2-4.7-.3-1.1-.7-1.8-1.6-1.8s-1.3.7-1.6 1.8c-.6 2.1-.7 4.7-2.2 4.7-1.7 0-1.9-3.1-2.4-5.7C5.2 11.7 4 10.5 4 7.5c0-2.3 1-4 3-4Z"/></svg></div><div><h3>دندان‌پزشکی</h3><p>پاسخ به سؤالات هزینه ایمپلنت و ارتودنسی، و تبدیل مراجعه‌کننده مردد به نوبت مشاوره.</p></div></div>
+      <div class="aud-card"><div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"/><path d="M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8Z"/></svg></div><div><h3>کلینیک زیبایی و لیزر</h3><p>حجم بالای سؤالات تکراری قیمت را هوش مصنوعی جواب می‌دهد؛ تیم فقط سراغ لیدهای داغ می‌رود.</p></div></div>
+      <div class="aud-card"><div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20 14.5 9.5"/><path d="M13 8 18.5 2.5A2 2 0 0 1 21 5l-5.5 5.5L13 8Z"/><path d="M4 20h3.5"/></svg></div><div><h3>جراحان</h3><p>راهنمایی آمادگی قبل از عمل و شرایط جراحی، با ارجاع همیشگی به ویزیت حضوری.</p></div></div>
+      <div class="aud-card"><div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5a3 3 0 0 0-5.6-1.4A2.8 2.8 0 0 0 4 8.8a3 3 0 0 0 .6 4.6A3 3 0 0 0 7 18a3 3 0 0 0 5 1.6V5.5Z"/><path d="M12 5.5a3 3 0 0 1 5.6-1.4A2.8 2.8 0 0 1 20 8.8a3 3 0 0 1-.6 4.6A3 3 0 0 1 17 18a3 3 0 0 1-5 1.6"/></svg></div><div><h3>روان‌شناسان</h3><p>پاسخ محترمانه به سؤالات اولیه و دعوت به جلسه، بدون ورود به حیطه تشخیص.</p></div></div>
+      <div class="aud-card"><div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-5h6v5"/><path d="M12 7.5v4M10 9.5h4"/></svg></div><div><h3>کلینیک چندشعبه‌ای</h3><p>انتساب لید به شعبه، آمار جداگانه هر شعبه و ارجاع به همکار همان شعبه.</p></div></div>
+      <div class="aud-card"><div class="ico"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v6L4.6 18A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.7-3L14 9V3"/><path d="M9 3h6M7.5 14h9"/></svg></div><div><h3>آزمایشگاه و تصویربرداری</h3><p>پاسخ به شرایط ناشتایی و آمادگی آزمایش‌ها، و راهنمایی ساعات پذیرش.</p></div></div>
     </div>
   </div>
 </section>
@@ -646,7 +675,7 @@
 <section class="alt" id="faq">
   <div class="container">
     <div class="sec-head">
-      <span class="kicker">سؤالات متداول</span>
+      <span class="kicker"> ات متداول</span>
       <h2>قبل از خرید، این‌ها را بدانید</h2>
     </div>
     <div class="faq">

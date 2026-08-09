@@ -28,9 +28,9 @@ $status_map = (new \Pezhkam\Export\SyncStatus())->for_leads($lead_ids);
 
 $score_badge = static function (?string $level): string {
     switch ($level) {
-        case 'hot':  return '🟢 ' . esc_html__('داغ', 'pezhkam');
-        case 'warm': return '🟡 ' . esc_html__('متوسط', 'pezhkam');
-        case 'cold': return '⚪ ' . esc_html__('سرد', 'pezhkam');
+        case 'hot':  return \Pezhkam\Admin\Icon::lead_dot('hot', __('داغ', 'pezhkam'));
+        case 'warm': return \Pezhkam\Admin\Icon::lead_dot('warm', __('متوسط', 'pezhkam'));
+        case 'cold': return \Pezhkam\Admin\Icon::lead_dot('cold', __('سرد', 'pezhkam'));
         default:     return '—';
     }
 };
@@ -38,7 +38,7 @@ $score_badge = static function (?string $level): string {
 <ul class="subsubsub">
     <li><a href="<?php echo esc_url($base); ?>" class="<?php echo (! $leads_only && $score === '') ? 'current' : ''; ?>"><?php esc_html_e('همه', 'pezhkam'); ?></a> | </li>
     <li><a href="<?php echo esc_url(add_query_arg('leads', 1, $base)); ?>" class="<?php echo $leads_only ? 'current' : ''; ?>"><?php esc_html_e('لیدها', 'pezhkam'); ?></a> | </li>
-    <li><a href="<?php echo esc_url(add_query_arg('score', 'hot', $base)); ?>" class="<?php echo $score === 'hot' ? 'current' : ''; ?>">🟢 <?php esc_html_e('لید داغ', 'pezhkam'); ?></a></li>
+    <li><a href="<?php echo esc_url(add_query_arg('score', 'hot', $base)); ?>" class="<?php echo $score === 'hot' ? 'current' : ''; ?>"><?php echo wp_kses_post(\Pezhkam\Admin\Icon::lead_dot('hot', __('لید داغ', 'pezhkam'))); ?></a></li>
 </ul>
 
 <?php if (! empty($branches)) : ?>

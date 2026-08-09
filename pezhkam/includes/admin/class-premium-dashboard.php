@@ -49,7 +49,7 @@ class PremiumDashboard
         if (substr($hook, -strlen(self::PAGE)) !== self::PAGE) {
             return;
         }
-        wp_enqueue_style('pzk-dashboard', PZK_URL . 'assets/css/dashboard.css', [], PZK_VERSION);
+        wp_enqueue_style('pzk-dashboard', PZK_URL . 'assets/css/dashboard.css', ['pzk-font', 'pzk-admin'], PZK_VERSION);
         wp_enqueue_script('pzk-dashboard', PZK_URL . 'assets/js/dashboard.js', [], PZK_VERSION, true);
         wp_localize_script('pzk-dashboard', 'PZK_DASH', [
             'ajaxUrl' => esc_url_raw(admin_url('admin-ajax.php')),

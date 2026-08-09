@@ -1,6 +1,12 @@
-/* Pezhkam — admin design system. */
+/* Pezhkam — admin design system.
+ *
+ * One typeface, one set of tokens, one component vocabulary across every
+ * plugin screen. The font is declared with a full fallback stack inside var()
+ * so the panel still renders correctly if fonts/font.css is not loaded.
+ */
 
 .pzk-admin {
+	--pzk-font: "Vazirmatn", "IRANYekan", "IRANSans", Tahoma, system-ui, -apple-system, "Segoe UI", sans-serif;
 	--nav: #0f1f3d;
 	--nav-2: #1c3a6e;
 	--gold: #c8a04e;
@@ -19,11 +25,114 @@
 	margin-inline-end: 20px;
 	color: var(--ink);
 	font-size: 14px;
+	font-family: var(--pzk-font);
 }
 
-/* WordPress prints an h1 we replace with our own header. */
-.pzk-admin > h1 { display: none; }
-.pzk-admin .wp-header-end { display: none; }
+/* ------------------------------------------------- typography, no exceptions
+ * WordPress sets its own family on core admin elements (inputs, buttons,
+ * tables, notices, the media modal). Left alone, those islands render in the
+ * default sans stack and Persian text in them looks unrelated to the rest of
+ * the panel. This sweep is deliberately broad: every element inside a plugin
+ * screen inherits the bundled face, including form controls, which do NOT
+ * inherit font by default in any browser.
+ */
+.pzk-admin,
+.pzk-admin *,
+.pzk-admin *::before,
+.pzk-admin *::after {
+	font-family: var(--pzk-font);
+}
+.pzk-admin input,
+.pzk-admin select,
+.pzk-admin textarea,
+.pzk-admin button,
+.pzk-admin optgroup,
+.pzk-admin .button,
+.pzk-admin .button-primary,
+.pzk-admin .button-secondary {
+	font-family: var(--pzk-font);
+	font-size: 13.5px;
+	line-height: 1.9;
+}
+/* Latin-only fields read better in a mono/system face than a Persian one. */
+.pzk-admin input[type="url"],
+.pzk-admin input[type="email"],
+.pzk-admin input[dir="ltr"],
+.pzk-admin textarea[dir="ltr"],
+.pzk-admin code,
+.pzk-admin kbd,
+.pzk-admin pre {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ------------------------------------------------ neutralise WP core chrome
+ * The plugin draws its own header, cards and tables; these are the core
+ * styles that would otherwise show through and break the visual system.
+ */
+.pzk-admin > h1,
+.pzk-admin .wp-header-end,
+.pzk-admin > .wrap > h1 { display: none; }
+
+.pzk-admin .notice,
+.pzk-admin .updated,
+.pzk-admin .error {
+	margin: 14px 0;
+	border: 1px solid var(--line);
+	border-inline-start-width: 4px;
+	border-radius: var(--radius);
+	box-shadow: none;
+	background: #fff;
+	padding: 12px 16px;
+}
+.pzk-admin .notice p { margin: 0; font-size: 13.5px; }
+
+.pzk-admin .form-table > tbody > tr > th {
+	width: 240px;
+	padding: 18px 0 18px 16px;
+	font-weight: 700;
+	font-size: 13.5px;
+	color: var(--ink);
+}
+.pzk-admin .form-table > tbody > tr > td { padding: 14px 0; }
+.pzk-admin .form-table th,
+.pzk-admin .form-table td { vertical-align: top; }
+
+.pzk-admin p.description {
+	margin: 6px 0 0;
+	color: var(--muted);
+	font-size: 12.5px;
+	line-height: 2;
+	font-style: normal;
+}
+
+.pzk-admin input[type="text"],
+.pzk-admin input[type="url"],
+.pzk-admin input[type="email"],
+.pzk-admin input[type="number"],
+.pzk-admin input[type="password"],
+.pzk-admin select,
+.pzk-admin textarea {
+	min-height: 38px;
+	padding: 7px 12px;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	box-shadow: none;
+	background: #fff;
+	color: var(--ink);
+	transition: border-color .15s, box-shadow .15s;
+}
+.pzk-admin input[type="text"]:focus,
+.pzk-admin input[type="url"]:focus,
+.pzk-admin input[type="email"]:focus,
+.pzk-admin input[type="number"]:focus,
+.pzk-admin input[type="password"]:focus,
+.pzk-admin select:focus,
+.pzk-admin textarea:focus {
+	border-color: var(--nav-2);
+	box-shadow: 0 0 0 3px rgba(28, 58, 110, .12);
+	outline: none;
+}
+.pzk-admin textarea { min-height: 96px; line-height: 2; }
 
 /* ---------------------------------------------------------------- header */
 .pzk-head {
@@ -48,10 +157,11 @@
 	border-radius: 13px;
 	display: grid;
 	place-items: center;
-	font-size: 22px;
+	color: #fff;
 	background: linear-gradient(135deg, var(--gold), #a97f2f);
 	box-shadow: 0 8px 20px rgba(200, 160, 78, .35);
 }
+.pzk-head-mark .pzk-ico { width: 24px; height: 24px; }
 .pzk-head-text { flex: 1 1 260px; min-width: 200px; }
 .pzk-head-text h1 {
 	display: block;
@@ -328,7 +438,8 @@
 	text-align: center;
 	color: var(--muted);
 }
-.pzk-empty-ico { font-size: 34px; display: block; margin-bottom: 10px; opacity: .65; }
+.pzk-empty-ico { display: block; margin-bottom: 10px; opacity: .55; color: var(--muted); }
+.pzk-empty-ico .pzk-ico { width: 34px; height: 34px; }
 .pzk-empty strong { display: block; color: var(--nav); font-size: 15px; margin-bottom: 6px; }
 
 /* --------------------------------------------------------------- transcript */
@@ -483,8 +594,9 @@
 }
 .pzk-saved-ico {
 	display: inline-flex; align-items: center; justify-content: center;
-	width: 24px; height: 24px; border-radius: 50%;
-	background: #4e8a2c; color: #fff; font-size: 14px; font-weight: 800;
+	width: 24px; height: 24px; padding: 5px; border-radius: 50%;
+	background: #4e8a2c; color: #fff;
+	flex: 0 0 auto;
 }
 @keyframes pzk-toast-in  { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 @keyframes pzk-toast-out { to { opacity: 0; transform: translateY(-8px); visibility: hidden; } }
@@ -512,4 +624,174 @@
 	.pzk-admin .form-table tr + tr th { border-top: 1px solid #eef1f6; margin-top: 4px; }
 	.pzk-head { padding: 18px; }
 	.pzk-head-text h1 { font-size: 17px; }
+}
+
+/* ============================================================ icon system
+ * Inline SVG from \Pezhkam\Admin\Icon. Icons take their colour from the text
+ * they sit in and their size from --pzk-ico-size, so the same icon works in a
+ * stat tile, a table cell and a button without per-context variants.
+ */
+.pzk-ico {
+	--pzk-ico-size: 1.15em;
+	width: var(--pzk-ico-size);
+	height: var(--pzk-ico-size);
+	flex: 0 0 auto;
+	vertical-align: -0.18em;
+}
+.pzk-ico-wrap {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	line-height: 1.6;
+}
+
+/* Lead temperature. Replaces the coloured-circle emoji: same information,
+   but it scales with the type and stays legible in high-contrast mode. */
+.pzk-dot {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	white-space: nowrap;
+}
+.pzk-dot > i {
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	flex: 0 0 auto;
+	background: currentColor;
+	box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+}
+.pzk-dot-hot  { color: var(--ok); }
+.pzk-dot-warm { color: var(--warn); }
+.pzk-dot-cold { color: var(--muted); }
+
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+	.pzk-dot > i { box-shadow: none; }
+}
+
+/* Inline async result next to a test button (SMS test, webhook ping, …). */
+.pzk-result {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-inline-start: 10px;
+	font-size: 13px;
+	font-weight: 600;
+}
+.pzk-result-ok   { color: var(--ok); }
+.pzk-result-fail { color: var(--bad); }
+.pzk-result .pzk-ico { --pzk-ico-size: 1.05em; }
+
+/* ================================================ remaining WP core surfaces
+ * Seven tables in the views use .widefat/.striped rather than .wp-list-table,
+ * and the conversation list uses .subsubsub/.tablenav. Without these rules
+ * those screens keep the stock grey WordPress chrome while the rest of the
+ * plugin uses the card system — the inconsistency the review flagged.
+ */
+.pzk-admin table.widefat {
+	width: 100%;
+	margin: 0 0 18px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	border-collapse: separate;
+	border-spacing: 0;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: var(--shadow);
+}
+.pzk-admin table.widefat thead th,
+.pzk-admin table.widefat tfoot th {
+	padding: 13px 14px;
+	background: #f7f9fc;
+	border-bottom: 1px solid var(--line);
+	color: var(--nav);
+	font-size: 12.5px;
+	font-weight: 800;
+}
+.pzk-admin table.widefat tbody td { padding: 12px 14px; border-bottom: 1px solid #eef1f6; }
+.pzk-admin table.widefat tbody tr:last-child td { border-bottom: 0; }
+.pzk-admin table.widefat.striped > tbody > :nth-child(odd) { background: #fbfcfe; }
+.pzk-admin table.widefat tbody tr:hover { background: #f5f8fd; }
+
+/* Filter links above the conversation table. */
+.pzk-admin .subsubsub {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px;
+	margin: 0 0 12px;
+	padding: 0;
+	font-size: 13px;
+}
+/* The markup separates the filters with a literal "|" between the links. The
+   pills carry that separation visually, so the character is collapsed away
+   here rather than removed from the view (which core-style markup expects). */
+.pzk-admin .subsubsub li { margin: 0; font-size: 0; }
+.pzk-admin .subsubsub li a { font-size: 13px; }
+.pzk-admin .subsubsub a {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 13px;
+	border-radius: 100px;
+	color: var(--muted);
+	text-decoration: none;
+	transition: background .15s, color .15s;
+}
+.pzk-admin .subsubsub a:hover { background: #eef1f7; color: var(--nav); }
+.pzk-admin .subsubsub a.current {
+	background: var(--nav);
+	color: #fff;
+	font-weight: 700;
+}
+.pzk-admin .subsubsub .count { color: inherit; opacity: .75; }
+
+/* Pagination. */
+.pzk-admin .tablenav { height: auto; margin: 12px 0 0; padding: 0; }
+.pzk-admin .tablenav .tablenav-pages { float: none; display: flex; justify-content: flex-start; gap: 5px; margin: 0; }
+.pzk-admin .tablenav .tablenav-pages a,
+.pzk-admin .tablenav .tablenav-pages span.current {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 34px;
+	height: 34px;
+	padding: 0 10px;
+	border: 1px solid var(--line);
+	border-radius: 9px;
+	background: #fff;
+	color: var(--muted);
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: 600;
+}
+.pzk-admin .tablenav .tablenav-pages a:hover { border-color: var(--nav-2); color: var(--nav); }
+.pzk-admin .tablenav .tablenav-pages span.current {
+	background: var(--nav);
+	border-color: var(--nav);
+	color: #fff;
+}
+
+/* Checkbox / radio rows: consistent spacing and a real hit area. */
+.pzk-admin .form-table label > input[type="checkbox"],
+.pzk-admin .form-table label > input[type="radio"] {
+	margin-inline-end: 7px;
+	vertical-align: -2px;
+}
+.pzk-admin .form-table label {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	line-height: 2.1;
+	cursor: pointer;
+}
+.pzk-admin .form-table label .pzk-ico { color: var(--nav-2); }
+
+/* Width helpers WP ships but does not size consistently in RTL. */
+.pzk-admin .regular-text { width: 25rem; max-width: 100%; }
+.pzk-admin .large-text   { width: 100%; }
+
+@media (max-width: 782px) {
+	.pzk-admin .form-table > tbody > tr > th { width: auto; padding-bottom: 4px; }
+	.pzk-admin .regular-text { width: 100%; }
 }
